@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { reducer, initialState } from "./StateReducer";
 import { SET_SCALE, SET_SENSITIVITY, SET_POSITION_X, SET_POSITION_Y } from "./CONSTANTS";
@@ -9,9 +9,14 @@ function roundNumber(num, decimal = 5) {
   return Number(num.toFixed(decimal));
 }
 
+function checkIsNumber(num, defaultValue) {
+  return typeof num === "number" ? num : defaultValue;
+}
+
 const StateProvider = ({ children }) => {
   let [state, dispatch] = React.useReducer(reducer, initialState);
-  const content = typeof children === "function" ? children() : children;
+  let [wrapperComponent, setWrapperComponent] = React.useState(null);
+  let [contentComponent, setContentComponent] = React.useState(null);
 
   function relativeCoords(event, wrapper, content) {
     const x = event ? event.pageX - wrapper.offsetTop : 0;
@@ -35,7 +40,7 @@ const StateProvider = ({ children }) => {
     };
   }
 
-  function handleZoom(event, wrapper, content, setCenterClick, customDelta) {
+  function handleZoom(event, wrapper, content, setCenterClick, customDelta, customSensitivity) {
     // todo find a way to block passive events
     // event.preventDefault();
 
@@ -51,8 +56,8 @@ const StateProvider = ({ children }) => {
       contentHeight,
     } = relativeCoords(event, wrapper, content);
 
-    const delta = customDelta || event.deltaY < 0 ? 1 : -1;
-
+    const deltaY = event ? (event.deltaY < 0 ? 1 : -1) : 0;
+    const delta = checkIsNumber(customDelta, deltaY);
     // Mouse position
     const mouseX = setCenterClick ? wrapperWidth / 2 : x;
     const mouseY = setCenterClick ? wrapperHeight / 2 : y;
@@ -61,14 +66,22 @@ const StateProvider = ({ children }) => {
     const targetX = (mouseX - positionX) / scale;
     const targetY = (mouseY - positionY) / scale;
 
+    const zoomSensitivityFactor = checkIsNumber(customSensitivity, 0.1);
+
     // Calculate new zoom
-    let newScale = scale + delta * (sensitivity / 10) * scale;
-    if (newScale >= maxScale || newScale <= minScale) return;
+    let newScale = scale + delta * (sensitivity * zoomSensitivityFactor) * scale;
+    if (newScale >= maxScale && scale < maxScale) {
+      newScale = maxScale;
+    }
+    if (newScale <= minScale && scale > minScale) {
+      newScale = minScale;
+    }
+    if (newScale > maxScale || newScale < minScale) return;
     setScale(newScale);
 
     // Calculate new positions
-    setPositionX(-targetX * newScale + x);
-    setPositionY(-targetY * newScale + y);
+    setPositionX(-targetX * newScale + mouseX);
+    setPositionY(-targetY * newScale + mouseY);
 
     // Limit transformations to bounding wrapper
     if (limitToBounds) {
@@ -105,13 +118,26 @@ const StateProvider = ({ children }) => {
   function setSensitivity(sensitivity) {
     dispatch({ type: SET_SENSITIVITY, sensitivity: roundNumber(sensitivity, 2) });
   }
-
-  function zoomIn(wrapper, content) {
-    handleZoom(null, wrapper, content, true, 1);
+  function zoomIn(customSensitivity) {
+    handleZoom(
+      null,
+      wrapperComponent,
+      contentComponent,
+      true,
+      1,
+      checkIsNumber(customSensitivity, state.zoomSensitivity)
+    );
   }
 
-  function zoomOut(wrapper, content) {
-    handleZoom(null, wrapper, content, true, -1);
+  function zoomOut(customSensitivity) {
+    handleZoom(
+      null,
+      wrapperComponent,
+      contentComponent,
+      true,
+      -1,
+      checkIsNumber(customSensitivity, state.zoomSensitivity)
+    );
   }
 
   function setTransform(scale, positionX, positionY) {
@@ -139,7 +165,14 @@ const StateProvider = ({ children }) => {
       setTransform,
       resetTransform,
     },
+    nodes: {
+      setWrapperComponent,
+      setContentComponent,
+    },
   };
+
+  const content =
+    typeof children === "function" ? children({ ...value.state, ...value.dispatch }) : children;
 
   return <Context.Provider value={value}>{content}</Context.Provider>;
 };

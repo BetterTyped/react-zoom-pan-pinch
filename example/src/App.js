@@ -5,9 +5,17 @@ export default class App extends Component {
   render() {
     return (
       <TransformWrapper>
-        <TransformComponent>
-          <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="test" />
-        </TransformComponent>
+        {({ zoomIn, zoomOut, ...rest }) => (
+          <React.Fragment>
+            <div className="tools">
+              <button onClick={zoomIn}>+</button>
+              <button onClick={zoomOut}>-</button>
+            </div>
+            <TransformComponent>
+              <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="test" />
+            </TransformComponent>
+          </React.Fragment>
+        )}
       </TransformWrapper>
     );
   }

@@ -2,6 +2,7 @@ import { SET_SCALE, SET_SENSITIVITY, SET_POSITION_X, SET_POSITION_Y } from "./CO
 
 export let initialState = {
   sensitivity: 0.4,
+  zoomSensitivity: 0.6,
   positionX: 0,
   positionY: 0,
   scale: 1,

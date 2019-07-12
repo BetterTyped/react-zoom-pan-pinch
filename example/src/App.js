@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
-
-import ExampleComponent from 'react-easy-image-zoom-pan'
+import React, { Component } from "react";
+import { TransformComponent, TransformWrapper } from "react-easy-image-zoom-pan";
 
 export default class App extends Component {
-  render () {
+  render() {
     return (
-      <div>
-        <ExampleComponent text='Modern React component module' />
-      </div>
-    )
+      <TransformWrapper>
+        <TransformComponent>
+          <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="test" />
+        </TransformComponent>
+      </TransformWrapper>
+    );
   }
 }

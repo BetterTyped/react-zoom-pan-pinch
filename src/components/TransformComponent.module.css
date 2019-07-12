@@ -1,0 +1,10 @@
+.container {
+  width: fit-content;
+  height: fit-content;
+  overflow: hidden;
+}
+.content {
+  width: fit-content;
+  height: fit-content;
+  transform-origin: 0% 0%;
+}

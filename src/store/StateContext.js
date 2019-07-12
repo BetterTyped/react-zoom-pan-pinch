@@ -14,8 +14,8 @@ const StateProvider = ({ children }) => {
   const content = typeof children === "function" ? children() : children;
 
   function relativeCoords(event, wrapper, content) {
-    const x = event.pageX - wrapper.offsetTop;
-    const y = event.pageY - wrapper.offsetLeft;
+    const x = event ? event.pageX - wrapper.offsetTop : 0;
+    const y = event ? event.pageY - wrapper.offsetLeft : 0;
     const wrapperWidth = wrapper.offsetWidth;
     const wrapperHeight = wrapper.offsetHeight;
     const contentRect = content.getBoundingClientRect();
@@ -35,9 +35,11 @@ const StateProvider = ({ children }) => {
     };
   }
 
-  function handleZoom(event, wrapper, content) {
-    const { positionX, positionY, scale, sensitivity, maxScale, minScale, limitToBounds } = state;
+  function handleZoom(event, wrapper, content, setCenterClick, customDelta) {
+    // todo find a way to block passive events
     // event.preventDefault();
+
+    const { positionX, positionY, scale, sensitivity, maxScale, minScale, limitToBounds } = state;
     const {
       x,
       y,
@@ -49,11 +51,15 @@ const StateProvider = ({ children }) => {
       contentHeight,
     } = relativeCoords(event, wrapper, content);
 
-    var delta = event.deltaY < 0 ? 1 : -1;
+    const delta = customDelta || event.deltaY < 0 ? 1 : -1;
+
+    // Mouse position
+    const mouseX = setCenterClick ? wrapperWidth / 2 : x;
+    const mouseY = setCenterClick ? wrapperHeight / 2 : y;
 
     // Determine new zoomed in point
-    const targetX = (x - positionX) / scale;
-    const targetY = (y - positionY) / scale;
+    const targetX = (mouseX - positionX) / scale;
+    const targetY = (mouseY - positionY) / scale;
 
     // Calculate new zoom
     let newScale = scale + delta * (sensitivity / 10) * scale;
@@ -100,9 +106,39 @@ const StateProvider = ({ children }) => {
     dispatch({ type: SET_SENSITIVITY, sensitivity: roundNumber(sensitivity, 2) });
   }
 
+  function zoomIn(wrapper, content) {
+    handleZoom(null, wrapper, content, true, 1);
+  }
+
+  function zoomOut(wrapper, content) {
+    handleZoom(null, wrapper, content, true, -1);
+  }
+
+  function setTransform(scale, positionX, positionY) {
+    setScale(scale);
+    setPositionX(positionX);
+    setPositionY(positionY);
+  }
+
+  function resetTransform(defaultScale, defaultPositionX, defaultPositionY) {
+    setScale(defaultScale || initialState.scale);
+    setPositionX(defaultPositionX || initialState.positionX);
+    setPositionY(defaultPositionY || initialState.positionY);
+  }
+
   const value = {
     state,
-    dispatch: { handleZoom, setSensitivity, setScale, setPositionX, setPositionY },
+    dispatch: {
+      handleZoom,
+      setSensitivity,
+      setScale,
+      setPositionX,
+      setPositionY,
+      zoomIn,
+      zoomOut,
+      setTransform,
+      resetTransform,
+    },
   };
 
   return <Context.Provider value={value}>{content}</Context.Provider>;

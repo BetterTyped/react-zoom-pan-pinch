@@ -6,7 +6,7 @@ import styles from "./TransformComponent.module.css";
 function TransformComponent({ children }) {
   const wrapperRef = useRef(null);
   const contentRef = useRef(null);
-  const { state, dispatch, nodes } = useContext(Context);
+  const { state, nodes, internal } = useContext(Context);
   const style = {
     transform: `translate(${state.positionX}px, ${state.positionY}px) scale(${state.scale})`,
   };
@@ -22,11 +22,16 @@ function TransformComponent({ children }) {
 
   return (
     <div
+      id="react-transform-component"
       ref={wrapperRef}
-      onWheel={event => dispatch.handleZoom(event, wrapperRef.current, contentRef.current)}
+      onWheel={event => internal.handleZoom(event, wrapperRef.current, contentRef.current)}
+      onMouseDown={internal.handleStartPanning}
+      onMouseMove={internal.handlePanning}
+      onMouseUp={internal.handleStopPanning}
+      onMouseOut={internal.handleStopPanning}
       className={styles.container}
     >
-      <div ref={contentRef} className={styles.content} style={style}>
+      <div id="react-transform-element" ref={contentRef} className={styles.content} style={style}>
         {children}
       </div>
     </div>

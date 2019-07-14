@@ -1,70 +1,91 @@
-import React from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import PropTypes from "prop-types";
 import { reducer, initialState } from "./StateReducer";
 import { SET_SCALE, SET_SENSITIVITY, SET_POSITION_X, SET_POSITION_Y } from "./CONSTANTS";
+import {
+  roundNumber,
+  checkIsNumber,
+  boundLimiter,
+  relativeCoords,
+  calculateBoundingArea,
+  touchDistance,
+  midpoint,
+  clamp,
+  touchPt,
+  coordChange,
+} from "./utils";
+import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
-
-function roundNumber(num, decimal = 5) {
-  return Number(num.toFixed(decimal));
-}
-
-function checkIsNumber(num, defaultValue) {
-  return typeof num === "number" ? num : defaultValue;
-}
-
-function boundLimiter(value, minBound, maxBound, isActive) {
-  if (!isActive) return value;
-  if (value < minBound) return minBound;
-  if (value > maxBound) return maxBound;
-  return value;
-}
 
 const defaultCoords = { x: 0, y: 0 };
 
 const StateProvider = ({ children }) => {
-  let [state, dispatch] = React.useReducer(reducer, initialState);
-  let [wrapperComponent, setWrapperComponent] = React.useState(null);
-  let [contentComponent, setContentComponent] = React.useState(null);
-  let [startCoords, setStartCoords] = React.useState(defaultCoords);
-  let [isDown, setIsDown] = React.useState(false);
+  let [state, dispatch] = useReducer(reducer, initialState);
+  let [wrapperComponent, setWrapperComponent] = useState(null);
+  let [contentComponent, setContentComponent] = useState(null);
+  let [startCoords, setStartCoords] = useState(defaultCoords);
+  let [isDown, setIsDown] = useState(false);
+  let [isScaling, setIsScaling] = useState(false);
+  let [distanceStart, setDistanceStart] = useState(false);
 
-  const { positionX, positionY, scale, sensitivity, maxScale, minScale, limitToBounds } = state;
+  const {
+    positionX,
+    positionY,
+    scale,
+    sensitivity,
+    maxScale,
+    minScale,
+    limitToBounds,
+    zoomingEnabled,
+    panningEnabled,
+    transformEnabled,
+    pinchEnabled,
+    enableZoomedOutPanning,
+    disabled,
+  } = state;
 
-  function relativeCoords(event, wrapper, content) {
-    const x = event ? event.pageX - wrapper.offsetTop : 0;
-    const y = event ? event.pageY - wrapper.offsetLeft : 0;
-    const wrapperWidth = wrapper.offsetWidth;
-    const wrapperHeight = wrapper.offsetHeight;
-    const contentRect = content.getBoundingClientRect();
-    const contentWidth = contentRect.width;
-    const contentHeight = contentRect.height;
-    const diffHeight = wrapperHeight - contentHeight;
-    const diffWidth = wrapperWidth - contentWidth;
-    return {
-      x,
-      y,
-      wrapperWidth,
-      wrapperHeight,
-      contentWidth,
-      contentHeight,
-      diffHeight,
-      diffWidth,
-    };
+  useEffect(() => {
+    const passiveOption = makePassiveEventOption(false);
+
+    // Add touch screen events
+    // this.containerNode.addEventListener("touchstart", handlePinchStart, passiveOption);
+    // window.addEventListener("touchmove", handlePinch, passiveOption);
+    // window.addEventListener("touchend", handlePinchStop, passiveOption);
+
+    // Add events for devices with mice
+    // this.containerNode.addEventListener("mousedown", this.onMouseDown, passiveOption);
+    // window.addEventListener("mousemove", this.onMouseMove, passiveOption);
+    // window.addEventListener("mouseup", this.onMouseUp, passiveOption);
+  }, [contentComponent]);
+
+  function setTransform(scale, positionX, positionY) {
+    if (!transformEnabled || disabled) return;
+    setScale(scale);
+    setPositionX(positionX);
+    setPositionY(positionY);
   }
 
-  function handleZoom(event, wrapper, content, setCenterClick, customDelta, customSensitivity) {
-    if (isDown) return;
-    const {
-      x,
-      y,
-      wrapperWidth,
-      wrapperHeight,
-      diffHeight,
-      diffWidth,
-      contentWidth,
-      contentHeight,
-    } = relativeCoords(event, wrapper, content);
+  function resetTransform(defaultScale, defaultPositionX, defaultPositionY) {
+    if (!transformEnabled || disabled) return;
+    setScale(checkIsNumber(defaultScale, initialState.scale));
+    setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
+    setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
+  }
+
+  //////////
+  // Zooming
+  //////////
+
+  function handleZoom(event, setCenterClick, customDelta, customSensitivity) {
+    if (isDown || !zoomingEnabled || disabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const { x, y, wrapperWidth, wrapperHeight } = relativeCoords(
+      event,
+      wrapperComponent,
+      contentComponent
+    );
 
     const deltaY = event ? (event.deltaY < 0 ? 1 : -1) : 0;
     const delta = checkIsNumber(customDelta, deltaY);
@@ -76,10 +97,11 @@ const StateProvider = ({ children }) => {
     const targetX = (mouseX - positionX) / scale;
     const targetY = (mouseY - positionY) / scale;
 
-    const zoomSensitivityFactor = checkIsNumber(customSensitivity, 0.1);
+    const zoomSensitivity = (customSensitivity || sensitivity) * 0.1;
 
     // Calculate new zoom
-    let newScale = scale + delta * (sensitivity * zoomSensitivityFactor) * scale;
+    let newScale = roundNumber(scale + delta * zoomSensitivity * scale, 2);
+
     if (newScale >= maxScale && scale < maxScale) {
       newScale = maxScale;
     }
@@ -87,27 +109,40 @@ const StateProvider = ({ children }) => {
       newScale = minScale;
     }
     if (newScale > maxScale || newScale < minScale) return;
+
+    const newContentWidth = wrapperWidth * newScale;
+    const newContentHeight = wrapperHeight * newScale;
+
+    const newDiffWidth = wrapperWidth - newContentWidth;
+    const newDiffHeight = wrapperHeight - newContentHeight;
+
+    // Calculate bounding area
+    const { minPositionX, maxPositionX, minPositionY, maxPositionY } = calculateBoundingArea(
+      wrapperWidth,
+      newContentWidth,
+      newDiffWidth,
+      wrapperHeight,
+      newContentHeight,
+      newDiffHeight,
+      enableZoomedOutPanning
+    );
+
     setScale(newScale);
 
     // Calculate new positions
     const newPositionX = -targetX * newScale + mouseX;
     const newPositionY = -targetY * newScale + mouseY;
 
-    // Calculate bounding area
-    const scaleWidthFactor = wrapperWidth > contentWidth ? diffWidth : 0;
-    const scaleHeightFactor = wrapperHeight > contentHeight ? diffHeight : 0;
-
-    const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
-    const maxPositionX = 0 + scaleWidthFactor;
-    const minPositionY = wrapperHeight - contentHeight - scaleHeightFactor;
-    const maxPositionY = 0 + scaleHeightFactor;
-
     setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
     setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
   }
 
+  //////////
+  // Panning
+  //////////
+
   function handleStartPanning(event) {
-    if (isDown) return;
+    if (isDown || !panningEnabled || disabled) return;
     const { x, y } = relativeCoords(event, wrapperComponent, contentComponent);
     setStartCoords({
       x: x - positionX,
@@ -117,7 +152,7 @@ const StateProvider = ({ children }) => {
   }
 
   function handlePanning(event) {
-    if (!isDown) return;
+    if (!isDown || !panningEnabled || disabled) return;
     const {
       x,
       y,
@@ -132,24 +167,50 @@ const StateProvider = ({ children }) => {
     const newPositionY = y - startCoords.y;
 
     // Calculate bounding area
-    const scaleWidthFactor = wrapperWidth > contentWidth ? diffWidth : 0;
-    const scaleHeightFactor = wrapperHeight > contentHeight ? diffHeight : 0;
-
-    const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
-    const maxPositionX = 0 + scaleWidthFactor;
-    const minPositionY = wrapperHeight - contentHeight - scaleHeightFactor;
-    const maxPositionY = 0 + scaleHeightFactor;
+    const { minPositionX, maxPositionX, minPositionY, maxPositionY } = calculateBoundingArea(
+      wrapperWidth,
+      contentWidth,
+      diffWidth,
+      wrapperHeight,
+      contentHeight,
+      diffHeight,
+      enableZoomedOutPanning
+    );
 
     setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
     setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
   }
 
   function handleStopPanning() {
+    if (!panningEnabled || disabled) return;
     setIsDown(false);
   }
 
+  //////////
+  // Pinching
+  //////////
+
+  function handlePinchStart(event) {
+    if (event.touches.length === 2) {
+      setIsScaling(true);
+    }
+  }
+
+  function handlePinch(event) {}
+
+  function handlePinchStop() {
+    if (isScaling) {
+      setIsScaling(false);
+    }
+  }
+
+  //////////
+  // Setters
+  //////////
+
   function setScale(scale) {
-    dispatch({ type: SET_SCALE, scale: roundNumber(scale, 2) });
+    if (scale > maxScale || scale < minScale) return;
+    dispatch({ type: SET_SCALE, scale: scale });
   }
 
   function setPositionX(positionX) {
@@ -169,38 +230,25 @@ const StateProvider = ({ children }) => {
   function setSensitivity(sensitivity) {
     dispatch({ type: SET_SENSITIVITY, sensitivity: roundNumber(sensitivity, 2) });
   }
-  function zoomIn(customSensitivity) {
-    handleZoom(
-      null,
-      wrapperComponent,
-      contentComponent,
-      true,
-      1,
-      checkIsNumber(customSensitivity, state.zoomSensitivity)
-    );
+
+  //////////
+  // Controls
+  //////////
+
+  function zoomIn(event) {
+    if (!zoomingEnabled || disabled) return;
+    handleZoom(event, true, 1, state.zoomInSensitivity);
   }
 
-  function zoomOut(customSensitivity) {
-    handleZoom(
-      null,
-      wrapperComponent,
-      contentComponent,
-      true,
-      -1,
-      checkIsNumber(customSensitivity, state.zoomSensitivity)
-    );
+  function zoomOut(event) {
+    if (!zoomingEnabled || disabled) return;
+    handleZoom(event, true, -1, state.zoomOutSensitivity);
   }
 
-  function setTransform(scale, positionX, positionY) {
-    setScale(scale);
-    setPositionX(positionX);
-    setPositionY(positionY);
-  }
-
-  function resetTransform(defaultScale, defaultPositionX, defaultPositionY) {
-    setScale(checkIsNumber(defaultScale, initialState.scale));
-    setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
-    setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
+  function handleDbClick(event) {
+    if (!zoomingEnabled || disabled) return;
+    //todo debug
+    handleZoom(event, false, 1, state.dbSensitivity);
   }
 
   const value = {
@@ -224,6 +272,10 @@ const StateProvider = ({ children }) => {
       handleStartPanning,
       handlePanning,
       handleStopPanning,
+      handleDbClick,
+      handlePinchStart,
+      handlePinch,
+      handlePinchStop,
     },
   };
 

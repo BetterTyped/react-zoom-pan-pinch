@@ -3,6 +3,10 @@ import { SET_SCALE, SET_SENSITIVITY, SET_POSITION_X, SET_POSITION_Y } from "./CO
 export let initialState = {
   sensitivity: 0.4,
   zoomSensitivity: 0.6,
+  zoomOutSensitivity: 0.9,
+  zoomInSensitivity: 0.9,
+  dbSensitivity: 0.6,
+  pinchSensitivity: 0.6,
   positionX: 0,
   positionY: 0,
   scale: 1,
@@ -14,6 +18,12 @@ export let initialState = {
   minPositionY: null,
   limitToBounds: true,
   disable: false,
+  zoomingEnabled: true,
+  panningEnabled: true,
+  pinchEnabled: true,
+  dbClickEnabled: true,
+  transformEnabled: true,
+  enableZoomedOutPanning: false,
 };
 
 export let reducer = (state, action) => {

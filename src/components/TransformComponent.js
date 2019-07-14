@@ -18,17 +18,21 @@ function TransformComponent({ children }) {
     if (contentRef.current) {
       nodes.setContentComponent(contentRef.current);
     }
-  }, [wrapperRef, contentRef]);
+  }, []);
 
   return (
     <div
       id="react-transform-component"
       ref={wrapperRef}
-      onWheel={event => internal.handleZoom(event, wrapperRef.current, contentRef.current)}
+      onWheel={internal.handleZoom}
       onMouseDown={internal.handleStartPanning}
       onMouseMove={internal.handlePanning}
       onMouseUp={internal.handleStopPanning}
       onMouseOut={internal.handleStopPanning}
+      onDoubleClick={internal.handleDbClick}
+      onTouchStart={internal.handlePinchStart}
+      onTouchMove={internal.handlePinch}
+      onTouchEnd={internal.handlePinchStop}
       className={styles.container}
     >
       <div id="react-transform-element" ref={contentRef} className={styles.content} style={style}>

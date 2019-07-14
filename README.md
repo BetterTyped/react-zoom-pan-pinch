@@ -1,12 +1,10 @@
+![GitHub Logo](/logo/logo.png)
+
 # react-easy-image-zoom-pan
 
 > Super fast and light react npm package for zooming, panning and pinching html elements in easy way
 
 [![NPM](https://img.shields.io/npm/v/react-easy-image-zoom-pan.svg)](https://www.npmjs.com/package/react-easy-image-zoom-pan) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-<img src="./logo/pinterest_board_photo.png">
-
-![GitHub Logo](/logo/logo.png)
 
 ## Install
 

@@ -10,18 +10,37 @@
 npm install --save react-easy-image-zoom-pan
 ```
 
+or
+
+```bash
+yarn add react-easy-image-zoom-pan
+```
+
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
-import MyComponent from 'react-easy-image-zoom-pan'
+import MyComponent from "react-easy-image-zoom-pan";
 
 class Example extends Component {
-  render () {
+  render() {
     return (
-      <MyComponent />
-    )
+      <TransformWrapper>
+        {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+          <React.Fragment>
+            <div className="tools">
+              <button onClick={zoomIn}>+</button>
+              <button onClick={zoomOut}>-</button>
+              <button onClick={resetTransform}>x</button>
+            </div>
+            <TransformComponent>
+              <img src="image.jpg" alt="test" />
+            </TransformComponent>
+          </React.Fragment>
+        )}
+      </TransformWrapper>
+    );
   }
 }
 ```

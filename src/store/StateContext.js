@@ -49,23 +49,6 @@ class StateProvider extends Component {
     };
   }
 
-  setTransform = (scale, positionX, positionY) => {
-    const { transformEnabled, disabled } = this.state;
-
-    if (!transformEnabled || disabled) return;
-    this.setScale(scale);
-    this.setPositionX(positionX);
-    this.setPositionY(positionY);
-  };
-
-  resetTransform = (defaultScale, defaultPositionX, defaultPositionY) => {
-    const { disabled, transformEnabled } = this.state;
-    if (!transformEnabled || disabled) return;
-    this.setScale(checkIsNumber(defaultScale, initialState.scale));
-    this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
-    this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
-  };
-
   //////////
   // Zooming
   //////////
@@ -276,38 +259,48 @@ class StateProvider extends Component {
     this.handleZoom(event, false, 1, dbSensitivity);
   };
 
-  //////////
-  // Setters
-  //////////
-
   setScale = scale => {
-    const { maxScale, minScale } = this.state;
-    if (scale > maxScale || scale < minScale) return;
     this.setState(state => reducer(state, { type: SET_SCALE, scale: scale }));
   };
 
   setPositionX = positionX => {
-    const { minPositionX, maxPositionX } = this.state;
-    if ((minPositionX && positionX < minPositionX) || (maxPositionX && positionX > maxPositionX))
-      return;
     this.setState(state =>
       reducer(state, { type: SET_POSITION_X, positionX: roundNumber(positionX, 3) })
     );
   };
 
   setPositionY = positionY => {
-    const { minPositionY, maxPositionY } = this.state;
-    if ((minPositionY && positionY < minPositionY) || (maxPositionY && positionY > maxPositionY))
-      return;
     this.setState(state =>
       reducer(state, { type: SET_POSITION_Y, positionY: roundNumber(positionY, 3) })
     );
   };
 
-  setSensitivity = sensitivity => {
-    this.setState(state =>
-      reducer(state, { type: SET_SENSITIVITY, sensitivity: roundNumber(sensitivity, 2) })
-    );
+  setTransform = (positionX, positionY, scale) => {
+    !isNaN(scale) && this.setScale(scale);
+    !isNaN(positionX) && this.setPositionX(positionX);
+    !isNaN(positionY) && this.setPositionY(positionY);
+  };
+
+  resetTransform = (defaultScale, defaultPositionX, defaultPositionY) => {
+    this.setScale(checkIsNumber(defaultScale, initialState.scale));
+    this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
+    this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
+  };
+
+  //////////
+  // Setters
+  //////////
+
+  setStartCoords = startCoords => {
+    this.setState(state => reducer(state, { type: SET_START_COORDS, startCoords: startCoords }));
+  };
+
+  setIsDown = isDown => {
+    this.setState(state => reducer(state, { type: SET_IS_DOWN, isDown: isDown }));
+  };
+
+  setDistance = distance => {
+    this.setState(state => reducer(state, { type: SET_DISTANCE, distance: distance }));
   };
 
   setWrapperComponent = wrapperComponent => {
@@ -320,18 +313,6 @@ class StateProvider extends Component {
     this.setState(state =>
       reducer(state, { type: SET_CONTENT, contentComponent: contentComponent })
     );
-  };
-
-  setStartCoords = startCoords => {
-    this.setState(state => reducer(state, { type: SET_START_COORDS, startCoords: startCoords }));
-  };
-
-  setIsDown = isDown => {
-    this.setState(state => reducer(state, { type: SET_IS_DOWN, isDown: isDown }));
-  };
-
-  setDistance = distance => {
-    this.setState(state => reducer(state, { type: SET_DISTANCE, distance: distance }));
   };
 
   render() {
@@ -355,7 +336,6 @@ class StateProvider extends Component {
         disabled: this.state.disabled,
       },
       dispatch: {
-        setSensitivity: this.setSensitivity,
         setScale: this.setScale,
         setPositionX: this.setPositionX,
         setPositionY: this.setPositionY,

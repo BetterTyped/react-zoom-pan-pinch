@@ -6,9 +6,9 @@ body {
 .container {
   width: 100vw;
   height: 100vh;
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
 }
 .content {
   border: 2px solid rgba(90, 90, 90, 0.5);

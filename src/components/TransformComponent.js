@@ -21,20 +21,7 @@ function TransformComponent({ children }) {
   }, []);
 
   return (
-    <div
-      id="react-transform-component"
-      ref={wrapperRef}
-      onWheel={internal.handleZoom}
-      onMouseDown={internal.handleStartPanning}
-      onMouseMove={internal.handlePanning}
-      onMouseUp={internal.handleStopPanning}
-      onMouseOut={internal.handleStopPanning}
-      onDoubleClick={internal.handleDbClick}
-      onTouchStart={internal.handlePinchStart}
-      onTouchMove={internal.handlePinch}
-      onTouchEnd={internal.handlePinchStop}
-      className={styles.container}
-    >
+    <div id="react-transform-component" ref={wrapperRef} className={styles.container}>
       <div id="react-transform-element" ref={contentRef} className={styles.content} style={style}>
         {children}
       </div>

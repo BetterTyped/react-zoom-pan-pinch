@@ -34,8 +34,10 @@ export const boundLimiter = (value, minBound, maxBound, isActive) => {
  * info about it's width, height, with same info about its content(zoomed component) element
  */
 export const relativeCoords = (event, wrapperComponent, contentComponent) => {
+  // mouse position x, y over wrapper component
   const x = event.pageX - wrapperComponent.offsetTop;
   const y = event.pageY - wrapperComponent.offsetLeft;
+  // sizes
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
   const contentRect = contentComponent.getBoundingClientRect();
@@ -79,4 +81,23 @@ export const calculateBoundingArea = (
   const maxPositionY = 0 + scaleHeightFactor;
 
   return { minPositionX, maxPositionX, minPositionY, maxPositionY };
+};
+
+/**
+ * Returns middle coordinates x,y of two points
+ * Used to get middle point of two fingers pinch
+ */
+
+export const getMiddleCoords = (firstPoint, secondPoint) => {
+  return {
+    x: (firstPoint.x + secondPoint.x) / 2,
+    y: (firstPoint.y + secondPoint.y) / 2,
+  };
+};
+
+/**
+ * Returns distance between two points x,y
+ */
+export const getDistance = (firstPoint, secondPoint) => {
+  return Math.hypot(firstPoint.pageX - secondPoint.pageX, firstPoint.pageY - secondPoint.pageY);
 };

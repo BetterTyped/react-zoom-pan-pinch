@@ -1,83 +1,91 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { reducer, initialState } from "./StateReducer";
-import { SET_SCALE, SET_SENSITIVITY, SET_POSITION_X, SET_POSITION_Y } from "./CONSTANTS";
+import {
+  SET_SCALE,
+  SET_SENSITIVITY,
+  SET_POSITION_X,
+  SET_POSITION_Y,
+  SET_WRAPPER,
+  SET_CONTENT,
+  SET_START_COORDS,
+  SET_IS_DOWN,
+  SET_DISTANCE,
+} from "./CONSTANTS";
 import {
   roundNumber,
   checkIsNumber,
   boundLimiter,
   relativeCoords,
   calculateBoundingArea,
-  touchDistance,
-  midpoint,
-  clamp,
-  touchPt,
-  coordChange,
+  getMiddleCoords,
+  getDistance,
 } from "./utils";
 import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
 
-const defaultCoords = { x: 0, y: 0 };
+class StateProvider extends Component {
+  state = { ...initialState };
 
-const StateProvider = ({ children }) => {
-  let [state, dispatch] = useReducer(reducer, initialState);
-  let [wrapperComponent, setWrapperComponent] = useState(null);
-  let [contentComponent, setContentComponent] = useState(null);
-  let [startCoords, setStartCoords] = useState(defaultCoords);
-  let [isDown, setIsDown] = useState(false);
-  let [isScaling, setIsScaling] = useState(false);
-  let [distanceStart, setDistanceStart] = useState(false);
-
-  const {
-    positionX,
-    positionY,
-    scale,
-    sensitivity,
-    maxScale,
-    minScale,
-    limitToBounds,
-    zoomingEnabled,
-    panningEnabled,
-    transformEnabled,
-    pinchEnabled,
-    enableZoomedOutPanning,
-    disabled,
-  } = state;
-
-  useEffect(() => {
+  componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
+    // Zooming events on wrapper
+    const wrapper = document.getElementById("react-transform-component");
+    wrapper.addEventListener("wheel", this.handleZoom, passiveOption);
+    wrapper.addEventListener("dblclick", this.handleDbClick, passiveOption);
+    wrapper.addEventListener("touchstart", this.handlePinchStart, passiveOption);
+    wrapper.addEventListener("touchmove", this.handlePinch, passiveOption);
+    wrapper.addEventListener("touchend", this.handlePinchStop, passiveOption);
 
-    // Add touch screen events
-    // this.containerNode.addEventListener("touchstart", handlePinchStart, passiveOption);
-    // window.addEventListener("touchmove", handlePinch, passiveOption);
-    // window.addEventListener("touchend", handlePinchStop, passiveOption);
-
-    // Add events for devices with mice
-    // this.containerNode.addEventListener("mousedown", this.onMouseDown, passiveOption);
-    // window.addEventListener("mousemove", this.onMouseMove, passiveOption);
-    // window.addEventListener("mouseup", this.onMouseUp, passiveOption);
-  }, [contentComponent]);
-
-  function setTransform(scale, positionX, positionY) {
-    if (!transformEnabled || disabled) return;
-    setScale(scale);
-    setPositionX(positionX);
-    setPositionY(positionY);
+    // Panning on window to allow panning when mouse is out of wrapper
+    window.addEventListener("mousedown", this.handleStartPanning, passiveOption);
+    window.addEventListener("mousemove", this.handlePanning, passiveOption);
+    window.addEventListener("mouseup", this.handleStopPanning, passiveOption);
+    return () => {
+      window.removeEventListener("mousedown", this.handleStartPanning, passiveOption);
+      window.removeEventListener("mousemove", this.handlePanning, passiveOption);
+      window.removeEventListener("mouseup", this.handleStopPanning, passiveOption);
+    };
   }
 
-  function resetTransform(defaultScale, defaultPositionX, defaultPositionY) {
+  setTransform = (scale, positionX, positionY) => {
+    const { transformEnabled, disabled } = this.state;
+
     if (!transformEnabled || disabled) return;
-    setScale(checkIsNumber(defaultScale, initialState.scale));
-    setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
-    setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
-  }
+    this.setScale(scale);
+    this.setPositionX(positionX);
+    this.setPositionY(positionY);
+  };
+
+  resetTransform = (defaultScale, defaultPositionX, defaultPositionY) => {
+    const { disabled, transformEnabled } = this.state;
+    if (!transformEnabled || disabled) return;
+    this.setScale(checkIsNumber(defaultScale, initialState.scale));
+    this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
+    this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
+  };
 
   //////////
   // Zooming
   //////////
 
-  function handleZoom(event, setCenterClick, customDelta, customSensitivity) {
+  handleZoom = (event, setCenterClick, customDelta, customSensitivity) => {
+    const {
+      isDown,
+      zoomingEnabled,
+      disabled,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
+      scale,
+      sensitivity,
+      maxScale,
+      minScale,
+      enableZoomedOutPanning,
+      limitToBounds,
+    } = this.state;
     if (isDown || !zoomingEnabled || disabled) return;
     event.preventDefault();
     event.stopPropagation();
@@ -90,8 +98,14 @@ const StateProvider = ({ children }) => {
     const deltaY = event ? (event.deltaY < 0 ? 1 : -1) : 0;
     const delta = checkIsNumber(customDelta, deltaY);
     // Mouse position
-    const mouseX = setCenterClick ? wrapperWidth / 2 : x;
-    const mouseY = setCenterClick ? wrapperHeight / 2 : y;
+    const mouseX = checkIsNumber(
+      setCenterClick && setCenterClick.x,
+      setCenterClick ? wrapperWidth / 2 : x
+    );
+    const mouseY = checkIsNumber(
+      setCenterClick && setCenterClick.y,
+      setCenterClick ? wrapperHeight / 2 : y
+    );
 
     // Determine new zoomed in point
     const targetX = (mouseX - positionX) / scale;
@@ -127,31 +141,51 @@ const StateProvider = ({ children }) => {
       enableZoomedOutPanning
     );
 
-    setScale(newScale);
+    this.setScale(newScale);
 
     // Calculate new positions
     const newPositionX = -targetX * newScale + mouseX;
     const newPositionY = -targetY * newScale + mouseY;
 
-    setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
-    setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
-  }
+    this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
+    this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
+  };
 
   //////////
   // Panning
   //////////
 
-  function handleStartPanning(event) {
-    if (isDown || !panningEnabled || disabled) return;
+  handleStartPanning = event => {
+    const {
+      isDown,
+      panningEnabled,
+      disabled,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
+    } = this.state;
+    const { target } = event;
+    if (isDown || !panningEnabled || disabled || !wrapperComponent.contains(target)) return;
     const { x, y } = relativeCoords(event, wrapperComponent, contentComponent);
-    setStartCoords({
+    this.setStartCoords({
       x: x - positionX,
       y: y - positionY,
     });
-    setIsDown(true);
-  }
+    this.setIsDown(true);
+  };
 
-  function handlePanning(event) {
+  handlePanning = event => {
+    const {
+      isDown,
+      panningEnabled,
+      disabled,
+      wrapperComponent,
+      contentComponent,
+      startCoords,
+      enableZoomedOutPanning,
+      limitToBounds,
+    } = this.state;
     if (!isDown || !panningEnabled || disabled) return;
     const {
       x,
@@ -177,113 +211,181 @@ const StateProvider = ({ children }) => {
       enableZoomedOutPanning
     );
 
-    setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
-    setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
-  }
+    this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
+    this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
+  };
 
-  function handleStopPanning() {
+  handleStopPanning = () => {
+    const { panningEnabled, disabled } = this.state;
     if (!panningEnabled || disabled) return;
-    setIsDown(false);
-  }
+    this.setIsDown(false);
+  };
 
   //////////
   // Pinching
   //////////
 
-  function handlePinchStart(event) {
-    if (event.touches.length === 2) {
-      setIsScaling(true);
+  handlePinchStart = event => {
+    const { pinchEnabled } = this.state;
+    if (pinchEnabled && event.touches.length === 2) {
+      let length = getDistance(event.touches[0], event.touches[1]);
+      this.setDistance(length);
     }
-  }
+  };
 
-  function handlePinch(event) {}
+  handlePinch = event => {
+    const { distance, zoomInSensitivity, pinchEnabled } = this.state;
+    if (isNaN(distance) || event.touches.length !== 2 || !pinchEnabled) return;
+    let length = getDistance(event.touches[0], event.touches[1]);
 
-  function handlePinchStop() {
-    if (isScaling) {
-      setIsScaling(false);
+    this.handleZoom(
+      event,
+      getMiddleCoords(event.touches[0], event.touches[1]),
+      distance < length ? 1 : -1,
+      zoomInSensitivity
+    );
+  };
+
+  handlePinchStop = () => {
+    const { distance } = this.state;
+    if (!isNaN(distance)) {
+      this.setDistance(false);
     }
-  }
-
-  //////////
-  // Setters
-  //////////
-
-  function setScale(scale) {
-    if (scale > maxScale || scale < minScale) return;
-    dispatch({ type: SET_SCALE, scale: scale });
-  }
-
-  function setPositionX(positionX) {
-    const { minPositionX, maxPositionX } = state;
-    if ((minPositionX && positionX < minPositionX) || (maxPositionX && positionX > maxPositionX))
-      return;
-    dispatch({ type: SET_POSITION_X, positionX: roundNumber(positionX, 3) });
-  }
-
-  function setPositionY(positionY) {
-    const { minPositionY, maxPositionY } = state;
-    if ((minPositionY && positionY < minPositionY) || (maxPositionY && positionY > maxPositionY))
-      return;
-    dispatch({ type: SET_POSITION_Y, positionY: roundNumber(positionY, 3) });
-  }
-
-  function setSensitivity(sensitivity) {
-    dispatch({ type: SET_SENSITIVITY, sensitivity: roundNumber(sensitivity, 2) });
-  }
+  };
 
   //////////
   // Controls
   //////////
 
-  function zoomIn(event) {
+  zoomIn = event => {
+    const { zoomingEnabled, disabled, zoomInSensitivity } = this.state;
     if (!zoomingEnabled || disabled) return;
-    handleZoom(event, true, 1, state.zoomInSensitivity);
-  }
-
-  function zoomOut(event) {
-    if (!zoomingEnabled || disabled) return;
-    handleZoom(event, true, -1, state.zoomOutSensitivity);
-  }
-
-  function handleDbClick(event) {
-    if (!zoomingEnabled || disabled) return;
-    //todo debug
-    handleZoom(event, false, 1, state.dbSensitivity);
-  }
-
-  const value = {
-    state,
-    dispatch: {
-      setSensitivity,
-      setScale,
-      setPositionX,
-      setPositionY,
-      zoomIn,
-      zoomOut,
-      setTransform,
-      resetTransform,
-    },
-    nodes: {
-      setWrapperComponent,
-      setContentComponent,
-    },
-    internal: {
-      handleZoom,
-      handleStartPanning,
-      handlePanning,
-      handleStopPanning,
-      handleDbClick,
-      handlePinchStart,
-      handlePinch,
-      handlePinchStop,
-    },
+    this.handleZoom(event, true, 1, zoomInSensitivity);
   };
 
-  const content =
-    typeof children === "function" ? children({ ...value.state, ...value.dispatch }) : children;
+  zoomOut = event => {
+    const { zoomingEnabled, disabled, zoomOutSensitivity } = this.state;
+    if (!zoomingEnabled || disabled) return;
+    this.handleZoom(event, true, -1, zoomOutSensitivity);
+  };
 
-  return <Context.Provider value={value}>{content}</Context.Provider>;
-};
+  handleDbClick = event => {
+    const { zoomingEnabled, disabled, dbSensitivity } = this.state;
+    if (!zoomingEnabled || disabled) return;
+    //todo debug
+    this.handleZoom(event, false, 1, dbSensitivity);
+  };
+
+  //////////
+  // Setters
+  //////////
+
+  setScale = scale => {
+    const { maxScale, minScale } = this.state;
+    if (scale > maxScale || scale < minScale) return;
+    this.setState(state => reducer(state, { type: SET_SCALE, scale: scale }));
+  };
+
+  setPositionX = positionX => {
+    const { minPositionX, maxPositionX } = this.state;
+    if ((minPositionX && positionX < minPositionX) || (maxPositionX && positionX > maxPositionX))
+      return;
+    this.setState(state =>
+      reducer(state, { type: SET_POSITION_X, positionX: roundNumber(positionX, 3) })
+    );
+  };
+
+  setPositionY = positionY => {
+    const { minPositionY, maxPositionY } = this.state;
+    if ((minPositionY && positionY < minPositionY) || (maxPositionY && positionY > maxPositionY))
+      return;
+    this.setState(state =>
+      reducer(state, { type: SET_POSITION_Y, positionY: roundNumber(positionY, 3) })
+    );
+  };
+
+  setSensitivity = sensitivity => {
+    this.setState(state =>
+      reducer(state, { type: SET_SENSITIVITY, sensitivity: roundNumber(sensitivity, 2) })
+    );
+  };
+
+  setWrapperComponent = wrapperComponent => {
+    this.setState(state =>
+      reducer(state, { type: SET_WRAPPER, wrapperComponent: wrapperComponent })
+    );
+  };
+
+  setContentComponent = contentComponent => {
+    this.setState(state =>
+      reducer(state, { type: SET_CONTENT, contentComponent: contentComponent })
+    );
+  };
+
+  setStartCoords = startCoords => {
+    this.setState(state => reducer(state, { type: SET_START_COORDS, startCoords: startCoords }));
+  };
+
+  setIsDown = isDown => {
+    this.setState(state => reducer(state, { type: SET_IS_DOWN, isDown: isDown }));
+  };
+
+  setDistance = distance => {
+    this.setState(state => reducer(state, { type: SET_DISTANCE, distance: distance }));
+  };
+
+  render() {
+    /**
+     * Context provider value
+     */
+    const value = {
+      state: {
+        positionX: this.state.positionX,
+        positionY: this.state.positionY,
+        scale: this.state.scale,
+        sensitivity: this.state.sensitivity,
+        maxScale: this.state.maxScale,
+        minScale: this.state.minScale,
+        limitToBounds: this.state.limitToBounds,
+        zoomingEnabled: this.state.zoomingEnabled,
+        panningEnabled: this.state.panningEnabled,
+        transformEnabled: this.state.transformEnabled,
+        pinchEnabled: this.state.pinchEnabled,
+        enableZoomedOutPanning: this.state.enableZoomedOutPanning,
+        disabled: this.state.disabled,
+      },
+      dispatch: {
+        setSensitivity: this.setSensitivity,
+        setScale: this.setScale,
+        setPositionX: this.setPositionX,
+        setPositionY: this.setPositionY,
+        zoomIn: this.zoomIn,
+        zoomOut: this.zoomOut,
+        setTransform: this.setTransform,
+        resetTransform: this.resetTransform,
+      },
+      nodes: {
+        setWrapperComponent: this.setWrapperComponent,
+        setContentComponent: this.setContentComponent,
+      },
+      internal: {
+        handleZoom: this.handleZoom,
+        handleStartPanning: this.handleStartPanning,
+        handlePanning: this.handlePanning,
+        handleStopPanning: this.handleStopPanning,
+        handleDbClick: this.handleDbClick,
+        handlePinchStart: this.handlePinchStart,
+        handlePinch: this.handlePinch,
+        handlePinchStop: this.handlePinchStop,
+      },
+    };
+    const { children } = this.props;
+    const content =
+      typeof children === "function" ? children({ ...value.state, ...value.dispatch }) : children;
+
+    return <Context.Provider value={value}>{content}</Context.Provider>;
+  }
+}
 
 StateProvider.propTypes = {
   children: PropTypes.any,

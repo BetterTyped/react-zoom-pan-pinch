@@ -55,7 +55,7 @@ yarn add react-easy-image-zoom-pan
 ```jsx
 import React, { Component } from "react";
 
-import MyComponent from "react-easy-image-zoom-pan";
+import { TransformWrapper, TransformComponent } from "react-easy-image-zoom-pan";
 
 class Example extends Component {
   render() {
@@ -74,6 +74,24 @@ class Example extends Component {
             </TransformComponent>
           </React.Fragment>
         )}
+      </TransformWrapper>
+    );
+  }
+}
+```
+
+```jsx
+import React, { Component } from "react";
+
+import { TransformWrapper, TransformComponent } from "react-easy-image-zoom-pan";
+
+class Example extends Component {
+  render() {
+    return (
+      <TransformWrapper>
+        <TransformComponent>
+          <img src="image.jpg" alt="test" />
+        </TransformComponent>
       </TransformWrapper>
     );
   }

@@ -1,6 +1,6 @@
 # react-easy-image-zoom-pan
 
-> Zoom and pan html elements in easy way
+> Zoom, pan and pinch html elements in easy way
 
 [![NPM](https://img.shields.io/npm/v/react-easy-image-zoom-pan.svg)](https://www.npmjs.com/package/react-easy-image-zoom-pan) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -79,6 +79,8 @@ class Example extends Component {
   }
 }
 ```
+
+or
 
 ```jsx
 import React, { Component } from "react";

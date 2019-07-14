@@ -14,10 +14,9 @@ const defaultCoords = { x: 0, y: 0 };
 
 export let initialState = {
   sensitivity: 0.4,
-  zoomSensitivity: 0.6,
   zoomOutSensitivity: 0.9,
   zoomInSensitivity: 0.9,
-  dbSensitivity: 0.6,
+  dbClickSensitivity: 0.6,
   pinchSensitivity: 0.6,
   positionX: 0,
   positionY: 0,
@@ -29,7 +28,7 @@ export let initialState = {
   maxPositionY: null,
   minPositionY: null,
   limitToBounds: true,
-  disable: false,
+  disabled: false,
   zoomingEnabled: true,
   panningEnabled: true,
   pinchEnabled: true,
@@ -51,8 +50,6 @@ export let reducer = (state, action) => {
       return { ...state, positionX: action.positionX };
     case SET_POSITION_Y:
       return { ...state, positionY: action.positionY };
-    case SET_SENSITIVITY:
-      return { ...state, sensitivity: action.sensitivity };
     case SET_WRAPPER:
       return { ...state, wrapperComponent: action.wrapperComponent };
     case SET_CONTENT:

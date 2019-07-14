@@ -6,7 +6,7 @@ export default class App extends Component {
     return (
       <div className="container">
         <div className="content">
-          <TransformWrapper>
+          <TransformWrapper scale={1} positionX={200} positionY={100}>
             {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
               <React.Fragment>
                 <div className="tools">

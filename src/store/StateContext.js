@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { reducer, initialState } from "./StateReducer";
 import {
   SET_SCALE,
-  SET_SENSITIVITY,
   SET_POSITION_X,
   SET_POSITION_Y,
   SET_WRAPPER,
@@ -26,7 +25,7 @@ import makePassiveEventOption from "./makePassiveEventOption";
 const Context = React.createContext({});
 
 class StateProvider extends Component {
-  state = { ...initialState };
+  state = { ...initialState, ...this.props.defaultValues };
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
@@ -99,13 +98,14 @@ class StateProvider extends Component {
     // Calculate new zoom
     let newScale = roundNumber(scale + delta * zoomSensitivity * scale, 2);
 
-    if (newScale >= maxScale && scale < maxScale) {
+    if (!isNaN(maxScale) && newScale >= maxScale && scale < maxScale) {
       newScale = maxScale;
     }
-    if (newScale <= minScale && scale > minScale) {
+    if (!isNaN(minScale) && newScale <= minScale && scale > minScale) {
       newScale = minScale;
     }
-    if (newScale > maxScale || newScale < minScale) return;
+    if ((!isNaN(maxScale) && !isNaN(minScale) && newScale > maxScale) || newScale < minScale)
+      return;
 
     const newContentWidth = wrapperWidth * newScale;
     const newContentHeight = wrapperHeight * newScale;
@@ -209,16 +209,16 @@ class StateProvider extends Component {
   //////////
 
   handlePinchStart = event => {
-    const { pinchEnabled } = this.state;
-    if (pinchEnabled && event.touches.length === 2) {
+    const { pinchEnabled, disabled } = this.state;
+    if (pinchEnabled && event.touches.length === 2 && !disabled) {
       let length = getDistance(event.touches[0], event.touches[1]);
       this.setDistance(length);
     }
   };
 
   handlePinch = event => {
-    const { distance, zoomInSensitivity, pinchEnabled } = this.state;
-    if (isNaN(distance) || event.touches.length !== 2 || !pinchEnabled) return;
+    const { distance, zoomInSensitivity, pinchEnabled, disabled } = this.state;
+    if (isNaN(distance) || event.touches.length !== 2 || !pinchEnabled || disabled) return;
     let length = getDistance(event.touches[0], event.touches[1]);
 
     this.handleZoom(
@@ -253,10 +253,10 @@ class StateProvider extends Component {
   };
 
   handleDbClick = event => {
-    const { zoomingEnabled, disabled, dbSensitivity } = this.state;
+    const { zoomingEnabled, disabled, dbClickSensitivity } = this.state;
     if (!zoomingEnabled || disabled) return;
     //todo debug
-    this.handleZoom(event, false, 1, dbSensitivity);
+    this.handleZoom(event, false, 1, dbClickSensitivity);
   };
 
   setScale = scale => {
@@ -327,6 +327,10 @@ class StateProvider extends Component {
         sensitivity: this.state.sensitivity,
         maxScale: this.state.maxScale,
         minScale: this.state.minScale,
+        minPositionX: this.state.minPositionX,
+        minPositionY: this.state.minPositionY,
+        maxPositionX: this.state.maxPositionX,
+        maxPositionY: this.state.maxPositionY,
         limitToBounds: this.state.limitToBounds,
         zoomingEnabled: this.state.zoomingEnabled,
         panningEnabled: this.state.panningEnabled,
@@ -334,6 +338,11 @@ class StateProvider extends Component {
         pinchEnabled: this.state.pinchEnabled,
         enableZoomedOutPanning: this.state.enableZoomedOutPanning,
         disabled: this.state.disabled,
+        zoomOutSensitivity: this.state.zoomOutSensitivity,
+        zoomInSensitivity: this.state.zoomInSensitivity,
+        dbClickSensitivity: this.state.dbClickSensitivity,
+        pinchSensitivity: this.state.pinchSensitivity,
+        dbClickEnabled: this.state.dbClickEnabled,
       },
       dispatch: {
         setScale: this.setScale,
@@ -366,6 +375,10 @@ class StateProvider extends Component {
     return <Context.Provider value={value}>{content}</Context.Provider>;
   }
 }
+
+StateProvider.defaultProps = {
+  defaultValues: {},
+};
 
 StateProvider.propTypes = {
   children: PropTypes.any,

@@ -101,3 +101,14 @@ export const getMiddleCoords = (firstPoint, secondPoint) => {
 export const getDistance = (firstPoint, secondPoint) => {
   return Math.hypot(firstPoint.pageX - secondPoint.pageX, firstPoint.pageY - secondPoint.pageY);
 };
+
+/**
+ * Delete undefined values from object keys
+ * Used for deleting empty props
+ */
+
+export const deleteInvalidProps = value => {
+  let newObject = { ...value };
+  Object.keys(newObject).forEach(key => newObject[key] == undefined && delete newObject[key]);
+  return newObject;
+};

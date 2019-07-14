@@ -16,14 +16,41 @@ or
 yarn add react-easy-image-zoom-pan
 ```
 
-## Props returned from TransformWrapper component
+## Props of TransformWrapper
 
-| Props                                     | Description                                      | Default |           Type |
+| Props                  |           Type |
+| :--------------------- | -------------: |
+| sensitivity            |         Number |
+| zoomInSensitivity      |         Number |
+| zoomOutSensitivity     |         Number |
+| dbClickSensitivity     |         Number |
+| pinchSensitivity       |         Number |
+| positionX              |         Number |
+| positionY              |         Number |
+| scale                  |         Number |
+| maxScale               | Number or null |
+| minScale               | Number or null |
+| maxPositionX           | Number or null |
+| minPositionX           | Number or null |
+| maxPositionY           | Number or null |
+| minPositionY           | Number or null |
+| limitToBounds          |        Boolean |
+| disabled               |        Boolean |
+| zoomingEnabled         |        Boolean |
+| panningEnabled         |        Boolean |
+| pinchEnabled           |        Boolean |
+| dbClickEnabled         |        Boolean |
+| transformEnabled       |        Boolean |
+| enableZoomedOutPanning |        Boolean |
+
+## Values returned from TransformWrapper component
+
+| Value                                     | Description                                      | Default |           Type |
 | :---------------------------------------- | :----------------------------------------------- | :-----: | -------------: |
 | sensitivity                               | Wheel zoom sensitivity                           |   0.4   |         Number |
 | zoomInSensitivity                         | handleZoomIn function zoom sensitivity           |   0.9   |         Number |
 | zoomOutSensitivity                        | handleZoomOut function zoom sensitivity          |   0.9   |         Number |
-| dbSensitivity                             | Double click zoom sensitivity                    |   0.6   |         Number |
+| dbClickSensitivity                        | Double click zoom sensitivity                    |   0.6   |         Number |
 | pinchSensitivity                          | Pinching zoom sensitivity                        |   0.6   |         Number |
 | positionX                                 | Pixel value of x position                        |    0    |         Number |
 | positionY                                 | Pixel value of y position                        |    0    |         Number |
@@ -35,7 +62,7 @@ yarn add react-easy-image-zoom-pan
 | maxPositionY                              | Max position y                                   |  null   | Number or null |
 | minPositionY                              | Min position y                                   |  null   | Number or null |
 | limitToBounds                             | Limit zooming and panning to wrapper boundaries  |  true   |        Boolean |
-| disable                                   | Disables all functionality                       |  false  |        Boolean |
+| disabled                                  | Disables all functionality                       |  false  |        Boolean |
 | zoomingEnabled                            | Enables zooming                                  |  true   |        Boolean |
 | panningEnabled                            | Enables panning                                  |  true   |        Boolean |
 | pinchEnabled                              | Enables pinching                                 |  true   |        Boolean |
@@ -60,7 +87,7 @@ import { TransformWrapper, TransformComponent } from "react-easy-image-zoom-pan"
 class Example extends Component {
   render() {
     return (
-      <TransformWrapper>
+      <TransformWrapper scale={1} positionX={200} positionY={100}>
         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
           <React.Fragment>
             <div className="tools">

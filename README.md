@@ -25,15 +25,15 @@ yarn add react-easy-image-zoom-pan
 | zoomOutSensitivity                        | handleZoomOut function zoom sensitivity          |   0.9   |         Number |
 | dbSensitivity                             | Double click zoom sensitivity                    |   0.6   |         Number |
 | pinchSensitivity                          | Pinching zoom sensitivity                        |   0.6   |         Number |
-| positionX                                 | Pixel value of x position of TransformComponent  |    0    |         Number |
-| positionY                                 | Pixel value of y position of TransformComponent  |    0    |         Number |
-| scale                                     | TransformComponent scale value                   |    1    |         Number |
-| maxScale                                  | TransformComponent max scale value               |    4    |         Number |
-| minScale                                  | TransformComponent min scale value               |   0.8   |         Number |
-| maxPositionX                              | TransformComponent max position x                |  null   | Number or null |
-| minPositionX                              | TransformComponent min position x                |  null   | Number or null |
-| maxPositionY                              | TransformComponent max position y                |  null   | Number or null |
-| minPositionY                              | TransformComponent min position y                |  null   | Number or null |
+| positionX                                 | Pixel value of x position                        |    0    |         Number |
+| positionY                                 | Pixel value of y position                        |    0    |         Number |
+| scale                                     | Scale value                                      |    1    |         Number |
+| maxScale                                  | Max scale value                                  |    4    |         Number |
+| minScale                                  | Min scale value                                  |   0.8   |         Number |
+| maxPositionX                              | Max position x                                   |  null   | Number or null |
+| minPositionX                              | Min position x                                   |  null   | Number or null |
+| maxPositionY                              | Max position y                                   |  null   | Number or null |
+| minPositionY                              | Min position y                                   |  null   | Number or null |
 | limitToBounds                             | Limit zooming and panning to wrapper boundaries  |  true   |        Boolean |
 | disable                                   | Disables all functionality                       |  false  |        Boolean |
 | zoomingEnabled                            | Enables zooming                                  |  true   |        Boolean |
@@ -47,7 +47,7 @@ yarn add react-easy-image-zoom-pan
 | setPositionY(positionY)                   | Sets position y                                  |         |         Number |
 | zoomIn()                                  | Zooming in                                       |         |                |
 | zoomOut()                                 | Zooming out                                      |         |                |
-| setTransform(positionX, positionY, scale) | Set transformations                              |         | Number or null |
+| setTransform(positionX, positionY, scale) | Sets transformations of content                  |         | Number or null |
 | resetTransform()                          | Reset transformations to the initial values      |         |             "" |
 
 ## Usage

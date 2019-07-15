@@ -1,25 +1,25 @@
 ![GitHub Logo](/logo/logo.png)
 
-# react-easy-image-zoom-pan
+# react-zoom-pan-pinch
 
 > Super fast and light react npm package for zooming, panning and pinching html elements in easy way
 
-[![NPM](https://img.shields.io/npm/v/react-easy-image-zoom-pan.svg)](https://www.npmjs.com/package/react-easy-image-zoom-pan) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/react-zoom-pan-pinch.svg)](https://www.npmjs.com/package/react-zoom-pan-pinch) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## DEMO
 
-[DEMO](https://prc5.github.io/react-easy-image-zoom-pan/)
+[DEMO](https://prc5.github.io/react-zoom-pan-pinch/)
 
 ## Install
 
 ```bash
-npm install --save react-easy-image-zoom-pan
+npm install --save react-zoom-pan-pinch
 ```
 
 or
 
 ```bash
-yarn add react-easy-image-zoom-pan
+yarn add react-zoom-pan-pinch
 ```
 
 ## Props of TransformWrapper
@@ -88,7 +88,7 @@ yarn add react-easy-image-zoom-pan
 ```jsx
 import React, { Component } from "react";
 
-import { TransformWrapper, TransformComponent } from "react-easy-image-zoom-pan";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 class Example extends Component {
   render() {
@@ -118,7 +118,7 @@ or
 ```jsx
 import React, { Component } from "react";
 
-import { TransformWrapper, TransformComponent } from "react-easy-image-zoom-pan";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 class Example extends Component {
   render() {

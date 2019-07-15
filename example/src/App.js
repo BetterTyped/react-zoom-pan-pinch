@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TransformComponent, TransformWrapper } from "react-easy-image-zoom-pan";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import zoom_in from "./images/zoom-in.svg";
 import zoom_out from "./images/zoom-out.svg";
 import zoom_reset from "./images/zoom-reset.svg";
@@ -24,6 +24,7 @@ export default class App extends Component {
             href="https://github.com/prc5/react-zoom-pan-pinch/"
             className="learn btn btn-primary btn-xl rounded-pill mt-5"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Learn More
           </a>
@@ -76,7 +77,12 @@ export default class App extends Component {
         {/* Footer */}
         <footer className="py-5 bg-black">
           <div className="container">
-            <p className="m-0 text-center text-white small">Copyright © Your Website 2019</p>
+            <p className="m-0 text-center text-white small">
+              MIT LICENSE ©{" "}
+              <a href="https://github.com/prc5" target="_blank" rel="noopener noreferrer">
+                prc5
+              </a>
+            </p>
           </div>
           {/* /.container */}
         </footer>

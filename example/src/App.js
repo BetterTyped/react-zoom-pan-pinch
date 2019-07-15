@@ -8,7 +8,7 @@ import logo from "./images/logo.png";
 export default class App extends Component {
   render() {
     return (
-      <div classname="body">
+      <div className="body">
         {/* Header */}
         <header className="masthead text-center text-white">
           <div className="masthead-content">
@@ -20,7 +20,10 @@ export default class App extends Component {
               </div>
             </div>
           </div>
-          <a href="#" className="learn btn btn-primary btn-xl rounded-pill mt-5">
+          <a
+            href="https://github.com/prc5/react-zoom-pan-pinch/"
+            className="learn btn btn-primary btn-xl rounded-pill mt-5"
+          >
             Learn More
           </a>
           <div className="bg-circle-1 bg-circle" />

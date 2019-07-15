@@ -156,7 +156,7 @@ class StateProvider extends Component {
     } = this.state;
     const { target } = event;
     if (isDown || !panningEnabled || disabled || !wrapperComponent.contains(target)) return;
-    const { x, y } = relativeCoords(event, wrapperComponent, contentComponent);
+    const { x, y } = relativeCoords(event, wrapperComponent, contentComponent, true);
     this.setStartCoords({
       x: x - positionX,
       y: y - positionY,
@@ -185,7 +185,7 @@ class StateProvider extends Component {
       contentHeight,
       diffWidth,
       diffHeight,
-    } = relativeCoords(event, wrapperComponent, contentComponent);
+    } = relativeCoords(event, wrapperComponent, contentComponent, true);
     const newPositionX = x - startCoords.x;
     const newPositionY = y - startCoords.y;
 

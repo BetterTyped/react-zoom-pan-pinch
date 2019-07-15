@@ -33,10 +33,17 @@ export const boundLimiter = (value, minBound, maxBound, isActive) => {
  * Returns relative coords of mouse on wrapper element, and provides
  * info about it's width, height, with same info about its content(zoomed component) element
  */
-export const relativeCoords = (event, wrapperComponent, contentComponent) => {
+export const relativeCoords = (event, wrapperComponent, contentComponent, panningCase) => {
   // mouse position x, y over wrapper component
-  const x = event.pageX - wrapperComponent.offsetLeft;
-  const y = event.pageY - wrapperComponent.offsetTop;
+  let x = event.offsetX;
+  let y = event.offsetY;
+
+  // Panning use mouse position over page because it works even when mouse is outside wrapper
+  if (panningCase) {
+    x = event.pageX;
+    y = event.pageY;
+  }
+
   // sizes
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;

@@ -29,13 +29,6 @@ class StateProvider extends Component {
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
-    // Zooming events on wrapper
-    const wrapper = document.getElementById("react-transform-component");
-    wrapper.addEventListener("wheel", this.handleZoom, passiveOption);
-    wrapper.addEventListener("dblclick", this.handleDbClick, passiveOption);
-    wrapper.addEventListener("touchstart", this.handlePinchStart, passiveOption);
-    wrapper.addEventListener("touchmove", this.handlePinch, passiveOption);
-    wrapper.addEventListener("touchend", this.handlePinchStop, passiveOption);
 
     // Panning on window to allow panning when mouse is out of wrapper
     window.addEventListener("mousedown", this.handleStartPanning, passiveOption);
@@ -46,6 +39,19 @@ class StateProvider extends Component {
       window.removeEventListener("mousemove", this.handlePanning, passiveOption);
       window.removeEventListener("mouseup", this.handleStopPanning, passiveOption);
     };
+  }
+
+  componentDidUpdate(oldProps, oldState) {
+    const { wrapperComponent } = this.state;
+    if (!oldState.wrapperComponent && this.state.wrapperComponent) {
+      // Zooming events on wrapper
+      const passiveOption = makePassiveEventOption(false);
+      wrapperComponent.addEventListener("wheel", this.handleZoom, passiveOption);
+      wrapperComponent.addEventListener("dblclick", this.handleDbClick, passiveOption);
+      wrapperComponent.addEventListener("touchstart", this.handlePinchStart, passiveOption);
+      wrapperComponent.addEventListener("touchmove", this.handlePinch, passiveOption);
+      wrapperComponent.addEventListener("touchend", this.handlePinchStop, passiveOption);
+    }
   }
 
   //////////
@@ -150,7 +156,7 @@ class StateProvider extends Component {
     } = this.state;
     const { target } = event;
     if (isDown || !panningEnabled || disabled || !wrapperComponent.contains(target)) return;
-    const { x, y } = relativeCoords(event, wrapperComponent, contentComponent);
+    const { x, y } = relativeCoords(event, wrapperComponent, contentComponent, true);
     this.setStartCoords({
       x: x - positionX,
       y: y - positionY,
@@ -179,7 +185,7 @@ class StateProvider extends Component {
       contentHeight,
       diffWidth,
       diffHeight,
-    } = relativeCoords(event, wrapperComponent, contentComponent);
+    } = relativeCoords(event, wrapperComponent, contentComponent, true);
     const newPositionX = x - startCoords.x;
     const newPositionY = y - startCoords.y;
 

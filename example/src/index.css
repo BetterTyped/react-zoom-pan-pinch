@@ -4,35 +4,139 @@ body {
   font-family: sans-serif;
 }
 
-.container {
-  width: 100vw;
-  height: 100vh;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .element {
-  width: 500px;
-  max-width: 70vw;
-  border: 2px solid rgba(90, 90, 90, 0.5);
+  width: fit-content;
+  background: rgba(100, 100, 100, 0.25);
+  width: 600px;
+  max-width: 60vw;
 }
 
 .element img {
   width: 100%;
 }
 
-.element {
-  margin: auto;
+.tools {
+  display: flex;
+  justify-content: flex-end;
+  width: 600px;
+  max-width: 60vw;
+  margin-bottom: 10px;
 }
 
-.tools {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: grid;
-  grid-gap: 10px;
+@media (max-width: 768px) {
+  .element,
+  .tools {
+    max-width: 90vw;
+    justify-content: center;
+  }
+  .display-4 {
+    font-size: 2.5rem;
+  }
+}
+
+.tools button {
+  margin-left: 10px;
+}
+
+footer {
+  margin-top: 100px;
+}
+
+.example {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.btn-gradient img {
+  width: 22px;
+  height: 22px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.logo img {
+  width: 600px;
+  max-width: 60vw;
+  margin-top: -200px;
+}
+
+@media (max-width: 1200px) {
+  .logo img {
+    width: 500px;
+    margin-top: -170px;
+    margin-bottom: -170px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .logo img {
+    width: 450px;
+    margin-top: -170px;
+    margin-bottom: -170px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo img {
+    width: 500px;
+    max-width: 90vw;
+    margin-top: -130px;
+    margin-bottom: 0px;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo img {
+    margin-top: -100px;
+  }
+}
+
+@media (max-width: 350px) {
+  .logo img {
+    margin-top: -70px;
+  }
+}
+
+header {
+  position: relative;
+  min-height: 425px !important;
+}
+
+.learn {
+  position: absolute !important;
+  top: 360px !important;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+@media (max-width: 1200px) {
+  .learn {
+    top: 310px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .learn {
+    top: 360px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .learn {
+    top: 330px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .learn {
+    top: 300px !important;
+  }
 }

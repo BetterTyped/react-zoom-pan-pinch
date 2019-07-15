@@ -35,8 +35,8 @@ export const boundLimiter = (value, minBound, maxBound, isActive) => {
  */
 export const relativeCoords = (event, wrapperComponent, contentComponent) => {
   // mouse position x, y over wrapper component
-  const x = event.pageX - wrapperComponent.offsetTop;
-  const y = event.pageY - wrapperComponent.offsetLeft;
+  const x = event.pageX - wrapperComponent.offsetLeft;
+  const y = event.pageY - wrapperComponent.offsetTop;
   // sizes
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;

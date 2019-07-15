@@ -23,6 +23,7 @@ export default class App extends Component {
           <a
             href="https://github.com/prc5/react-zoom-pan-pinch/"
             className="learn btn btn-primary btn-xl rounded-pill mt-5"
+            target="_blank"
           >
             Learn More
           </a>

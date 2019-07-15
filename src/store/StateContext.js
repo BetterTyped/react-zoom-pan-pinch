@@ -210,7 +210,7 @@ class StateProvider extends Component {
 
   handlePinchStart = event => {
     const { pinchEnabled, disabled } = this.state;
-    if (pinchEnabled && event.touches.length === 2 && !disabled) {
+    if (pinchEnabled && event.touches.length >= 2 && !disabled) {
       let length = getDistance(event.touches[0], event.touches[1]);
       this.setDistance(length);
     }

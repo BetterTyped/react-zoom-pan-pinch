@@ -52,9 +52,9 @@ yarn add react-easy-image-zoom-pan
 | Value                                     | Description                                      | Default |           Type |
 | :---------------------------------------- | :----------------------------------------------- | :-----: | -------------: |
 | sensitivity                               | Wheel zoom sensitivity                           |   0.4   |         Number |
-| zoomInSensitivity                         | handleZoomIn function zoom sensitivity           |   0.9   |         Number |
-| zoomOutSensitivity                        | handleZoomOut function zoom sensitivity          |   0.9   |         Number |
-| dbClickSensitivity                        | Double click zoom sensitivity                    |   0.6   |         Number |
+| zoomInSensitivity                         | handleZoomIn function zoom sensitivity           |    5    |         Number |
+| zoomOutSensitivity                        | handleZoomOut function zoom sensitivity          |    5    |         Number |
+| dbClickSensitivity                        | Double click zoom sensitivity                    |    7    |         Number |
 | pinchSensitivity                          | Pinching zoom sensitivity                        |   0.6   |         Number |
 | positionX                                 | Pixel value of x position                        |    0    |         Number |
 | positionY                                 | Pixel value of y position                        |    0    |         Number |

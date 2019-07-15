@@ -14,9 +14,9 @@ const defaultCoords = { x: 0, y: 0 };
 
 export let initialState = {
   sensitivity: 0.4,
-  zoomOutSensitivity: 0.9,
-  zoomInSensitivity: 0.9,
-  dbClickSensitivity: 0.6,
+  zoomOutSensitivity: 5,
+  zoomInSensitivity: 5,
+  dbClickSensitivity: 7,
   pinchSensitivity: 0.6,
   positionX: 0,
   positionY: 0,

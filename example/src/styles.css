@@ -54,13 +54,23 @@ h6 {
   letter-spacing: 0.1rem;
 }
 
+header {
+  max-height: 500px;
+}
+
 header.masthead {
   position: relative;
   overflow: hidden;
-  padding-top: calc(7rem + 72px);
+  padding-top: calc(3rem + 72px);
   padding-bottom: 7rem;
-  background: -webkit-gradient(linear, left bottom, left top, from(#ff6a00), to(#ee0979));
-  background: linear-gradient(0deg, #ff6a00 0%, #ee0979 100%);
+  background: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    from(rgba(104, 89, 205, 0.2)),
+    to(rgba(104, 89, 205, 0.4))
+  );
+  background: linear-gradient(0deg, rgba(104, 89, 205, 0.2) 0%, rgba(104, 89, 205, 0.4) 100%);
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: scroll;
@@ -84,8 +94,14 @@ header.masthead .bg-circle {
   z-index: 0;
   position: absolute;
   border-radius: 100%;
-  background: -webkit-gradient(linear, left bottom, left top, from(#ee0979), to(#ff6a00));
-  background: linear-gradient(0deg, #ee0979 0%, #ff6a00 100%);
+  background: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    from(rgb(65, 50, 100)),
+    to(rgb(164, 157, 223))
+  );
+  background: linear-gradient(0deg, rgb(65, 50, 100) 0%, rgb(164, 157, 223) 100%);
 }
 
 header.masthead .bg-circle-1 {
@@ -93,6 +109,8 @@ header.masthead .bg-circle-1 {
   width: 90rem;
   bottom: -55rem;
   left: -55rem;
+  filter: brightness(120%);
+  background: linear-gradient(0deg, rgb(65, 50, 100) 0%, rgb(100, 95, 206) 100%);
 }
 
 header.masthead .bg-circle-2 {
@@ -100,6 +118,7 @@ header.masthead .bg-circle-2 {
   width: 50rem;
   top: -25rem;
   right: -25rem;
+  background: linear-gradient(0deg, rgb(65, 50, 100) 0%, rgb(143, 136, 219) 100%);
 }
 
 header.masthead .bg-circle-3 {
@@ -107,6 +126,7 @@ header.masthead .bg-circle-3 {
   width: 20rem;
   bottom: -10rem;
   right: 5%;
+  background: linear-gradient(0deg, rgb(121, 115, 212) 0%, rgb(122, 115, 212) 100%);
 }
 
 header.masthead .bg-circle-4 {
@@ -118,14 +138,14 @@ header.masthead .bg-circle-4 {
 
 @media (min-width: 992px) {
   header.masthead {
-    padding-top: calc(10rem + 55px);
+    padding-top: calc(3rem + 55px);
     padding-bottom: 10rem;
   }
   header.masthead .masthead-content .masthead-heading {
-    font-size: 6rem;
+    font-size: 5.5rem;
   }
   header.masthead .masthead-content .masthead-subheading {
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
 }
 
@@ -163,6 +183,22 @@ header.masthead .bg-circle-4 {
 }
 
 .btn-secondary:focus {
-  -webkit-box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 0.5);
-  box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 0.5);
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(65, 50, 100, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(65, 50, 100, 0.5);
+}
+
+.btn-secondary:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 999px) {
+  .bg-circle-2 {
+    filter: brightness(200%);
+  }
+  .bg-circle-3 {
+    filter: brightness(150%);
+  }
+  .bg-circle-1 {
+    filter: brightness(150%);
+  }
 }

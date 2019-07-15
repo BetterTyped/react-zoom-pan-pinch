@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TransformComponent, TransformWrapper } from "react-easy-image-zoom-pan";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import zoom_in from "./images/zoom-in.svg";
 import zoom_out from "./images/zoom-out.svg";
 import zoom_reset from "./images/zoom-reset.svg";

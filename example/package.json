@@ -1,6 +1,6 @@
 {
-  "name": "react-easy-image-zoom-pan-example",
-  "homepage": "https://prc5.github.io/react-easy-image-zoom-pan",
+  "name": "react-zoom-pan-pinch-example",
+  "homepage": "https://prc5.github.io/react-zoom-pan-pinch",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
@@ -9,7 +9,7 @@
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
     "react-scripts": "^1.1.4",
-    "react-easy-image-zoom-pan": "link:.."
+    "react-zoom-pan-pinch": "link:.."
   },
   "scripts": {
     "start": "react-scripts start",

@@ -35,8 +35,8 @@ export const boundLimiter = (value, minBound, maxBound, isActive) => {
  */
 export const relativeCoords = (event, wrapperComponent, contentComponent, panningCase) => {
   // mouse position x, y over wrapper component
-  let x = event.offsetX;
-  let y = event.offsetY;
+  let x = event.offsetX || event.pageX;
+  let y = event.offsetY || event.pageY;
 
   // Panning use mouse position over page because it works even when mouse is outside wrapper
   if (panningCase) {
@@ -44,6 +44,14 @@ export const relativeCoords = (event, wrapperComponent, contentComponent, pannin
     y = event.pageY;
   }
 
+  // Mobile touch event case
+  if (isNaN(x)) {
+    const dist = getMidPagePosition(event.touches[0], event.touches[1] || event.touches[0]);
+    const rect = wrapperComponent.getBoundingClientRect();
+
+    x = dist.x - rect.x;
+    y = dist.y - rect.y;
+  }
   // sizes
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
@@ -95,10 +103,28 @@ export const calculateBoundingArea = (
  * Used to get middle point of two fingers pinch
  */
 
-export const getMiddleCoords = (firstPoint, secondPoint) => {
+export const getMiddleCoords = (firstPoint, secondPoint, wrapperComponent) => {
+  if (isNaN(firstPoint.x)) {
+    const dist = getMidPagePosition(firstPoint, secondPoint);
+    const rect = wrapperComponent.getBoundingClientRect();
+    return {
+      x: dist.x - rect.x,
+      y: dist.y - rect.y,
+    };
+  }
   return {
     x: (firstPoint.x + secondPoint.x) / 2,
     y: (firstPoint.y + secondPoint.y) / 2,
+  };
+};
+
+/**
+ * Returns middle position of PageX for touch events
+ */
+export const getMidPagePosition = (firstPoint, secondPoint) => {
+  return {
+    x: (firstPoint.clientX + secondPoint.clientX) / 2,
+    y: (firstPoint.clientY + secondPoint.clientY) / 2,
   };
 };
 

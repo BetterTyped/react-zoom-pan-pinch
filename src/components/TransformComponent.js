@@ -6,7 +6,7 @@ import styles from "./TransformComponent.module.css";
 function TransformComponent({ children }) {
   const wrapperRef = useRef(null);
   const contentRef = useRef(null);
-  const { state, nodes, internal } = useContext(Context);
+  const { state, nodes } = useContext(Context);
   const style = {
     transform: `translate(${state.positionX}px, ${state.positionY}px) scale(${state.scale})`,
   };
@@ -21,8 +21,8 @@ function TransformComponent({ children }) {
   }, []);
 
   return (
-    <div id="react-transform-component" ref={wrapperRef} className={styles.container}>
-      <div id="react-transform-element" ref={contentRef} className={styles.content} style={style}>
+    <div ref={wrapperRef} className={`"react-transform-component" ${styles.container}`}>
+      <div ref={contentRef} className={`react-transform-element ${styles.content}`} style={style}>
         {children}
       </div>
     </div>

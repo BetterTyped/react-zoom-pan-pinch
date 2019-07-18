@@ -1,4 +1,4 @@
-![GitHub Logo](/logo/logo.png)
+![GitHub Logo](/logo/logo_cropped.png)
 
 # react-zoom-pan-pinch
 

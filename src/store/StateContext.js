@@ -85,20 +85,6 @@ class StateProvider extends Component {
 
     const deltaY = event ? (event.deltaY < 0 ? 1 : -1) : 0;
     const delta = checkIsNumber(customDelta, deltaY);
-    // Mouse position
-    const mouseX = checkIsNumber(
-      setCenterClick && setCenterClick.x,
-      setCenterClick ? wrapperWidth / 2 : x
-    );
-    const mouseY = checkIsNumber(
-      setCenterClick && setCenterClick.y,
-      setCenterClick ? wrapperHeight / 2 : y
-    );
-
-    // Determine new zoomed in point
-    const targetX = (mouseX - positionX) / scale;
-    const targetY = (mouseY - positionY) / scale;
-
     const zoomSensitivity = (customSensitivity || sensitivity) * 0.1;
 
     // Calculate new zoom
@@ -113,6 +99,21 @@ class StateProvider extends Component {
     if ((!isNaN(maxScale) && !isNaN(minScale) && newScale > maxScale) || newScale < minScale)
       return;
 
+    const scaleDifference = newScale - scale;
+
+    // Mouse position
+    const mouseX = checkIsNumber(
+      setCenterClick && setCenterClick.x,
+      setCenterClick ? wrapperWidth / 2 : x
+    );
+    const mouseY = checkIsNumber(
+      setCenterClick && setCenterClick.y,
+      setCenterClick ? wrapperHeight / 2 : y
+    );
+
+    if (isNaN(mouseX) || isNaN(mouseY)) return console.warn("No mouse or touch offset found");
+
+    // Determine new zoomed in point
     const newContentWidth = wrapperWidth * newScale;
     const newContentHeight = wrapperHeight * newScale;
 
@@ -133,8 +134,8 @@ class StateProvider extends Component {
     this.setScale(newScale);
 
     // Calculate new positions
-    const newPositionX = -targetX * newScale + mouseX;
-    const newPositionY = -targetY * newScale + mouseY;
+    const newPositionX = -(mouseX * scaleDifference) + positionX;
+    const newPositionY = -(mouseY * scaleDifference) + positionY;
 
     this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
     this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
@@ -155,11 +156,23 @@ class StateProvider extends Component {
       positionY,
     } = this.state;
     const { target } = event;
-    if (isDown || !panningEnabled || disabled || !wrapperComponent.contains(target)) return;
-    const { x, y } = relativeCoords(event, wrapperComponent, contentComponent, true);
+    if (
+      isDown ||
+      !panningEnabled ||
+      disabled ||
+      !wrapperComponent.contains(target) ||
+      (event.touches && event.touches.length !== 1)
+    )
+      return;
+    let points;
+    if (!event.touches) {
+      points = relativeCoords(event, wrapperComponent, contentComponent, true);
+    } else {
+      points = getMiddleCoords(event.touches[0], event.touches[0], wrapperComponent);
+    }
     this.setStartCoords({
-      x: x - positionX,
-      y: y - positionY,
+      x: points.x - positionX,
+      y: points.y - positionY,
     });
     this.setIsDown(true);
   };
@@ -175,7 +188,8 @@ class StateProvider extends Component {
       enableZoomedOutPanning,
       limitToBounds,
     } = this.state;
-    if (!isDown || !panningEnabled || disabled) return;
+    if (!isDown || !panningEnabled || disabled || (event.touches && event.touches.length !== 1))
+      return;
     const {
       x,
       y,
@@ -205,8 +219,6 @@ class StateProvider extends Component {
   };
 
   handleStopPanning = () => {
-    const { panningEnabled, disabled } = this.state;
-    if (!panningEnabled || disabled) return;
     this.setIsDown(false);
   };
 
@@ -215,28 +227,34 @@ class StateProvider extends Component {
   //////////
 
   handlePinchStart = event => {
-    const { pinchEnabled, disabled } = this.state;
+    this.handleStartPanning(event);
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  handlePinch = event => {
+    const { distance, pinchSensitivity, pinchEnabled, disabled, wrapperComponent } = this.state;
+    this.handlePanning(event);
+    if (event.touches.length >= 2) {
+      this.handleStopPanning();
+    }
     if (pinchEnabled && event.touches.length >= 2 && !disabled) {
       let length = getDistance(event.touches[0], event.touches[1]);
       this.setDistance(length);
     }
-  };
-
-  handlePinch = event => {
-    const { distance, zoomInSensitivity, pinchEnabled, disabled } = this.state;
     if (isNaN(distance) || event.touches.length !== 2 || !pinchEnabled || disabled) return;
     let length = getDistance(event.touches[0], event.touches[1]);
-
     this.handleZoom(
       event,
-      getMiddleCoords(event.touches[0], event.touches[1]),
+      getMiddleCoords(event.touches[0], event.touches[1], wrapperComponent),
       distance < length ? 1 : -1,
-      zoomInSensitivity
+      pinchSensitivity
     );
   };
 
   handlePinchStop = () => {
     const { distance } = this.state;
+    this.handleStopPanning();
     if (!isNaN(distance)) {
       this.setDistance(false);
     }
@@ -388,6 +406,7 @@ StateProvider.defaultProps = {
 
 StateProvider.propTypes = {
   children: PropTypes.any,
+  defaultValues: PropTypes.object,
 };
 
 export { Context, StateProvider };

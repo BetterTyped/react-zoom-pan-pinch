@@ -145,3 +145,73 @@ export const deleteInvalidProps = value => {
   Object.keys(newObject).forEach(key => newObject[key] == undefined && delete newObject[key]);
   return newObject;
 };
+
+/**
+ * Returns center zoom position, for computations, based on the last mouse position
+ */
+
+export const getLastPositionZoomCoords = ({
+  lastPositionZoomEnabled,
+  lastMouseEventPosition,
+  previousScale,
+  scale,
+  wrapperComponent,
+  contentComponent,
+  positionX,
+  positionY,
+  resetLastMousePosition,
+}) => {
+  if (lastPositionZoomEnabled) {
+    if (lastMouseEventPosition) {
+      if (
+        previousScale === 1 ||
+        (previousScale >= 1 && scale <= 1) ||
+        (previousScale <= 1 && scale >= 1)
+      ) {
+        resetLastMousePosition();
+        return true;
+      }
+      return lastMouseEventPosition;
+    }
+  } else {
+    return getRelativeZoomCoords({
+      scale,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
+    });
+  }
+};
+
+/**
+ * Returns center zoom position, for computations, based on the relative center to content node
+ */
+
+export const getRelativeZoomCoords = ({
+  wrapperComponent,
+  contentComponent,
+  scale,
+  positionX,
+  positionY,
+}) => {
+  const { wrapperWidth, wrapperHeight } = relativeCoords(
+    event,
+    wrapperComponent,
+    contentComponent,
+    true
+  );
+  const x = (Math.abs(positionX) + wrapperWidth / 2) / scale;
+  const y = (Math.abs(positionY) + wrapperHeight / 2) / scale;
+  return { x, y };
+};
+
+/**
+ * Fire callback if it's function
+ */
+
+export const handleCallback = (callback, props) => {
+  if (callback && typeof callback === "function") {
+    callback(props);
+  }
+};

@@ -13,15 +13,15 @@ const defaultCoords = { x: 0, y: 0 };
 
 export let initialState = {
   sensitivity: 0.4,
-  zoomOutSensitivity: 5,
-  zoomInSensitivity: 5,
-  dbClickSensitivity: 7,
+  zoomOutSensitivity: 2,
+  zoomInSensitivity: 2,
+  dbClickSensitivity: 3,
   pinchSensitivity: 0.6,
   positionX: 0,
   positionY: 0,
   scale: 1,
-  maxScale: 4,
-  minScale: 0.8,
+  maxScale: 8,
+  minScale: 0.5,
   maxPositionX: null,
   minPositionX: null,
   maxPositionY: null,
@@ -39,6 +39,8 @@ export let initialState = {
   startCoords: defaultCoords,
   isDown: null,
   distance: null,
+  lastPositionZoomEnabled: false,
+  enableZoomThrottling: false,
 };
 
 export let reducer = (state, action) => {

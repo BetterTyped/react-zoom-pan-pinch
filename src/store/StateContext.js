@@ -19,13 +19,25 @@ import {
   calculateBoundingArea,
   getMiddleCoords,
   getDistance,
+  getRelativeZoomCoords,
+  getLastPositionZoomCoords,
+  handleCallback,
 } from "./utils";
 import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
+let timer = null;
+const timerTime = 100;
+let throttle = false;
+const throttleTime = 1;
 
 class StateProvider extends Component {
-  state = { ...initialState, ...this.props.defaultValues };
+  state = {
+    ...initialState,
+    ...this.props.defaultValues,
+    lastMouseEventPosition: null,
+    previousScale: initialState.scale,
+  };
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
@@ -46,7 +58,7 @@ class StateProvider extends Component {
     if (!oldState.wrapperComponent && this.state.wrapperComponent) {
       // Zooming events on wrapper
       const passiveOption = makePassiveEventOption(false);
-      wrapperComponent.addEventListener("wheel", this.handleZoom, passiveOption);
+      wrapperComponent.addEventListener("wheel", this.handleWheel, passiveOption);
       wrapperComponent.addEventListener("dblclick", this.handleDbClick, passiveOption);
       wrapperComponent.addEventListener("touchstart", this.handlePinchStart, passiveOption);
       wrapperComponent.addEventListener("touchmove", this.handlePinch, passiveOption);
@@ -59,6 +71,8 @@ class StateProvider extends Component {
   //////////
 
   handleZoom = (event, setCenterClick, customDelta, customSensitivity) => {
+    event.preventDefault();
+    event.stopPropagation();
     const {
       isDown,
       zoomingEnabled,
@@ -73,10 +87,10 @@ class StateProvider extends Component {
       minScale,
       enableZoomedOutPanning,
       limitToBounds,
+      enableZoomThrottling,
     } = this.state;
+    if (throttle && enableZoomThrottling) return;
     if (isDown || !zoomingEnabled || disabled) return;
-    event.preventDefault();
-    event.stopPropagation();
     const { x, y, wrapperWidth, wrapperHeight } = relativeCoords(
       event,
       wrapperComponent,
@@ -130,7 +144,7 @@ class StateProvider extends Component {
       newDiffHeight,
       enableZoomedOutPanning
     );
-
+    this.setState({ previousScale: scale, lastMouseEventPosition: { x: mouseX, y: mouseY } });
     this.setScale(newScale);
 
     // Calculate new positions
@@ -139,6 +153,34 @@ class StateProvider extends Component {
 
     this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
     this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
+
+    // throttle
+    throttle = true;
+    setTimeout(() => {
+      throttle = false;
+    }, throttleTime);
+  };
+
+  //////////
+  // Wheel
+  //////////
+
+  handleWheel = event => {
+    // Wheel start event
+    if (!timer) {
+      handleCallback(this.props.onWheelStart, this.getCallbackProps());
+    }
+
+    //Wheel event
+    this.handleZoom(event);
+    handleCallback(this.props.onWheel, this.getCallbackProps());
+
+    // Wheel stop event
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      handleCallback(this.props.onWheelStop, this.getCallbackProps());
+      timer = null;
+    }, timerTime);
   };
 
   //////////
@@ -175,6 +217,7 @@ class StateProvider extends Component {
       y: points.y - positionY,
     });
     this.setIsDown(true);
+    handleCallback(this.props.onPanningStart, this.getCallbackProps());
   };
 
   handlePanning = event => {
@@ -213,13 +256,27 @@ class StateProvider extends Component {
       diffHeight,
       enableZoomedOutPanning
     );
-
     this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
     this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
+    handleCallback(this.props.onPanning, this.getCallbackProps());
   };
 
   handleStopPanning = () => {
+    const { isDown, wrapperComponent, contentComponent, scale, positionX, positionY } = this.state;
     this.setIsDown(false);
+    if (isDown) {
+      const { x, y } = getRelativeZoomCoords({
+        wrapperComponent,
+        contentComponent,
+        scale,
+        positionX,
+        positionY,
+      });
+      this.setState({
+        lastMouseEventPosition: { x, y },
+      });
+      handleCallback(this.props.onPanningStop, this.getCallbackProps());
+    }
   };
 
   //////////
@@ -230,6 +287,7 @@ class StateProvider extends Component {
     this.handleStartPanning(event);
     event.preventDefault();
     event.stopPropagation();
+    handleCallback(this.props.onPinchingStart, this.getCallbackProps());
   };
 
   handlePinch = event => {
@@ -250,6 +308,7 @@ class StateProvider extends Component {
       distance < length ? 1 : -1,
       pinchSensitivity
     );
+    handleCallback(this.props.onPinching, this.getCallbackProps());
   };
 
   handlePinchStop = () => {
@@ -258,28 +317,76 @@ class StateProvider extends Component {
     if (!isNaN(distance)) {
       this.setDistance(false);
     }
+    handleCallback(this.props.onPinchingStop, this.getCallbackProps());
   };
 
   //////////
   // Controls
   //////////
 
+  resetLastMousePosition = () => this.setState({ lastMouseEventPosition: null });
+
   zoomIn = event => {
-    const { zoomingEnabled, disabled, zoomInSensitivity } = this.state;
+    const {
+      zoomingEnabled,
+      disabled,
+      zoomInSensitivity,
+      wrapperComponent,
+      contentComponent,
+      scale,
+      positionX,
+      positionY,
+      lastMouseEventPosition,
+      previousScale,
+      lastPositionZoomEnabled,
+    } = this.state;
     if (!zoomingEnabled || disabled) return;
-    this.handleZoom(event, true, 1, zoomInSensitivity);
+    const zoomCoords = getLastPositionZoomCoords({
+      resetLastMousePosition: this.resetLastMousePosition,
+      lastPositionZoomEnabled,
+      lastMouseEventPosition,
+      previousScale,
+      wrapperComponent,
+      contentComponent,
+      scale,
+      positionX,
+      positionY,
+    });
+    this.handleZoom(event, zoomCoords, 1, zoomInSensitivity);
   };
 
   zoomOut = event => {
-    const { zoomingEnabled, disabled, zoomOutSensitivity } = this.state;
+    const {
+      zoomingEnabled,
+      disabled,
+      zoomOutSensitivity,
+      wrapperComponent,
+      contentComponent,
+      scale,
+      positionX,
+      positionY,
+      lastMouseEventPosition,
+      previousScale,
+      lastPositionZoomEnabled,
+    } = this.state;
     if (!zoomingEnabled || disabled) return;
-    this.handleZoom(event, true, -1, zoomOutSensitivity);
+    const zoomCoords = getLastPositionZoomCoords({
+      resetLastMousePosition: this.resetLastMousePosition,
+      lastPositionZoomEnabled,
+      lastMouseEventPosition,
+      previousScale,
+      wrapperComponent,
+      contentComponent,
+      scale,
+      positionX,
+      positionY,
+    });
+    this.handleZoom(event, zoomCoords, -1, zoomOutSensitivity);
   };
 
   handleDbClick = event => {
     const { zoomingEnabled, disabled, dbClickSensitivity } = this.state;
     if (!zoomingEnabled || disabled) return;
-    //todo debug
     this.handleZoom(event, false, 1, dbClickSensitivity);
   };
 
@@ -339,35 +446,43 @@ class StateProvider extends Component {
     );
   };
 
+  // PROPS
+
+  getCallbackProps = () => {
+    return {
+      positionX: this.state.positionX,
+      positionY: this.state.positionY,
+      scale: this.state.scale,
+      sensitivity: this.state.sensitivity,
+      maxScale: this.state.maxScale,
+      minScale: this.state.minScale,
+      minPositionX: this.state.minPositionX,
+      minPositionY: this.state.minPositionY,
+      maxPositionX: this.state.maxPositionX,
+      maxPositionY: this.state.maxPositionY,
+      limitToBounds: this.state.limitToBounds,
+      zoomingEnabled: this.state.zoomingEnabled,
+      panningEnabled: this.state.panningEnabled,
+      transformEnabled: this.state.transformEnabled,
+      pinchEnabled: this.state.pinchEnabled,
+      enableZoomedOutPanning: this.state.enableZoomedOutPanning,
+      disabled: this.state.disabled,
+      zoomOutSensitivity: this.state.zoomOutSensitivity,
+      zoomInSensitivity: this.state.zoomInSensitivity,
+      dbClickSensitivity: this.state.dbClickSensitivity,
+      pinchSensitivity: this.state.pinchSensitivity,
+      dbClickEnabled: this.state.dbClickEnabled,
+      lastPositionZoomEnabled: this.state.lastPositionZoomEnabled,
+      previousScale: this.state.previousScale,
+    };
+  };
+
   render() {
     /**
      * Context provider value
      */
     const value = {
-      state: {
-        positionX: this.state.positionX,
-        positionY: this.state.positionY,
-        scale: this.state.scale,
-        sensitivity: this.state.sensitivity,
-        maxScale: this.state.maxScale,
-        minScale: this.state.minScale,
-        minPositionX: this.state.minPositionX,
-        minPositionY: this.state.minPositionY,
-        maxPositionX: this.state.maxPositionX,
-        maxPositionY: this.state.maxPositionY,
-        limitToBounds: this.state.limitToBounds,
-        zoomingEnabled: this.state.zoomingEnabled,
-        panningEnabled: this.state.panningEnabled,
-        transformEnabled: this.state.transformEnabled,
-        pinchEnabled: this.state.pinchEnabled,
-        enableZoomedOutPanning: this.state.enableZoomedOutPanning,
-        disabled: this.state.disabled,
-        zoomOutSensitivity: this.state.zoomOutSensitivity,
-        zoomInSensitivity: this.state.zoomInSensitivity,
-        dbClickSensitivity: this.state.dbClickSensitivity,
-        pinchSensitivity: this.state.pinchSensitivity,
-        dbClickEnabled: this.state.dbClickEnabled,
-      },
+      state: this.getCallbackProps(),
       dispatch: {
         setScale: this.setScale,
         setPositionX: this.setPositionX,

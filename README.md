@@ -24,64 +24,68 @@ yarn add react-zoom-pan-pinch
 
 ## Props of TransformWrapper
 
-| Props                  |           Type |
-| :--------------------- | -------------: |
-| sensitivity            |         Number |
-| zoomInSensitivity      |         Number |
-| zoomOutSensitivity     |         Number |
-| dbClickSensitivity     |         Number |
-| pinchSensitivity       |         Number |
-| positionX              |         Number |
-| positionY              |         Number |
-| scale                  |         Number |
-| maxScale               | Number or null |
-| minScale               | Number or null |
-| maxPositionX           | Number or null |
-| minPositionX           | Number or null |
-| maxPositionY           | Number or null |
-| minPositionY           | Number or null |
-| limitToBounds          |        Boolean |
-| disabled               |        Boolean |
-| zoomingEnabled         |        Boolean |
-| panningEnabled         |        Boolean |
-| pinchEnabled           |        Boolean |
-| dbClickEnabled         |        Boolean |
-| transformEnabled       |        Boolean |
-| enableZoomedOutPanning |        Boolean |
+| Props                   | Default |           Type |
+| :---------------------- | :-----: | -------------: |
+| sensitivity             |   0.4   |         Number |
+| zoomInSensitivity       |    2    |         Number |
+| zoomOutSensitivity      |    2    |         Number |
+| dbClickSensitivity      |    3    |         Number |
+| pinchSensitivity        |   0.6   |         Number |
+| positionX               |    0    |         Number |
+| positionY               |    0    |         Number |
+| scale                   |    1    |         Number |
+| maxScale                |    4    | Number or null |
+| minScale                |   0.8   | Number or null |
+| maxPositionX            |  null   | Number or null |
+| minPositionX            |  null   | Number or null |
+| maxPositionY            |  null   | Number or null |
+| minPositionY            |  null   | Number or null |
+| limitToBounds           |  true   |        Boolean |
+| disabled                |  false  |        Boolean |
+| zoomingEnabled          |  true   |        Boolean |
+| panningEnabled          |  true   |        Boolean |
+| pinchEnabled            |  true   |        Boolean |
+| dbClickEnabled          |  true   |        Boolean |
+| transformEnabled        |  true   |        Boolean |
+| enableZoomedOutPanning  |  false  |        Boolean |
+| lastPositionZoomEnabled |  false  |        Boolean |
+| enableZoomThrottling    |  false  |        Boolean |
 
 ## Values returned from TransformWrapper component
 
-| Value                                     | Description                                      | Default |           Type |
-| :---------------------------------------- | :----------------------------------------------- | :-----: | -------------: |
-| sensitivity                               | Wheel zoom sensitivity                           |   0.4   |         Number |
-| zoomInSensitivity                         | handleZoomIn function zoom sensitivity           |    5    |         Number |
-| zoomOutSensitivity                        | handleZoomOut function zoom sensitivity          |    5    |         Number |
-| dbClickSensitivity                        | Double click zoom sensitivity                    |    7    |         Number |
-| pinchSensitivity                          | Pinching zoom sensitivity                        |   0.6   |         Number |
-| positionX                                 | Pixel value of x position                        |    0    |         Number |
-| positionY                                 | Pixel value of y position                        |    0    |         Number |
-| scale                                     | Scale value                                      |    1    |         Number |
-| maxScale                                  | Max scale value                                  |    4    |         Number |
-| minScale                                  | Min scale value                                  |   0.8   |         Number |
-| maxPositionX                              | Max position x                                   |  null   | Number or null |
-| minPositionX                              | Min position x                                   |  null   | Number or null |
-| maxPositionY                              | Max position y                                   |  null   | Number or null |
-| minPositionY                              | Min position y                                   |  null   | Number or null |
-| limitToBounds                             | Limit zooming and panning to wrapper boundaries  |  true   |        Boolean |
-| disabled                                  | Disables all functionality                       |  false  |        Boolean |
-| zoomingEnabled                            | Enables zooming                                  |  true   |        Boolean |
-| panningEnabled                            | Enables panning                                  |  true   |        Boolean |
-| pinchEnabled                              | Enables pinching                                 |  true   |        Boolean |
-| dbClickEnabled                            | Enables double click                             |  true   |        Boolean |
-| transformEnabled                          | Enables component transformation in x and y axis |  true   |        Boolean |
-| enableZoomedOutPanning                    | Enables panning when zoom is lower than 1        |  false  |        Boolean |
-| setScale(scale)                           | Sets scale                                       |         |         Number |
-| setPositionX(positionX)                   | Sets position x                                  |         |         Number |
-| setPositionY(positionY)                   | Sets position y                                  |         |         Number |
-| zoomIn()                                  | Zooming in                                       |         |                |
-| zoomOut()                                 | Zooming out                                      |         |                |
-| setTransform(positionX, positionY, scale) | Sets transformations of content                  |         | Number or null |
-| resetTransform()                          | Reset transformations to the initial values      |         |             "" |
+| Value                                     | Description                                                                 |   Default   |           Type |
+| :---------------------------------------- | :-------------------------------------------------------------------------- | :---------: | -------------: |
+| sensitivity                               | Wheel zoom sensitivity                                                      |     0.4     |         Number |
+| zoomInSensitivity                         | handleZoomIn function zoom sensitivity                                      |      5      |         Number |
+| zoomOutSensitivity                        | handleZoomOut function zoom sensitivity                                     |      5      |         Number |
+| dbClickSensitivity                        | Double click zoom sensitivity                                               |      7      |         Number |
+| pinchSensitivity                          | Pinching zoom sensitivity                                                   |     0.6     |         Number |
+| positionX                                 | Pixel value of x position                                                   |      0      |         Number |
+| positionY                                 | Pixel value of y position                                                   |      0      |         Number |
+| scale                                     | Scale value                                                                 |      1      |         Number |
+| maxScale                                  | Max scale value                                                             |      4      |         Number |
+| minScale                                  | Min scale value                                                             |     0.8     |         Number |
+| maxPositionX                              | Max position x                                                              |    null     | Number or null |
+| minPositionX                              | Min position x                                                              |    null     | Number or null |
+| maxPositionY                              | Max position y                                                              |    null     | Number or null |
+| minPositionY                              | Min position y                                                              |    null     | Number or null |
+| limitToBounds                             | Limit zooming and panning to wrapper boundaries                             |    true     |        Boolean |
+| disabled                                  | Disables all functionality                                                  |    false    |        Boolean |
+| zoomingEnabled                            | Enables zooming                                                             |    true     |        Boolean |
+| panningEnabled                            | Enables panning                                                             |    true     |        Boolean |
+| pinchEnabled                              | Enables pinching                                                            |    true     |        Boolean |
+| dbClickEnabled                            | Enables double click                                                        |    true     |        Boolean |
+| transformEnabled                          | Enables component transformation in x and y axis                            |    true     |        Boolean |
+| enableZoomedOutPanning                    | Enables panning when zoom is lower than 1                                   |    false    |        Boolean |
+| lastPositionZoomEnabled                   | Enables zoom buttons to scale in/out to the last wheel mouse event position |    false    |        Boolean |
+| previousScale                             | Previous scale value                                                        | scale value |         Number |
+| setScale(scale)                           | Sets scale                                                                  |             |         Number |
+| setPositionX(positionX)                   | Sets position x                                                             |             |         Number |
+| setPositionY(positionY)                   | Sets position y                                                             |             |         Number |
+| zoomIn()                                  | Zooming in                                                                  |             |                |
+| zoomOut()                                 | Zooming out                                                                 |             |                |
+| setTransform(positionX, positionY, scale) | Sets transformations of content                                             |             | Number or null |
+| resetTransform()                          | Reset transformations to the initial values                                 |             |             "" |
 
 ## Usage
 

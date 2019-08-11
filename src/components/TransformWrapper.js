@@ -27,6 +27,8 @@ const TransformWrapper = ({
   dbClickSensitivity,
   pinchSensitivity,
   dbClickEnabled,
+  lastPositionZoomEnabled,
+  enableZoomThrottling,
 }) => {
   return (
     <StateProvider
@@ -53,6 +55,8 @@ const TransformWrapper = ({
         dbClickSensitivity,
         pinchSensitivity,
         dbClickEnabled,
+        lastPositionZoomEnabled,
+        enableZoomThrottling,
       })}
     >
       {children}
@@ -84,6 +88,8 @@ TransformWrapper.propTypes = {
   dbClickSensitivity: PropTypes.bool,
   pinchSensitivity: PropTypes.bool,
   dbClickEnabled: PropTypes.bool,
+  lastPositionZoomEnabled: PropTypes.bool,
+  enableZoomThrottling: PropTypes.bool,
 };
 
 export default TransformWrapper;

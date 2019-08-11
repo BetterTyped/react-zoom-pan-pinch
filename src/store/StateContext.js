@@ -58,6 +58,7 @@ class StateProvider extends Component {
 
   componentDidUpdate(oldProps, oldState) {
     const { wrapperComponent } = this.state;
+    const { defaultValues } = this.props;
     if (!oldState.wrapperComponent && this.state.wrapperComponent) {
       // Zooming events on wrapper
       const passiveOption = makePassiveEventOption(false);
@@ -66,6 +67,10 @@ class StateProvider extends Component {
       wrapperComponent.addEventListener("touchstart", this.handlePinchStart, passiveOption);
       wrapperComponent.addEventListener("touchmove", this.handlePinch, passiveOption);
       wrapperComponent.addEventListener("touchend", this.handlePinchStop, passiveOption);
+    }
+    if (oldProps.defaultValues !== defaultValues) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ ...defaultValues });
     }
   }
 
@@ -109,7 +114,7 @@ class StateProvider extends Component {
       ? roundNumber(scale + delta * zoomSensitivity * scale, 2)
       : roundNumber(scale + (customStep * delta * scale * 0.1) / 0.5);
 
-      if (!isNaN(maxScale) && newScale >= maxScale && scale < maxScale) {
+    if (!isNaN(maxScale) && newScale >= maxScale && scale < maxScale) {
       newScale = maxScale;
     }
     if (!isNaN(minScale) && newScale <= minScale && scale > minScale) {
@@ -424,7 +429,8 @@ class StateProvider extends Component {
 
   resetTransform = animation => {
     const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
-    const { scale, positionX, positionY } = this.state;
+    const { scale, positionX, positionY, disabled } = this.state;
+    if (disabled) return;
     const type = isNaN(animation) ? "reset" : animation;
     this.setState({ eventType: type });
     if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)

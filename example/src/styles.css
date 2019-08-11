@@ -205,7 +205,7 @@ header.masthead .bg-circle-4 {
 
 .example-text {
   padding: 30px 60px;
-  background: #ff9317;
+  background: #ffc17b;
 }
 
 .spacer {
@@ -215,4 +215,44 @@ header.masthead .bg-circle-4 {
 .btn-type {
   margin-left: 0 !important;
   color: black !important;
+}
+
+.grey {
+  display: inline-flex !important;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: rgb(158, 157, 157) !important;
+}
+.grey:hover {
+  background: rgb(114, 112, 112) !important;
+}
+
+.grey span {
+  display: flex;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  margin-left: -5px;
+  border-radius: 100%;
+  background: white;
+  box-shadow: 0px 0px 2px 1px rgb(218, 218, 218);
+  margin-bottom: 4px;
+}
+.grey.active span {
+  background: rgb(35, 201, 2);
+  box-shadow: 0px 0px 2px 1px rgba(107, 222, 84, 1);
+}
+
+.badge {
+  margin-right: 4px;
+}
+
+.info {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+button {
+  outline: none !important;
 }

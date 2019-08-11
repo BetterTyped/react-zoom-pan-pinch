@@ -6,7 +6,21 @@ import zoom_reset from "./images/zoom-reset.svg";
 import logo from "./images/logo.png";
 
 export default class App extends Component {
-  state = { type: true };
+  state = {
+    type: true,
+    limitToBounds: true,
+    zoomingEnabled: true,
+    panningEnabled: true,
+    transformEnabled: true,
+    pinchEnabled: true,
+    enableZoomedOutPanning: false,
+    disabled: false,
+    dbClickEnabled: true,
+  };
+
+  toggleSetting = type => {
+    this.setState(p => ({ [type]: !p[type] }));
+  };
 
   render() {
     const { type } = this.state;
@@ -48,8 +62,33 @@ export default class App extends Component {
           <div className="container">
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
-                <TransformWrapper>
-                  {({ zoomIn, zoomOut, resetTransform }) => (
+                <TransformWrapper
+                  limitToBounds={this.state.limitToBounds}
+                  zoomingEnabled={this.state.zoomingEnabled}
+                  panningEnabled={this.state.panningEnabled}
+                  transformEnabled={this.state.transformEnabled}
+                  pinchEnabled={this.state.pinchEnabled}
+                  enableZoomedOutPanning={this.state.enableZoomedOutPanning}
+                  disabled={this.state.disabled}
+                  dbClickEnabled={this.state.dbClickEnabled}
+                >
+                  {({
+                    zoomIn,
+                    zoomOut,
+                    resetTransform,
+                    positionX,
+                    positionY,
+                    scale,
+                    previousScale,
+                    limitToBounds,
+                    zoomingEnabled,
+                    panningEnabled,
+                    transformEnabled,
+                    pinchEnabled,
+                    enableZoomedOutPanning,
+                    disabled,
+                    dbClickEnabled,
+                  }) => (
                     <React.Fragment>
                       <div className="tools">
                         <button
@@ -93,12 +132,87 @@ export default class App extends Component {
                               <button
                                 type="button"
                                 onClick={() => alert("You can use nested buttons!")}
+                                className="btn-3d red small"
                               >
                                 Show alert!
                               </button>
                             </div>
                           </TransformComponent>
                         )}
+                      </div>
+                      <div className="info">
+                        <h3>State</h3>
+                        <h5>
+                          <span className="badge badge-secondary">Position x : {positionX}px</span>
+                          <span className="badge badge-secondary">Position y : {positionY}px</span>
+                          <span className="badge badge-secondary">Scale : {scale}</span>
+                          <span className="badge badge-secondary">
+                            Previous scale : {previousScale}
+                          </span>
+                        </h5>
+                      </div>
+                      <div className="functions">
+                        <h3>Functions</h3>
+                        <h6>
+                          <button
+                            className={"btn-gradient grey small" + (disabled ? " active" : "")}
+                            onClick={() => this.toggleSetting("disabled")}
+                          >
+                            <span /> Disable
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (limitToBounds ? " active" : "")}
+                            onClick={() => this.toggleSetting("limitToBounds")}
+                          >
+                            <span /> Limit bounds
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (enableZoomedOutPanning ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("enableZoomedOutPanning")}
+                          >
+                            <span /> Enable zoomed out panning
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (zoomingEnabled ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("zoomingEnabled")}
+                          >
+                            <span /> Enable zoom
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (panningEnabled ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("panningEnabled")}
+                          >
+                            <span /> Enable panning
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (pinchEnabled ? " active" : "")}
+                            onClick={() => this.toggleSetting("pinchEnabled")}
+                          >
+                            <span /> Enable pinch
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (transformEnabled ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("transformEnabled")}
+                          >
+                            <span /> Enable transform
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (dbClickEnabled ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("dbClickEnabled")}
+                          >
+                            <span /> Double click
+                          </button>
+                        </h6>
                       </div>
                     </React.Fragment>
                   )}

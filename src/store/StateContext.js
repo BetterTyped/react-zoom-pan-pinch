@@ -26,6 +26,8 @@ import {
 import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
+
+let reset = null;
 let timer = null;
 const timerTime = 100;
 let throttle = false;
@@ -71,7 +73,7 @@ class StateProvider extends Component {
   // Zooming
   //////////
 
-  handleZoom = (event, setCenterClick, customDelta, customSensitivity) => {
+  handleZoom = (event, setCenterClick, customDelta, customStep) => {
     event.preventDefault();
     event.stopPropagation();
     const {
@@ -92,25 +94,22 @@ class StateProvider extends Component {
     } = this.state;
     if (throttle && enableZoomThrottling) return;
     if (isDown || !zoomingEnabled || disabled) return;
-    const {
-      x,
-      y,
-      zoomInX,
-      zoomInY,
-      zoomOutX,
-      zoomOutY,
-      wrapperWidth,
-      wrapperHeight,
-    } = relativeCoords(event, wrapperComponent, contentComponent);
+    const { x, y, wrapperWidth, wrapperHeight } = relativeCoords(
+      event,
+      wrapperComponent,
+      contentComponent
+    );
 
     const deltaY = event ? (event.deltaY < 0 ? 1 : -1) : 0;
     const delta = checkIsNumber(customDelta, deltaY);
-    const zoomSensitivity = (customSensitivity || sensitivity) * 0.1;
+    const zoomSensitivity = sensitivity * 0.1;
 
     // Calculate new zoom
-    let newScale = roundNumber(scale + delta * zoomSensitivity * scale, 2);
+    let newScale = isNaN(customStep)
+      ? roundNumber(scale + delta * zoomSensitivity * scale, 2)
+      : roundNumber(scale + (customStep * delta * scale * 0.1) / 0.5);
 
-    if (!isNaN(maxScale) && newScale >= maxScale && scale < maxScale) {
+      if (!isNaN(maxScale) && newScale >= maxScale && scale < maxScale) {
       newScale = maxScale;
     }
     if (!isNaN(minScale) && newScale <= minScale && scale > minScale) {
@@ -338,11 +337,15 @@ class StateProvider extends Component {
     const {
       zoomingEnabled,
       disabled,
-      zoomInSensitivity,
+      zoomInStep,
       scale,
       lastMouseEventPosition,
       previousScale,
       lastPositionZoomEnabled,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
     } = this.state;
     if (!event) return console.error("Zoom in function require event prop");
     if (!zoomingEnabled || disabled) return;
@@ -352,19 +355,27 @@ class StateProvider extends Component {
       lastMouseEventPosition,
       previousScale,
       scale,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
     });
-    this.handleZoom(event, zoomCoords, 1, zoomInSensitivity);
+    this.handleZoom(event, zoomCoords, 1, zoomInStep);
   };
 
   zoomOut = event => {
     const {
       zoomingEnabled,
       disabled,
-      zoomOutSensitivity,
+      zoomOutStep,
       scale,
       lastMouseEventPosition,
       previousScale,
       lastPositionZoomEnabled,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
     } = this.state;
     if (!event) return console.error("Zoom out function require event prop");
     if (!zoomingEnabled || disabled) return;
@@ -374,24 +385,19 @@ class StateProvider extends Component {
       lastMouseEventPosition,
       previousScale,
       scale,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
     });
-    this.handleZoom(event, zoomCoords, -1, zoomOutSensitivity);
+    this.handleZoom(event, zoomCoords, -1, zoomOutStep);
   };
 
   handleDbClick = event => {
-    const {
-      zoomingEnabled,
-      disabled,
-      dbClickSensitivity,
-      wrapperComponent,
-      contentComponent,
-      scale,
-      positionX,
-      positionY,
-    } = this.state;
+    const { zoomingEnabled, disabled, dbClickStep } = this.state;
     if (!event) return console.error("Double click function require event prop");
     if (!zoomingEnabled || disabled) return;
-    this.handleZoom(event, false, 1, dbClickSensitivity);
+    this.handleZoom(event, false, 1, dbClickStep);
   };
 
   setScale = scale => {
@@ -416,16 +422,20 @@ class StateProvider extends Component {
     !isNaN(positionY) && this.setPositionY(positionY);
   };
 
-  resetTransform = (animationTime = 0) => {
+  resetTransform = animation => {
     const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
     const { scale, positionX, positionY } = this.state;
-    this.setState({ eventType: animationTime });
+    const type = isNaN(animation) ? "reset" : animation;
+    this.setState({ eventType: type });
     if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
       return;
     this.setScale(checkIsNumber(defaultScale, initialState.scale));
     this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
     this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
-    this.setState(p => ({ eventType: p.eventType === animationTime ? false : p.eventType }));
+    clearTimeout(reset);
+    reset = setTimeout(() => {
+      this.setState(p => ({ eventType: p.eventType === type ? false : p.eventType }));
+    }, 1);
   };
 
   //////////
@@ -481,9 +491,9 @@ class StateProvider extends Component {
       pinchEnabled: this.state.pinchEnabled,
       enableZoomedOutPanning: this.state.enableZoomedOutPanning,
       disabled: this.state.disabled,
-      zoomOutSensitivity: this.state.zoomOutSensitivity,
-      zoomInSensitivity: this.state.zoomInSensitivity,
-      dbClickSensitivity: this.state.dbClickSensitivity,
+      zoomOutStep: this.state.zoomOutStep,
+      zoomInStep: this.state.zoomInStep,
+      dbClickStep: this.state.dbClickStep,
       pinchSensitivity: this.state.pinchSensitivity,
       dbClickEnabled: this.state.dbClickEnabled,
       lastPositionZoomEnabled: this.state.lastPositionZoomEnabled,

@@ -153,6 +153,10 @@ export const getLastPositionZoomCoords = ({
   lastMouseEventPosition,
   previousScale,
   scale,
+  wrapperComponent,
+  contentComponent,
+  positionX,
+  positionY,
   resetLastMousePosition,
 }) => {
   if (lastPositionZoomEnabled) {
@@ -167,6 +171,14 @@ export const getLastPositionZoomCoords = ({
       }
       return lastMouseEventPosition;
     }
+  } else {
+    return getRelativeZoomCoords({
+      scale,
+      wrapperComponent,
+      contentComponent,
+      positionX,
+      positionY,
+    });
   }
 };
 
@@ -174,11 +186,21 @@ export const getLastPositionZoomCoords = ({
  * Returns center zoom position, for computations, based on the relative center to content node
  */
 
-export const getRelativeZoomCoords = ({ contentComponent }) => {
-  const contentRect = contentComponent.getBoundingClientRect();
-  let x = event.clientX - contentRect.left;
-  let y = event.clientY - contentRect.top;
-
+export const getRelativeZoomCoords = ({
+  wrapperComponent,
+  contentComponent,
+  scale,
+  positionX,
+  positionY,
+}) => {
+  const { wrapperWidth, wrapperHeight } = relativeCoords(
+    event,
+    wrapperComponent,
+    contentComponent,
+    true
+  );
+  const x = (Math.abs(positionX) + wrapperWidth / 2) / scale;
+  const y = (Math.abs(positionY) + wrapperHeight / 2) / scale;
   return { x, y };
 };
 

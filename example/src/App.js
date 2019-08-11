@@ -55,8 +55,8 @@ export default class App extends Component {
                         <button
                           className="btn-gradient yellow small btn-type"
                           onClick={() => {
-                            this.setState(p => ({ type: !p.type }));
                             resetTransform(0);
+                            this.setState(p => ({ type: !p.type }));
                           }}
                         >
                           {type ? "Div example" : "Image example"}

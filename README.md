@@ -27,9 +27,9 @@ yarn add react-zoom-pan-pinch
 | Props                   | Default |           Type |
 | :---------------------- | :-----: | -------------: |
 | sensitivity             |   0.4   |         Number |
-| zoomInSensitivity       |    2    |         Number |
-| zoomOutSensitivity      |    2    |         Number |
-| dbClickSensitivity      |    3    |         Number |
+| zoomInStep              |    3    |         Number |
+| zoomOutStep             |    2    |         Number |
+| dbClickStep             |    5    |         Number |
 | pinchSensitivity        |   0.6   |         Number |
 | positionX               |    0    |         Number |
 | positionY               |    0    |         Number |
@@ -40,6 +40,7 @@ yarn add react-zoom-pan-pinch
 | zoomAnimationSpeed      |   200   |         Number |
 | pinchAnimationSpeed     |    0    |         Number |
 | panAnimationSpeed       |    0    |         Number |
+| resetAnimationSpeed     |    0    |         Number |
 | maxPositionX            |  null   | Number or null |
 | minPositionX            |  null   | Number or null |
 | maxPositionY            |  null   | Number or null |
@@ -69,9 +70,9 @@ yarn add react-zoom-pan-pinch
 | Value                                     | Description                                                                 |      Type      |
 | :---------------------------------------- | :-------------------------------------------------------------------------- | :------------: |
 | sensitivity                               | Wheel zoom sensitivity                                                      |     Number     |
-| zoomInSensitivity                         | handleZoomIn function zoom sensitivity                                      |     Number     |
-| zoomOutSensitivity                        | handleZoomOut function zoom sensitivity                                     |     Number     |
-| dbClickSensitivity                        | Double click zoom sensitivity                                               |     Number     |
+| zoomInStep                                | handleZoomIn function zoom sensitivity                                      |     Number     |
+| zoomOutStep                               | handleZoomOut function zoom sensitivity                                     |     Number     |
+| dbClickStep                               | Double click zoom sensitivity                                               |     Number     |
 | pinchSensitivity                          | Pinching zoom sensitivity                                                   |     Number     |
 | positionX                                 | Pixel value of x position                                                   |     Number     |
 | positionY                                 | Pixel value of y position                                                   |     Number     |
@@ -82,6 +83,7 @@ yarn add react-zoom-pan-pinch
 | zoomAnimationSpeed                        | Animation speed of control buttons zooming                                  |     Number     |
 | pinchAnimationSpeed                       | Animation speed of pinch zooming                                            |     Number     |
 | panAnimationSpeed                         | Animation speed of panning                                                  |     Number     |
+| resetAnimationSpeed                       | Animation speed of panning                                                  |     Number     |
 | maxPositionX                              | Max position x                                                              | Number or null |
 | minPositionX                              | Min position x                                                              | Number or null |
 | maxPositionY                              | Max position y                                                              | Number or null |

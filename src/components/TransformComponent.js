@@ -13,7 +13,7 @@ function TransformComponent({ children }) {
   };
 
   function getAnimationTime(type) {
-    if (!isNaN(type)) return type;
+    if (type !== false && !isNaN(type)) return type;
     switch (type) {
       case "pan":
         return state.panAnimationSpeed;
@@ -21,6 +21,8 @@ function TransformComponent({ children }) {
         return state.wheelAnimationSpeed;
       case "pinch":
         return state.pinchAnimationSpeed;
+      case "reset":
+        return state.resetAnimationSpeed;
       default:
         return state.zoomAnimationSpeed;
     }

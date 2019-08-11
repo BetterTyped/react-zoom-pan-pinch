@@ -6,15 +6,16 @@ import zoom_reset from "./images/zoom-reset.svg";
 import logo from "./images/logo.png";
 
 export default class App extends Component {
+  state = { type: true };
+
   render() {
+    const { type } = this.state;
     return (
       <div className="body">
         {/* Header */}
         <header className="masthead text-center text-white">
           <div className="masthead-content">
             <div className="container">
-              {/* <h1 className="masthead-heading mb-0">React zoom pan pinch</h1>
-              <h2 className="masthead-subheading mb-0">Do it easy way</h2> */}
               <div className="logo">
                 <img src={logo} alt="" />
               </div>
@@ -48,9 +49,19 @@ export default class App extends Component {
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
                 <TransformWrapper>
-                  {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                  {({ zoomIn, zoomOut, resetTransform }) => (
                     <React.Fragment>
                       <div className="tools">
+                        <button
+                          className="btn-gradient yellow small btn-type"
+                          onClick={() => {
+                            this.setState(p => ({ type: !p.type }));
+                            resetTransform(0);
+                          }}
+                        >
+                          {type ? "Div example" : "Image example"}
+                        </button>
+                        <div className="spacer" />
                         <button className="btn-gradient cyan small" onClick={zoomIn}>
                           <img src={zoom_in} alt="" />
                         </button>
@@ -62,9 +73,32 @@ export default class App extends Component {
                         </button>
                       </div>
                       <div className="element">
-                        <TransformComponent>
-                          <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="test" />
-                        </TransformComponent>
+                        {type ? (
+                          <TransformComponent>
+                            <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="test" />
+                          </TransformComponent>
+                        ) : (
+                          <TransformComponent>
+                            <div className="example-text">
+                              <h1>Lorem ipsum</h1>
+                              <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+                                ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo consequat. Duis aute irure dolor in
+                                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                                culpa qui officia deserunt mollit anim id est laborum.
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => alert("You can use nested buttons!")}
+                              >
+                                Show alert!
+                              </button>
+                            </div>
+                          </TransformComponent>
+                        )}
                       </div>
                     </React.Fragment>
                   )}
@@ -84,7 +118,6 @@ export default class App extends Component {
               </a>
             </p>
           </div>
-          {/* /.container */}
         </footer>
       </div>
     );

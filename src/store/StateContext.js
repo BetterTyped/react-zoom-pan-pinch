@@ -37,6 +37,7 @@ class StateProvider extends Component {
     ...this.props.defaultValues,
     lastMouseEventPosition: null,
     previousScale: initialState.scale,
+    eventType: false,
   };
 
   componentDidMount() {
@@ -91,11 +92,16 @@ class StateProvider extends Component {
     } = this.state;
     if (throttle && enableZoomThrottling) return;
     if (isDown || !zoomingEnabled || disabled) return;
-    const { x, y, wrapperWidth, wrapperHeight } = relativeCoords(
-      event,
-      wrapperComponent,
-      contentComponent
-    );
+    const {
+      x,
+      y,
+      zoomInX,
+      zoomInY,
+      zoomOutX,
+      zoomOutY,
+      wrapperWidth,
+      wrapperHeight,
+    } = relativeCoords(event, wrapperComponent, contentComponent);
 
     const deltaY = event ? (event.deltaY < 0 ? 1 : -1) : 0;
     const delta = checkIsNumber(customDelta, deltaY);
@@ -116,18 +122,12 @@ class StateProvider extends Component {
     const scaleDifference = newScale - scale;
 
     // Mouse position
-    const mouseX = checkIsNumber(
-      setCenterClick && setCenterClick.x,
-      setCenterClick ? wrapperWidth / 2 : x
-    );
-    const mouseY = checkIsNumber(
-      setCenterClick && setCenterClick.y,
-      setCenterClick ? wrapperHeight / 2 : y
-    );
+    const mouseX = checkIsNumber(setCenterClick && setCenterClick.x, x / scale);
+    const mouseY = checkIsNumber(setCenterClick && setCenterClick.y, y / scale);
 
     if (isNaN(mouseX) || isNaN(mouseY)) return console.warn("No mouse or touch offset found");
 
-    // Determine new zoomed in point
+    // Bounding area details
     const newContentWidth = wrapperWidth * newScale;
     const newContentHeight = wrapperHeight * newScale;
 
@@ -148,8 +148,8 @@ class StateProvider extends Component {
     this.setScale(newScale);
 
     // Calculate new positions
-    const newPositionX = -(mouseX * scaleDifference) + positionX;
-    const newPositionY = -(mouseY * scaleDifference) + positionY;
+    let newPositionX = -(mouseX * scaleDifference) + positionX;
+    let newPositionY = -(mouseY * scaleDifference) + positionY;
 
     this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
     this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
@@ -168,6 +168,7 @@ class StateProvider extends Component {
   handleWheel = event => {
     // Wheel start event
     if (!timer) {
+      this.setState({ eventType: "wheel" });
       handleCallback(this.props.onWheelStart, this.getCallbackProps());
     }
 
@@ -179,6 +180,7 @@ class StateProvider extends Component {
     clearTimeout(timer);
     timer = setTimeout(() => {
       handleCallback(this.props.onWheelStop, this.getCallbackProps());
+      this.setState(p => ({ eventType: p.eventType === "wheel" ? false : p.eventType }));
       timer = null;
     }, timerTime);
   };
@@ -212,6 +214,9 @@ class StateProvider extends Component {
     } else {
       points = getMiddleCoords(event.touches[0], event.touches[0], wrapperComponent);
     }
+    this.setState({
+      eventType: "pan",
+    });
     this.setStartCoords({
       x: points.x - positionX,
       y: points.y - positionY,
@@ -272,9 +277,10 @@ class StateProvider extends Component {
         positionX,
         positionY,
       });
-      this.setState({
+      this.setState(p => ({
         lastMouseEventPosition: { x, y },
-      });
+        eventType: p.eventType === "pan" ? false : p.eventType,
+      }));
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
     }
   };
@@ -287,6 +293,7 @@ class StateProvider extends Component {
     this.handleStartPanning(event);
     event.preventDefault();
     event.stopPropagation();
+    this.setState({ eventType: "pinch" });
     handleCallback(this.props.onPinchingStart, this.getCallbackProps());
   };
 
@@ -317,6 +324,7 @@ class StateProvider extends Component {
     if (!isNaN(distance)) {
       this.setDistance(false);
     }
+    this.setState(p => ({ eventType: p.eventType === "pinch" ? false : p.eventType }));
     handleCallback(this.props.onPinchingStop, this.getCallbackProps());
   };
 
@@ -331,26 +339,19 @@ class StateProvider extends Component {
       zoomingEnabled,
       disabled,
       zoomInSensitivity,
-      wrapperComponent,
-      contentComponent,
       scale,
-      positionX,
-      positionY,
       lastMouseEventPosition,
       previousScale,
       lastPositionZoomEnabled,
     } = this.state;
+    if (!event) return console.error("Zoom in function require event prop");
     if (!zoomingEnabled || disabled) return;
     const zoomCoords = getLastPositionZoomCoords({
       resetLastMousePosition: this.resetLastMousePosition,
       lastPositionZoomEnabled,
       lastMouseEventPosition,
       previousScale,
-      wrapperComponent,
-      contentComponent,
       scale,
-      positionX,
-      positionY,
     });
     this.handleZoom(event, zoomCoords, 1, zoomInSensitivity);
   };
@@ -360,32 +361,35 @@ class StateProvider extends Component {
       zoomingEnabled,
       disabled,
       zoomOutSensitivity,
-      wrapperComponent,
-      contentComponent,
       scale,
-      positionX,
-      positionY,
       lastMouseEventPosition,
       previousScale,
       lastPositionZoomEnabled,
     } = this.state;
+    if (!event) return console.error("Zoom out function require event prop");
     if (!zoomingEnabled || disabled) return;
     const zoomCoords = getLastPositionZoomCoords({
       resetLastMousePosition: this.resetLastMousePosition,
       lastPositionZoomEnabled,
       lastMouseEventPosition,
       previousScale,
-      wrapperComponent,
-      contentComponent,
       scale,
-      positionX,
-      positionY,
     });
     this.handleZoom(event, zoomCoords, -1, zoomOutSensitivity);
   };
 
   handleDbClick = event => {
-    const { zoomingEnabled, disabled, dbClickSensitivity } = this.state;
+    const {
+      zoomingEnabled,
+      disabled,
+      dbClickSensitivity,
+      wrapperComponent,
+      contentComponent,
+      scale,
+      positionX,
+      positionY,
+    } = this.state;
+    if (!event) return console.error("Double click function require event prop");
     if (!zoomingEnabled || disabled) return;
     this.handleZoom(event, false, 1, dbClickSensitivity);
   };
@@ -412,10 +416,16 @@ class StateProvider extends Component {
     !isNaN(positionY) && this.setPositionY(positionY);
   };
 
-  resetTransform = (defaultScale, defaultPositionX, defaultPositionY) => {
+  resetTransform = (animationTime = 0) => {
+    const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
+    const { scale, positionX, positionY } = this.state;
+    this.setState({ eventType: animationTime });
+    if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
+      return;
     this.setScale(checkIsNumber(defaultScale, initialState.scale));
     this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
     this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
+    this.setState(p => ({ eventType: p.eventType === animationTime ? false : p.eventType }));
   };
 
   //////////
@@ -456,6 +466,10 @@ class StateProvider extends Component {
       sensitivity: this.state.sensitivity,
       maxScale: this.state.maxScale,
       minScale: this.state.minScale,
+      wheelAnimationSpeed: this.state.wheelAnimationSpeed,
+      zoomAnimationSpeed: this.state.zoomAnimationSpeed,
+      pinchAnimationSpeed: this.state.pinchAnimationSpeed,
+      panAnimationSpeed: this.state.panAnimationSpeed,
       minPositionX: this.state.minPositionX,
       minPositionY: this.state.minPositionY,
       maxPositionX: this.state.maxPositionX,
@@ -505,6 +519,7 @@ class StateProvider extends Component {
         handlePinchStart: this.handlePinchStart,
         handlePinch: this.handlePinch,
         handlePinchStop: this.handlePinchStop,
+        eventType: this.state.eventType,
       },
     };
     const { children } = this.props;
@@ -517,11 +532,29 @@ class StateProvider extends Component {
 
 StateProvider.defaultProps = {
   defaultValues: {},
+  onWheelStart: null,
+  onWheel: null,
+  onWheelStop: null,
+  onPanningStart: null,
+  onPanning: null,
+  onPanningStop: null,
+  onPinchingStart: null,
+  onPinching: null,
+  onPinchingStop: null,
 };
 
 StateProvider.propTypes = {
   children: PropTypes.any,
   defaultValues: PropTypes.object,
+  onWheelStart: PropTypes.func,
+  onWheel: PropTypes.func,
+  onWheelStop: PropTypes.func,
+  onPanningStart: PropTypes.func,
+  onPanning: PropTypes.func,
+  onPanningStop: PropTypes.func,
+  onPinchingStart: PropTypes.func,
+  onPinching: PropTypes.func,
+  onPinchingStop: PropTypes.func,
 };
 
 export { Context, StateProvider };

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StateProvider } from "../store/StateContext";
-import { deleteInvalidProps } from "../store/utils";
+import { deleteUndefinedProps } from "../store/utils";
 
 const TransformWrapper = ({
   children,
@@ -11,6 +11,10 @@ const TransformWrapper = ({
   sensitivity,
   maxScale,
   minScale,
+  wheelAnimationSpeed,
+  zoomAnimationSpeed,
+  pinchAnimationSpeed,
+  panAnimationSpeed,
   minPositionX,
   minPositionY,
   maxPositionX,
@@ -29,16 +33,29 @@ const TransformWrapper = ({
   dbClickEnabled,
   lastPositionZoomEnabled,
   enableZoomThrottling,
+  onWheelStart,
+  onWheel,
+  onWheelStop,
+  onPanningStart,
+  onPanning,
+  onPanningStop,
+  onPinchingStart,
+  onPinching,
+  onPinchingStop,
 }) => {
   return (
     <StateProvider
-      defaultValues={deleteInvalidProps({
+      defaultValues={deleteUndefinedProps({
         scale,
         positionX,
         positionY,
         sensitivity,
         maxScale,
         minScale,
+        wheelAnimationSpeed,
+        zoomAnimationSpeed,
+        pinchAnimationSpeed,
+        panAnimationSpeed,
         minPositionX,
         minPositionY,
         maxPositionX,
@@ -58,6 +75,15 @@ const TransformWrapper = ({
         lastPositionZoomEnabled,
         enableZoomThrottling,
       })}
+      onWheelStart={onWheelStart}
+      onWheel={onWheel}
+      onWheelStop={onWheelStop}
+      onPanningStart={onPanningStart}
+      onPanning={onPanning}
+      onPanningStop={onPanningStop}
+      onPinchingStart={onPinchingStart}
+      onPinching={onPinching}
+      onPinchingStop={onPinchingStop}
     >
       {children}
     </StateProvider>
@@ -72,6 +98,10 @@ TransformWrapper.propTypes = {
   sensitivity: PropTypes.number,
   maxScale: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
   minScale: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+  wheelAnimationSpeed: PropTypes.number,
+  zoomAnimationSpeed: PropTypes.number,
+  pinchAnimationSpeed: PropTypes.number,
+  panAnimationSpeed: PropTypes.number,
   minPositionX: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
   maxPositionX: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
   minPositionY: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
@@ -90,6 +120,15 @@ TransformWrapper.propTypes = {
   dbClickEnabled: PropTypes.bool,
   lastPositionZoomEnabled: PropTypes.bool,
   enableZoomThrottling: PropTypes.bool,
+  onWheelStart: PropTypes.func,
+  onWheel: PropTypes.func,
+  onWheelStop: PropTypes.func,
+  onPanningStart: PropTypes.func,
+  onPanning: PropTypes.func,
+  onPanningStop: PropTypes.func,
+  onPinchingStart: PropTypes.func,
+  onPinching: PropTypes.func,
+  onPinchingStop: PropTypes.func,
 };
 
 export default TransformWrapper;

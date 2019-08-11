@@ -8,6 +8,8 @@
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+  margin: 0;
+  padding: 0;
 }
 .content {
   display: flex;
@@ -15,6 +17,8 @@
   width: fit-content;
   height: fit-content;
   transform-origin: 0% 0%;
+  margin: 0;
+  padding: 0;
 }
 .content img {
   pointer-events: none;

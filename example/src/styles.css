@@ -202,3 +202,17 @@ header.masthead .bg-circle-4 {
     filter: brightness(150%);
   }
 }
+
+.example-text {
+  padding: 30px 60px;
+  background: #ff9317;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.btn-type {
+  margin-left: 0 !important;
+  color: black !important;
+}

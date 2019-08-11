@@ -11,6 +11,7 @@ body {
   background: rgba(100, 100, 100, 0.25);
   width: 600px;
   max-width: 60vw;
+  height: 330px;
 }
 
 .element img {

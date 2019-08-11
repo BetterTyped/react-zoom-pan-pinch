@@ -12,16 +12,21 @@ import {
 const defaultCoords = { x: 0, y: 0 };
 
 export let initialState = {
-  sensitivity: 0.4,
-  zoomOutSensitivity: 5,
-  zoomInSensitivity: 5,
-  dbClickSensitivity: 7,
+  sensitivity: 0.5,
+  zoomInStep: 3,
+  zoomOutStep: 2,
+  dbClickStep: 5,
   pinchSensitivity: 0.6,
   positionX: 0,
   positionY: 0,
   scale: 1,
-  maxScale: 4,
-  minScale: 0.8,
+  maxScale: 8,
+  minScale: 0.5,
+  wheelAnimationSpeed: 0,
+  zoomAnimationSpeed: 200,
+  pinchAnimationSpeed: 0,
+  panAnimationSpeed: 0,
+  resetAnimationSpeed: 0,
   maxPositionX: null,
   minPositionX: null,
   maxPositionY: null,
@@ -39,6 +44,8 @@ export let initialState = {
   startCoords: defaultCoords,
   isDown: null,
   distance: null,
+  lastPositionZoomEnabled: false,
+  enableZoomThrottling: false,
 };
 
 export let reducer = (state, action) => {

@@ -24,64 +24,87 @@ yarn add react-zoom-pan-pinch
 
 ## Props of TransformWrapper
 
-| Props                  |           Type |
-| :--------------------- | -------------: |
-| sensitivity            |         Number |
-| zoomInSensitivity      |         Number |
-| zoomOutSensitivity     |         Number |
-| dbClickSensitivity     |         Number |
-| pinchSensitivity       |         Number |
-| positionX              |         Number |
-| positionY              |         Number |
-| scale                  |         Number |
-| maxScale               | Number or null |
-| minScale               | Number or null |
-| maxPositionX           | Number or null |
-| minPositionX           | Number or null |
-| maxPositionY           | Number or null |
-| minPositionY           | Number or null |
-| limitToBounds          |        Boolean |
-| disabled               |        Boolean |
-| zoomingEnabled         |        Boolean |
-| panningEnabled         |        Boolean |
-| pinchEnabled           |        Boolean |
-| dbClickEnabled         |        Boolean |
-| transformEnabled       |        Boolean |
-| enableZoomedOutPanning |        Boolean |
+| Props                   | Default |           Type |
+| :---------------------- | :-----: | -------------: |
+| sensitivity             |   0.4   |         Number |
+| zoomInStep              |    3    |         Number |
+| zoomOutStep             |    2    |         Number |
+| dbClickStep             |    5    |         Number |
+| pinchSensitivity        |   0.6   |         Number |
+| positionX               |    0    |         Number |
+| positionY               |    0    |         Number |
+| scale                   |    1    |         Number |
+| maxScale                |    8    | Number or null |
+| minScale                |   0.5   | Number or null |
+| wheelAnimationSpeed     |    0    |         Number |
+| zoomAnimationSpeed      |   200   |         Number |
+| pinchAnimationSpeed     |    0    |         Number |
+| panAnimationSpeed       |    0    |         Number |
+| resetAnimationSpeed     |    0    |         Number |
+| maxPositionX            |  null   | Number or null |
+| minPositionX            |  null   | Number or null |
+| maxPositionY            |  null   | Number or null |
+| minPositionY            |  null   | Number or null |
+| limitToBounds           |  true   |        Boolean |
+| disabled                |  false  |        Boolean |
+| zoomingEnabled          |  true   |        Boolean |
+| panningEnabled          |  true   |        Boolean |
+| pinchEnabled            |  true   |        Boolean |
+| dbClickEnabled          |  true   |        Boolean |
+| transformEnabled        |  true   |        Boolean |
+| enableZoomedOutPanning  |  false  |        Boolean |
+| lastPositionZoomEnabled |  false  |        Boolean |
+| enableZoomThrottling    |  false  |        Boolean |
+| onWheelStart            |  null   |       Function |
+| onWheel                 |  null   |       Function |
+| onWheelStop             |  null   |       Function |
+| onPanningStart          |  null   |       Function |
+| onPanning               |  null   |       Function |
+| onPanningStop           |  null   |       Function |
+| onPinchingStart         |  null   |       Function |
+| onPinching              |  null   |       Function |
+| onPinchingStop          |  null   |       Function |
 
 ## Values returned from TransformWrapper component
 
-| Value                                     | Description                                      | Default |           Type |
-| :---------------------------------------- | :----------------------------------------------- | :-----: | -------------: |
-| sensitivity                               | Wheel zoom sensitivity                           |   0.4   |         Number |
-| zoomInSensitivity                         | handleZoomIn function zoom sensitivity           |    5    |         Number |
-| zoomOutSensitivity                        | handleZoomOut function zoom sensitivity          |    5    |         Number |
-| dbClickSensitivity                        | Double click zoom sensitivity                    |    7    |         Number |
-| pinchSensitivity                          | Pinching zoom sensitivity                        |   0.6   |         Number |
-| positionX                                 | Pixel value of x position                        |    0    |         Number |
-| positionY                                 | Pixel value of y position                        |    0    |         Number |
-| scale                                     | Scale value                                      |    1    |         Number |
-| maxScale                                  | Max scale value                                  |    4    |         Number |
-| minScale                                  | Min scale value                                  |   0.8   |         Number |
-| maxPositionX                              | Max position x                                   |  null   | Number or null |
-| minPositionX                              | Min position x                                   |  null   | Number or null |
-| maxPositionY                              | Max position y                                   |  null   | Number or null |
-| minPositionY                              | Min position y                                   |  null   | Number or null |
-| limitToBounds                             | Limit zooming and panning to wrapper boundaries  |  true   |        Boolean |
-| disabled                                  | Disables all functionality                       |  false  |        Boolean |
-| zoomingEnabled                            | Enables zooming                                  |  true   |        Boolean |
-| panningEnabled                            | Enables panning                                  |  true   |        Boolean |
-| pinchEnabled                              | Enables pinching                                 |  true   |        Boolean |
-| dbClickEnabled                            | Enables double click                             |  true   |        Boolean |
-| transformEnabled                          | Enables component transformation in x and y axis |  true   |        Boolean |
-| enableZoomedOutPanning                    | Enables panning when zoom is lower than 1        |  false  |        Boolean |
-| setScale(scale)                           | Sets scale                                       |         |         Number |
-| setPositionX(positionX)                   | Sets position x                                  |         |         Number |
-| setPositionY(positionY)                   | Sets position y                                  |         |         Number |
-| zoomIn()                                  | Zooming in                                       |         |                |
-| zoomOut()                                 | Zooming out                                      |         |                |
-| setTransform(positionX, positionY, scale) | Sets transformations of content                  |         | Number or null |
-| resetTransform()                          | Reset transformations to the initial values      |         |             "" |
+| Value                                     | Description                                                                 |      Type      |
+| :---------------------------------------- | :-------------------------------------------------------------------------- | :------------: |
+| sensitivity                               | Wheel zoom sensitivity                                                      |     Number     |
+| zoomInStep                                | handleZoomIn function zoom sensitivity                                      |     Number     |
+| zoomOutStep                               | handleZoomOut function zoom sensitivity                                     |     Number     |
+| dbClickStep                               | Double click zoom sensitivity                                               |     Number     |
+| pinchSensitivity                          | Pinching zoom sensitivity                                                   |     Number     |
+| positionX                                 | Pixel value of x position                                                   |     Number     |
+| positionY                                 | Pixel value of y position                                                   |     Number     |
+| scale                                     | Scale value                                                                 |     Number     |
+| maxScale                                  | Max scale value                                                             |     Number     |
+| minScale                                  | Min scale value                                                             |     Number     |
+| wheelAnimationSpeed                       | Animation speed of wheel zooming                                            |     Number     |
+| zoomAnimationSpeed                        | Animation speed of control buttons zooming                                  |     Number     |
+| pinchAnimationSpeed                       | Animation speed of pinch zooming                                            |     Number     |
+| panAnimationSpeed                         | Animation speed of panning                                                  |     Number     |
+| resetAnimationSpeed                       | Animation speed of panning                                                  |     Number     |
+| maxPositionX                              | Max position x                                                              | Number or null |
+| minPositionX                              | Min position x                                                              | Number or null |
+| maxPositionY                              | Max position y                                                              | Number or null |
+| minPositionY                              | Min position y                                                              | Number or null |
+| limitToBounds                             | Limit zooming and panning to wrapper boundaries                             |    Boolean     |
+| disabled                                  | Disables all functionality                                                  |    Boolean     |
+| zoomingEnabled                            | Enables zooming                                                             |    Boolean     |
+| panningEnabled                            | Enables panning                                                             |    Boolean     |
+| pinchEnabled                              | Enables pinching                                                            |    Boolean     |
+| dbClickEnabled                            | Enables double click                                                        |    Boolean     |
+| transformEnabled                          | Enables component transformation in x and y axis                            |    Boolean     |
+| enableZoomedOutPanning                    | Enables panning when zoom is lower than 1                                   |    Boolean     |
+| lastPositionZoomEnabled                   | Enables zoom buttons to scale in/out to the last wheel mouse event position |    Boolean     |
+| previousScale                             | Previous scale value                                                        |     Number     |
+| setScale(scale)                           | Sets scale                                                                  |     Number     |
+| setPositionX(positionX)                   | Sets position x                                                             |     Number     |
+| setPositionY(positionY)                   | Sets position y                                                             |     Number     |
+| zoomIn()                                  | Zooming in function, used for controls button                               |      ---       |
+| zoomOut()                                 | Zooming out function, used for controls button                              |      ---       |
+| setTransform(positionX, positionY, scale) | Sets transformations of content                                             | Number or null |
+| resetTransform(animationTime)             | Reset transformations to the initial values                                 |     Number     |
 
 ## Usage
 

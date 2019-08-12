@@ -256,3 +256,8 @@ header.masthead .bg-circle-4 {
 button {
   outline: none !important;
 }
+
+.zoom {
+  max-height: 400px;
+  object-fit: cover;
+}

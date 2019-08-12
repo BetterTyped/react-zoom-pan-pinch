@@ -4,6 +4,7 @@ import zoom_in from "./images/zoom-in.svg";
 import zoom_out from "./images/zoom-out.svg";
 import zoom_reset from "./images/zoom-reset.svg";
 import logo from "./images/logo.png";
+import example_img from "./images/example.jpeg";
 
 export default class App extends Component {
   state = {
@@ -114,7 +115,7 @@ export default class App extends Component {
                       <div className="element">
                         {type ? (
                           <TransformComponent>
-                            <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="test" />
+                            <img className="zoom" src={example_img} alt="test" />
                           </TransformComponent>
                         ) : (
                           <TransformComponent>

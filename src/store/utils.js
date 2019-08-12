@@ -23,10 +23,10 @@ export const checkIsNumber = (num, defaultValue) => {
  * 4# eg. boundLimiter(10, 0, 3, false) => 10
  */
 export const boundLimiter = (value, minBound, maxBound, isActive) => {
-  if (!isActive) return value;
-  if (value < minBound) return minBound;
-  if (value > maxBound) return maxBound;
-  return value;
+  if (!isActive) return roundNumber(value, 2);
+  if (value < minBound) return roundNumber(minBound, 2);
+  if (value > maxBound) return roundNumber(maxBound, 2);
+  return roundNumber(value, 2);
 };
 
 /**
@@ -49,12 +49,9 @@ export const relativeCoords = (event, wrapperComponent, contentComponent, pannin
   let y = panningCase ? event.clientY : event.clientY - contentRect.top;
 
   // Mobile touch event case
-  if (isNaN(x)) {
-    const dist = getMidPagePosition(event.touches[0], event.touches[1] || event.touches[0]);
-    const rect = wrapperComponent.getBoundingClientRect();
-
-    x = dist.x - rect.x;
-    y = dist.y - rect.y;
+  if (isNaN(x) && event.touches && event.touches[0]) {
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
   }
 
   return {
@@ -87,7 +84,6 @@ export const calculateBoundingArea = (
     wrapperWidth > contentWidth ? diffWidth * (enableZoomedOutPanning ? 1 : 0.5) : 0;
   const scaleHeightFactor =
     wrapperHeight > contentHeight ? diffHeight * (enableZoomedOutPanning ? 1 : 0.5) : 0;
-
   const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
   const maxPositionX = 0 + scaleWidthFactor;
   const minPositionY = wrapperHeight - contentHeight - scaleHeightFactor;
@@ -101,18 +97,12 @@ export const calculateBoundingArea = (
  * Used to get middle point of two fingers pinch
  */
 
-export const getMiddleCoords = (firstPoint, secondPoint, wrapperComponent) => {
-  if (isNaN(firstPoint.x)) {
-    const dist = getMidPagePosition(firstPoint, secondPoint);
-    const rect = wrapperComponent.getBoundingClientRect();
-    return {
-      x: dist.x - rect.x,
-      y: dist.y - rect.y,
-    };
-  }
+export const getMiddleCoords = (firstPoint, secondPoint, contentComponent, scale) => {
+  const contentRect = contentComponent.getBoundingClientRect();
+
   return {
-    x: (firstPoint.x + secondPoint.x) / 2,
-    y: (firstPoint.y + secondPoint.y) / 2,
+    x: ((firstPoint.clientX + secondPoint.clientX) / 2 - contentRect.left) / scale,
+    y: ((firstPoint.clientY + secondPoint.clientY) / 2 - contentRect.top) / scale,
   };
 };
 
@@ -120,6 +110,7 @@ export const getMiddleCoords = (firstPoint, secondPoint, wrapperComponent) => {
  * Returns middle position of PageX for touch events
  */
 export const getMidPagePosition = (firstPoint, secondPoint) => {
+  if (!firstPoint || !secondPoint) return console.warn("There are no points provided");
   return {
     x: (firstPoint.clientX + secondPoint.clientX) / 2,
     y: (firstPoint.clientY + secondPoint.clientY) / 2,

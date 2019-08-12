@@ -96,6 +96,7 @@ class StateProvider extends Component {
       enableZoomedOutPanning,
       limitToBounds,
       enableZoomThrottling,
+      transformEnabled,
     } = this.state;
     if (throttle && enableZoomThrottling) return;
     if (isDown || !zoomingEnabled || disabled) return;
@@ -151,6 +152,7 @@ class StateProvider extends Component {
     this.setState({ previousScale: scale, lastMouseEventPosition: { x: mouseX, y: mouseY } });
     this.setScale(newScale);
 
+    if (!transformEnabled) return;
     // Calculate new positions
     let newPositionX = -(mouseX * scaleDifference) + positionX;
     let newPositionY = -(mouseY * scaleDifference) + positionY;
@@ -294,6 +296,7 @@ class StateProvider extends Component {
   //////////
 
   handlePinchStart = event => {
+    if (event.touches && event.touches.length < 2) return;
     this.handleStartPanning(event);
     event.preventDefault();
     event.stopPropagation();
@@ -399,9 +402,9 @@ class StateProvider extends Component {
   };
 
   handleDbClick = event => {
-    const { zoomingEnabled, disabled, dbClickStep } = this.state;
+    const { zoomingEnabled, disabled, dbClickStep, dbClickEnabled } = this.state;
     if (!event) return console.error("Double click function require event prop");
-    if (!zoomingEnabled || disabled) return;
+    if (!zoomingEnabled || disabled || !dbClickEnabled) return;
     this.handleZoom(event, false, 1, dbClickStep);
   };
 
@@ -422,6 +425,7 @@ class StateProvider extends Component {
   };
 
   setTransform = (positionX, positionY, scale) => {
+    if (!this.state.transformEnabled) return;
     !isNaN(scale) && this.setScale(scale);
     !isNaN(positionX) && this.setPositionX(positionX);
     !isNaN(positionY) && this.setPositionY(positionY);

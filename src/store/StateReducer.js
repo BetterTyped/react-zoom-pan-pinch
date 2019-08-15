@@ -35,4 +35,5 @@ export let initialState = {
   enableZoomThrottling: false,
   distance: null,
   previousDistance: null,
+  middleCoords: null,
 };

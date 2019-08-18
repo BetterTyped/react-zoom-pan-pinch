@@ -226,14 +226,11 @@ class StateProvider extends Component {
   };
 
   //////////
-  // Touch Events
+  // Pinch
   //////////
 
-  handleTouchStart = event => {
-    const { disabled, scale } = this.state;
-    const { touches } = event;
-    // if (!disabled && (touches && touches.length === 1)) this.handleStartPanning(event);
-    if (disabled || (touches && touches.length !== 2)) return;
+  handlePinchStart = event => {
+    const { scale } = this.state;
     event.preventDefault();
     event.stopPropagation();
 
@@ -245,17 +242,12 @@ class StateProvider extends Component {
     handleCallback(this.props.onPinchingStart, this.getCallbackProps());
   };
 
-  handleTouch = event => {
-    const { pinchEnabled, disabled } = this.state;
-    if (disabled) return;
-    // if (event.touches.length === 1) this.handlePanning(event);
-    if (pinchEnabled && event.touches.length === 2) {
-      handleZoomPinch.bind(this, event)();
-      handleCallback(this.props.onPinching, this.getCallbackProps());
-    }
+  handlePinch = event => {
+    handleZoomPinch.bind(this, event)();
+    handleCallback(this.props.onPinching, this.getCallbackProps());
   };
 
-  handleTouchStop = () => {
+  handlePinchStop = () => {
     if (typeof distance === "number") {
       this.setState(p => ({ eventType: p.eventType === "pinch" ? false : p.eventType }));
       previousDistance = null;
@@ -264,6 +256,29 @@ class StateProvider extends Component {
 
       handleCallback(this.props.onPinchingStop, this.getCallbackProps());
     }
+  };
+
+  //////////
+  // Touch Events
+  //////////
+
+  handleTouchStart = event => {
+    const { disabled } = this.state;
+    const { touches } = event;
+    if (disabled) return;
+    if (touches && touches.length === 1) return this.handleStartPanning(event);
+    if (touches && touches.length === 2) return this.handlePinchStart();
+  };
+
+  handleTouch = event => {
+    const { panningEnabled, pinchEnabled, disabled } = this.state;
+    if (disabled) return;
+    if (panningEnabled && event.touches.length === 1) return this.handlePanning(event);
+    if (pinchEnabled && event.touches.length === 2) return this.handlePinch();
+  };
+
+  handleTouchStop = () => {
+    this.handlePinchStop();
     this.handleStopPanning();
   };
 

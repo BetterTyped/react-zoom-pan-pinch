@@ -134,6 +134,9 @@ export function handleZoomWheel(event) {
     enableZoomedOutPanning
   );
 
+  // Save last zoom bounds, to speed up panning function
+  this.bounds = bounds;
+
   // Calculate transformations
   const { newPositionX, newPositionY } = calculateTransformation.bind(
     this,

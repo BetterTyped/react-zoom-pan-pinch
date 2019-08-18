@@ -1,4 +1,4 @@
-export let initialState = {
+export const initialState = {
   sensitivity: 1,
   zoomInStep: 1,
   zoomOutStep: 1,

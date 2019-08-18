@@ -1,32 +1,25 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { initialState } from "./StateReducer";
+import { initialState } from "./InitialState";
 import {
   roundNumber,
   checkIsNumber,
-  boundLimiter,
   relativeCoords,
-  calculateBoundingArea,
-  getMiddleCoords,
   getDistance,
-  getRelativeZoomCoords,
   getLastPositionZoomCoords,
   handleCallback,
 } from "./utils";
 import { handleZoomWheel } from "./_zoom";
 import { handleZoomPinch } from "./_pinch";
+import { handlePanning, getClientPosition } from "./_pan";
 import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
 
-let reset = null;
 let timer = null;
-const timerTime = 100;
-let throttle = false;
-const throttleTime = 1;
+const timerTime = 50;
 
 let distance = null;
-let previousDistance = null;
 
 class StateProvider extends Component {
   state = {
@@ -34,32 +27,42 @@ class StateProvider extends Component {
     ...this.props.defaultValues,
     previousScale: initialState.scale,
   };
+
   pinchStartDistance = null;
   lastDistance = null;
   pinchStartScale = null;
+  distance = null;
+  bounds = null;
+  startPanningCoords = null;
+  enableVelocityCalculation = false;
+  startVelocity = false;
+  velocityStartPosition = null;
+  lastMouseX = null;
+  lastMouseY = null;
+  velocity = null;
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
 
     // Panning on window to allow panning when mouse is out of wrapper
-    // window.addEventListener("mousedown", this.handleStartPanning, passiveOption);
-    // window.addEventListener("mousemove", this.handlePanning, passiveOption);
-    // window.addEventListener("mouseup", this.handleStopPanning, passiveOption);
-    // return () => {
-    //   window.removeEventListener("mousedown", this.handleStartPanning, passiveOption);
-    //   window.removeEventListener("mousemove", this.handlePanning, passiveOption);
-    //   window.removeEventListener("mouseup", this.handleStopPanning, passiveOption);
-    // };
+    window.addEventListener("mousedown", this.handleStartPanning, passiveOption);
+    window.addEventListener("mousemove", this.handlePanning, passiveOption);
+    window.addEventListener("mouseup", this.handleStopPanning, passiveOption);
+    return () => {
+      window.removeEventListener("mousedown", this.handleStartPanning, passiveOption);
+      window.removeEventListener("mousemove", this.handlePanning, passiveOption);
+      window.removeEventListener("mouseup", this.handleStopPanning, passiveOption);
+    };
   }
 
   componentDidUpdate(oldProps, oldState) {
-    const { wrapperComponent } = this.state;
+    const { wrapperComponent, enableZoomedOutPanning } = this.state;
     const { defaultValues } = this.props;
     if (!oldState.wrapperComponent && this.state.wrapperComponent) {
       // Zooming events on wrapper
       const passiveOption = makePassiveEventOption(false);
       wrapperComponent.addEventListener("wheel", this.handleWheel, passiveOption);
-      // wrapperComponent.addEventListener("dblclick", this.handleDbClick, passiveOption);
+      wrapperComponent.addEventListener("dblclick", this.handleDbClick, passiveOption);
       wrapperComponent.addEventListener("touchstart", this.handleTouchStart, passiveOption);
       wrapperComponent.addEventListener("touchmove", this.handleTouch, passiveOption);
       wrapperComponent.addEventListener("touchend", this.handleTouchStop, passiveOption);
@@ -67,6 +70,9 @@ class StateProvider extends Component {
     if (oldProps.defaultValues !== defaultValues) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ ...defaultValues });
+    }
+    if (this.bounds && oldState.enableZoomedOutPanning !== enableZoomedOutPanning) {
+      this.bounds = null;
     }
   }
 
@@ -77,13 +83,13 @@ class StateProvider extends Component {
   handleWheel = event => {
     // Wheel start event
     if (!timer) {
+      this.handleDisableVelocity();
       this.setState({ eventType: "wheel" });
       handleCallback(this.props.onWheelStart, this.getCallbackProps());
     }
 
     // Wheel event
     handleZoomWheel.bind(this, event)();
-
     handleCallback(this.props.onWheel, this.getCallbackProps());
 
     // Wheel stop event
@@ -99,128 +105,56 @@ class StateProvider extends Component {
   // Panning
   //////////
 
-  handleStartPanning = event => {
-    const {
-      isDown,
-      panningEnabled,
-      disabled,
-      wrapperComponent,
-      contentComponent,
-      positionX,
-      positionY,
-    } = this.state;
-    const { target, touches } = event;
-
-    if (
-      isDown ||
+  checkIsPanningActive = event => {
+    const { panningEnabled, disabled } = this.state;
+    return (
+      !this.isDown ||
       !panningEnabled ||
       disabled ||
-      !wrapperComponent.contains(target) ||
-      (touches && touches.length !== 1)
-    )
-      return;
+      (event.touches &&
+        (event.touches.length !== 1 || Math.abs(this.startCoords.x - event.touches[0].clientX) < 1))
+    );
+  };
+
+  handleSetUpPanning = (x, y) => {
+    const { positionX, positionY } = this.state;
+    this.isDown = true;
+    this.startCoords = { x: x - positionX, y: y - positionY };
+    handleCallback(this.props.onPanningStart, this.getCallbackProps());
+  };
+
+  handleStartPanning = event => {
+    const { panningEnabled, disabled, wrapperComponent } = this.state;
+    const { target, touches } = event;
+    if (!panningEnabled || disabled || !wrapperComponent.contains(target)) return;
+
+    this.handleDisableVelocity();
+
+    // Mobile points
     if (touches && touches.length === 1) {
-      distance = touches[0].clientX;
-    } else {
-      let points = relativeCoords(event, wrapperComponent, contentComponent, true);
-
-      const startCoords = {
-        x: points.x - positionX,
-        y: points.y - positionY,
-      };
-
-      this.setPanningData(startCoords, true, "pan");
-      handleCallback(this.props.onPanningStart, this.getCallbackProps());
+      this.handleSetUpPanning(touches[0].clientX, touches[0].clientY);
+    }
+    // Desktop points
+    if (!touches) {
+      this.handleSetUpPanning(event.clientX, event.clientY);
     }
   };
 
   handlePanning = event => {
-    const {
-      isDown,
-      panningEnabled,
-      disabled,
-      wrapperComponent,
-      contentComponent,
-      startPanningCoords,
-      enableZoomedOutPanning,
-      limitToBounds,
-      positionX,
-      positionY,
-    } = this.state;
-    if (
-      event.touches &&
-      event.touches.length === 1 &&
-      !isDown &&
-      Math.abs(distance - event.touches[0].clientX) > 1
-    ) {
-      // Mobile panning event because everything is based on touch navigation
-      event.preventDefault();
-      event.stopPropagation();
-      let points = relativeCoords(event, wrapperComponent, contentComponent, true);
-
-      const startCoords = {
-        x: points.x - positionX,
-        y: points.y - positionY,
-      };
-
-      this.setPanningData(startCoords, true, "pan");
-      handleCallback(this.props.onPanningStart, this.getCallbackProps());
-    }
-    if (
-      !isDown ||
-      !panningEnabled ||
-      disabled ||
-      (event.touches && event.touches.length !== 1) ||
-      !startPanningCoords
-    )
-      return;
-    event.stopPropagation();
     event.preventDefault();
+    if (this.checkIsPanningActive(event)) return;
+    event.stopPropagation();
 
-    const {
-      x,
-      y,
-      wrapperWidth,
-      wrapperHeight,
-      contentWidth,
-      contentHeight,
-      diffWidth,
-      diffHeight,
-    } = relativeCoords(event, wrapperComponent, contentComponent, true);
-    const newPositionX = roundNumber(x - startPanningCoords.x, 2);
-    const newPositionY = roundNumber(y - startPanningCoords.y, 2);
-
-    // Calculate bounding area
-    const { minPositionX, maxPositionX, minPositionY, maxPositionY } = calculateBoundingArea(
-      wrapperWidth,
-      contentWidth,
-      diffWidth,
-      wrapperHeight,
-      contentHeight,
-      diffHeight,
-      enableZoomedOutPanning
-    );
-    this.setPositionX(boundLimiter(newPositionX, minPositionX, maxPositionX, limitToBounds));
-    this.setPositionY(boundLimiter(newPositionY, minPositionY, maxPositionY, limitToBounds));
+    this.calculateVelocityStart(event);
+    handlePanning.bind(this, event)();
     handleCallback(this.props.onPanning, this.getCallbackProps());
   };
 
   handleStopPanning = () => {
-    const { isDown, wrapperComponent, contentComponent, scale, positionX, positionY } = this.state;
-    this.setIsDown(false);
-    if (isDown) {
+    if (this.isDown) {
+      this.isDown = false;
       distance = null;
-      const { x, y } = getRelativeZoomCoords({
-        wrapperComponent,
-        contentComponent,
-        scale,
-        positionX,
-        positionY,
-      });
-      this.setState(p => ({
-        lastMouseEventPosition: { x, y },
-        eventType: p.eventType === "pan" ? false : p.eventType,
-      }));
+      this.handleFireVelocity();
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
     }
   };
@@ -234,6 +168,7 @@ class StateProvider extends Component {
     event.preventDefault();
     event.stopPropagation();
 
+    this.handleDisableVelocity();
     const distance = getDistance(event.touches[0], event.touches[1]);
     this.pinchStartDistance = distance;
     this.lastDistance = distance;
@@ -248,12 +183,10 @@ class StateProvider extends Component {
   };
 
   handlePinchStop = () => {
-    if (typeof distance === "number") {
-      this.setState(p => ({ eventType: p.eventType === "pinch" ? false : p.eventType }));
-      previousDistance = null;
-      distance = null;
-      this.setState({ middleCoords: null });
-
+    if (typeof pinchStartScale === "number") {
+      this.pinchStartDistance = null;
+      this.lastDistance = null;
+      this.pinchStartScale = null;
       handleCallback(this.props.onPinchingStop, this.getCallbackProps());
     }
   };
@@ -265,21 +198,73 @@ class StateProvider extends Component {
   handleTouchStart = event => {
     const { disabled } = this.state;
     const { touches } = event;
+    this.handleDisableVelocity();
     if (disabled) return;
     if (touches && touches.length === 1) return this.handleStartPanning(event);
-    if (touches && touches.length === 2) return this.handlePinchStart();
+    if (touches && touches.length === 2) return this.handlePinchStart(event);
   };
 
   handleTouch = event => {
     const { panningEnabled, pinchEnabled, disabled } = this.state;
     if (disabled) return;
     if (panningEnabled && event.touches.length === 1) return this.handlePanning(event);
-    if (pinchEnabled && event.touches.length === 2) return this.handlePinch();
+    if (pinchEnabled && event.touches.length === 2) return this.handlePinch(event);
   };
 
   handleTouchStop = () => {
     this.handlePinchStop();
     this.handleStopPanning();
+  };
+
+  //////////
+  // Velocity
+  //////////
+
+  handleEnableVelocity = () => {
+    this.enableVelocityCalculation = true;
+    this.startVelocity = false;
+  };
+
+  handleDisableVelocity = () => {
+    this.enableVelocityCalculation = false;
+    this.startVelocity = false;
+    this.velocity = null;
+  };
+
+  handleFireVelocity = () => {
+    this.enableVelocityCalculation = false;
+    this.startVelocity = true;
+  };
+
+  calculateVelocityStart = event => {
+    this.handleEnableVelocity();
+    if (!this.enableVelocityCalculation) return;
+    if (this.velocityStartDate === null) {
+      const position = getClientPosition(event);
+      if (!position) return;
+      const { clientX, clientY } = position;
+      this.velocityStartDate = Date.now();
+      this.lastMouseX = clientX;
+      this.lastMouseY = clientY;
+      return;
+    }
+
+    const position = getClientPosition(event);
+    if (!position) return console.error("No mouse or touch position detected");
+    const { clientX, clientY } = position;
+    const newPositionX = clientX;
+    const newPositionY = clientY;
+    const now = Date.now();
+    const distanceX = newPositionX - this.lastMouseX;
+    const distanceY = newPositionY - this.lastMouseY;
+    const interval = now - this.velocityStartDate;
+    const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
+
+    this.velocity = { velocity: velocity || 0, distanceX, distanceY };
+
+    this.velocityStartDate = now;
+    this.lastMouseX = newPositionX;
+    this.lastMouseY = newPositionY;
   };
 
   //////////
@@ -378,17 +363,11 @@ class StateProvider extends Component {
     const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
     const { scale, positionX, positionY, disabled } = this.state;
     if (disabled) return;
-    const type = isNaN(animation) ? "reset" : animation;
-    this.setState({ eventType: type });
     if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
       return;
     this.setScale(checkIsNumber(defaultScale, initialState.scale));
     this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
     this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
-    clearTimeout(reset);
-    reset = setTimeout(() => {
-      this.setState(p => ({ eventType: p.eventType === type ? false : p.eventType }));
-    }, 1);
   };
 
   //////////
@@ -399,28 +378,8 @@ class StateProvider extends Component {
     this.setState({ scale, positionX, positionY, previousScale, lastMouseEventPosition });
   };
 
-  setPanningData = (startPanningCoords, isDown, eventType) => {
-    this.setState({ startPanningCoords, isDown, eventType });
-  };
-
-  setStartPanningCoords = startPanningCoords => {
-    this.setState({ startPanningCoords });
-  };
-
-  setStartPinchDistance = startPinchDistance => {
-    this.setState({ startPinchDistance });
-  };
-
   setIsDown = isDown => {
     this.setState({ isDown });
-  };
-
-  setDistance = distance => {
-    this.setState({ distance });
-  };
-
-  setPreviousDistance = previousDistance => {
-    this.setState({ previousDistance });
   };
 
   setWrapperComponent = wrapperComponent => {

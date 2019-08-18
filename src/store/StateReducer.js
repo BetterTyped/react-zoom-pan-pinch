@@ -1,12 +1,13 @@
 export let initialState = {
-  sensitivity: 0.5,
-  zoomInStep: 3,
-  zoomOutStep: 2,
-  dbClickStep: 5,
+  sensitivity: 1,
+  zoomInStep: 1,
+  zoomOutStep: 1,
+  dbClickStep: 1,
   pinchSensitivity: 1,
   positionX: 0,
   positionY: 0,
   scale: 1,
+  previousScale: 1,
   maxScale: 8,
   minScale: 0.5,
   wheelAnimationSpeed: 0,
@@ -36,4 +37,5 @@ export let initialState = {
   distance: null,
   previousDistance: null,
   middleCoords: null,
+  wheelStep: 1,
 };

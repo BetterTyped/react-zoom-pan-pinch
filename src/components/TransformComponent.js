@@ -9,7 +9,6 @@ function TransformComponent({ children }) {
   const { state, nodes, internal } = useContext(Context);
   const style = {
     transform: `translate(${state.positionX}px, ${state.positionY}px) scale(${state.scale})`,
-    transition: `all ${getAnimationTime(internal.eventType)}ms ease-in-out`,
   };
 
   function getAnimationTime(type) {

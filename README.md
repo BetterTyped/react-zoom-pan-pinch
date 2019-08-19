@@ -7,10 +7,10 @@
 ## Features
 
 - :zap: Super fast and easy to use
+- :gift: Powerful context usage, which gives you a lot of freedom
 - :gem: Mobile gestures, touchpad gestures and desktop mouse events support
 - :wrench: Highly customizable
 - :boom: Lots of animations and cool stuff
-- :gift: Powerful context usage, which gives you a lot of freedom!
 
 ## DEMO
 

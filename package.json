@@ -62,5 +62,17 @@
     "js-yaml": "^3.13.1",
     "mem": "^5.1.1",
     "webpack-dev-server": "^3.7.2"
-  }
+  },
+  "keywords": [
+    "react",
+    "zoom",
+    "pan",
+    "pinch",
+    "animation",
+    "velocity",
+    "css",
+    "fast",
+    "transformations",
+    "scale"
+  ]
 }

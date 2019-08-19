@@ -4,7 +4,7 @@ import zoom_in from "./images/zoom-in.svg";
 import zoom_out from "./images/zoom-out.svg";
 import zoom_reset from "./images/zoom-reset.svg";
 import logo from "./images/logo.png";
-import example_img from "./images/example.jpeg";
+import example_img from "./images/example.jpg";
 
 export default class App extends Component {
   state = {

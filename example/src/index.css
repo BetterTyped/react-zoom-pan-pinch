@@ -9,8 +9,9 @@ body {
 .element {
   width: fit-content;
   background: rgba(100, 100, 100, 0.25);
-  width: 600px;
-  max-width: 60vw;
+  width: 100%;
+  max-width: calc(100vw - 60px);
+  margin-bottom: 40px;
 }
 
 .element img {
@@ -20,8 +21,8 @@ body {
 .tools {
   display: flex;
   justify-content: flex-end;
-  width: 600px;
-  max-width: 60vw;
+  width: 100%;
+  max-width: calc(100vw - 60px);
   margin-bottom: 10px;
 }
 

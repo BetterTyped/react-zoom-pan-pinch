@@ -84,6 +84,7 @@ export const calculateBoundingArea = (
     wrapperWidth > contentWidth ? diffWidth * (enableZoomedOutPanning ? 1 : 0.5) : 0;
   const scaleHeightFactor =
     wrapperHeight > contentHeight ? diffHeight * (enableZoomedOutPanning ? 1 : 0.5) : 0;
+
   const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
   const maxPositionX = 0 + scaleWidthFactor;
   const minPositionY = wrapperHeight - contentHeight - scaleHeightFactor;
@@ -121,7 +122,10 @@ export const getMidPagePosition = (firstPoint, secondPoint) => {
  * Returns distance between two points x,y
  */
 export const getDistance = (firstPoint, secondPoint) => {
-  return Math.hypot(firstPoint.pageX - secondPoint.pageX, firstPoint.pageY - secondPoint.pageY);
+  return Math.sqrt(
+    Math.pow(firstPoint.pageX - secondPoint.pageX, 2) +
+      Math.pow(firstPoint.pageY - secondPoint.pageY, 2)
+  );
 };
 
 /**
@@ -133,44 +137,6 @@ export const deleteUndefinedProps = value => {
   let newObject = { ...value };
   Object.keys(newObject).forEach(key => newObject[key] == undefined && delete newObject[key]);
   return newObject;
-};
-
-/**
- * Returns center zoom position, for computations, based on the last mouse position
- */
-
-export const getLastPositionZoomCoords = ({
-  lastPositionZoomEnabled,
-  lastMouseEventPosition,
-  previousScale,
-  scale,
-  wrapperComponent,
-  contentComponent,
-  positionX,
-  positionY,
-  resetLastMousePosition,
-}) => {
-  if (lastPositionZoomEnabled) {
-    if (lastMouseEventPosition) {
-      if (
-        previousScale === 1 ||
-        (previousScale >= 1 && scale <= 1) ||
-        (previousScale <= 1 && scale >= 1)
-      ) {
-        resetLastMousePosition();
-        return true;
-      }
-      return lastMouseEventPosition;
-    }
-  } else {
-    return getRelativeZoomCoords({
-      scale,
-      wrapperComponent,
-      contentComponent,
-      positionX,
-      positionY,
-    });
-  }
 };
 
 /**

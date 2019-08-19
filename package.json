@@ -1,6 +1,6 @@
 {
   "name": "react-zoom-pan-pinch",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Zoom and pan html elements in easy way",
   "author": "prc5",
   "license": "MIT",
@@ -62,5 +62,17 @@
     "js-yaml": "^3.13.1",
     "mem": "^5.1.1",
     "webpack-dev-server": "^3.7.2"
-  }
+  },
+  "keywords": [
+    "react",
+    "zoom",
+    "pan",
+    "pinch",
+    "animation",
+    "velocity",
+    "css",
+    "fast",
+    "transformations",
+    "scale"
+  ]
 }

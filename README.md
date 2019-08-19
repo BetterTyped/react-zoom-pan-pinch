@@ -38,7 +38,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 class Example extends Component {
   render() {
     return (
-      <TransformWrapper scale={1} positionX={200} positionY={100}>
+      <TransformWrapper defaultScale={1} defaultPositionX={200} defaultPositionY={100}>
         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
           <React.Fragment>
             <div className="tools">

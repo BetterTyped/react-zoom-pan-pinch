@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { initialState } from "./InitialState";
+import { roundNumber, getDistance, handleCallback } from "./utils";
 import {
-  roundNumber,
-  checkIsNumber,
-  relativeCoords,
-  getDistance,
-  getLastPositionZoomCoords,
-  handleCallback,
-} from "./utils";
-import { handleZoomWheel } from "./_zoom";
+  handleZoomWheel,
+  checkPositionBounds,
+  handleZoomControls,
+  handleZoomDbClick,
+  resetTransformations,
+} from "./_zoom";
 import { handleZoomPinch } from "./_pinch";
 import { handlePanning, getClientPosition } from "./_pan";
 import makePassiveEventOption from "./makePassiveEventOption";
@@ -19,13 +18,13 @@ const Context = React.createContext({});
 let timer = null;
 const timerTime = 50;
 
-let distance = null;
-
 class StateProvider extends Component {
   state = {
     ...initialState,
     ...this.props.defaultValues,
+    ...this.props.dynamicValues,
     previousScale: initialState.scale,
+    startAnimation: false,
   };
 
   pinchStartDistance = null;
@@ -34,12 +33,12 @@ class StateProvider extends Component {
   distance = null;
   bounds = null;
   startPanningCoords = null;
-  enableVelocityCalculation = false;
-  startVelocity = false;
-  velocityStartPosition = null;
-  lastMouseX = null;
-  lastMouseY = null;
+  velocityTime = null;
+  lastMousePosition = null;
   velocity = null;
+  animate = false;
+  offsetX = null;
+  offsetY = null;
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
@@ -56,24 +55,23 @@ class StateProvider extends Component {
   }
 
   componentDidUpdate(oldProps, oldState) {
-    const { wrapperComponent, enableZoomedOutPanning } = this.state;
-    const { defaultValues } = this.props;
+    const { wrapperComponent, enableZoomedOutPanning, startAnimation } = this.state;
+    const { dynamicValues } = this.props;
     if (!oldState.wrapperComponent && this.state.wrapperComponent) {
       // Zooming events on wrapper
       const passiveOption = makePassiveEventOption(false);
-      wrapperComponent.addEventListener("wheel", this.handleWheel, passiveOption);
+      wrapperComponent.addEventListener("mousewheel", this.handleWheel, passiveOption);
       wrapperComponent.addEventListener("dblclick", this.handleDbClick, passiveOption);
       wrapperComponent.addEventListener("touchstart", this.handleTouchStart, passiveOption);
       wrapperComponent.addEventListener("touchmove", this.handleTouch, passiveOption);
       wrapperComponent.addEventListener("touchend", this.handleTouchStop, passiveOption);
     }
-    if (oldProps.defaultValues !== defaultValues) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ ...defaultValues });
-    }
-    if (this.bounds && oldState.enableZoomedOutPanning !== enableZoomedOutPanning) {
+    // eslint-disable-next-line react/no-did-update-set-state
+    if (oldProps.dynamicValues !== dynamicValues) this.setState({ ...dynamicValues });
+
+    if (this.bounds && oldState.enableZoomedOutPanning !== enableZoomedOutPanning)
       this.bounds = null;
-    }
+    if (this.velocity && startAnimation && !this.animate) this.animateVelocity();
   }
 
   //////////
@@ -81,22 +79,27 @@ class StateProvider extends Component {
   //////////
 
   handleWheel = event => {
-    // Wheel start event
+    const { enableWheel, enableTouchPadPinch } = this.state;
+    const { onWheelStart, onWheel, onWheelStop } = this.props;
+
+    // ctrlKey detects if touchpad execute wheel or pinch gesture
+    if (!enableWheel && !event.ctrlKey) return;
+    if (!enableTouchPadPinch && event.ctrlKey) return;
+
     if (!timer) {
+      // Wheel start event
       this.handleDisableVelocity();
-      this.setState({ eventType: "wheel" });
-      handleCallback(this.props.onWheelStart, this.getCallbackProps());
+      handleCallback(onWheelStart, this.getCallbackProps());
     }
 
     // Wheel event
     handleZoomWheel.bind(this, event)();
-    handleCallback(this.props.onWheel, this.getCallbackProps());
+    handleCallback(onWheel, this.getCallbackProps());
 
     // Wheel stop event
     clearTimeout(timer);
     timer = setTimeout(() => {
-      handleCallback(this.props.onWheelStop, this.getCallbackProps());
-      this.setState(p => ({ eventType: p.eventType === "wheel" ? false : p.eventType }));
+      handleCallback(onWheelStop, this.getCallbackProps());
       timer = null;
     }, timerTime);
   };
@@ -129,7 +132,6 @@ class StateProvider extends Component {
     if (!panningEnabled || disabled || !wrapperComponent.contains(target)) return;
 
     this.handleDisableVelocity();
-
     // Mobile points
     if (touches && touches.length === 1) {
       this.handleSetUpPanning(touches[0].clientX, touches[0].clientY);
@@ -153,7 +155,6 @@ class StateProvider extends Component {
   handleStopPanning = () => {
     if (this.isDown) {
       this.isDown = false;
-      distance = null;
       this.handleFireVelocity();
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
     }
@@ -220,51 +221,107 @@ class StateProvider extends Component {
   // Velocity
   //////////
 
+  velocityTimeSpeed = (speed, animationTime) => {
+    const { velocityBasedOnSpeed } = this.state;
+
+    if (velocityBasedOnSpeed) {
+      return animationTime - animationTime / Math.max(1.6, speed);
+    }
+    return animationTime;
+  };
+
   handleEnableVelocity = () => {
-    this.enableVelocityCalculation = true;
-    this.startVelocity = false;
+    this.setState({ startAnimation: false });
   };
 
   handleDisableVelocity = () => {
-    this.enableVelocityCalculation = false;
-    this.startVelocity = false;
     this.velocity = null;
+    this.animate = false;
+    this.setState({ startAnimation: false });
   };
 
   handleFireVelocity = () => {
-    this.enableVelocityCalculation = false;
-    this.startVelocity = true;
+    this.setState({ startAnimation: true });
+  };
+
+  easeOut = p => -Math.cos(p * Math.PI) / 2 + 0.5;
+
+  animateVelocity = () => {
+    this.animate = true;
+    const {
+      startAnimation,
+      positionX,
+      positionY,
+      limitToBounds,
+      scale,
+      velocityAnimationSpeed,
+      lockAxisX,
+      lockAxisY,
+    } = this.state;
+    const startTime = new Date().getTime();
+
+    if (!this.velocity || !this.bounds) return this.handleDisableVelocity();
+    const { velocityX, velocityY, velocity } = this.velocity;
+    const animationTime = this.velocityTimeSpeed(velocity, velocityAnimationSpeed);
+    const targetX = velocityX * scale;
+    const targetY = velocityY * scale;
+
+    this.offsetX = positionX;
+    this.offsetY = positionY;
+
+    const animate = () => {
+      if (!startAnimation || !this.animate) {
+        return;
+      }
+
+      let frameTime = new Date().getTime() - startTime;
+      const time = frameTime / animationTime;
+      const step = this.easeOut(time);
+      if (frameTime >= animationTime) {
+        this.handleDisableVelocity();
+      } else {
+        const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
+        const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
+
+        const calculatedPosition = checkPositionBounds(
+          currentPositionX,
+          currentPositionY,
+          this.bounds,
+          limitToBounds
+        );
+
+        this.offsetX = calculatedPosition.x;
+        this.offsetY = calculatedPosition.y;
+
+        // Save panned position
+        this.setState({ positionX: calculatedPosition.x, positionY: calculatedPosition.y });
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
   };
 
   calculateVelocityStart = event => {
+    const { enableVelocity, minVelocityScale, scale, disabled } = this.state;
+    if (!enableVelocity || minVelocityScale >= scale || disabled) return;
     this.handleEnableVelocity();
-    if (!this.enableVelocityCalculation) return;
-    if (this.velocityStartDate === null) {
-      const position = getClientPosition(event);
-      if (!position) return;
-      const { clientX, clientY } = position;
-      this.velocityStartDate = Date.now();
-      this.lastMouseX = clientX;
-      this.lastMouseY = clientY;
-      return;
-    }
-
-    const position = getClientPosition(event);
-    if (!position) return console.error("No mouse or touch position detected");
-    const { clientX, clientY } = position;
-    const newPositionX = clientX;
-    const newPositionY = clientY;
     const now = Date.now();
-    const distanceX = newPositionX - this.lastMouseX;
-    const distanceY = newPositionY - this.lastMouseY;
-    const interval = now - this.velocityStartDate;
-    const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
+    if (this.lastMousePosition) {
+      const position = getClientPosition(event);
+      if (!position) return console.error("No mouse or touch position detected");
+      const { clientX, clientY } = position;
+      const distanceX = clientX - this.lastMousePosition.clientX;
+      const distanceY = clientY - this.lastMousePosition.clientY;
+      const interval = now - this.velocityTime;
+      const velocityX = distanceX / interval;
+      const velocityY = distanceY / interval;
+      const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
 
-    this.velocity = { velocity: velocity || 0, distanceX, distanceY };
-
-    this.velocityStartDate = now;
-    this.lastMouseX = newPositionX;
-    this.lastMouseY = newPositionY;
+      this.velocity = { velocityX, velocityY, velocity };
+    }
+    const position = getClientPosition(event);
+    this.lastMousePosition = position;
+    this.velocityTime = now;
   };
 
   //////////
@@ -274,70 +331,24 @@ class StateProvider extends Component {
   resetLastMousePosition = () => this.setState({ lastMouseEventPosition: null });
 
   zoomIn = event => {
-    const {
-      zoomingEnabled,
-      disabled,
-      zoomInStep,
-      scale,
-      lastMouseEventPosition,
-      previousScale,
-      lastPositionZoomEnabled,
-      wrapperComponent,
-      contentComponent,
-      positionX,
-      positionY,
-    } = this.state;
-    if (!event) return console.error("Zoom in function require event prop");
+    const { zoomingEnabled, disabled, zoomInStep } = this.state;
+    if (!event) throw Error("Zoom in function require event prop");
     if (!zoomingEnabled || disabled) return;
-    const zoomCoords = getLastPositionZoomCoords({
-      resetLastMousePosition: this.resetLastMousePosition,
-      lastPositionZoomEnabled,
-      lastMouseEventPosition,
-      previousScale,
-      scale,
-      wrapperComponent,
-      contentComponent,
-      positionX,
-      positionY,
-    });
-    this.handleZoom(event, zoomCoords, 1, zoomInStep);
+    handleZoomControls.bind(this, event, 1, zoomInStep)();
   };
 
   zoomOut = event => {
-    const {
-      zoomingEnabled,
-      disabled,
-      zoomOutStep,
-      scale,
-      lastMouseEventPosition,
-      previousScale,
-      lastPositionZoomEnabled,
-      wrapperComponent,
-      contentComponent,
-      positionX,
-      positionY,
-    } = this.state;
-    if (!event) return console.error("Zoom out function require event prop");
+    const { zoomingEnabled, disabled, zoomOutStep } = this.state;
+    if (!event) throw Error("Zoom out function require event prop");
     if (!zoomingEnabled || disabled) return;
-    const zoomCoords = getLastPositionZoomCoords({
-      resetLastMousePosition: this.resetLastMousePosition,
-      lastPositionZoomEnabled,
-      lastMouseEventPosition,
-      previousScale,
-      scale,
-      wrapperComponent,
-      contentComponent,
-      positionX,
-      positionY,
-    });
-    this.handleZoom(event, zoomCoords, -1, zoomOutStep);
+    handleZoomControls.bind(this, event, -1, zoomOutStep)();
   };
 
   handleDbClick = event => {
     const { zoomingEnabled, disabled, dbClickStep, dbClickEnabled } = this.state;
-    if (!event) return console.error("Double click function require event prop");
+    if (!event) throw Error("Double click function require event prop");
     if (!zoomingEnabled || disabled || !dbClickEnabled) return;
-    this.handleZoom(event, false, 1, dbClickStep);
+    handleZoomDbClick.bind(this, event, 1, dbClickStep)();
   };
 
   setScale = scale => {
@@ -359,28 +370,15 @@ class StateProvider extends Component {
     !isNaN(positionY) && this.setPositionY(positionY);
   };
 
-  resetTransform = animation => {
-    const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
-    const { scale, positionX, positionY, disabled } = this.state;
+  resetTransform = () => {
+    const { disabled } = this.state;
     if (disabled) return;
-    if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
-      return;
-    this.setScale(checkIsNumber(defaultScale, initialState.scale));
-    this.setPositionX(checkIsNumber(defaultPositionX, initialState.positionX));
-    this.setPositionY(checkIsNumber(defaultPositionY, initialState.positionY));
+    resetTransformations.bind(this)();
   };
 
   //////////
   // Setters
   //////////
-
-  setZoomTransform = (scale, positionX, positionY, previousScale, lastMouseEventPosition) => {
-    this.setState({ scale, positionX, positionY, previousScale, lastMouseEventPosition });
-  };
-
-  setIsDown = isDown => {
-    this.setState({ isDown });
-  };
 
   setWrapperComponent = wrapperComponent => {
     this.setState({ wrapperComponent });
@@ -390,8 +388,9 @@ class StateProvider extends Component {
     this.setState({ contentComponent });
   };
 
-  // PROPS
-
+  //////////
+  // Props
+  //////////
   getCallbackProps = () => {
     return {
       positionX: this.state.positionX,
@@ -453,7 +452,6 @@ class StateProvider extends Component {
         handleTouchStart: this.handleTouchStart,
         handleTouch: this.handleTouch,
         handleTouchStop: this.handleTouchStop,
-        eventType: this.state.eventType,
       },
     };
     const { children } = this.props;
@@ -466,6 +464,7 @@ class StateProvider extends Component {
 
 StateProvider.defaultProps = {
   defaultValues: {},
+  dynamicValues: {},
   onWheelStart: null,
   onWheel: null,
   onWheelStop: null,
@@ -480,6 +479,7 @@ StateProvider.defaultProps = {
 StateProvider.propTypes = {
   children: PropTypes.any,
   defaultValues: PropTypes.object,
+  dynamicValues: PropTypes.object,
   onWheelStart: PropTypes.func,
   onWheel: PropTypes.func,
   onWheelStop: PropTypes.func,

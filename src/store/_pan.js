@@ -65,6 +65,8 @@ export function handlePanning(event) {
     positionX,
     positionY,
     scale,
+    lockAxisX,
+    lockAxisY,
   } = this.state;
 
   if (!this.startCoords || scale === 1) return;
@@ -89,8 +91,8 @@ export function handlePanning(event) {
   }
 
   // Get Position
-  const newPositionX = clientX - x;
-  const newPositionY = clientY - y;
+  const newPositionX = lockAxisX ? positionX : clientX - x;
+  const newPositionY = lockAxisY ? positionY : clientY - y;
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;

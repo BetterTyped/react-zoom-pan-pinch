@@ -1,4 +1,5 @@
 import { roundNumber, boundLimiter, calculateBoundingArea, checkIsNumber } from "./utils";
+import { initialState } from "./InitialState";
 
 export function checkZoomBounds(zoom, minScale, maxScale) {
   if (!isNaN(maxScale) && zoom >= maxScale) return maxScale;
@@ -89,7 +90,7 @@ export function calculateTransformation(mouseX, mouseY, scaleDifference, bounds)
   return { newPositionX: x, newPositionY: y };
 }
 
-export function handleZoomWheel(event) {
+export function handleZoomWheel(event, customMousePosition, customDelta, customStep) {
   const {
     isDown,
     zoomingEnabled,
@@ -98,6 +99,7 @@ export function handleZoomWheel(event) {
     contentComponent,
     scale,
     enableZoomedOutPanning,
+    wheelStep,
   } = this.state;
 
   if (isDown || !zoomingEnabled || disabled) return;
@@ -105,8 +107,8 @@ export function handleZoomWheel(event) {
   event.stopPropagation();
 
   // Scale transformation
-  const delta = getDelta(event);
-  const newScale = calculateZoom.bind(this, 4, delta)();
+  const delta = getDelta(event, customDelta);
+  const newScale = calculateZoom.bind(this, customStep || wheelStep, delta)();
   if (newScale === scale) return;
 
   // Get new element sizes to calculate bounds
@@ -120,7 +122,8 @@ export function handleZoomWheel(event) {
   } = getComponentsSizes(wrapperComponent, contentComponent, newScale);
 
   // Position transformation
-  const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
+  const { mouseX, mouseY } =
+    customMousePosition || wheelMousePosition(event, contentComponent, scale);
 
   const scaleDifference = newScale - scale;
 
@@ -152,4 +155,37 @@ export function handleZoomWheel(event) {
     scale: newScale,
     previousScale: scale,
   });
+}
+
+export function handleZoomControls(event, customDelta, customStep) {
+  const { positionX, positionY, wrapperComponent, scale } = this.state;
+  // calculate zoom center
+  const wrapperWidth = wrapperComponent.offsetWidth;
+  const wrapperHeight = wrapperComponent.offsetHeight;
+  const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
+  const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
+  handleZoomWheel.bind(this, event, { mouseX, mouseY }, customDelta, customStep)();
+}
+
+export function handleZoomDbClick(event) {
+  const { dbClickMode, dbClickStep } = this.state;
+
+  if (dbClickMode === "reset") {
+    return resetTransformations.bind(this, event)();
+  }
+  const delta = dbClickMode === "zoomOut" ? -1 : 1;
+  handleZoomWheel.bind(this, event, null, delta, dbClickStep)();
+}
+
+export function resetTransformations() {
+  const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
+  const { scale, positionX, positionY, disabled } = this.state;
+  if (disabled) return;
+  if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
+    return;
+
+  const newScale = checkIsNumber(defaultScale, initialState.scale);
+  const newPositionX = checkIsNumber(defaultPositionX, initialState.positionX);
+  const newPositionY = checkIsNumber(defaultPositionY, initialState.positionY);
+  this.setState({ scale: newScale, positionX: newPositionX, positionY: newPositionY });
 }

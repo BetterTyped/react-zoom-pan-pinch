@@ -43,10 +43,18 @@ const TransformWrapper = ({
   onPinchingStart,
   onPinching,
   onPinchingStop,
+  defaultPositionX,
+  defaultPositionY,
+  defaultScale,
 }) => {
   return (
     <StateProvider
       defaultValues={deleteUndefinedProps({
+        defaultPositionX,
+        defaultPositionY,
+        defaultScale,
+      })}
+      dynamicValues={deleteUndefinedProps({
         scale,
         positionX,
         positionY,
@@ -132,6 +140,9 @@ TransformWrapper.propTypes = {
   onPinchingStart: PropTypes.func,
   onPinching: PropTypes.func,
   onPinchingStop: PropTypes.func,
+  defaultPositionX: PropTypes.number,
+  defaultPositionY: PropTypes.number,
+  defaultScale: PropTypes.number,
 };
 
 export default TransformWrapper;

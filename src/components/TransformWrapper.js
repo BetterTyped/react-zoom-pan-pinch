@@ -50,9 +50,9 @@ const TransformWrapper = ({
   return (
     <StateProvider
       defaultValues={deleteUndefinedProps({
-        defaultPositionX,
-        defaultPositionY,
-        defaultScale,
+        positionX: defaultPositionX,
+        positionY: defaultPositionY,
+        scale: defaultScale,
       })}
       dynamicValues={deleteUndefinedProps({
         scale,

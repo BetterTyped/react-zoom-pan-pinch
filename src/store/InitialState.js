@@ -7,8 +7,6 @@ export const initialState = {
   disabled: false,
   // position
   transformEnabled: true,
-  defaultPositionX: 0,
-  defaultPositionY: 0,
   positionX: 0,
   positionY: 0,
   maxPositionX: null,
@@ -17,7 +15,6 @@ export const initialState = {
   minPositionY: null,
   // scale
   zoomingEnabled: true,
-  defaultScale: 1,
   scale: 1,
   maxScale: 8,
   minScale: 0.5,

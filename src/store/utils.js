@@ -78,12 +78,12 @@ export const calculateBoundingArea = (
   wrapperHeight,
   contentHeight,
   diffHeight,
-  enableZoomedOutPanning
+  limitToWrapperBounds
 ) => {
   const scaleWidthFactor =
-    wrapperWidth > contentWidth ? diffWidth * (enableZoomedOutPanning ? 1 : 0.5) : 0;
+    wrapperWidth > contentWidth ? diffWidth * (limitToWrapperBounds ? 1 : 0.5) : 0;
   const scaleHeightFactor =
-    wrapperHeight > contentHeight ? diffHeight * (enableZoomedOutPanning ? 1 : 0.5) : 0;
+    wrapperHeight > contentHeight ? diffHeight * (limitToWrapperBounds ? 1 : 0.5) : 0;
 
   const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
   const maxPositionX = 0 + scaleWidthFactor;

@@ -7,8 +7,6 @@ export const initialState = {
   disabled: false,
   // position
   transformEnabled: true,
-  defaultPositionX: 0,
-  defaultPositionY: 0,
   positionX: 0,
   positionY: 0,
   maxPositionX: null,
@@ -17,10 +15,9 @@ export const initialState = {
   minPositionY: null,
   // scale
   zoomingEnabled: true,
-  defaultScale: 1,
   scale: 1,
   maxScale: 8,
-  minScale: 0.5,
+  minScale: 1,
   previousScale: 1,
   // wheel
   wheelStep: 4,
@@ -32,22 +29,27 @@ export const initialState = {
   startPinchDistance: null,
   //panning
   panningEnabled: true,
-  enableZoomedOutPanning: false,
+  limitToWrapperBounds: false,
   startPanningCoords: null,
   lockAxisX: false,
   lockAxisY: false,
   // velocity
-  velocityBasedOnSpeed: true,
-  minVelocity: 1.6,
+  velocityTimeBasedOnMove: true,
+  minVelocity: 1.8,
   enableVelocity: true,
   minVelocityScale: 1,
   // animations
-  velocityAnimationSpeed: 1600,
+  velocityAnimationSpeed: 1800,
   zoomAnimationSpeed: 200,
+  velocitySensitivity: 1,
   // controls
   dbClickEnabled: true,
   dbClickMode: "zoomIn",
   zoomInStep: 40,
   zoomOutStep: 40,
   dbClickStep: 40,
+  zoomInAnimationSpeed: 200,
+  zoomOutAnimationSpeed: 200,
+  dbClickAnimationSpeed: 200,
+  resetAnimationSpeed: 200,
 };

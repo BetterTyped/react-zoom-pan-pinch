@@ -14,9 +14,12 @@ export default class App extends Component {
     panningEnabled: true,
     transformEnabled: true,
     pinchEnabled: true,
-    enableZoomedOutPanning: false,
+    limitToWrapperBounds: false,
     disabled: false,
     dbClickEnabled: true,
+    lockAxisX: false,
+    lockAxisY: false,
+    velocityTimeBasedOnMove: true,
   };
 
   toggleSetting = type => {
@@ -69,9 +72,13 @@ export default class App extends Component {
                   panningEnabled={this.state.panningEnabled}
                   transformEnabled={this.state.transformEnabled}
                   pinchEnabled={this.state.pinchEnabled}
-                  enableZoomedOutPanning={this.state.enableZoomedOutPanning}
+                  limitToWrapperBounds={this.state.limitToWrapperBounds}
                   disabled={this.state.disabled}
                   dbClickEnabled={this.state.dbClickEnabled}
+                  lockAxisX={this.state.lockAxisX}
+                  lockAxisY={this.state.lockAxisY}
+                  velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
+                  minScale={0.5}
                 >
                   {({
                     zoomIn,
@@ -86,9 +93,12 @@ export default class App extends Component {
                     panningEnabled,
                     transformEnabled,
                     pinchEnabled,
-                    enableZoomedOutPanning,
+                    limitToWrapperBounds,
                     disabled,
                     dbClickEnabled,
+                    lockAxisX,
+                    lockAxisY,
+                    velocityTimeBasedOnMove,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -169,11 +179,11 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (enableZoomedOutPanning ? " active" : "")
+                              "btn-gradient grey small" + (limitToWrapperBounds ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("enableZoomedOutPanning")}
+                            onClick={() => this.toggleSetting("limitToWrapperBounds")}
                           >
-                            <span /> Enable zoomed out panning
+                            <span /> Limit to wrapper bounds
                           </button>
                           <button
                             className={
@@ -212,6 +222,26 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("dbClickEnabled")}
                           >
                             <span /> Double click
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (lockAxisX ? " active" : "")}
+                            onClick={() => this.toggleSetting("lockAxisX")}
+                          >
+                            <span /> Lock X axis
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (lockAxisY ? " active" : "")}
+                            onClick={() => this.toggleSetting("lockAxisY")}
+                          >
+                            <span /> Lock Y axis
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (velocityTimeBasedOnMove ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("velocityTimeBasedOnMove")}
+                          >
+                            <span /> Velocity time based on move
                           </button>
                         </h6>
                       </div>

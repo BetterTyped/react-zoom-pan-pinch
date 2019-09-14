@@ -25,7 +25,7 @@ const TransformWrapper = ({
   panningEnabled,
   transformEnabled,
   pinchEnabled,
-  enableZoomedOutPanning,
+  limitToWrapperBounds,
   disabled,
   zoomOutStep,
   zoomInStep,
@@ -43,16 +43,21 @@ const TransformWrapper = ({
   onPinchingStart,
   onPinching,
   onPinchingStop,
+  onZoomChange,
   defaultPositionX,
   defaultPositionY,
   defaultScale,
+  lockAxisX,
+  lockAxisY,
+  velocityTimeBasedOnMove,
+  velocitySensitivity,
 }) => {
   return (
     <StateProvider
       defaultValues={deleteUndefinedProps({
-        defaultPositionX,
-        defaultPositionY,
-        defaultScale,
+        positionX: defaultPositionX,
+        positionY: defaultPositionY,
+        scale: defaultScale,
       })}
       dynamicValues={deleteUndefinedProps({
         scale,
@@ -75,7 +80,7 @@ const TransformWrapper = ({
         panningEnabled,
         transformEnabled,
         pinchEnabled,
-        enableZoomedOutPanning,
+        limitToWrapperBounds,
         disabled,
         zoomOutStep,
         zoomInStep,
@@ -84,6 +89,10 @@ const TransformWrapper = ({
         dbClickEnabled,
         lastPositionZoomEnabled,
         enableZoomThrottling,
+        lockAxisX,
+        lockAxisY,
+        velocityTimeBasedOnMove,
+        velocitySensitivity,
       })}
       onWheelStart={onWheelStart}
       onWheel={onWheel}
@@ -94,6 +103,7 @@ const TransformWrapper = ({
       onPinchingStart={onPinchingStart}
       onPinching={onPinching}
       onPinchingStop={onPinchingStop}
+      onZoomChange={onZoomChange}
     >
       {children}
     </StateProvider>
@@ -122,7 +132,7 @@ TransformWrapper.propTypes = {
   panningEnabled: PropTypes.bool,
   transformEnabled: PropTypes.bool,
   pinchEnabled: PropTypes.bool,
-  enableZoomedOutPanning: PropTypes.bool,
+  limitToWrapperBounds: PropTypes.bool,
   disabled: PropTypes.bool,
   zoomOutStep: PropTypes.bool,
   zoomInStep: PropTypes.bool,
@@ -140,9 +150,14 @@ TransformWrapper.propTypes = {
   onPinchingStart: PropTypes.func,
   onPinching: PropTypes.func,
   onPinchingStop: PropTypes.func,
+  onZoomChange: PropTypes.func,
   defaultPositionX: PropTypes.number,
   defaultPositionY: PropTypes.number,
   defaultScale: PropTypes.number,
+  lockAxisX: PropTypes.bool,
+  lockAxisY: PropTypes.bool,
+  velocityTimeBasedOnMove: PropTypes.bool,
+  velocitySensitivity: PropTypes.number,
 };
 
 export default TransformWrapper;

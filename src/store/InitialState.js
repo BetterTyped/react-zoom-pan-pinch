@@ -34,17 +34,22 @@ export const initialState = {
   lockAxisX: false,
   lockAxisY: false,
   // velocity
-  velocityBasedOnSpeed: true,
+  velocityTimeBasedOnMove: true,
   minVelocity: 1.8,
   enableVelocity: true,
   minVelocityScale: 1,
   // animations
   velocityAnimationSpeed: 1800,
   zoomAnimationSpeed: 200,
+  velocitySensitivity: 1,
   // controls
   dbClickEnabled: true,
   dbClickMode: "zoomIn",
   zoomInStep: 40,
   zoomOutStep: 40,
   dbClickStep: 40,
+  zoomInAnimationSpeed: 200,
+  zoomOutAnimationSpeed: 200,
+  dbClickAnimationSpeed: 200,
+  resetAnimationSpeed: 200,
 };

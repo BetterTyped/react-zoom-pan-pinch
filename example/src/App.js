@@ -19,7 +19,7 @@ export default class App extends Component {
     dbClickEnabled: true,
     lockAxisX: false,
     lockAxisY: false,
-    velocityBasedOnSpeed: true,
+    velocityTimeBasedOnMove: true,
   };
 
   toggleSetting = type => {
@@ -77,7 +77,7 @@ export default class App extends Component {
                   dbClickEnabled={this.state.dbClickEnabled}
                   lockAxisX={this.state.lockAxisX}
                   lockAxisY={this.state.lockAxisY}
-                  velocityBasedOnSpeed={this.state.velocityBasedOnSpeed}
+                  velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
                   minScale={0.5}
                 >
                   {({
@@ -98,7 +98,7 @@ export default class App extends Component {
                     dbClickEnabled,
                     lockAxisX,
                     lockAxisY,
-                    velocityBasedOnSpeed,
+                    velocityTimeBasedOnMove,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -183,7 +183,7 @@ export default class App extends Component {
                             }
                             onClick={() => this.toggleSetting("limitToWrapperBounds")}
                           >
-                            <span /> Enable zoomed out panning
+                            <span /> Limit to wrapper bounds
                           </button>
                           <button
                             className={
@@ -237,11 +237,11 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (velocityBasedOnSpeed ? " active" : "")
+                              "btn-gradient grey small" + (velocityTimeBasedOnMove ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("velocityBasedOnSpeed")}
+                            onClick={() => this.toggleSetting("velocityTimeBasedOnMove")}
                           >
-                            <span /> Velocity based on speed
+                            <span /> Velocity time based on move
                           </button>
                         </h6>
                       </div>

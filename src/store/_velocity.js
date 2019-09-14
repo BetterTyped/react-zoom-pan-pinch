@@ -1,10 +1,11 @@
 import { checkPositionBounds } from "./_zoom";
 import { getClientPosition } from "./_pan";
+import { animateFunction, handleDisableAnimation } from "./_animations";
 
 function velocityTimeSpeed(speed, animationTime) {
-  const { velocityBasedOnSpeed } = this.state;
+  const { velocityTimeBasedOnMove } = this.state;
 
-  if (velocityBasedOnSpeed) {
+  if (velocityTimeBasedOnMove) {
     return animationTime - animationTime / Math.max(1.6, speed);
   }
   return animationTime;
@@ -14,22 +15,12 @@ function handleEnableVelocity() {
   this.setState({ startAnimation: false });
 }
 
-export function handleDisableVelocity() {
-  this.velocity = null;
-  this.animate = false;
-  this.setState({ startAnimation: false });
-}
-
 export function handleFireVelocity() {
   this.setState({ startAnimation: true });
 }
 
-const easeOut = p => -Math.cos(p * Math.PI) / 2 + 0.5;
-
 export function animateVelocity() {
-  this.animate = true;
   const {
-    startAnimation,
     positionX,
     positionY,
     limitToBounds,
@@ -37,9 +28,8 @@ export function animateVelocity() {
     lockAxisX,
     lockAxisY,
   } = this.state;
-  const startTime = new Date().getTime();
 
-  if (!this.velocity || !this.bounds) return handleDisableVelocity.bind(this)();
+  if (!this.velocity || !this.bounds) return handleDisableAnimation.bind(this)();
   const { velocityX, velocityY, velocity } = this.velocity;
   const animationTime = velocityTimeSpeed.bind(this, velocity, velocityAnimationSpeed)();
   const targetX = velocityX;
@@ -48,18 +38,9 @@ export function animateVelocity() {
   this.offsetX = positionX;
   this.offsetY = positionY;
 
-  this.animate = () => {
-    if (!startAnimation || !this.animate) {
-      this.velocity = null;
-      return;
-    }
-
-    let frameTime = new Date().getTime() - startTime;
-    const time = frameTime / animationTime;
-    const step = easeOut(time);
-    if (frameTime >= animationTime) {
-      handleDisableVelocity.bind(this)();
-    } else {
+  animateFunction.bind(this, {
+    animationTime,
+    callback: step => {
       const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
       const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
 
@@ -75,14 +56,14 @@ export function animateVelocity() {
 
       // Save panned position
       this.setState({ positionX: calculatedPosition.x, positionY: calculatedPosition.y });
-      requestAnimationFrame(this.animate);
-    }
-  };
-  requestAnimationFrame(this.animate);
+    },
+    doneCallback: () => handleDisableAnimation.bind(this)(),
+    cancelCallback: () => (this.velocity = null),
+  })();
 }
 
 export function calculateVelocityStart(event) {
-  const { enableVelocity, minVelocityScale, scale, disabled } = this.state;
+  const { enableVelocity, minVelocityScale, scale, disabled, velocitySensitivity } = this.state;
   if (!enableVelocity || minVelocityScale >= scale || disabled) return;
   handleEnableVelocity.bind(this)();
   const now = Date.now();
@@ -93,9 +74,10 @@ export function calculateVelocityStart(event) {
     const distanceX = (clientX - this.lastMousePosition.clientX) * scale;
     const distanceY = (clientY - this.lastMousePosition.clientY) * scale;
     const interval = now - this.velocityTime;
-    const velocityX = distanceX / interval;
-    const velocityY = distanceY / interval;
-    const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
+    const velocityX = (distanceX / interval) * velocitySensitivity;
+    const velocityY = (distanceY / interval) * velocitySensitivity;
+    const velocity =
+      (Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval) * velocitySensitivity;
 
     if (this.velocity && velocity < this.velocity.velocity && this.throttle) return;
     this.velocity = { velocityX, velocityY, velocity };

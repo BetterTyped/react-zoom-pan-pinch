@@ -2,20 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { initialState } from "./InitialState";
 import { roundNumber, getDistance, handleCallback } from "./utils";
-import {
-  handleZoomWheel,
-  handleZoomControls,
-  handleZoomDbClick,
-  resetTransformations,
-} from "./_zoom";
+import { handleZoom, handleZoomControls, handleZoomDbClick, resetTransformations } from "./_zoom";
 import { handleZoomPinch } from "./_pinch";
 import { handlePanning } from "./_pan";
-import {
-  handleFireVelocity,
-  animateVelocity,
-  handleDisableVelocity,
-  calculateVelocityStart,
-} from "./_velocity";
+import { handleFireVelocity, animateVelocity, calculateVelocityStart } from "./_velocity";
+import { handleDisableAnimation } from "./_animations";
 import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
@@ -30,6 +21,7 @@ class StateProvider extends Component {
     ...this.props.defaultValues,
     previousScale: initialState.scale,
     startAnimation: false,
+    startZoomAnimation: false,
   };
 
   // pinch helpers
@@ -78,8 +70,7 @@ class StateProvider extends Component {
     // eslint-disable-next-line react/no-did-update-set-state
     if (oldProps.dynamicValues !== dynamicValues) this.setState({ ...dynamicValues });
 
-    if (this.bounds && oldState.limitToWrapperBounds !== limitToWrapperBounds)
-      this.bounds = null;
+    if (this.bounds && oldState.limitToWrapperBounds !== limitToWrapperBounds) this.bounds = null;
     if (this.velocity && startAnimation && !this.animate) animateVelocity.bind(this)();
   }
 
@@ -97,12 +88,12 @@ class StateProvider extends Component {
 
     if (!timer) {
       // Wheel start event
-      handleDisableVelocity.bind(this)();
+      handleDisableAnimation.bind(this)();
       handleCallback(onWheelStart, this.getCallbackProps());
     }
 
     // Wheel event
-    handleZoomWheel.bind(this, event)();
+    handleZoom.bind(this, event)();
     handleCallback(onWheel, this.getCallbackProps());
 
     // Wheel stop event
@@ -140,7 +131,7 @@ class StateProvider extends Component {
     const { target, touches } = event;
     if (!panningEnabled || disabled || !wrapperComponent.contains(target)) return;
 
-    handleDisableVelocity.bind(this)();
+    handleDisableAnimation.bind(this)();
     // Mobile points
     if (touches && touches.length === 1) {
       this.handleSetUpPanning(touches[0].clientX, touches[0].clientY);
@@ -178,7 +169,7 @@ class StateProvider extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    handleDisableVelocity.bind(this)();
+    handleDisableAnimation.bind(this)();
     const distance = getDistance(event.touches[0], event.touches[1]);
     this.pinchStartDistance = distance;
     this.lastDistance = distance;
@@ -208,7 +199,7 @@ class StateProvider extends Component {
   handleTouchStart = event => {
     const { disabled } = this.state;
     const { touches } = event;
-    handleDisableVelocity.bind(this)();
+    handleDisableAnimation.bind(this)();
     if (disabled) return;
     if (touches && touches.length === 1) return this.handleStartPanning(event);
     if (touches && touches.length === 2) return this.handlePinchStart(event);
@@ -325,7 +316,8 @@ class StateProvider extends Component {
       previousScale: this.state.previousScale,
       lockAxisX: this.state.lockAxisX,
       lockAxisY: this.state.lockAxisY,
-      velocityBasedOnSpeed: this.state.velocityBasedOnSpeed,
+      velocityTimeBasedOnMove: this.state.velocityTimeBasedOnMove,
+      velocitySensitivity: this.state.velocitySensitivity,
     };
   };
 

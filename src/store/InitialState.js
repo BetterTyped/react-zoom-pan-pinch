@@ -35,7 +35,7 @@ export const initialState = {
   lockAxisY: false,
   // velocity
   velocityBasedOnSpeed: true,
-  minVelocity: 1.6,
+  minVelocity: 1.8,
   enableVelocity: true,
   minVelocityScale: 1,
   // animations

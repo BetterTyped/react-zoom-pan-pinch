@@ -17,6 +17,9 @@ export default class App extends Component {
     enableZoomedOutPanning: false,
     disabled: false,
     dbClickEnabled: true,
+    lockAxisX: false,
+    lockAxisY: false,
+    velocityBasedOnSpeed: false,
   };
 
   toggleSetting = type => {
@@ -72,6 +75,9 @@ export default class App extends Component {
                   enableZoomedOutPanning={this.state.enableZoomedOutPanning}
                   disabled={this.state.disabled}
                   dbClickEnabled={this.state.dbClickEnabled}
+                  lockAxisX={this.state.lockAxisX}
+                  lockAxisY={this.state.lockAxisY}
+                  velocityBasedOnSpeed={this.state.velocityBasedOnSpeed}
                 >
                   {({
                     zoomIn,
@@ -89,6 +95,9 @@ export default class App extends Component {
                     enableZoomedOutPanning,
                     disabled,
                     dbClickEnabled,
+                    lockAxisX,
+                    lockAxisY,
+                    velocityBasedOnSpeed,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -212,6 +221,26 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("dbClickEnabled")}
                           >
                             <span /> Double click
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (lockAxisX ? " active" : "")}
+                            onClick={() => this.toggleSetting("lockAxisX")}
+                          >
+                            <span /> Lock X axis
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (lockAxisY ? " active" : "")}
+                            onClick={() => this.toggleSetting("lockAxisY")}
+                          >
+                            <span /> Lock Y axis
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (velocityBasedOnSpeed ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("velocityBasedOnSpeed")}
+                          >
+                            <span /> Velocity based on speed
                           </button>
                         </h6>
                       </div>

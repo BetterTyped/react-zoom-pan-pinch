@@ -46,6 +46,9 @@ const TransformWrapper = ({
   defaultPositionX,
   defaultPositionY,
   defaultScale,
+  lockAxisX,
+  lockAxisY,
+  velocityBasedOnSpeed,
 }) => {
   return (
     <StateProvider
@@ -84,6 +87,9 @@ const TransformWrapper = ({
         dbClickEnabled,
         lastPositionZoomEnabled,
         enableZoomThrottling,
+        lockAxisX,
+        lockAxisY,
+        velocityBasedOnSpeed,
       })}
       onWheelStart={onWheelStart}
       onWheel={onWheel}
@@ -143,6 +149,9 @@ TransformWrapper.propTypes = {
   defaultPositionX: PropTypes.number,
   defaultPositionY: PropTypes.number,
   defaultScale: PropTypes.number,
+  lockAxisX: PropTypes.bool,
+  lockAxisY: PropTypes.bool,
+  velocityBasedOnSpeed: PropTypes.bool,
 };
 
 export default TransformWrapper;

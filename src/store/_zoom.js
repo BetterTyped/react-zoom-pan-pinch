@@ -187,5 +187,10 @@ export function resetTransformations() {
   const newScale = checkIsNumber(defaultScale, initialState.scale);
   const newPositionX = checkIsNumber(defaultPositionX, initialState.positionX);
   const newPositionY = checkIsNumber(defaultPositionY, initialState.positionY);
-  this.setState({ scale: newScale, positionX: newPositionX, positionY: newPositionY });
+  this.setState(p => ({
+    scale: newScale,
+    positionX: newPositionX,
+    positionY: newPositionY,
+    previousScale: p.scale,
+  }));
 }

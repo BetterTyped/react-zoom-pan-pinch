@@ -17,6 +17,8 @@ const Context = React.createContext({});
 
 let timer = null;
 const timerTime = 50;
+let throttle = false;
+const throttleTime = 50;
 
 class StateProvider extends Component {
   state = {
@@ -253,7 +255,6 @@ class StateProvider extends Component {
       positionX,
       positionY,
       limitToBounds,
-      scale,
       velocityAnimationSpeed,
       lockAxisX,
       lockAxisY,
@@ -263,8 +264,8 @@ class StateProvider extends Component {
     if (!this.velocity || !this.bounds) return this.handleDisableVelocity();
     const { velocityX, velocityY, velocity } = this.velocity;
     const animationTime = this.velocityTimeSpeed(velocity, velocityAnimationSpeed);
-    const targetX = velocityX * scale;
-    const targetY = velocityY * scale;
+    const targetX = velocityX;
+    const targetY = velocityY;
 
     this.offsetX = positionX;
     this.offsetY = positionY;
@@ -302,26 +303,34 @@ class StateProvider extends Component {
   };
 
   calculateVelocityStart = event => {
-    const { enableVelocity, minVelocityScale, scale, disabled } = this.state;
-    if (!enableVelocity || minVelocityScale >= scale || disabled) return;
-    this.handleEnableVelocity();
-    const now = Date.now();
-    if (this.lastMousePosition) {
-      const position = getClientPosition(event);
-      if (!position) return console.error("No mouse or touch position detected");
-      const { clientX, clientY } = position;
-      const distanceX = clientX - this.lastMousePosition.clientX;
-      const distanceY = clientY - this.lastMousePosition.clientY;
-      const interval = now - this.velocityTime;
-      const velocityX = distanceX / interval;
-      const velocityY = distanceY / interval;
-      const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
+    if (!throttle) {
+      const { enableVelocity, minVelocityScale, scale, disabled } = this.state;
+      if (!enableVelocity || minVelocityScale >= scale || disabled) return;
+      this.handleEnableVelocity();
+      const now = Date.now();
+      if (this.lastMousePosition) {
+        const position = getClientPosition(event);
+        if (!position) return console.error("No mouse or touch position detected");
+        const { clientX, clientY } = position;
+        const distanceX = (clientX - this.lastMousePosition.clientX) * scale;
+        const distanceY = (clientY - this.lastMousePosition.clientY) * scale;
+        const interval = now - this.velocityTime;
+        const velocityX = distanceX / interval;
+        const velocityY = distanceY / interval;
+        const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
 
-      this.velocity = { velocityX, velocityY, velocity };
+        if (this.velocity && velocity < this.velocity.velocity && throttle) return;
+
+        this.velocity = { velocityX, velocityY, velocity };
+
+        // throttling
+        if (throttle) clearTimeout(throttle);
+        throttle = setTimeout(() => (throttle = false), throttleTime);
+      }
+      const position = getClientPosition(event);
+      this.lastMousePosition = position;
+      this.velocityTime = now;
     }
-    const position = getClientPosition(event);
-    this.lastMousePosition = position;
-    this.velocityTime = now;
   };
 
   //////////
@@ -421,6 +430,9 @@ class StateProvider extends Component {
       dbClickEnabled: this.state.dbClickEnabled,
       lastPositionZoomEnabled: this.state.lastPositionZoomEnabled,
       previousScale: this.state.previousScale,
+      lockAxisX: this.state.lockAxisX,
+      lockAxisY: this.state.lockAxisY,
+      velocityBasedOnSpeed: this.state.velocityBasedOnSpeed,
     };
   };
 

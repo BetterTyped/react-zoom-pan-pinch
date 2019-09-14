@@ -27,6 +27,7 @@ export function animateFunction({
 }) {
   this.setState({ startAnimation: true }, () => {
     const { startAnimation } = this.state;
+    const lastStep = 1;
 
     if (this.animate) {
       cancelAnimationFrame(this.animate);
@@ -36,7 +37,7 @@ export function animateFunction({
 
     // if animation has only one step
     if (animationTime === 1) {
-      callback(1);
+      callback(lastStep);
       doneCallback();
       this.animate = null;
       return;
@@ -53,7 +54,8 @@ export function animateFunction({
       }[animationName];
       const step = animationType(animationProgress);
       if (frameTime >= animationTime) {
-        callback(1);
+        this.animate = null;
+        callback(lastStep);
         doneCallback();
       } else {
         callback(step);

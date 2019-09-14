@@ -80,7 +80,7 @@ class StateProvider extends Component {
 
   handleWheel = event => {
     const { enableWheel, enableTouchPadPinch } = this.state;
-    const { onWheelStart, onWheel, onWheelStop } = this.props;
+    const { onWheelStart, onWheel, onWheelStop, onZoomChange } = this.props;
 
     // ctrlKey detects if touchpad execute wheel or pinch gesture
     if (!enableWheel && !event.ctrlKey) return;
@@ -93,13 +93,14 @@ class StateProvider extends Component {
     }
 
     // Wheel event
-    handleZoom.bind(this, event)();
+    handleZoom.bind(this, event, undefined, undefined, undefined, "wheel")();
     handleCallback(onWheel, this.getCallbackProps());
 
     // Wheel stop event
     clearTimeout(timer);
     timer = setTimeout(() => {
       handleCallback(onWheelStop, this.getCallbackProps());
+      handleCallback(onZoomChange, this.getCallbackProps());
       timer = null;
     }, timerTime);
   };

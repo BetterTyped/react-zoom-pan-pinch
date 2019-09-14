@@ -159,9 +159,11 @@ export function handleZoom(event, customMousePosition, customDelta, customStep, 
     bounds
   )();
 
+  const speed = checkIsNumber(animationTime, 1);
+
   // animate
   animateFunction.bind(this, {
-    animationTime: animationTime || 1,
+    animationTime: speed,
     animationName: "linear",
     callback: step => {
       if (!animationTime || Math.abs(scaleDifference) < 0.05) {
@@ -184,10 +186,14 @@ export function handleZoom(event, customMousePosition, customDelta, customStep, 
       }
     },
     doneCallback: () => {
-      handleCallback(this.props.onZoomChange, this.getCallbackProps());
+      if (animationTime !== "wheel") {
+        handleCallback(this.props.onZoomChange, this.getCallbackProps());
+      }
     },
     cancelCallback: () => {
-      handleCallback(this.props.onZoomChange, this.getCallbackProps());
+      if (animationTime !== "wheel") {
+        handleCallback(this.props.onZoomChange, this.getCallbackProps());
+      }
     },
   })();
 }

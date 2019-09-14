@@ -110,11 +110,16 @@ class Example extends Component {
 | velocityTimeBasedOnMove |   true   |        Boolean |
 | minVelocity             |   1.6    |         Number |
 | minVelocityScale        |    1     |         Number |
-| velocityAnimationSpeed  |   1600   |         Number |
+| velocityAnimationSpeed  |   1800   |         Number |
+| velocitySensitivity     |    1     |         Number |
 | dbClickMode             | "zoomIn" |         String |
 | dbClickStep             |    40    |         Number |
 | zoomInStep              |    40    |         Number |
 | zoomOutStep             |    40    |         Number |
+| zoomInAnimationSpeed    |   200    |         Number |
+| zoomOutAnimationSpeed   |   200    |         Number |
+| dbClickAnimationSpeed   |   200    |         Number |
+| resetAnimationSpeed     |   200    |         Number |
 | onWheelStart            |   null   |       Function |
 | onWheel                 |   null   |       Function |
 | onWheelStop             |   null   |       Function |
@@ -141,7 +146,7 @@ class Example extends Component {
 | zoomIn()                                  | Zooming in function, used for controls button                                                          |      ---       |
 | zoomOut()                                 | Zooming out function, used for controls button                                                         |      ---       |
 | setTransform(positionX, positionY, scale) | Sets transformations of content                                                                        | Number or null |
-| resetTransform(animationTime)             | Reset transformations to the initial values                                                            |     Number     |
+| resetTransform()                          | Reset transformations to the initial values                                                            |     Number     |
 | dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"                                                          |     String     |
 
 ## License

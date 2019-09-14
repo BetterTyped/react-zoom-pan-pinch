@@ -48,7 +48,7 @@ export function handleZoomPinch(event) {
     wrapperComponent,
     contentComponent,
     scale,
-    enableZoomedOutPanning,
+    limitToWrapperBounds,
   } = this.state;
   if (isDown || !zoomingEnabled || disabled) return;
 
@@ -86,7 +86,7 @@ export function handleZoomPinch(event) {
     wrapperHeight,
     newContentHeight,
     newDiffHeight,
-    enableZoomedOutPanning
+    limitToWrapperBounds
   );
 
   // Save last zoom bounds, to speed up panning function

@@ -104,7 +104,7 @@ export function handleZoomWheel(event, customMousePosition, customDelta, customS
     wrapperComponent,
     contentComponent,
     scale,
-    enableZoomedOutPanning,
+    limitToWrapperBounds,
     wheelStep,
   } = this.state;
 
@@ -140,7 +140,7 @@ export function handleZoomWheel(event, customMousePosition, customDelta, customS
     wrapperHeight,
     newContentHeight,
     newDiffHeight,
-    enableZoomedOutPanning
+    limitToWrapperBounds
   );
 
   // Save last zoom bounds, to speed up panning function
@@ -202,3 +202,4 @@ export function resetTransformations() {
   }));
   handleCallback(this.props.onZoomChange, this.getCallbackProps());
 }
+

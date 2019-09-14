@@ -26,8 +26,8 @@ const timerTime = 50;
 class StateProvider extends Component {
   state = {
     ...initialState,
-    ...this.props.defaultValues,
     ...this.props.dynamicValues,
+    ...this.props.defaultValues,
     previousScale: initialState.scale,
     startAnimation: false,
   };
@@ -64,7 +64,7 @@ class StateProvider extends Component {
   }
 
   componentDidUpdate(oldProps, oldState) {
-    const { wrapperComponent, enableZoomedOutPanning, startAnimation } = this.state;
+    const { wrapperComponent, limitToWrapperBounds, startAnimation } = this.state;
     const { dynamicValues } = this.props;
     if (!oldState.wrapperComponent && this.state.wrapperComponent) {
       // Zooming events on wrapper
@@ -78,7 +78,7 @@ class StateProvider extends Component {
     // eslint-disable-next-line react/no-did-update-set-state
     if (oldProps.dynamicValues !== dynamicValues) this.setState({ ...dynamicValues });
 
-    if (this.bounds && oldState.enableZoomedOutPanning !== enableZoomedOutPanning)
+    if (this.bounds && oldState.limitToWrapperBounds !== limitToWrapperBounds)
       this.bounds = null;
     if (this.velocity && startAnimation && !this.animate) animateVelocity.bind(this)();
   }
@@ -314,7 +314,7 @@ class StateProvider extends Component {
       panningEnabled: this.state.panningEnabled,
       transformEnabled: this.state.transformEnabled,
       pinchEnabled: this.state.pinchEnabled,
-      enableZoomedOutPanning: this.state.enableZoomedOutPanning,
+      limitToWrapperBounds: this.state.limitToWrapperBounds,
       disabled: this.state.disabled,
       zoomOutStep: this.state.zoomOutStep,
       zoomInStep: this.state.zoomInStep,

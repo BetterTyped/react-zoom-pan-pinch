@@ -22,7 +22,7 @@ function getSizes(wrapperComponent, contentComponent) {
   };
 }
 
-function handleCalculateBounds(wrapperComponent, contentComponent, enableZoomedOutPanning) {
+function handleCalculateBounds(wrapperComponent, contentComponent, limitToWrapperBounds) {
   const {
     wrapperWidth,
     contentWidth,
@@ -38,7 +38,7 @@ function handleCalculateBounds(wrapperComponent, contentComponent, enableZoomedO
     wrapperHeight,
     contentHeight,
     diffHeight,
-    enableZoomedOutPanning
+    limitToWrapperBounds
   );
 }
 
@@ -60,7 +60,7 @@ export function handlePanning(event) {
   const {
     wrapperComponent,
     contentComponent,
-    enableZoomedOutPanning,
+    limitToWrapperBounds,
     limitToBounds,
     positionX,
     positionY,
@@ -84,7 +84,7 @@ export function handlePanning(event) {
     const calculatedBounds = handleCalculateBounds(
       wrapperComponent,
       contentComponent,
-      enableZoomedOutPanning
+      limitToWrapperBounds
     );
     this.bounds = calculatedBounds;
     bounds = calculatedBounds;

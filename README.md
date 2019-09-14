@@ -84,6 +84,7 @@ class Example extends Component {
 | Props                  | Default  |           Type |
 | :--------------------- | :------: | -------------: |
 | limitToBounds          |   true   |        Boolean |
+| limitToWrapperBounds   |  false   |        Boolean |
 | disabled               |  false   |        Boolean |
 | transformEnabled       |   true   |        Boolean |
 | positionX              |    0     |         Number |
@@ -103,7 +104,6 @@ class Example extends Component {
 | pinchEnabled           |   true   |        Boolean |
 | pinchSensitivity       |    1     |         Number |
 | panningEnabled         |   true   |        Boolean |
-| enableZoomedOutPanning |  false   |        Boolean |
 | lockAxisX              |  false   |        Boolean |
 | lockAxisY              |  false   |        Boolean |
 | enableVelocity         |   true   |        Boolean |
@@ -133,7 +133,7 @@ class Example extends Component {
 | minVelocity                               | Minimum velocity which will be animated after panning is done               |     Number     |
 | minVelocityScale                          | Velocity will be disabled if value is equal or lower than given value       |     Number     |
 | velocityBasedOnSpeed                      | Velocity duration is based on it's value - bigger velocity, longer it lasts |    Boolean     |
-| enableZoomedOutPanning                    | Enables panning when zoom is lower than 1                                   |    Boolean     |
+| limitToWrapperBounds                      | Enables panning when zoom is lower than 1                                   |    Boolean     |
 | limitToBounds                             | Limit zooming and panning to wrapper boundaries                             |    Boolean     |
 | setScale(scale)                           | Sets scale                                                                  |     Number     |
 | setPositionX(positionX)                   | Sets position x                                                             |     Number     |

@@ -29,7 +29,7 @@ export const initialState = {
   startPinchDistance: null,
   //panning
   panningEnabled: true,
-  enableZoomedOutPanning: false,
+  limitToWrapperBounds: false,
   startPanningCoords: null,
   lockAxisX: false,
   lockAxisY: false,

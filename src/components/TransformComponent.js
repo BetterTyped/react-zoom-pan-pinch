@@ -6,26 +6,10 @@ import styles from "./TransformComponent.module.css";
 function TransformComponent({ children }) {
   const wrapperRef = useRef(null);
   const contentRef = useRef(null);
-  const { state, nodes, internal } = useContext(Context);
+  const { state, nodes } = useContext(Context);
   const style = {
     transform: `translate(${state.positionX}px, ${state.positionY}px) scale(${state.scale})`,
   };
-
-  function getAnimationTime(type) {
-    if (type !== false && !isNaN(type)) return type;
-    switch (type) {
-      case "pan":
-        return state.panAnimationSpeed;
-      case "wheel":
-        return state.wheelAnimationSpeed;
-      case "pinch":
-        return state.pinchAnimationSpeed;
-      case "reset":
-        return state.resetAnimationSpeed;
-      default:
-        return state.zoomAnimationSpeed;
-    }
-  }
 
   useEffect(() => {
     if (wrapperRef.current) {

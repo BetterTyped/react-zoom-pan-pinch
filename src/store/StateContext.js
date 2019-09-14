@@ -4,21 +4,24 @@ import { initialState } from "./InitialState";
 import { roundNumber, getDistance, handleCallback } from "./utils";
 import {
   handleZoomWheel,
-  checkPositionBounds,
   handleZoomControls,
   handleZoomDbClick,
   resetTransformations,
 } from "./_zoom";
 import { handleZoomPinch } from "./_pinch";
-import { handlePanning, getClientPosition } from "./_pan";
+import { handlePanning } from "./_pan";
+import {
+  handleFireVelocity,
+  animateVelocity,
+  handleDisableVelocity,
+  calculateVelocityStart,
+} from "./_velocity";
 import makePassiveEventOption from "./makePassiveEventOption";
 
 const Context = React.createContext({});
 
 let timer = null;
 const timerTime = 50;
-let throttle = false;
-const throttleTime = 50;
 
 class StateProvider extends Component {
   state = {
@@ -29,18 +32,22 @@ class StateProvider extends Component {
     startAnimation: false,
   };
 
+  // pinch helpers
   pinchStartDistance = null;
   lastDistance = null;
   pinchStartScale = null;
   distance = null;
   bounds = null;
   startPanningCoords = null;
+  // velocity helpers
   velocityTime = null;
   lastMousePosition = null;
   velocity = null;
   animate = false;
   offsetX = null;
   offsetY = null;
+  throttle = false;
+  throttleTime = 50;
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
@@ -73,7 +80,7 @@ class StateProvider extends Component {
 
     if (this.bounds && oldState.enableZoomedOutPanning !== enableZoomedOutPanning)
       this.bounds = null;
-    if (this.velocity && startAnimation && !this.animate) this.animateVelocity();
+    if (this.velocity && startAnimation && !this.animate) animateVelocity.bind(this)();
   }
 
   //////////
@@ -90,7 +97,7 @@ class StateProvider extends Component {
 
     if (!timer) {
       // Wheel start event
-      this.handleDisableVelocity();
+      handleDisableVelocity.bind(this)();
       handleCallback(onWheelStart, this.getCallbackProps());
     }
 
@@ -133,7 +140,7 @@ class StateProvider extends Component {
     const { target, touches } = event;
     if (!panningEnabled || disabled || !wrapperComponent.contains(target)) return;
 
-    this.handleDisableVelocity();
+    handleDisableVelocity.bind(this)();
     // Mobile points
     if (touches && touches.length === 1) {
       this.handleSetUpPanning(touches[0].clientX, touches[0].clientY);
@@ -149,7 +156,7 @@ class StateProvider extends Component {
     if (this.checkIsPanningActive(event)) return;
     event.stopPropagation();
 
-    this.calculateVelocityStart(event);
+    calculateVelocityStart.bind(this, event)();
     handlePanning.bind(this, event)();
     handleCallback(this.props.onPanning, this.getCallbackProps());
   };
@@ -157,7 +164,7 @@ class StateProvider extends Component {
   handleStopPanning = () => {
     if (this.isDown) {
       this.isDown = false;
-      this.handleFireVelocity();
+      handleFireVelocity.bind(this)();
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
     }
   };
@@ -171,7 +178,7 @@ class StateProvider extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    this.handleDisableVelocity();
+    handleDisableVelocity.bind(this)();
     const distance = getDistance(event.touches[0], event.touches[1]);
     this.pinchStartDistance = distance;
     this.lastDistance = distance;
@@ -201,7 +208,7 @@ class StateProvider extends Component {
   handleTouchStart = event => {
     const { disabled } = this.state;
     const { touches } = event;
-    this.handleDisableVelocity();
+    handleDisableVelocity.bind(this)();
     if (disabled) return;
     if (touches && touches.length === 1) return this.handleStartPanning(event);
     if (touches && touches.length === 2) return this.handlePinchStart(event);
@@ -217,120 +224,6 @@ class StateProvider extends Component {
   handleTouchStop = () => {
     this.handlePinchStop();
     this.handleStopPanning();
-  };
-
-  //////////
-  // Velocity
-  //////////
-
-  velocityTimeSpeed = (speed, animationTime) => {
-    const { velocityBasedOnSpeed } = this.state;
-
-    if (velocityBasedOnSpeed) {
-      return animationTime - animationTime / Math.max(1.6, speed);
-    }
-    return animationTime;
-  };
-
-  handleEnableVelocity = () => {
-    this.setState({ startAnimation: false });
-  };
-
-  handleDisableVelocity = () => {
-    this.velocity = null;
-    this.animate = false;
-    this.setState({ startAnimation: false });
-  };
-
-  handleFireVelocity = () => {
-    this.setState({ startAnimation: true });
-  };
-
-  easeOut = p => -Math.cos(p * Math.PI) / 2 + 0.5;
-
-  animateVelocity = () => {
-    this.animate = true;
-    const {
-      startAnimation,
-      positionX,
-      positionY,
-      limitToBounds,
-      velocityAnimationSpeed,
-      lockAxisX,
-      lockAxisY,
-    } = this.state;
-    const startTime = new Date().getTime();
-
-    if (!this.velocity || !this.bounds) return this.handleDisableVelocity();
-    const { velocityX, velocityY, velocity } = this.velocity;
-    const animationTime = this.velocityTimeSpeed(velocity, velocityAnimationSpeed);
-    const targetX = velocityX;
-    const targetY = velocityY;
-
-    this.offsetX = positionX;
-    this.offsetY = positionY;
-
-    const animate = () => {
-      if (!startAnimation || !this.animate) {
-        return;
-      }
-
-      let frameTime = new Date().getTime() - startTime;
-      const time = frameTime / animationTime;
-      const step = this.easeOut(time);
-      if (frameTime >= animationTime) {
-        this.handleDisableVelocity();
-      } else {
-        const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
-        const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
-
-        const calculatedPosition = checkPositionBounds(
-          currentPositionX,
-          currentPositionY,
-          this.bounds,
-          limitToBounds
-        );
-
-        this.offsetX = calculatedPosition.x;
-        this.offsetY = calculatedPosition.y;
-
-        // Save panned position
-        this.setState({ positionX: calculatedPosition.x, positionY: calculatedPosition.y });
-        requestAnimationFrame(animate);
-      }
-    };
-    requestAnimationFrame(animate);
-  };
-
-  calculateVelocityStart = event => {
-    if (!throttle) {
-      const { enableVelocity, minVelocityScale, scale, disabled } = this.state;
-      if (!enableVelocity || minVelocityScale >= scale || disabled) return;
-      this.handleEnableVelocity();
-      const now = Date.now();
-      if (this.lastMousePosition) {
-        const position = getClientPosition(event);
-        if (!position) return console.error("No mouse or touch position detected");
-        const { clientX, clientY } = position;
-        const distanceX = (clientX - this.lastMousePosition.clientX) * scale;
-        const distanceY = (clientY - this.lastMousePosition.clientY) * scale;
-        const interval = now - this.velocityTime;
-        const velocityX = distanceX / interval;
-        const velocityY = distanceY / interval;
-        const velocity = Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval;
-
-        if (this.velocity && velocity < this.velocity.velocity && throttle) return;
-
-        this.velocity = { velocityX, velocityY, velocity };
-
-        // throttling
-        if (throttle) clearTimeout(throttle);
-        throttle = setTimeout(() => (throttle = false), throttleTime);
-      }
-      const position = getClientPosition(event);
-      this.lastMousePosition = position;
-      this.velocityTime = now;
-    }
   };
 
   //////////

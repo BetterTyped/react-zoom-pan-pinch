@@ -19,7 +19,7 @@ export default class App extends Component {
     dbClickEnabled: true,
     lockAxisX: false,
     lockAxisY: false,
-    velocityBasedOnSpeed: false,
+    velocityBasedOnSpeed: true,
   };
 
   toggleSetting = type => {
@@ -78,6 +78,7 @@ export default class App extends Component {
                   lockAxisX={this.state.lockAxisX}
                   lockAxisY={this.state.lockAxisY}
                   velocityBasedOnSpeed={this.state.velocityBasedOnSpeed}
+                  minScale={0.5}
                 >
                   {({
                     zoomIn,

@@ -73,6 +73,14 @@
     "css",
     "fast",
     "transformations",
-    "scale"
+    "scale",
+    "drag",
+    "viewer",
+    "reacts",
+    "touch",
+    "css3",
+    "svg",
+    "bounds",
+    "context"
   ]
 }

@@ -43,6 +43,7 @@ const TransformWrapper = ({
   onPinchingStart,
   onPinching,
   onPinchingStop,
+  onZoomChange,
   defaultPositionX,
   defaultPositionY,
   defaultScale,
@@ -100,6 +101,7 @@ const TransformWrapper = ({
       onPinchingStart={onPinchingStart}
       onPinching={onPinching}
       onPinchingStop={onPinchingStop}
+      onZoomChange={onZoomChange}
     >
       {children}
     </StateProvider>
@@ -146,6 +148,7 @@ TransformWrapper.propTypes = {
   onPinchingStart: PropTypes.func,
   onPinching: PropTypes.func,
   onPinchingStop: PropTypes.func,
+  onZoomChange: PropTypes.func,
   defaultPositionX: PropTypes.number,
   defaultPositionY: PropTypes.number,
   defaultScale: PropTypes.number,

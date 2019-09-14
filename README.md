@@ -95,7 +95,7 @@ class Example extends Component {
 | zoomingEnabled         |   true   |        Boolean |
 | scale                  |    1     |         Number |
 | maxScale               |    8     | Number or null |
-| minScale               |   0.5    | Number or null |
+| minScale               |    1     | Number or null |
 | previousScale          |    1     |         Number |
 | enableWheel            |   true   |        Boolean |
 | enableTouchPadPinch    |   true   |        Boolean |
@@ -124,6 +124,7 @@ class Example extends Component {
 | onPinchingStart        |   null   |       Function |
 | onPinching             |   null   |       Function |
 | onPinchingStop         |   null   |       Function |
+| onZoomChange           |   null   |       Function |
 
 ## Values returned from TransformWrapper component
 
@@ -141,6 +142,7 @@ class Example extends Component {
 | zoomOut()                                 | Zooming out function, used for controls button                              |      ---       |
 | setTransform(positionX, positionY, scale) | Sets transformations of content                                             | Number or null |
 | resetTransform(animationTime)             | Reset transformations to the initial values                                 |     Number     |
+| dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"                               |     String     |
 
 ## License
 

@@ -17,7 +17,7 @@ export const initialState = {
   zoomingEnabled: true,
   scale: 1,
   maxScale: 8,
-  minScale: 0.5,
+  minScale: 1,
   previousScale: 1,
   // wheel
   wheelStep: 4,
@@ -39,7 +39,7 @@ export const initialState = {
   enableVelocity: true,
   minVelocityScale: 1,
   // animations
-  velocityAnimationSpeed: 1600,
+  velocityAnimationSpeed: 1800,
   zoomAnimationSpeed: 200,
   // controls
   dbClickEnabled: true,

@@ -1,4 +1,10 @@
-import { roundNumber, boundLimiter, calculateBoundingArea, checkIsNumber } from "./utils";
+import {
+  roundNumber,
+  boundLimiter,
+  calculateBoundingArea,
+  checkIsNumber,
+  handleCallback,
+} from "./utils";
 import { initialState } from "./InitialState";
 
 export function checkZoomBounds(zoom, minScale, maxScale) {
@@ -155,6 +161,7 @@ export function handleZoomWheel(event, customMousePosition, customDelta, customS
     scale: newScale,
     previousScale: scale,
   });
+  handleCallback(this.props.onZoomChange, this.getCallbackProps());
 }
 
 export function handleZoomControls(event, customDelta, customStep) {
@@ -193,4 +200,5 @@ export function resetTransformations() {
     positionY: newPositionY,
     previousScale: p.scale,
   }));
+  handleCallback(this.props.onZoomChange, this.getCallbackProps());
 }

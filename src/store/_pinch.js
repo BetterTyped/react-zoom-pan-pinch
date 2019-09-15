@@ -14,8 +14,8 @@ function checkIfInfinite(number) {
   return number === Infinity || number === -Infinity;
 }
 
-export function calculatePinchZoom(currentDistance, delta, pinchStartDistance) {
-  const { minScale, maxScale } = this.state;
+export function calculatePinchZoom(currentDistance, pinchStartDistance) {
+  const { minScale, maxScale, scaleAnimationPadding } = this.stateProvider;
   if (typeof pinchStartDistance !== "number" || typeof currentDistance !== "number")
     return console.error("Pinch touches distance was not provided");
 
@@ -23,7 +23,7 @@ export function calculatePinchZoom(currentDistance, delta, pinchStartDistance) {
   const touchProportion = currentDistance / pinchStartDistance;
   const scaleDifference = touchProportion * this.pinchStartScale;
 
-  return checkZoomBounds(scaleDifference, minScale, maxScale);
+  return checkZoomBounds(scaleDifference, minScale, maxScale, scaleAnimationPadding);
 }
 
 export function calculateMidpoint(event, scale, contentComponent) {
@@ -41,19 +41,17 @@ export function calculateMidpoint(event, scale, contentComponent) {
 }
 
 export function handleZoomPinch(event) {
-  const {
-    isDown,
-    zoomingEnabled,
-    disabled,
-    wrapperComponent,
-    contentComponent,
-    scale,
-    limitToWrapperBounds,
-  } = this.state;
+  const { isDown, zoomingEnabled, disabled, scale, limitToWrapperBounds } = this.stateProvider;
+  const { wrapperComponent, contentComponent } = this.state;
   if (isDown || !zoomingEnabled || disabled) return;
 
-  event.preventDefault();
-  event.stopPropagation();
+  if (event.cancelable) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  // if one finger starts from outside of wrapper
+  if (this.pinchStartDistance === null) return;
 
   // Position transformation
   const { mouseX, mouseY } = calculateMidpoint(event, scale, contentComponent);
@@ -62,9 +60,8 @@ export function handleZoomPinch(event) {
   if (checkIfInfinite(mouseX) || checkIfInfinite(mouseY)) return;
 
   const currentDistance = getCurrentDistance(event);
-  const delta = currentDistance < this.lastDistance ? 1 : -1;
 
-  const newScale = calculatePinchZoom.bind(this, currentDistance, delta, this.pinchStartDistance)();
+  const newScale = calculatePinchZoom.bind(this, currentDistance, this.pinchStartDistance)();
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   const scaleDifference = newScale - scale;
@@ -77,7 +74,7 @@ export function handleZoomPinch(event) {
     newDiffWidth,
     newContentHeight,
     newDiffHeight,
-  } = getComponentsSizes(wrapperComponent, contentComponent, newScale);
+  } = getComponentsSizes(wrapperComponent, newScale);
 
   const bounds = calculateBoundingArea(
     wrapperWidth,
@@ -103,10 +100,13 @@ export function handleZoomPinch(event) {
 
   this.lastDistance = currentDistance;
 
-  this.setState({
+  this.stateProvider = {
+    ...this.stateProvider,
     positionX: newPositionX,
     positionY: newPositionY,
     scale: newScale,
     previousScale: scale,
-  });
+  };
+  // update component transformation
+  this.setContentComponentTransformation();
 }

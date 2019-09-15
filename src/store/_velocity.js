@@ -3,7 +3,7 @@ import { getClientPosition } from "./_pan";
 import { animateFunction, handleDisableAnimation } from "./_animations";
 
 function velocityTimeSpeed(speed, animationTime) {
-  const { velocityTimeBasedOnMove } = this.state;
+  const { velocityTimeBasedOnMove } = this.stateProvider;
 
   if (velocityTimeBasedOnMove) {
     return animationTime - animationTime / Math.max(1.6, speed);
@@ -27,8 +27,7 @@ export function animateVelocity() {
     velocityAnimationSpeed,
     lockAxisX,
     lockAxisY,
-  } = this.state;
-
+  } = this.stateProvider;
   if (!this.velocity || !this.bounds) return handleDisableAnimation.bind(this)();
   const { velocityX, velocityY, velocity } = this.velocity;
   const animationTime = velocityTimeSpeed.bind(this, velocity, velocityAnimationSpeed)();
@@ -39,6 +38,7 @@ export function animateVelocity() {
   this.offsetY = positionY;
 
   animateFunction.bind(this, {
+    animationVariable: this.animate,
     animationTime,
     callback: step => {
       const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
@@ -55,7 +55,13 @@ export function animateVelocity() {
       this.offsetY = calculatedPosition.y;
 
       // Save panned position
-      this.setState({ positionX: calculatedPosition.x, positionY: calculatedPosition.y });
+      this.stateProvider = {
+        ...this.stateProvider,
+        positionX: calculatedPosition.x,
+        positionY: calculatedPosition.y,
+      };
+      // update component transformation
+      this.setContentComponentTransformation();
     },
     doneCallback: () => handleDisableAnimation.bind(this)(),
     cancelCallback: () => (this.velocity = null),
@@ -63,7 +69,13 @@ export function animateVelocity() {
 }
 
 export function calculateVelocityStart(event) {
-  const { enableVelocity, minVelocityScale, scale, disabled, velocitySensitivity } = this.state;
+  const {
+    enableVelocity,
+    minVelocityScale,
+    scale,
+    disabled,
+    velocitySensitivity,
+  } = this.stateProvider;
   if (!enableVelocity || minVelocityScale >= scale || disabled) return;
   handleEnableVelocity.bind(this)();
   const now = Date.now();

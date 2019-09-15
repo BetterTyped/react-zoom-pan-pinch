@@ -6,12 +6,12 @@
 
 ## Features
 
-- :rocket: Lightning fast and easy to use
-- :factory: Super light, fully made by me
+- :rocket: Fast and easy to use
+- :factory: Light, without external dependencies
 - :gem: Mobile gestures, touchpad gestures and desktop mouse events support
 - :gift: Powerful context usage, which gives you a lot of freedom
 - :wrench: Highly customizable
-- :crown: Lots of animations and cool stuff
+- :crown: Animations and many options
 
 ## DEMO
 
@@ -81,55 +81,56 @@ class Example extends Component {
 
 ## Props of TransformWrapper
 
-| Props                   | Default  |           Type |
-| :---------------------- | :------: | -------------: |
-| limitToBounds           |   true   |        Boolean |
-| limitToWrapperBounds    |  false   |        Boolean |
-| disabled                |  false   |        Boolean |
-| transformEnabled        |   true   |        Boolean |
-| positionX               |    0     |         Number |
-| positionY               |    0     |         Number |
-| maxPositionX            |   null   | Number or null |
-| minPositionX            |   null   | Number or null |
-| maxPositionY            |   null   | Number or null |
-| minPositionY            |   null   | Number or null |
-| zoomingEnabled          |   true   |        Boolean |
-| scale                   |    1     |         Number |
-| maxScale                |    8     | Number or null |
-| minScale                |    1     | Number or null |
-| previousScale           |    1     |         Number |
-| enableWheel             |   true   |        Boolean |
-| enableTouchPadPinch     |   true   |        Boolean |
-| wheelStep               |    4     |         Number |
-| pinchEnabled            |   true   |        Boolean |
-| pinchSensitivity        |    1     |         Number |
-| panningEnabled          |   true   |        Boolean |
-| lockAxisX               |  false   |        Boolean |
-| lockAxisY               |  false   |        Boolean |
-| enableVelocity          |   true   |        Boolean |
-| velocityTimeBasedOnMove |   true   |        Boolean |
-| minVelocity             |   1.6    |         Number |
-| minVelocityScale        |    1     |         Number |
-| velocityAnimationSpeed  |   1800   |         Number |
-| velocitySensitivity     |    1     |         Number |
-| dbClickMode             | "zoomIn" |         String |
-| dbClickStep             |    40    |         Number |
-| zoomInStep              |    40    |         Number |
-| zoomOutStep             |    40    |         Number |
-| zoomInAnimationSpeed    |   200    |         Number |
-| zoomOutAnimationSpeed   |   200    |         Number |
-| dbClickAnimationSpeed   |   200    |         Number |
-| resetAnimationSpeed     |   200    |         Number |
-| onWheelStart            |   null   |       Function |
-| onWheel                 |   null   |       Function |
-| onWheelStop             |   null   |       Function |
-| onPanningStart          |   null   |       Function |
-| onPanning               |   null   |       Function |
-| onPanningStop           |   null   |       Function |
-| onPinchingStart         |   null   |       Function |
-| onPinching              |   null   |       Function |
-| onPinchingStop          |   null   |       Function |
-| onZoomChange            |   null   |       Function |
+| Props                      | Default  |           Type |
+| :------------------------- | :------: | -------------: |
+| limitToBounds              |   true   |        Boolean |
+| limitToWrapperBounds       |  false   |        Boolean |
+| disabled                   |  false   |        Boolean |
+| transformEnabled           |   true   |        Boolean |
+| positionX                  |    0     |         Number |
+| positionY                  |    0     |         Number |
+| maxPositionX               |   null   | Number or null |
+| minPositionX               |   null   | Number or null |
+| maxPositionY               |   null   | Number or null |
+| minPositionY               |   null   | Number or null |
+| zoomingEnabled             |   true   |        Boolean |
+| scale                      |    1     |         Number |
+| maxScale                   |    8     | Number or null |
+| minScale                   |    1     | Number or null |
+| scaleAnimationPadding      |   0.15   |         Number |
+| enableWheel                |   true   |        Boolean |
+| enableTouchPadPinch        |   true   |        Boolean |
+| wheelStep                  |    4     |         Number |
+| pinchEnabled               |   true   |        Boolean |
+| pinchSensitivity           |    1     |         Number |
+| panningEnabled             |   true   |        Boolean |
+| lockAxisX                  |  false   |        Boolean |
+| lockAxisY                  |  false   |        Boolean |
+| enableVelocity             |   true   |        Boolean |
+| velocityTimeBasedOnMove    |   true   |        Boolean |
+| minVelocity                |   1.6    |         Number |
+| minVelocityScale           |    1     |         Number |
+| velocityAnimationSpeed     |   1800   |         Number |
+| velocitySensitivity        |    1     |         Number |
+| dbClickMode                | "zoomIn" |         String |
+| dbClickStep                |    40    |         Number |
+| zoomInStep                 |    40    |         Number |
+| zoomOutStep                |    40    |         Number |
+| zoomInAnimationSpeed       |   200    |         Number |
+| zoomOutAnimationSpeed      |   200    |         Number |
+| dbClickAnimationSpeed      |   200    |         Number |
+| resetAnimationSpeed        |   200    |         Number |
+| scalePaddingAnimationSpeed |   200    |         Number |
+| onWheelStart               |   null   |       Function |
+| onWheel                    |   null   |       Function |
+| onWheelStop                |   null   |       Function |
+| onPanningStart             |   null   |       Function |
+| onPanning                  |   null   |       Function |
+| onPanningStop              |   null   |       Function |
+| onPinchingStart            |   null   |       Function |
+| onPinching                 |   null   |       Function |
+| onPinchingStop             |   null   |       Function |
+| onZoomChange               |   null   |       Function |
 
 ## Values returned from TransformWrapper component
 

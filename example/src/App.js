@@ -20,6 +20,8 @@ export default class App extends Component {
     lockAxisX: false,
     lockAxisY: false,
     velocityTimeBasedOnMove: true,
+    enableWheel: true,
+    enableTouchPadPinch: true,
   };
 
   toggleSetting = type => {
@@ -52,17 +54,8 @@ export default class App extends Component {
           <div className="bg-circle-3 bg-circle" />
         </header>
         <section>
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col-lg-12">
-                <div className="p-5">
-                  <h2 className="display-4 text-center">Simple example</h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section>
+          <br />
+          <br />
           <div className="container">
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
@@ -78,7 +71,9 @@ export default class App extends Component {
                   lockAxisX={this.state.lockAxisX}
                   lockAxisY={this.state.lockAxisY}
                   velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
-                  minScale={0.5}
+                  enableWheel={this.state.enableWheel}
+                  enableTouchPadPinch={this.state.enableTouchPadPinch}
+                  minScale={0.9}
                 >
                   {({
                     zoomIn,
@@ -99,6 +94,8 @@ export default class App extends Component {
                     lockAxisX,
                     lockAxisY,
                     velocityTimeBasedOnMove,
+                    enableWheel,
+                    enableTouchPadPinch,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -242,6 +239,20 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("velocityTimeBasedOnMove")}
                           >
                             <span /> Velocity time based on move
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (enableWheel ? " active" : "")}
+                            onClick={() => this.toggleSetting("enableWheel")}
+                          >
+                            <span /> Enable wheel
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (enableTouchPadPinch ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("enableTouchPadPinch")}
+                          >
+                            <span /> Enable touch pad pinch
                           </button>
                         </h6>
                       </div>

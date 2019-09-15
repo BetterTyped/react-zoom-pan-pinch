@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { initialState } from "./InitialState";
 import { roundNumber, getDistance, handleCallback } from "./utils";
-import { handleZoom, handleZoomControls, handleZoomDbClick, resetTransformations } from "./_zoom";
+import {
+  handleZoom,
+  handleZoomControls,
+  handleZoomDbClick,
+  resetTransformations,
+  animatePadding,
+} from "./_zoom";
 import { handleZoomPinch } from "./_pinch";
 import { handlePanning } from "./_pan";
 import { handleFireVelocity, animateVelocity, calculateVelocityStart } from "./_velocity";
@@ -12,16 +18,22 @@ import makePassiveEventOption from "./makePassiveEventOption";
 const Context = React.createContext({});
 
 let timer = null;
-const timerTime = 50;
+const timerTime = 100;
+let wheelTimer = null;
+const wheelTime = 50;
 
 class StateProvider extends Component {
   state = {
+    wrapperComponent: null,
+    contentComponent: null,
+    startAnimation: false,
+  };
+
+  stateProvider = {
     ...initialState,
     ...this.props.dynamicValues,
     ...this.props.defaultValues,
-    previousScale: initialState.scale,
-    startAnimation: false,
-    startZoomAnimation: false,
+    previousScale: this.props.defaultValues.scale || initialState.scale,
   };
 
   // pinch helpers
@@ -39,7 +51,14 @@ class StateProvider extends Component {
   offsetX = null;
   offsetY = null;
   throttle = false;
-  throttleTime = 50;
+  throttleTime = 30;
+  // zoom helpers
+  zoomPaddingAnimation = null;
+  zoomPaddingTimer = null;
+  // wheel helpers
+  wheelEnd = false;
+  lastWheelScale = null;
+  lastWheelDelta = null;
 
   componentDidMount() {
     const passiveOption = makePassiveEventOption(false);
@@ -56,9 +75,14 @@ class StateProvider extends Component {
   }
 
   componentDidUpdate(oldProps, oldState) {
-    const { wrapperComponent, limitToWrapperBounds, startAnimation } = this.state;
+    const { wrapperComponent, contentComponent, startAnimation } = this.state;
     const { dynamicValues } = this.props;
-    if (!oldState.wrapperComponent && this.state.wrapperComponent) {
+    if (!oldState.contentComponent && contentComponent) {
+      this.stateProvider = { ...this.stateProvider, contentComponent };
+    }
+    if (!oldState.wrapperComponent && wrapperComponent) {
+      this.stateProvider = { ...this.stateProvider, wrapperComponent };
+
       // Zooming events on wrapper
       const passiveOption = makePassiveEventOption(false);
       wrapperComponent.addEventListener("mousewheel", this.handleWheel, passiveOption);
@@ -67,11 +91,24 @@ class StateProvider extends Component {
       wrapperComponent.addEventListener("touchmove", this.handleTouch, passiveOption);
       wrapperComponent.addEventListener("touchend", this.handleTouchStop, passiveOption);
     }
-    // eslint-disable-next-line react/no-did-update-set-state
-    if (oldProps.dynamicValues !== dynamicValues) this.setState({ ...dynamicValues });
 
-    if (this.bounds && oldState.limitToWrapperBounds !== limitToWrapperBounds) this.bounds = null;
-    if (this.velocity && startAnimation && !this.animate) animateVelocity.bind(this)();
+    // start velocity animation
+    if (this.velocity && startAnimation) animateVelocity.bind(this)();
+
+    // when bounds limiters change
+    if (
+      oldProps.dynamicValues !== dynamicValues &&
+      (oldProps.dynamicValues.limitToBounds !== dynamicValues.limitToBounds ||
+        oldProps.dynamicValues.limitToWrapperBounds !== dynamicValues.limitToWrapperBounds)
+    ) {
+      this.bounds = null;
+    }
+
+    // must be at the end of the update function
+    if (oldProps.dynamicValues !== dynamicValues) {
+      this.stateProvider = { ...this.stateProvider, ...dynamicValues };
+      this.forceUpdate();
+    }
   }
 
   //////////
@@ -79,12 +116,41 @@ class StateProvider extends Component {
   //////////
 
   handleWheel = event => {
-    const { enableWheel, enableTouchPadPinch } = this.state;
+    const { enableWheel, enableTouchPadPinch, scale, maxScale, minScale } = this.stateProvider;
     const { onWheelStart, onWheel, onWheelStop, onZoomChange } = this.props;
 
     // ctrlKey detects if touchpad execute wheel or pinch gesture
     if (!enableWheel && !event.ctrlKey) return;
     if (!enableTouchPadPinch && event.ctrlKey) return;
+
+    if (scale != this.lastWheelScale) {
+      this.wheelStart = false;
+      this.lastWheelScale = scale;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        animatePadding.bind(this, event)();
+        handleCallback(onWheelStop, this.getCallbackProps());
+        handleCallback(onZoomChange, this.getCallbackProps());
+        timer = null;
+        this.lastWheelScale = null;
+        this.wheelEnd = true;
+      }, timerTime);
+    }
+    if (!this.lastWheelDelta) this.lastWheelDelta = event.deltaY;
+    if (this.wheelEnd) {
+      if (Math.abs(event.deltaY) <= Math.abs(this.lastWheelDelta)) {
+        clearTimeout(wheelTimer);
+        wheelTimer = setTimeout(() => {
+          wheelTimer = null;
+          this.wheelEnd = false;
+          this.lastWheelDelta = null;
+        }, wheelTime);
+        this.lastWheelDelta = event.deltaY;
+      }
+      event.stopPropagation();
+      event.preventDefault();
+      return;
+    }
 
     if (!timer) {
       // Wheel start event
@@ -97,12 +163,10 @@ class StateProvider extends Component {
     handleCallback(onWheel, this.getCallbackProps());
 
     // Wheel stop event
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      handleCallback(onWheelStop, this.getCallbackProps());
-      handleCallback(onZoomChange, this.getCallbackProps());
-      timer = null;
-    }, timerTime);
+    if (scale > maxScale || scale < minScale) {
+      clearTimeout(this.zoomPaddingTimer);
+      this.zoomPaddingTimer = setTimeout(() => {}, 10);
+    }
   };
 
   //////////
@@ -110,7 +174,8 @@ class StateProvider extends Component {
   //////////
 
   checkIsPanningActive = event => {
-    const { panningEnabled, disabled } = this.state;
+    const { panningEnabled, disabled } = this.stateProvider;
+
     return (
       !this.isDown ||
       !panningEnabled ||
@@ -121,16 +186,18 @@ class StateProvider extends Component {
   };
 
   handleSetUpPanning = (x, y) => {
-    const { positionX, positionY } = this.state;
+    const { positionX, positionY } = this.stateProvider;
     this.isDown = true;
     this.startCoords = { x: x - positionX, y: y - positionY };
+
     handleCallback(this.props.onPanningStart, this.getCallbackProps());
   };
 
   handleStartPanning = event => {
-    const { panningEnabled, disabled, wrapperComponent } = this.state;
+    const { panningEnabled, disabled, wrapperComponent } = this.stateProvider;
     const { target, touches } = event;
-    if (!panningEnabled || disabled || !wrapperComponent.contains(target)) return;
+    if (!panningEnabled || disabled || (wrapperComponent && !wrapperComponent.contains(target)))
+      return;
 
     handleDisableAnimation.bind(this)();
     // Mobile points
@@ -166,7 +233,7 @@ class StateProvider extends Component {
   //////////
 
   handlePinchStart = event => {
-    const { scale } = this.state;
+    const { scale } = this.stateProvider;
     event.preventDefault();
     event.stopPropagation();
 
@@ -184,11 +251,12 @@ class StateProvider extends Component {
     handleCallback(this.props.onPinching, this.getCallbackProps());
   };
 
-  handlePinchStop = () => {
-    if (typeof pinchStartScale === "number") {
+  handlePinchStop = event => {
+    if (typeof this.pinchStartScale === "number") {
       this.pinchStartDistance = null;
       this.lastDistance = null;
       this.pinchStartScale = null;
+      animatePadding.bind(this, event)();
       handleCallback(this.props.onPinchingStop, this.getCallbackProps());
     }
   };
@@ -198,7 +266,7 @@ class StateProvider extends Component {
   //////////
 
   handleTouchStart = event => {
-    const { disabled } = this.state;
+    const { disabled } = this.stateProvider;
     const { touches } = event;
     handleDisableAnimation.bind(this)();
     if (disabled) return;
@@ -207,14 +275,14 @@ class StateProvider extends Component {
   };
 
   handleTouch = event => {
-    const { panningEnabled, pinchEnabled, disabled } = this.state;
+    const { panningEnabled, pinchEnabled, disabled } = this.stateProvider;
     if (disabled) return;
     if (panningEnabled && event.touches.length === 1) return this.handlePanning(event);
     if (pinchEnabled && event.touches.length === 2) return this.handlePinch(event);
   };
 
-  handleTouchStop = () => {
-    this.handlePinchStop();
+  handleTouchStop = event => {
+    this.handlePinchStop(event);
     this.handleStopPanning();
   };
 
@@ -222,50 +290,57 @@ class StateProvider extends Component {
   // Controls
   //////////
 
-  resetLastMousePosition = () => this.setState({ lastMouseEventPosition: null });
+  resetLastMousePosition = () =>
+    (this.stateProvider = { ...this.stateProvider, lastMouseEventPosition: null });
 
   zoomIn = event => {
-    const { zoomingEnabled, disabled, zoomInStep } = this.state;
+    const { zoomingEnabled, disabled, zoomInStep } = this.stateProvider;
     if (!event) throw Error("Zoom in function require event prop");
     if (!zoomingEnabled || disabled) return;
     handleZoomControls.bind(this, event, 1, zoomInStep)();
   };
 
   zoomOut = event => {
-    const { zoomingEnabled, disabled, zoomOutStep } = this.state;
+    const { zoomingEnabled, disabled, zoomOutStep } = this.stateProvider;
     if (!event) throw Error("Zoom out function require event prop");
     if (!zoomingEnabled || disabled) return;
     handleZoomControls.bind(this, event, -1, zoomOutStep)();
   };
 
   handleDbClick = event => {
-    const { zoomingEnabled, disabled, dbClickStep, dbClickEnabled } = this.state;
+    const { zoomingEnabled, disabled, dbClickStep, dbClickEnabled } = this.stateProvider;
     if (!event) throw Error("Double click function require event prop");
     if (!zoomingEnabled || disabled || !dbClickEnabled) return;
     handleZoomDbClick.bind(this, event, 1, dbClickStep)();
   };
 
   setScale = scale => {
-    this.setState({ scale });
+    this.stateProvider = { ...this.stateProvider, scale };
+    // update component transformation
+    this.setContentComponentTransformation();
   };
 
   setPositionX = positionX => {
-    this.setState({ positionX: roundNumber(positionX, 3) });
+    this.stateProvider = { ...this.stateProvider, positionX: roundNumber(positionX, 3) };
+    // update component transformation
+    this.setContentComponentTransformation();
   };
 
   setPositionY = positionY => {
-    this.setState({ positionY: roundNumber(positionY, 3) });
+    this.stateProvider = { ...this.stateProvider, positionY: roundNumber(positionY, 3) };
+    // update component transformation
+    this.setContentComponentTransformation();
   };
 
   setTransform = (positionX, positionY, scale) => {
-    if (!this.state.transformEnabled) return;
+    if (!this.stateProvider.transformEnabled) return;
     !isNaN(scale) && this.setScale(scale);
     !isNaN(positionX) && this.setPositionX(positionX);
     !isNaN(positionY) && this.setPositionY(positionY);
   };
 
   resetTransform = () => {
-    const { disabled } = this.state;
+    const { disabled } = this.stateProvider;
     if (disabled) return;
     resetTransformations.bind(this)();
   };
@@ -279,7 +354,23 @@ class StateProvider extends Component {
   };
 
   setContentComponent = contentComponent => {
-    this.setState({ contentComponent });
+    this.setState({ contentComponent }, () => {
+      if (this.stateProvider.isCentered) {
+        const { scale } = this.stateProvider;
+        const rect = this.state.wrapperComponent.getBoundingClientRect();
+        this.stateProvider.positionX = (rect.width - rect.width * scale) / 2;
+        this.stateProvider.positionY = (rect.height - rect.height * scale) / 2;
+      }
+      this.setContentComponentTransformation();
+    });
+  };
+
+  setContentComponentTransformation = () => {
+    const { contentComponent } = this.state;
+    if (!contentComponent) return console.error("There is no content component");
+    const transform = `translate(${this.stateProvider.positionX}px, ${this.stateProvider.positionY}px) scale(${this.stateProvider.scale})`;
+    contentComponent.style.transform = transform;
+    this.setState({ updated: true });
   };
 
   //////////
@@ -287,38 +378,42 @@ class StateProvider extends Component {
   //////////
   getCallbackProps = () => {
     return {
-      positionX: this.state.positionX,
-      positionY: this.state.positionY,
-      scale: this.state.scale,
-      sensitivity: this.state.sensitivity,
-      maxScale: this.state.maxScale,
-      minScale: this.state.minScale,
-      wheelAnimationSpeed: this.state.wheelAnimationSpeed,
-      zoomAnimationSpeed: this.state.zoomAnimationSpeed,
-      pinchAnimationSpeed: this.state.pinchAnimationSpeed,
-      panAnimationSpeed: this.state.panAnimationSpeed,
-      minPositionX: this.state.minPositionX,
-      minPositionY: this.state.minPositionY,
-      maxPositionX: this.state.maxPositionX,
-      maxPositionY: this.state.maxPositionY,
-      limitToBounds: this.state.limitToBounds,
-      zoomingEnabled: this.state.zoomingEnabled,
-      panningEnabled: this.state.panningEnabled,
-      transformEnabled: this.state.transformEnabled,
-      pinchEnabled: this.state.pinchEnabled,
-      limitToWrapperBounds: this.state.limitToWrapperBounds,
-      disabled: this.state.disabled,
-      zoomOutStep: this.state.zoomOutStep,
-      zoomInStep: this.state.zoomInStep,
-      dbClickStep: this.state.dbClickStep,
-      pinchSensitivity: this.state.pinchSensitivity,
-      dbClickEnabled: this.state.dbClickEnabled,
-      lastPositionZoomEnabled: this.state.lastPositionZoomEnabled,
-      previousScale: this.state.previousScale,
-      lockAxisX: this.state.lockAxisX,
-      lockAxisY: this.state.lockAxisY,
-      velocityTimeBasedOnMove: this.state.velocityTimeBasedOnMove,
-      velocitySensitivity: this.state.velocitySensitivity,
+      positionX: this.stateProvider.positionX,
+      positionY: this.stateProvider.positionY,
+      scale: this.stateProvider.scale,
+      sensitivity: this.stateProvider.sensitivity,
+      maxScale: this.stateProvider.maxScale,
+      minScale: this.stateProvider.minScale,
+      wheelAnimationSpeed: this.stateProvider.wheelAnimationSpeed,
+      zoomAnimationSpeed: this.stateProvider.zoomAnimationSpeed,
+      pinchAnimationSpeed: this.stateProvider.pinchAnimationSpeed,
+      panAnimationSpeed: this.stateProvider.panAnimationSpeed,
+      minPositionX: this.stateProvider.minPositionX,
+      minPositionY: this.stateProvider.minPositionY,
+      maxPositionX: this.stateProvider.maxPositionX,
+      maxPositionY: this.stateProvider.maxPositionY,
+      limitToBounds: this.stateProvider.limitToBounds,
+      zoomingEnabled: this.stateProvider.zoomingEnabled,
+      panningEnabled: this.stateProvider.panningEnabled,
+      transformEnabled: this.stateProvider.transformEnabled,
+      pinchEnabled: this.stateProvider.pinchEnabled,
+      limitToWrapperBounds: this.stateProvider.limitToWrapperBounds,
+      disabled: this.stateProvider.disabled,
+      zoomOutStep: this.stateProvider.zoomOutStep,
+      zoomInStep: this.stateProvider.zoomInStep,
+      dbClickStep: this.stateProvider.dbClickStep,
+      pinchSensitivity: this.stateProvider.pinchSensitivity,
+      dbClickEnabled: this.stateProvider.dbClickEnabled,
+      lastPositionZoomEnabled: this.stateProvider.lastPositionZoomEnabled,
+      previousScale: this.stateProvider.previousScale,
+      scaleAnimationPadding: this.stateProvider.scalePadding,
+      lockAxisX: this.stateProvider.lockAxisX,
+      lockAxisY: this.stateProvider.lockAxisY,
+      velocityTimeBasedOnMove: this.stateProvider.velocityTimeBasedOnMove,
+      velocitySensitivity: this.stateProvider.velocitySensitivity,
+      scalePaddingAnimationSpeed: this.stateProvider.scalePaddingAnimationSpeed,
+      enableWheel: this.stateProvider.enableWheel,
+      enableTouchPadPinch: this.stateProvider.enableTouchPadPinch,
     };
   };
 
@@ -387,6 +482,7 @@ StateProvider.propTypes = {
   onPinchingStart: PropTypes.func,
   onPinching: PropTypes.func,
   onPinchingStop: PropTypes.func,
+  onZoomChange: PropTypes.func,
 };
 
 export { Context, StateProvider };

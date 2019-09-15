@@ -15,7 +15,7 @@ function checkIfInfinite(number) {
 }
 
 export function calculatePinchZoom(currentDistance, delta, pinchStartDistance) {
-  const { minScale, maxScale } = this.state;
+  const { minScale, maxScale, scalePadding } = this.stateProvider;
   if (typeof pinchStartDistance !== "number" || typeof currentDistance !== "number")
     return console.error("Pinch touches distance was not provided");
 
@@ -23,7 +23,7 @@ export function calculatePinchZoom(currentDistance, delta, pinchStartDistance) {
   const touchProportion = currentDistance / pinchStartDistance;
   const scaleDifference = touchProportion * this.pinchStartScale;
 
-  return checkZoomBounds(scaleDifference, minScale, maxScale);
+  return checkZoomBounds(scaleDifference, minScale, maxScale, scalePadding);
 }
 
 export function calculateMidpoint(event, scale, contentComponent) {
@@ -41,15 +41,8 @@ export function calculateMidpoint(event, scale, contentComponent) {
 }
 
 export function handleZoomPinch(event) {
-  const {
-    isDown,
-    zoomingEnabled,
-    disabled,
-    wrapperComponent,
-    contentComponent,
-    scale,
-    limitToWrapperBounds,
-  } = this.state;
+  const { isDown, zoomingEnabled, disabled, scale, limitToWrapperBounds } = this.stateProvider;
+  const { wrapperComponent, contentComponent } = this.state;
   if (isDown || !zoomingEnabled || disabled) return;
 
   event.preventDefault();
@@ -77,7 +70,7 @@ export function handleZoomPinch(event) {
     newDiffWidth,
     newContentHeight,
     newDiffHeight,
-  } = getComponentsSizes(wrapperComponent, contentComponent, newScale);
+  } = getComponentsSizes(wrapperComponent, newScale);
 
   const bounds = calculateBoundingArea(
     wrapperWidth,
@@ -103,10 +96,13 @@ export function handleZoomPinch(event) {
 
   this.lastDistance = currentDistance;
 
-  this.setState({
+  this.stateProvider = {
+    ...this.stateProvider,
     positionX: newPositionX,
     positionY: newPositionY,
     scale: newScale,
     previousScale: scale,
-  });
+  };
+  // update component transformation
+  this.setContentComponentTransformation();
 }

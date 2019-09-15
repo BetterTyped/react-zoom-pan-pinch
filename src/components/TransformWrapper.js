@@ -11,11 +11,13 @@ const TransformWrapper = ({
   sensitivity,
   maxScale,
   minScale,
+  scalePadding,
   wheelAnimationSpeed,
   zoomAnimationSpeed,
   pinchAnimationSpeed,
   panAnimationSpeed,
   resetAnimationSpeed,
+  scalePaddingAnimationSpeed,
   minPositionX,
   minPositionY,
   maxPositionX,
@@ -51,6 +53,7 @@ const TransformWrapper = ({
   lockAxisY,
   velocityTimeBasedOnMove,
   velocitySensitivity,
+  isCentered,
 }) => {
   return (
     <StateProvider
@@ -93,6 +96,9 @@ const TransformWrapper = ({
         lockAxisY,
         velocityTimeBasedOnMove,
         velocitySensitivity,
+        scalePaddingAnimationSpeed,
+        scalePadding,
+        isCentered,
       })}
       onWheelStart={onWheelStart}
       onWheel={onWheel}
@@ -158,6 +164,9 @@ TransformWrapper.propTypes = {
   lockAxisY: PropTypes.bool,
   velocityTimeBasedOnMove: PropTypes.bool,
   velocitySensitivity: PropTypes.number,
+  scalePadding: PropTypes.number,
+  scalePaddingAnimationSpeed: PropTypes.number,
+  isCentered: PropTypes.bool,
 };
 
 export default TransformWrapper;

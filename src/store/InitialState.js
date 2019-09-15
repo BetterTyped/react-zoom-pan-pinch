@@ -6,6 +6,7 @@ export const initialState = {
   limitToBounds: true,
   disabled: false,
   // position
+  isCentered: true,
   transformEnabled: true,
   positionX: 0,
   positionY: 0,
@@ -19,6 +20,7 @@ export const initialState = {
   maxScale: 8,
   minScale: 1,
   previousScale: 1,
+  scalePadding: 0.15,
   // wheel
   wheelStep: 4,
   enableWheel: true,
@@ -52,4 +54,5 @@ export const initialState = {
   zoomOutAnimationSpeed: 200,
   dbClickAnimationSpeed: 200,
   resetAnimationSpeed: 200,
+  scalePaddingAnimationSpeed: 200,
 };

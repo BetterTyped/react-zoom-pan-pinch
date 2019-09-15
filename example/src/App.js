@@ -52,17 +52,8 @@ export default class App extends Component {
           <div className="bg-circle-3 bg-circle" />
         </header>
         <section>
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col-lg-12">
-                <div className="p-5">
-                  <h2 className="display-4 text-center">Simple example</h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section>
+          <br />
+          <br />
           <div className="container">
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
@@ -78,7 +69,8 @@ export default class App extends Component {
                   lockAxisX={this.state.lockAxisX}
                   lockAxisY={this.state.lockAxisY}
                   velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
-                  minScale={0.5}
+                  minScale={0.9}
+                  defaultScale={0.8}
                 >
                   {({
                     zoomIn,

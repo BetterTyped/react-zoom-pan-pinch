@@ -58,18 +58,16 @@ export function getClientPosition(event) {
 
 export function handlePanning(event) {
   const {
-    wrapperComponent,
-    contentComponent,
     limitToWrapperBounds,
     limitToBounds,
     positionX,
     positionY,
-    scale,
     lockAxisX,
     lockAxisY,
-  } = this.state;
+  } = this.stateProvider;
+  const { wrapperComponent, contentComponent } = this.state;
 
-  if (!this.startCoords || scale === 1) return;
+  if (!this.startCoords) return;
   const { x, y } = this.startCoords;
 
   const positions = getClientPosition(event);
@@ -96,9 +94,14 @@ export function handlePanning(event) {
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;
-
   const calculatedPosition = checkPositionBounds(newPositionX, newPositionY, bounds, limitToBounds);
 
   // Save panned position
-  this.setState({ positionX: calculatedPosition.x, positionY: calculatedPosition.y });
+  this.stateProvider = {
+    ...this.stateProvider,
+    positionX: calculatedPosition.x,
+    positionY: calculatedPosition.y,
+  };
+  // update component transformation
+  this.setContentComponentTransformation();
 }

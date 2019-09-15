@@ -6,12 +6,12 @@
 
 ## Features
 
-- :rocket: Lightning fast and easy to use
-- :factory: Super light, fully made by me
+- :rocket: Fast and easy to use
+- :factory: Light, without external dependencies
 - :gem: Mobile gestures, touchpad gestures and desktop mouse events support
 - :gift: Powerful context usage, which gives you a lot of freedom
 - :wrench: Highly customizable
-- :crown: Lots of animations and cool stuff
+- :crown: Animations and many options
 
 ## DEMO
 

@@ -6,11 +6,14 @@ import {
   handleCallback,
 } from "./utils";
 import { initialState } from "./InitialState";
-import { animateFunction } from "./_animations";
+import { animateFunction, animatePaddingFunction } from "./_animations";
 
-export function checkZoomBounds(zoom, minScale, maxScale) {
-  if (!isNaN(maxScale) && zoom >= maxScale) return maxScale;
-  if (!isNaN(minScale) && zoom <= minScale) return minScale;
+export function checkZoomBounds(zoom, minScale, maxScale, scalePadding) {
+  const maxScaleWithPadding = maxScale + scalePadding;
+  const minScaleWithPadding = minScale - scalePadding;
+
+  if (!isNaN(maxScale) && zoom >= maxScaleWithPadding) return maxScaleWithPadding;
+  if (!isNaN(minScale) && zoom <= minScaleWithPadding) return minScaleWithPadding;
   return zoom;
 }
 
@@ -63,15 +66,16 @@ export function getComponentsSizes(wrapperComponent, newScale) {
   };
 }
 
-export function calculateZoom(zoomStep, delta, customScale) {
-  const { scale, maxScale, minScale } = this.state;
-
+export function calculateZoom(zoomStep, delta, customScale, disabledPadding) {
+  const { scale, maxScale, minScale, scalePadding } = this.stateProvider;
+  const padding = disabledPadding ? 0 : scalePadding;
   if (typeof customScale === "number" && customScale === scale) return scale;
-  if (typeof customScale === "number") return checkZoomBounds(customScale, minScale, maxScale);
+  if (typeof customScale === "number")
+    return checkZoomBounds(customScale, minScale, maxScale, padding);
 
   const newScale = scale + zoomStep * delta * (scale / 100);
 
-  const calculatedScale = checkZoomBounds(roundNumber(newScale, 2), minScale, maxScale);
+  const calculatedScale = checkZoomBounds(roundNumber(newScale, 2), minScale, maxScale, padding);
   if (scale === calculatedScale) return scale;
 
   return calculatedScale;
@@ -80,7 +84,7 @@ export function calculateZoom(zoomStep, delta, customScale) {
 export function calculateTransformation(mouseX, mouseY, scaleDifference, bounds) {
   if (typeof mouseX !== "number" || typeof mouseY !== "number")
     return console.error("Mouse X and Y position were not provided!");
-  const { positionX, positionY, limitToBounds, transformEnabled } = this.state;
+  const { positionX, positionY, limitToBounds, transformEnabled } = this.stateProvider;
 
   if (!transformEnabled) return { newPositionX: positionX, newPositionY: positionY };
 
@@ -97,27 +101,42 @@ export function calculateTransformation(mouseX, mouseY, scaleDifference, bounds)
   return { newPositionX: x, newPositionY: y };
 }
 
-export function handleZoom(event, customMousePosition, customDelta, customStep, animationTime) {
+export function handleZoom(
+  event,
+  customMousePosition,
+  customDelta,
+  customStep,
+  animationTime,
+  disabledPadding
+) {
   const {
     isDown,
     zoomingEnabled,
     disabled,
-    wrapperComponent,
-    contentComponent,
     scale,
     limitToWrapperBounds,
     wheelStep,
     positionY,
     positionX,
-  } = this.state;
+  } = this.stateProvider;
+  const { wrapperComponent, contentComponent } = this.state;
 
   if (isDown || !zoomingEnabled || disabled) return;
+  if (disabledPadding && this.zoomPaddingTimer) {
+    clearTimeout(this.zoomPaddingTimer);
+    this.zoomPaddingTimer = null;
+  }
   event.preventDefault();
   event.stopPropagation();
-
   // Scale transformation
   const delta = getDelta(event, customDelta);
-  const targetScale = calculateZoom.bind(this, customStep || wheelStep, delta)();
+  const targetScale = calculateZoom.bind(
+    this,
+    customStep || wheelStep,
+    delta,
+    null,
+    disabledPadding
+  )();
 
   if (targetScale === scale) return;
 
@@ -149,6 +168,7 @@ export function handleZoom(event, customMousePosition, customDelta, customStep, 
 
   // Save last zoom bounds, to speed up panning function
   this.bounds = bounds;
+  this.lastDelta = delta;
 
   // Calculate transformations
   const { newPositionX, newPositionY } = calculateTransformation.bind(
@@ -158,55 +178,66 @@ export function handleZoom(event, customMousePosition, customDelta, customStep, 
     scaleDifference,
     bounds
   )();
-
   const speed = checkIsNumber(animationTime, 1);
-
-  // animate
-  animateFunction.bind(this, {
-    animationTime: speed,
-    animationName: "linear",
-    callback: step => {
-      if (!animationTime || Math.abs(scaleDifference) < 0.05) {
-        this.setState({
-          positionX: newPositionX,
-          positionY: newPositionY,
-          scale: targetScale,
-          previousScale: scale,
-        });
-      } else {
+  if (!animationTime || Math.abs(scaleDifference) < 0.05) {
+    this.stateProvider = {
+      ...this.stateProvider,
+      positionX: newPositionX,
+      positionY: newPositionY,
+      scale: targetScale,
+      previousScale: scale,
+    };
+    // update component transformation
+    this.setContentComponentTransformation();
+  } else {
+    // animate
+    const params = {
+      animationVariable: disabledPadding ? this.zoomPaddingAnimation : this.animate,
+      animationTime: speed,
+      animationName: "linear",
+      callback: step => {
         const newPosX = positionX + (newPositionX - positionX) * step;
         const newPosY = positionY + (newPositionY - positionY) * step;
         const newScale = scale + (targetScale - scale) * step;
-        this.setState({
+        this.stateProvider = {
+          ...this.stateProvider,
           positionX: newPosX,
           positionY: newPosY,
           scale: newScale,
           previousScale: scale,
-        });
-      }
-    },
-    doneCallback: () => {
-      if (animationTime !== "wheel") {
-        handleCallback(this.props.onZoomChange, this.getCallbackProps());
-      }
-    },
-    cancelCallback: () => {
-      if (animationTime !== "wheel") {
-        handleCallback(this.props.onZoomChange, this.getCallbackProps());
-      }
-    },
-  })();
+        };
+        // update component transformation
+        this.setContentComponentTransformation();
+      },
+      doneCallback: () => {
+        if (animationTime !== "wheel") {
+          handleCallback(this.props.onZoomChange, this.getCallbackProps());
+        }
+      },
+      cancelCallback: () => {
+        if (animationTime !== "wheel") {
+          handleCallback(this.props.onZoomChange, this.getCallbackProps());
+        }
+      },
+    };
+    if (disabledPadding) {
+      animatePaddingFunction.bind(this, params)();
+    } else {
+      animateFunction.bind(this, params)();
+    }
+  }
 }
 
 export function handleZoomControls(event, customDelta, customStep) {
   const {
     positionX,
     positionY,
-    wrapperComponent,
     scale,
     zoomInAnimationSpeed,
     zoomOutAnimationSpeed,
-  } = this.state;
+  } = this.stateProvider;
+  const { wrapperComponent } = this.state;
+
   // calculate zoom center
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
@@ -217,7 +248,7 @@ export function handleZoomControls(event, customDelta, customStep) {
 }
 
 export function handleZoomDbClick(event) {
-  const { dbClickMode, dbClickStep, dbClickAnimationSpeed } = this.state;
+  const { dbClickMode, dbClickStep, dbClickAnimationSpeed } = this.stateProvider;
 
   if (dbClickMode === "reset") {
     return resetTransformations.bind(this, event, dbClickAnimationSpeed)();
@@ -228,7 +259,7 @@ export function handleZoomDbClick(event) {
 
 export function resetTransformations() {
   const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
-  const { scale, positionX, positionY, disabled, resetAnimationSpeed } = this.state;
+  const { scale, positionX, positionY, disabled, resetAnimationSpeed } = this.stateProvider;
   if (disabled) return;
   if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
     return;
@@ -239,18 +270,22 @@ export function resetTransformations() {
 
   // animate
   animateFunction.bind(this, {
+    animationVariable: this.animate,
     animationTime: resetAnimationSpeed,
     animationName: "linear",
     callback: step => {
       const newPosX = positionX + (newPositionX - positionX) * step;
       const newPosY = positionY + (newPositionY - positionY) * step;
       const newScale = scale + (targetScale - scale) * step;
-      this.setState(p => ({
+      this.stateProvider = {
+        ...this.stateProvider,
         scale: newScale,
         positionX: newPosX,
         positionY: newPosY,
-        previousScale: p.scale,
-      }));
+        previousScale: this.stateProvider.scale,
+      };
+      // update component transformation
+      this.setContentComponentTransformation();
     },
     doneCallback: () => {
       handleCallback(this.props.onZoomChange, this.getCallbackProps());
@@ -259,4 +294,32 @@ export function resetTransformations() {
       handleCallback(this.props.onZoomChange, this.getCallbackProps());
     },
   })();
+}
+
+export function animatePadding(event) {
+  const {
+    positionX,
+    positionY,
+    scale,
+    scalePaddingAnimationSpeed,
+    minScale,
+    maxScale,
+  } = this.stateProvider;
+  if (scale > minScale && scale < maxScale) return;
+  const { wrapperComponent } = this.state;
+
+  // calculate zoom center
+  const wrapperWidth = wrapperComponent.offsetWidth;
+  const wrapperHeight = wrapperComponent.offsetHeight;
+  const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
+  const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
+  handleZoom.bind(
+    this,
+    event,
+    { mouseX, mouseY },
+    this.lastDelta,
+    1,
+    scalePaddingAnimationSpeed,
+    true
+  )();
 }

@@ -119,6 +119,10 @@ class StateProvider extends Component {
     const { enableWheel, enableTouchPadPinch, scale, maxScale, minScale } = this.stateProvider;
     const { onWheelStart, onWheel, onWheelStop, onZoomChange } = this.props;
 
+    // ctrlKey detects if touchpad execute wheel or pinch gesture
+    if (!enableWheel && !event.ctrlKey) return;
+    if (!enableTouchPadPinch && event.ctrlKey) return;
+
     if (scale != this.lastWheelScale) {
       this.wheelStart = false;
       this.lastWheelScale = scale;
@@ -147,10 +151,6 @@ class StateProvider extends Component {
       event.preventDefault();
       return;
     }
-
-    // ctrlKey detects if touchpad execute wheel or pinch gesture
-    if (!enableWheel && !event.ctrlKey) return;
-    if (!enableTouchPadPinch && event.ctrlKey) return;
 
     if (!timer) {
       // Wheel start event
@@ -252,12 +252,13 @@ class StateProvider extends Component {
   };
 
   handlePinchStop = event => {
-    this.pinchStartDistance = null;
-    this.lastDistance = null;
-    this.pinchStartScale = null;
-    console.log("poszlo");
-    animatePadding.bind(this, event)();
-    handleCallback(this.props.onPinchingStop, this.getCallbackProps());
+    if (typeof this.pinchStartScale === "number") {
+      this.pinchStartDistance = null;
+      this.lastDistance = null;
+      this.pinchStartScale = null;
+      animatePadding.bind(this, event)();
+      handleCallback(this.props.onPinchingStop, this.getCallbackProps());
+    }
   };
 
   //////////
@@ -405,12 +406,14 @@ class StateProvider extends Component {
       dbClickEnabled: this.stateProvider.dbClickEnabled,
       lastPositionZoomEnabled: this.stateProvider.lastPositionZoomEnabled,
       previousScale: this.stateProvider.previousScale,
-      scalePadding: this.stateProvider.scalePadding,
+      scaleAnimationPadding: this.stateProvider.scalePadding,
       lockAxisX: this.stateProvider.lockAxisX,
       lockAxisY: this.stateProvider.lockAxisY,
       velocityTimeBasedOnMove: this.stateProvider.velocityTimeBasedOnMove,
       velocitySensitivity: this.stateProvider.velocitySensitivity,
       scalePaddingAnimationSpeed: this.stateProvider.scalePaddingAnimationSpeed,
+      enableWheel: this.stateProvider.enableWheel,
+      enableTouchPadPinch: this.stateProvider.enableTouchPadPinch,
     };
   };
 

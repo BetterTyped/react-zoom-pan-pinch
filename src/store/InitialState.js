@@ -20,7 +20,7 @@ export const initialState = {
   maxScale: 8,
   minScale: 1,
   previousScale: 1,
-  scalePadding: 0.15,
+  scaleAnimationPadding: 0.15,
   // wheel
   wheelStep: 4,
   enableWheel: true,

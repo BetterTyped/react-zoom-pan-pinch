@@ -20,6 +20,8 @@ export default class App extends Component {
     lockAxisX: false,
     lockAxisY: false,
     velocityTimeBasedOnMove: true,
+    enableWheel: true,
+    enableTouchPadPinch: true,
   };
 
   toggleSetting = type => {
@@ -69,8 +71,9 @@ export default class App extends Component {
                   lockAxisX={this.state.lockAxisX}
                   lockAxisY={this.state.lockAxisY}
                   velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
+                  enableWheel={this.state.enableWheel}
+                  enableTouchPadPinch={this.state.enableTouchPadPinch}
                   minScale={0.9}
-                  defaultScale={0.8}
                 >
                   {({
                     zoomIn,
@@ -91,6 +94,8 @@ export default class App extends Component {
                     lockAxisX,
                     lockAxisY,
                     velocityTimeBasedOnMove,
+                    enableWheel,
+                    enableTouchPadPinch,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -234,6 +239,20 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("velocityTimeBasedOnMove")}
                           >
                             <span /> Velocity time based on move
+                          </button>
+                          <button
+                            className={"btn-gradient grey small" + (enableWheel ? " active" : "")}
+                            onClick={() => this.toggleSetting("enableWheel")}
+                          >
+                            <span /> Enable wheel
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (enableTouchPadPinch ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("enableTouchPadPinch")}
+                          >
+                            <span /> Enable touch pad pinch
                           </button>
                         </h6>
                       </div>

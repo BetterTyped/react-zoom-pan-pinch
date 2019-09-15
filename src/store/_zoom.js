@@ -8,9 +8,9 @@ import {
 import { initialState } from "./InitialState";
 import { animateFunction, animatePaddingFunction } from "./_animations";
 
-export function checkZoomBounds(zoom, minScale, maxScale, scalePadding) {
-  const maxScaleWithPadding = maxScale + scalePadding;
-  const minScaleWithPadding = minScale - scalePadding;
+export function checkZoomBounds(zoom, minScale, maxScale, scaleAnimationPadding) {
+  const maxScaleWithPadding = maxScale + scaleAnimationPadding;
+  const minScaleWithPadding = minScale - scaleAnimationPadding;
 
   if (!isNaN(maxScale) && zoom >= maxScaleWithPadding) return maxScaleWithPadding;
   if (!isNaN(minScale) && zoom <= minScaleWithPadding) return minScaleWithPadding;
@@ -67,8 +67,8 @@ export function getComponentsSizes(wrapperComponent, newScale) {
 }
 
 export function calculateZoom(zoomStep, delta, customScale, disabledPadding) {
-  const { scale, maxScale, minScale, scalePadding } = this.stateProvider;
-  const padding = disabledPadding ? 0 : scalePadding;
+  const { scale, maxScale, minScale, scaleAnimationPadding } = this.stateProvider;
+  const padding = disabledPadding ? 0 : scaleAnimationPadding;
   if (typeof customScale === "number" && customScale === scale) return scale;
   if (typeof customScale === "number")
     return checkZoomBounds(customScale, minScale, maxScale, padding);

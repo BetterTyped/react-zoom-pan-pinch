@@ -131,8 +131,6 @@ class StateProvider extends Component {
       wheelStopEventTimer = setTimeout(() => {
         handleCallback(onWheelStop, this.getCallbackProps());
         handleCallback(onZoomChange, this.getCallbackProps());
-        // TODO call the comeback to bounds function made for panning
-
         wheelStopEventTimer = null;
       }, wheelStopEventTime);
     }
@@ -196,9 +194,9 @@ class StateProvider extends Component {
   };
 
   handlePanning = event => {
-    event.preventDefault();
+    // event.preventDefault();
     if (this.checkIsPanningActive(event)) return;
-    event.stopPropagation();
+    // event.stopPropagation();
 
     calculateVelocityStart.bind(this, event)();
     handlePanning.bind(this, event)();

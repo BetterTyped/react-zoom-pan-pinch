@@ -64,6 +64,8 @@ export function handleScalePaddingAnimation(event) {
   const positionXDiff = targetState.positionX - positionX;
   const positionYDiff = targetState.positionY - positionY;
 
+  console.log(targetState);
+
   // animation start timestamp
   animate.bind(this, "easeOut", 200, step => {
     this.stateProvider.scale = scale + scaleDiff * step;

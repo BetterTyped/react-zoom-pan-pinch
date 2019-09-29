@@ -47,16 +47,8 @@ export function handleCalculateBounds(newScale, limitToWrapper) {
   return bounds;
 }
 
-function handleCalculatePositions(mouseX, mouseY, newScale, bounds) {
-  const {
-    scale,
-    positionX,
-    positionY,
-    zoomPadding,
-    limitToBounds,
-    transformEnabled,
-    enablePaddingAnimation,
-  } = this.stateProvider;
+function handleCalculatePositions(mouseX, mouseY, newScale, bounds, limitToBounds) {
+  const { scale, positionX, positionY, transformEnabled } = this.stateProvider;
 
   const scaleDifference = newScale - scale;
 
@@ -70,13 +62,12 @@ function handleCalculatePositions(mouseX, mouseY, newScale, bounds) {
 
   // do not limit to bounds when there is padding animation,
   // it causes animation strange behaviour
-  const isLimitedToBounds = limitToBounds && (!enablePaddingAnimation || zoomPadding === 0);
 
   const newPositions = checkPositionBounds(
     calculatedPositionX,
     calculatedPositionY,
     bounds,
-    isLimitedToBounds
+    limitToBounds
   );
 
   return newPositions;
@@ -94,6 +85,9 @@ export function handleWheelZoom(event) {
     scale,
     contentComponent,
     limitToWrapperOnWheel,
+    limitToBounds,
+    enablePaddingAnimation,
+    zoomPadding,
   } = this.stateProvider;
   if (isDown || !zoomingEnabled || disabled) return;
 
@@ -108,7 +102,16 @@ export function handleWheelZoom(event) {
   const bounds = handleCalculateBounds.bind(this, newScale, limitToWrapperOnWheel)();
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
-  const { x, y } = handleCalculatePositions.bind(this, mouseX, mouseY, newScale, bounds)();
+
+  const isLimitedToBounds = limitToBounds && (!enablePaddingAnimation || zoomPadding === 0);
+  const { x, y } = handleCalculatePositions.bind(
+    this,
+    mouseX,
+    mouseY,
+    newScale,
+    bounds,
+    isLimitedToBounds
+  )();
 
   this.stateProvider.scale = newScale;
   this.stateProvider.bounds = bounds;
@@ -127,6 +130,7 @@ export function handleZoomToPoint(scale, mouseX, mouseY, event) {
     minScale,
     maxScale,
     contentComponent,
+    limitToBounds,
   } = this.stateProvider;
   if (isDown || !zoomingEnabled || disabled) return;
 
@@ -144,7 +148,14 @@ export function handleZoomToPoint(scale, mouseX, mouseY, event) {
   }
   console.log(mousePosX, mousePosY);
 
-  const { x, y } = handleCalculatePositions.bind(this, mousePosX, mousePosY, newScale, bounds)();
+  const { x, y } = handleCalculatePositions.bind(
+    this,
+    mousePosX,
+    mousePosY,
+    newScale,
+    bounds,
+    limitToBounds
+  )();
 
   return { scale: newScale, positionX: x, positionY: y };
 }

@@ -22,6 +22,7 @@ export default class App extends Component {
     velocityTimeBasedOnMove: true,
     enableWheel: true,
     enableTouchPadPinch: true,
+    enableVelocity: true,
   };
 
   toggleSetting = type => {
@@ -73,6 +74,7 @@ export default class App extends Component {
                   velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
                   enableWheel={this.state.enableWheel}
                   enableTouchPadPinch={this.state.enableTouchPadPinch}
+                  enableVelocity={this.state.enableVelocity}
                   minScale={0.9}
                 >
                   {({
@@ -96,6 +98,7 @@ export default class App extends Component {
                     velocityTimeBasedOnMove,
                     enableWheel,
                     enableTouchPadPinch,
+                    enableVelocity,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -239,6 +242,14 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("velocityTimeBasedOnMove")}
                           >
                             <span /> Velocity time based on move
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (enableVelocity ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("enableVelocity")}
+                          >
+                            <span /> Enable velocity
                           </button>
                           <button
                             className={"btn-gradient grey small" + (enableWheel ? " active" : "")}

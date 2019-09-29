@@ -38,7 +38,7 @@ export function animateVelocity() {
   this.offsetY = positionY;
 
   animateFunction.bind(this, {
-    animationVariable: this.animate,
+    animationType: this.animate,
     animationTime,
     callback: step => {
       const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;

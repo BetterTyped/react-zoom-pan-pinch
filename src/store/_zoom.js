@@ -192,7 +192,7 @@ export function handleZoom(
   } else {
     // animate
     const params = {
-      animationVariable: disabledPadding ? this.zoomPaddingAnimation : this.animate,
+      animationType: disabledPadding ? this.zoomPaddingAnimation : this.animate,
       animationTime: speed,
       animationName: "linear",
       callback: step => {
@@ -270,7 +270,7 @@ export function resetTransformations() {
 
   // animate
   animateFunction.bind(this, {
-    animationVariable: this.animate,
+    animationType: this.animate,
     animationTime: resetAnimationSpeed,
     animationName: "linear",
     callback: step => {

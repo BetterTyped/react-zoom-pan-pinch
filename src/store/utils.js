@@ -170,3 +170,14 @@ export const handleCallback = (callback, props) => {
     callback(props);
   }
 };
+
+export const handleWheelStop = (previousEvent, event, stateProvider) => {
+  const { scale, maxScale, minScale } = stateProvider;
+  if (!previousEvent) return false;
+  if (scale < maxScale || scale > minScale) return true;
+  if (Math.sign(previousEvent.deltaY) !== Math.sign(event.deltaY)) return true;
+  if (previousEvent.deltaY > 0 && previousEvent.deltaY < event.deltaY) return true;
+  if (previousEvent.deltaY < 0 && previousEvent.deltaY > event.deltaY) return true;
+  if (Math.sign(previousEvent.deltaY) !== Math.sign(event.deltaY)) return true;
+  return false;
+};

@@ -20,9 +20,12 @@ export const initialState = {
   maxScale: 8,
   minScale: 1,
   previousScale: 1,
-  scaleAnimationPadding: 0.15,
+  // padding
+  limitToWrapperOnWheel: true,
+  enablePaddingAnimation: true,
+  zoomPadding: 0.45,
   // wheel
-  wheelStep: 4,
+  wheelStep: 6.5,
   enableWheel: true,
   enableTouchPadPinch: true,
   // pinch

@@ -19,7 +19,7 @@ export function handleDisableAnimation() {
 }
 
 export function animateFunction({
-  animationVariable,
+  animationType,
   animationTime,
   callback,
   cancelCallback,

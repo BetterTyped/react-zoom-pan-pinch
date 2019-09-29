@@ -56,6 +56,7 @@ const TransformWrapper = ({
   isCentered,
   enableWheel,
   enableTouchPadPinch,
+  enableVelocity,
 }) => {
   return (
     <StateProvider
@@ -103,6 +104,7 @@ const TransformWrapper = ({
         isCentered,
         enableWheel,
         enableTouchPadPinch,
+        enableVelocity,
       })}
       onWheelStart={onWheelStart}
       onWheel={onWheel}

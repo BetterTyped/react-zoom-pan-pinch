@@ -43,31 +43,16 @@ export function animate(animationName, animationTime, callback) {
   requestAnimationFrame(this.animation);
 }
 
-export function handleScalePaddingAnimation(event) {
-  const {
-    enablePaddingAnimation,
-    minScale,
-    wrapperComponent,
-    scale,
-    positionX,
-    positionY,
-  } = this.stateProvider;
-
-  if (!enablePaddingAnimation || scale > minScale) return;
-
-  let mouseX = wrapperComponent.offsetWidth / 2;
-  let mouseY = wrapperComponent.offsetHeight / 2;
-
-  const targetState = handleZoomToPoint.bind(this, minScale, mouseX, mouseY, event)();
+export function animateComponent({ targetState, speed, type }) {
+  const { scale, positionX, positionY } = this.stateProvider;
 
   const scaleDiff = targetState.scale - scale;
   const positionXDiff = targetState.positionX - positionX;
   const positionYDiff = targetState.positionY - positionY;
 
-  console.log(targetState);
-
   // animation start timestamp
-  animate.bind(this, "easeOut", 200, step => {
+  animate.bind(this, type, speed, step => {
+    this.stateProvider.previousScale = this.stateProvider.scale;
     this.stateProvider.scale = scale + scaleDiff * step;
     this.stateProvider.positionX = positionX + positionXDiff * step;
     this.stateProvider.positionY = positionY + positionYDiff * step;

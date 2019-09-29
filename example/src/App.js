@@ -23,6 +23,7 @@ export default class App extends Component {
     enableWheel: true,
     enableTouchPadPinch: true,
     enableVelocity: true,
+    limitToWrapperOnWheel: true,
   };
 
   toggleSetting = type => {
@@ -75,6 +76,7 @@ export default class App extends Component {
                   enableWheel={this.state.enableWheel}
                   enableTouchPadPinch={this.state.enableTouchPadPinch}
                   enableVelocity={this.state.enableVelocity}
+                  limitToWrapperOnWheel={this.state.limitToWrapperOnWheel}
                   minScale={0.9}
                 >
                   {({
@@ -99,6 +101,7 @@ export default class App extends Component {
                     enableWheel,
                     enableTouchPadPinch,
                     enableVelocity,
+                    limitToWrapperOnWheel,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -264,6 +267,14 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("enableTouchPadPinch")}
                           >
                             <span /> Enable touch pad pinch
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (limitToWrapperOnWheel ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("limitToWrapperOnWheel")}
+                          >
+                            <span /> Limit to wrapper on wheel
                           </button>
                         </h6>
                       </div>

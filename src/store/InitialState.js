@@ -21,8 +21,9 @@ export const initialState = {
   minScale: 1,
   previousScale: 1,
   // padding
-  limitToWrapperOnWheel: true,
-  enablePaddingAnimation: true,
+  limitToWrapperOnWheel: false,
+  enablePadding: true,
+  enablePanPadding: true,
   zoomPadding: 0.45,
   // wheel
   wheelStep: 6.5,
@@ -43,19 +44,19 @@ export const initialState = {
   minVelocity: 1.8,
   enableVelocity: true,
   minVelocityScale: 1,
+  velocitySensitivity: 1,
   // animations
   velocityAnimationSpeed: 1800,
   zoomAnimationSpeed: 200,
-  velocitySensitivity: 1,
+  zoomInAnimationSpeed: 200,
+  zoomOutAnimationSpeed: 200,
+  dbClickAnimationSpeed: 200,
+  resetAnimationSpeed: 200,
+  paddingAnimationSpeed: 200,
   // controls
   dbClickEnabled: true,
   dbClickMode: "zoomIn",
   zoomInStep: 40,
   zoomOutStep: 40,
   dbClickStep: 40,
-  zoomInAnimationSpeed: 200,
-  zoomOutAnimationSpeed: 200,
-  dbClickAnimationSpeed: 200,
-  resetAnimationSpeed: 200,
-  scalePaddingAnimationSpeed: 200,
 };

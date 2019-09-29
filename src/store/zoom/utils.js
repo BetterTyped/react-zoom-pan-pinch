@@ -1,7 +1,7 @@
 import { boundLimiter, checkIsNumber } from "../utils";
 
-export function checkZoomBounds(zoom, minScale, maxScale, zoomPadding, enablePaddingAnimation) {
-  const scalePadding = enablePaddingAnimation ? zoomPadding : 0;
+export function checkZoomBounds(zoom, minScale, maxScale, zoomPadding, enablePadding) {
+  const scalePadding = enablePadding ? zoomPadding : 0;
   const minScaleWithPadding = minScale - scalePadding;
 
   if (!isNaN(maxScale) && zoom >= maxScale) return maxScale;
@@ -29,7 +29,7 @@ export function wheelMousePosition(event, contentComponent, scale) {
   const mouseX = (event.clientX - contentRect.left) / scale;
   const mouseY = (event.clientY - contentRect.top) / scale;
 
-  if (isNaN(mouseX) || isNaN(mouseY)) return console.warn("No mouse or touch offset found");
+  if (isNaN(mouseX) || isNaN(mouseY)) return console.error("No mouse or touch offset found");
 
   return {
     mouseX,

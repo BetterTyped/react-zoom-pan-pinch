@@ -19,9 +19,9 @@ import makePassiveEventOption from "./makePassiveEventOption";
 const Context = React.createContext({});
 
 let wheelStopEventTimer = null;
-const wheelStopEventTime = 150;
+const wheelStopEventTime = 180;
 let wheelAnimationTimer = null;
-const wheelAnimationTime = 150;
+const wheelAnimationTime = 180;
 
 class StateProvider extends Component {
   state = {
@@ -278,11 +278,12 @@ class StateProvider extends Component {
   //////////
 
   handleTouchStart = event => {
-    const { disabled } = this.stateProvider;
+    const { disabled, scale, minScale } = this.stateProvider;
     const { touches } = event;
     const { wrapperComponent, contentComponent } = this.state;
+    if (disabled || !wrapperComponent || !contentComponent || scale < minScale) return;
     handleDisableAnimation.bind(this)();
-    if (disabled || !wrapperComponent || !contentComponent) return;
+
     if (touches && touches.length === 1) return this.handleStartPanning(event);
     if (touches && touches.length === 2) return this.handlePinchStart(event);
   };

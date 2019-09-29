@@ -195,7 +195,6 @@ class StateProvider extends Component {
       minScale,
       scale,
       limitToWrapperBounds,
-      isDown,
     } = this.stateProvider;
     const { target, touches } = event;
 
@@ -203,8 +202,7 @@ class StateProvider extends Component {
       !panningEnabled ||
       disabled ||
       (wrapperComponent && !wrapperComponent.contains(target)) ||
-      scale < minScale ||
-      !isDown
+      scale < minScale
     )
       return;
 

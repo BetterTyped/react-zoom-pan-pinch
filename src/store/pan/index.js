@@ -1,5 +1,5 @@
-import { calculateBoundingArea } from "./utils";
-import { checkPositionBounds } from "./_zoom";
+import { calculateBoundingArea } from "../utils";
+import { checkPositionBounds } from "../zoom/utils";
 
 function getSizes(wrapperComponent, contentComponent) {
   const wrapperRect = wrapperComponent.getBoundingClientRect();
@@ -57,15 +57,7 @@ export function getClientPosition(event) {
 }
 
 export function handlePanning(event) {
-  const {
-    limitToWrapperBounds,
-    limitToBounds,
-    positionX,
-    positionY,
-    lockAxisX,
-    lockAxisY,
-  } = this.stateProvider;
-  const { wrapperComponent, contentComponent } = this.state;
+  const { limitToBounds, positionX, positionY, lockAxisX, lockAxisY } = this.stateProvider;
 
   if (!this.startCoords) return;
   const { x, y } = this.startCoords;
@@ -74,34 +66,23 @@ export function handlePanning(event) {
   if (!positions) return console.error("Cannot find mouse client positions");
   const { clientX, clientY } = positions;
 
-  // Calculate bounding area
-  let bounds = this.bounds;
-
-  // If panning is fired before scaling and there are no bounds calculated
-  if (!bounds) {
-    const calculatedBounds = handleCalculateBounds(
-      wrapperComponent,
-      contentComponent,
-      limitToWrapperBounds
-    );
-    this.bounds = calculatedBounds;
-    bounds = calculatedBounds;
-  }
-
   // Get Position
   const newPositionX = lockAxisX ? positionX : clientX - x;
   const newPositionY = lockAxisY ? positionY : clientY - y;
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;
-  const calculatedPosition = checkPositionBounds(newPositionX, newPositionY, bounds, limitToBounds);
+  const calculatedPosition = checkPositionBounds(
+    newPositionX,
+    newPositionY,
+    this.bounds,
+    limitToBounds
+  );
 
   // Save panned position
-  this.stateProvider = {
-    ...this.stateProvider,
-    positionX: calculatedPosition.x,
-    positionY: calculatedPosition.y,
-  };
+  this.stateProvider.positionX = calculatedPosition.x;
+  this.stateProvider.positionY = calculatedPosition.y;
+
   // update component transformation
   this.setContentComponentTransformation();
 }

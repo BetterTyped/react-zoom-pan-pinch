@@ -1,5 +1,6 @@
-import { calculateTransformation, getComponentsSizes, checkZoomBounds } from "./_zoom";
-import { getDistance, calculateBoundingArea } from "./utils";
+import { getComponentsSizes, checkZoomBounds } from "../zoom/utils";
+import { handleCalculatePositions } from "../zoom";
+import { getDistance, calculateBoundingArea } from "../utils";
 
 function round(number, decimal) {
   const roundNumber = Math.pow(10, decimal);
@@ -41,7 +42,14 @@ export function calculateMidpoint(event, scale, contentComponent) {
 }
 
 export function handleZoomPinch(event) {
-  const { isDown, zoomingEnabled, disabled, scale, limitToWrapperBounds } = this.stateProvider;
+  const {
+    isDown,
+    zoomingEnabled,
+    disabled,
+    scale,
+    limitToWrapperBounds,
+    limitToBounds,
+  } = this.stateProvider;
   const { wrapperComponent, contentComponent } = this.state;
   if (isDown || !zoomingEnabled || disabled) return;
 
@@ -64,8 +72,6 @@ export function handleZoomPinch(event) {
   const newScale = calculatePinchZoom.bind(this, currentDistance, this.pinchStartDistance)();
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
-  const scaleDifference = newScale - scale;
-
   // Get new element sizes to calculate bounds
   const {
     wrapperWidth,
@@ -86,24 +92,22 @@ export function handleZoomPinch(event) {
     limitToWrapperBounds
   );
 
-  // Save last zoom bounds, to speed up panning function
-  this.bounds = bounds;
-
   // Calculate transformations
-  const { newPositionX, newPositionY } = calculateTransformation.bind(
+  const { x, y } = handleCalculatePositions.bind(
     this,
     mouseX,
     mouseY,
-    scaleDifference,
-    bounds
-  )();
+    newScale,
+    bounds,
+    limitToBounds
+  );
 
   this.lastDistance = currentDistance;
 
   this.stateProvider = {
     ...this.stateProvider,
-    positionX: newPositionX,
-    positionY: newPositionY,
+    positionX: x,
+    positionY: y,
     scale: newScale,
     previousScale: scale,
   };

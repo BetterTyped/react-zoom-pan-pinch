@@ -22,6 +22,8 @@ export default class App extends Component {
     velocityTimeBasedOnMove: true,
     enableWheel: true,
     enableTouchPadPinch: true,
+    enableVelocity: true,
+    limitToWrapperOnWheel: true,
   };
 
   toggleSetting = type => {
@@ -73,6 +75,8 @@ export default class App extends Component {
                   velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
                   enableWheel={this.state.enableWheel}
                   enableTouchPadPinch={this.state.enableTouchPadPinch}
+                  enableVelocity={this.state.enableVelocity}
+                  limitToWrapperOnWheel={this.state.limitToWrapperOnWheel}
                   minScale={0.9}
                 >
                   {({
@@ -96,6 +100,8 @@ export default class App extends Component {
                     velocityTimeBasedOnMove,
                     enableWheel,
                     enableTouchPadPinch,
+                    enableVelocity,
+                    limitToWrapperOnWheel,
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -241,6 +247,14 @@ export default class App extends Component {
                             <span /> Velocity time based on move
                           </button>
                           <button
+                            className={
+                              "btn-gradient grey small" + (enableVelocity ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("enableVelocity")}
+                          >
+                            <span /> Enable velocity
+                          </button>
+                          <button
                             className={"btn-gradient grey small" + (enableWheel ? " active" : "")}
                             onClick={() => this.toggleSetting("enableWheel")}
                           >
@@ -253,6 +267,14 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("enableTouchPadPinch")}
                           >
                             <span /> Enable touch pad pinch
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" + (limitToWrapperOnWheel ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("limitToWrapperOnWheel")}
+                          >
+                            <span /> Limit to wrapper on wheel
                           </button>
                         </h6>
                       </div>

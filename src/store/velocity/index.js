@@ -1,6 +1,8 @@
-import { checkPositionBounds } from "./_zoom";
-import { getClientPosition } from "./_pan";
-import { animateFunction, handleDisableAnimation } from "./_animations";
+import { checkPositionBounds } from "../zoom/utils";
+import { getClientPosition } from "../pan";
+import { animate, handleDisableAnimation } from "../animations";
+
+const throttleTime = 40;
 
 function velocityTimeSpeed(speed, animationTime) {
   const { velocityTimeBasedOnMove } = this.stateProvider;
@@ -37,34 +39,29 @@ export function animateVelocity() {
   this.offsetX = positionX;
   this.offsetY = positionY;
 
-  animateFunction.bind(this, {
-    animationVariable: this.animate,
-    animationTime,
-    callback: step => {
-      const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
-      const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
+  // animation start timestamp
+  animate.bind(this, "easeOut", animationTime, step => {
+    const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
+    const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
 
-      const calculatedPosition = checkPositionBounds(
-        currentPositionX,
-        currentPositionY,
-        this.bounds,
-        limitToBounds
-      );
+    const calculatedPosition = checkPositionBounds(
+      currentPositionX,
+      currentPositionY,
+      this.maxBounds,
+      limitToBounds
+    );
 
-      this.offsetX = calculatedPosition.x;
-      this.offsetY = calculatedPosition.y;
+    this.offsetX = calculatedPosition.x;
+    this.offsetY = calculatedPosition.y;
 
-      // Save panned position
-      this.stateProvider = {
-        ...this.stateProvider,
-        positionX: calculatedPosition.x,
-        positionY: calculatedPosition.y,
-      };
-      // update component transformation
-      this.setContentComponentTransformation();
-    },
-    doneCallback: () => handleDisableAnimation.bind(this)(),
-    cancelCallback: () => (this.velocity = null),
+    // Save panned position
+    this.stateProvider = {
+      ...this.stateProvider,
+      positionX: calculatedPosition.x,
+      positionY: calculatedPosition.y,
+    };
+    // apply animation changes
+    this.setContentComponentTransformation();
   })();
 }
 
@@ -96,7 +93,7 @@ export function calculateVelocityStart(event) {
 
     // throttling
     if (this.throttle) clearTimeout(this.throttle);
-    this.throttle = setTimeout(() => (this.throttle = false), this.throttleTime);
+    this.throttle = setTimeout(() => (this.throttle = false), throttleTime);
   }
   const position = getClientPosition(event);
   this.lastMousePosition = position;

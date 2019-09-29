@@ -81,56 +81,60 @@ class Example extends Component {
 
 ## Props of TransformWrapper
 
-| Props                      | Default  |           Type |
-| :------------------------- | :------: | -------------: |
-| limitToBounds              |   true   |        Boolean |
-| limitToWrapperBounds       |  false   |        Boolean |
-| disabled                   |  false   |        Boolean |
-| transformEnabled           |   true   |        Boolean |
-| positionX                  |    0     |         Number |
-| positionY                  |    0     |         Number |
-| maxPositionX               |   null   | Number or null |
-| minPositionX               |   null   | Number or null |
-| maxPositionY               |   null   | Number or null |
-| minPositionY               |   null   | Number or null |
-| zoomingEnabled             |   true   |        Boolean |
-| scale                      |    1     |         Number |
-| maxScale                   |    8     | Number or null |
-| minScale                   |    1     | Number or null |
-| scaleAnimationPadding      |   0.15   |         Number |
-| enableWheel                |   true   |        Boolean |
-| enableTouchPadPinch        |   true   |        Boolean |
-| wheelStep                  |    4     |         Number |
-| pinchEnabled               |   true   |        Boolean |
-| pinchSensitivity           |    1     |         Number |
-| panningEnabled             |   true   |        Boolean |
-| lockAxisX                  |  false   |        Boolean |
-| lockAxisY                  |  false   |        Boolean |
-| enableVelocity             |   true   |        Boolean |
-| velocityTimeBasedOnMove    |   true   |        Boolean |
-| minVelocity                |   1.6    |         Number |
-| minVelocityScale           |    1     |         Number |
-| velocityAnimationSpeed     |   1800   |         Number |
-| velocitySensitivity        |    1     |         Number |
-| dbClickMode                | "zoomIn" |         String |
-| dbClickStep                |    40    |         Number |
-| zoomInStep                 |    40    |         Number |
-| zoomOutStep                |    40    |         Number |
-| zoomInAnimationSpeed       |   200    |         Number |
-| zoomOutAnimationSpeed      |   200    |         Number |
-| dbClickAnimationSpeed      |   200    |         Number |
-| resetAnimationSpeed        |   200    |         Number |
-| scalePaddingAnimationSpeed |   200    |         Number |
-| onWheelStart               |   null   |       Function |
-| onWheel                    |   null   |       Function |
-| onWheelStop                |   null   |       Function |
-| onPanningStart             |   null   |       Function |
-| onPanning                  |   null   |       Function |
-| onPanningStop              |   null   |       Function |
-| onPinchingStart            |   null   |       Function |
-| onPinching                 |   null   |       Function |
-| onPinchingStop             |   null   |       Function |
-| onZoomChange               |   null   |       Function |
+| Props                   | Default  |           Type |
+| :---------------------- | :------: | -------------: |
+| isCentered              |   true   |        Boolean |
+| limitToBounds           |   true   |        Boolean |
+| limitToWrapperBounds    |  false   |        Boolean |
+| disabled                |  false   |        Boolean |
+| transformEnabled        |   true   |        Boolean |
+| positionX               |    0     |         Number |
+| positionY               |    0     |         Number |
+| maxPositionX            |   null   | Number or null |
+| minPositionX            |   null   | Number or null |
+| maxPositionY            |   null   | Number or null |
+| minPositionY            |   null   | Number or null |
+| zoomingEnabled          |   true   |        Boolean |
+| scale                   |    1     |         Number |
+| maxScale                |    8     | Number or null |
+| minScale                |    1     | Number or null |
+| scaleAnimationPadding   |   0.15   |         Number |
+| enableWheel             |   true   |        Boolean |
+| enableTouchPadPinch     |   true   |        Boolean |
+| wheelStep               |    4     |         Number |
+| limitToWrapperOnWheel   |  false   |        Boolean |
+| pinchEnabled            |   true   |        Boolean |
+| pinchSensitivity        |    1     |         Number |
+| panningEnabled          |   true   |        Boolean |
+| lockAxisX               |  false   |        Boolean |
+| lockAxisY               |  false   |        Boolean |
+| enableVelocity          |   true   |        Boolean |
+| velocityTimeBasedOnMove |   true   |        Boolean |
+| minVelocity             |   1.6    |         Number |
+| minVelocityScale        |    1     |         Number |
+| velocityAnimationSpeed  |   1800   |         Number |
+| velocitySensitivity     |    1     |         Number |
+| dbClickMode             | "zoomIn" |         String |
+| dbClickStep             |    40    |         Number |
+| zoomInStep              |    40    |         Number |
+| zoomOutStep             |    40    |         Number |
+| zoomInAnimationSpeed    |   200    |         Number |
+| zoomOutAnimationSpeed   |   200    |         Number |
+| dbClickAnimationSpeed   |   200    |         Number |
+| resetAnimationSpeed     |   200    |         Number |
+| paddingAnimationSpeed   |   200    |         Number |
+| onWheelStart            |   null   |       Function |
+| onWheel                 |   null   |       Function |
+| onWheelStop             |   null   |       Function |
+| onPanningStart          |   null   |       Function |
+| onPanning               |   null   |       Function |
+| onPanningStop           |   null   |       Function |
+| onPinchingStart         |   null   |       Function |
+| onPinching              |   null   |       Function |
+| onPinchingStop          |   null   |       Function |
+| onZoomChange            |   null   |       Function |
+| enablePadding           |   true   |        Boolean |
+| enablePanPadding        |   true   |        Boolean |
 
 ## Values returned from TransformWrapper component
 
@@ -140,6 +144,7 @@ class Example extends Component {
 | minVelocityScale                          | Velocity will be disabled if value is equal or lower than given value                                  |     Number     |
 | velocityTimeBasedOnMove                   | Velocity duration is based on the mouse move - the longer the movement, the longer the animation lasts |    Boolean     |
 | limitToWrapperBounds                      | Enables panning when zoom is lower than 1, and limit it to the wrapper bounds                          |    Boolean     |
+| limitToWrapperOnWheel                     | Zoomed object is always inside wrapper if limitBounds is activated                                     |    Boolean     |
 | limitToBounds                             | Limit zooming and panning to wrapper boundaries                                                        |    Boolean     |
 | setScale(scale)                           | Sets scale                                                                                             |     Number     |
 | setPositionX(positionX)                   | Sets position x                                                                                        |     Number     |

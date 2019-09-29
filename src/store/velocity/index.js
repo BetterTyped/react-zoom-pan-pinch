@@ -2,6 +2,8 @@ import { checkPositionBounds } from "../zoom/utils";
 import { getClientPosition } from "../pan";
 import { animate, handleDisableAnimation } from "../animations";
 
+const throttleTime = 40;
+
 function velocityTimeSpeed(speed, animationTime) {
   const { velocityTimeBasedOnMove } = this.stateProvider;
 
@@ -45,7 +47,7 @@ export function animateVelocity() {
     const calculatedPosition = checkPositionBounds(
       currentPositionX,
       currentPositionY,
-      this.bounds,
+      this.maxBounds,
       limitToBounds
     );
 
@@ -91,7 +93,7 @@ export function calculateVelocityStart(event) {
 
     // throttling
     if (this.throttle) clearTimeout(this.throttle);
-    this.throttle = setTimeout(() => (this.throttle = false), this.throttleTime);
+    this.throttle = setTimeout(() => (this.throttle = false), throttleTime);
   }
   const position = getClientPosition(event);
   this.lastMousePosition = position;

@@ -1,6 +1,6 @@
-import { getComponentsSizes, checkZoomBounds } from "../zoom/utils";
-import { handleCalculatePositions } from "../zoom";
-import { getDistance, calculateBoundingArea } from "../utils";
+import { checkZoomBounds } from "../zoom/utils";
+import { handleCalculatePositions, handleCalculateBounds } from "../zoom";
+import { getDistance, roundNumber } from "../utils";
 
 function round(number, decimal) {
   const roundNumber = Math.pow(10, decimal);
@@ -16,7 +16,7 @@ function checkIfInfinite(number) {
 }
 
 export function calculatePinchZoom(currentDistance, pinchStartDistance) {
-  const { minScale, maxScale, scaleAnimationPadding } = this.stateProvider;
+  const { minScale, maxScale, zoomPadding, enablePadding } = this.stateProvider;
   if (typeof pinchStartDistance !== "number" || typeof currentDistance !== "number")
     return console.error("Pinch touches distance was not provided");
 
@@ -24,7 +24,13 @@ export function calculatePinchZoom(currentDistance, pinchStartDistance) {
   const touchProportion = currentDistance / pinchStartDistance;
   const scaleDifference = touchProportion * this.pinchStartScale;
 
-  return checkZoomBounds(scaleDifference, minScale, maxScale, scaleAnimationPadding);
+  return checkZoomBounds(
+    roundNumber(scaleDifference, 2),
+    minScale,
+    maxScale,
+    zoomPadding,
+    enablePadding
+  );
 }
 
 export function calculateMidpoint(event, scale, contentComponent) {
@@ -47,10 +53,12 @@ export function handleZoomPinch(event) {
     zoomingEnabled,
     disabled,
     scale,
-    limitToWrapperBounds,
+    limitToWrapperOnWheel,
     limitToBounds,
+    enablePadding,
+    zoomPadding,
   } = this.stateProvider;
-  const { wrapperComponent, contentComponent } = this.state;
+  const { contentComponent } = this.state;
   if (isDown || !zoomingEnabled || disabled) return;
 
   if (event.cancelable) {
@@ -73,44 +81,27 @@ export function handleZoomPinch(event) {
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   // Get new element sizes to calculate bounds
-  const {
-    wrapperWidth,
-    wrapperHeight,
-    newContentWidth,
-    newDiffWidth,
-    newContentHeight,
-    newDiffHeight,
-  } = getComponentsSizes(wrapperComponent, newScale);
-
-  const bounds = calculateBoundingArea(
-    wrapperWidth,
-    newContentWidth,
-    newDiffWidth,
-    wrapperHeight,
-    newContentHeight,
-    newDiffHeight,
-    limitToWrapperBounds
-  );
+  const bounds = handleCalculateBounds.bind(this, newScale, limitToWrapperOnWheel)();
 
   // Calculate transformations
+  const isLimitedToBounds =
+    limitToBounds && (!enablePadding || zoomPadding === 0 || limitToWrapperOnWheel);
   const { x, y } = handleCalculatePositions.bind(
     this,
     mouseX,
     mouseY,
     newScale,
     bounds,
-    limitToBounds
-  );
+    isLimitedToBounds
+  )();
 
   this.lastDistance = currentDistance;
 
-  this.stateProvider = {
-    ...this.stateProvider,
-    positionX: x,
-    positionY: y,
-    scale: newScale,
-    previousScale: scale,
-  };
+  this.stateProvider.positionX = x;
+  this.stateProvider.positionY = y;
+  this.stateProvider.scale = newScale;
+  this.stateProvider.previousScale = scale;
+
   // update component transformation
   this.setContentComponentTransformation();
 }

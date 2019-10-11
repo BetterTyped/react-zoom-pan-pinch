@@ -21,7 +21,7 @@ function TransformComponent({ children }) {
   }, []);
 
   return (
-    <div ref={wrapperRef} className={`"react-transform-component" ${styles.container}`}>
+    <div ref={wrapperRef} className={`react-transform-component ${styles.container}`}>
       <div ref={contentRef} className={`react-transform-element ${styles.content}`} style={style}>
         {children}
       </div>

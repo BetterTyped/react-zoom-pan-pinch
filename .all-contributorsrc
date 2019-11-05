@@ -9,9 +9,7 @@
   "imageSize": 80,
   "commit": true,
   "commitConvention": "none",
-  "badgeTemplate": "",
-  "contributors": [
-    {
+  "contributors": [{
       "login": "prc5",
       "name": "Maciej Pyrc",
       "avatar_url": "https://avatars3.githubusercontent.com/u/20928302?v=4",
@@ -51,7 +49,6 @@
       "contributions": [
         "code"
       ]
-    }
-  ],
+    }],
   "contributorsPerLine": 7
 }

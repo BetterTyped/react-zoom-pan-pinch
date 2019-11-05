@@ -63,11 +63,14 @@ class StateProvider extends Component {
     window.addEventListener("mousedown", this.handleStartPanning, passiveOption);
     window.addEventListener("mousemove", this.handlePanning, passiveOption);
     window.addEventListener("mouseup", this.handleStopPanning, passiveOption);
-    return () => {
-      window.removeEventListener("mousedown", this.handleStartPanning, passiveOption);
-      window.removeEventListener("mousemove", this.handlePanning, passiveOption);
-      window.removeEventListener("mouseup", this.handleStopPanning, passiveOption);
-    };
+  }
+
+  componentWillUnmount() {
+    const passiveOption = makePassiveEventOption(false);
+
+    window.removeEventListener("mousedown", this.handleStartPanning, passiveOption);
+    window.removeEventListener("mousemove", this.handlePanning, passiveOption);
+    window.removeEventListener("mouseup", this.handleStopPanning, passiveOption);
   }
 
   componentDidUpdate(oldProps, oldState) {

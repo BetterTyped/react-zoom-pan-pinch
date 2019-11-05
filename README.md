@@ -1,5 +1,5 @@
 # react-zoom-pan-pinch
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![NPM](https://img.shields.io/npm/v/react-zoom-pan-pinch.svg)](https://www.npmjs.com/package/react-zoom-pan-pinch) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-zoom-pan-pinch) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Package Quality](https://npm.packagequality.com/shield/react-zoom-pan-pinch.svg)](https://packagequality.com/#?package=react-zoom-pan-pinch) ![NPM](https://img.shields.io/npm/l/react-zoom-pan-pinch) ![npm](https://img.shields.io/npm/dm/react-zoom-pan-pinch) ![GitHub stars](https://img.shields.io/github/stars/prc5/react-zoom-pan-pinch?style=social)
 
@@ -170,6 +170,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="http://maciejpyrc.pl"><img src="https://avatars3.githubusercontent.com/u/20928302?v=4" width="80px;" alt="Maciej Pyrc"/><br /><sub><b>Maciej Pyrc</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=prc5" title="Documentation">📖</a> <a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=prc5" title="Code">💻</a> <a href="#example-prc5" title="Examples">💡</a> <a href="#infra-prc5" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/shaneeza"><img src="https://avatars2.githubusercontent.com/u/5740159?v=4" width="80px;" alt="Shaneeza"/><br /><sub><b>Shaneeza</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/issues?q=author%3Ashaneeza" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

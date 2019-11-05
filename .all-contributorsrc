@@ -9,49 +9,6 @@
   "imageSize": 80,
   "commit": true,
   "commitConvention": "none",
-  "badgeTemplate": "",
-  "contributors": [
-    {
-      "login": "prc5",
-      "name": "Maciej Pyrc",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/20928302?v=4",
-      "profile": "http://maciejpyrc.pl",
-      "contributions": [
-        "review",
-        "code",
-        "infra",
-        "maintenance",
-        "example",
-        "question"
-      ]
-    },
-    {
-      "login": "shaneeza",
-      "name": "Shaneeza",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/5740159?v=4",
-      "profile": "https://github.com/shaneeza",
-      "contributions": [
-        "bug"
-      ]
-    },
-    {
-      "login": "gabrielfmp",
-      "name": "gabrielfmp",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/36622624?v=4",
-      "profile": "https://github.com/gabrielfmp",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "pablovegau",
-      "name": "Pablo Vega Uceta",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/20138953?v=4",
-      "profile": "https://github.com/pablovegau",
-      "contributions": [
-        "code"
-      ]
-    }
-  ],
+  "contributors": [],
   "contributorsPerLine": 7
 }

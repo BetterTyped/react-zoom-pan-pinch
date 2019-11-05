@@ -1,5 +1,7 @@
 # react-zoom-pan-pinch
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 [![NPM](https://img.shields.io/npm/v/react-zoom-pan-pinch.svg)](https://www.npmjs.com/package/react-zoom-pan-pinch) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-zoom-pan-pinch) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Package Quality](https://npm.packagequality.com/shield/react-zoom-pan-pinch.svg)](https://packagequality.com/#?package=react-zoom-pan-pinch) ![NPM](https://img.shields.io/npm/l/react-zoom-pan-pinch) ![npm](https://img.shields.io/npm/dm/react-zoom-pan-pinch) ![GitHub stars](https://img.shields.io/github/stars/prc5/react-zoom-pan-pinch?style=social)
 
 > Super fast and light react npm package for zooming, panning and pinching html elements in easy way
@@ -39,20 +41,10 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 class Example extends Component {
   render() {
     return (
-      <TransformWrapper defaultScale={1} defaultPositionX={200} defaultPositionY={100}>
-        {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-          <React.Fragment>
-            <div className="tools">
-              <button onClick={zoomIn}>+</button>
-              <button onClick={zoomOut}>-</button>
-              <button onClick={resetTransform}>x</button>
-            </div>
-            <TransformComponent>
-              <img src="image.jpg" alt="test" />
-              <div>Some text</div>
-            </TransformComponent>
-          </React.Fragment>
-        )}
+      <TransformWrapper>
+        <TransformComponent>
+          <img src="image.jpg" alt="test" />
+        </TransformComponent>
       </TransformWrapper>
     );
   }
@@ -69,10 +61,20 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 class Example extends Component {
   render() {
     return (
-      <TransformWrapper>
-        <TransformComponent>
-          <img src="image.jpg" alt="test" />
-        </TransformComponent>
+      <TransformWrapper defaultScale={1} defaultPositionX={200} defaultPositionY={100}>
+        {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+          <React.Fragment>
+            <div className="tools">
+              <button onClick={zoomIn}>+</button>
+              <button onClick={zoomOut}>-</button>
+              <button onClick={resetTransform}>x</button>
+            </div>
+            <TransformComponent>
+              <img src="image.jpg" alt="test" />
+              <div>Some text</div>
+            </TransformComponent>
+          </React.Fragment>
+        )}
       </TransformWrapper>
     );
   }
@@ -158,3 +160,25 @@ class Example extends Component {
 ## License
 
 MIT © [prc5](https://github.com/prc5)
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://maciejpyrc.pl"><img src="https://avatars3.githubusercontent.com/u/20928302?v=4" width="80px;" alt="Maciej Pyrc"/><br /><sub><b>Maciej Pyrc</b></sub></a><br /><a href="#review-prc5" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=prc5" title="Code">💻</a> <a href="#infra-prc5" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-prc5" title="Maintenance">🚧</a> <a href="#example-prc5" title="Examples">💡</a> <a href="#question-prc5" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://github.com/shaneeza"><img src="https://avatars2.githubusercontent.com/u/5740159?v=4" width="80px;" alt="Shaneeza"/><br /><sub><b>Shaneeza</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/issues?q=author%3Ashaneeza" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/gabrielfmp"><img src="https://avatars2.githubusercontent.com/u/36622624?v=4" width="80px;" alt="gabrielfmp"/><br /><sub><b>gabrielfmp</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=gabrielfmp" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/pablovegau"><img src="https://avatars1.githubusercontent.com/u/20138953?v=4" width="80px;" alt="Pablo Vega Uceta"/><br /><sub><b>Pablo Vega Uceta</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=pablovegau" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

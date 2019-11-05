@@ -166,9 +166,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://maciejpyrc.pl"><img src="https://avatars3.githubusercontent.com/u/20928302?v=4" width="80px;" alt="Maciej Pyrc"/><br /><sub><b>Maciej Pyrc</b></sub></a><br /><a href="#review-prc5" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=prc5" title="Code">💻</a> <a href="#infra-prc5" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-prc5" title="Maintenance">🚧</a> <a href="#example-prc5" title="Examples">💡</a> <a href="#question-prc5" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://github.com/shaneeza"><img src="https://avatars2.githubusercontent.com/u/5740159?v=4" width="80px;" alt="Shaneeza"/><br /><sub><b>Shaneeza</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/issues?q=author%3Ashaneeza" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/gabrielfmp"><img src="https://avatars2.githubusercontent.com/u/36622624?v=4" width="80px;" alt="gabrielfmp"/><br /><sub><b>gabrielfmp</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=gabrielfmp" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/pablovegau"><img src="https://avatars1.githubusercontent.com/u/20138953?v=4" width="80px;" alt="Pablo Vega Uceta"/><br /><sub><b>Pablo Vega Uceta</b></sub></a><br /><a href="https://github.com/prc5/react-zoom-pan-pinch/commits?author=pablovegau" title="Code">💻</a></td>
+  </tr>
+</table>
+
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->

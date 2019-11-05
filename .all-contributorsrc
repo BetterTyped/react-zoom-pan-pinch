@@ -9,6 +9,7 @@
   "imageSize": 80,
   "commit": true,
   "commitConvention": "none",
+  "badgeTemplate": "",
   "contributors": [
     {
       "login": "prc5",

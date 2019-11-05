@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
+    "all-contributors-cli": "^6.9.3",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.5",
     "babel-plugin-external-helpers": "^6.22.0",

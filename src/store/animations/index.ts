@@ -1,5 +1,4 @@
 import { easeIn, easeOut, linear } from "./utils";
-import { handleZoomToPoint } from "../zoom";
 
 export function handleDisableAnimation() {
   if (this.animation) {

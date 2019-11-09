@@ -1,6 +1,6 @@
 import React from "react";
 import { Context } from "../store/StateContext";
-// import styles from "./TransformComponent.module.css";
+import styles from "./TransformComponent.module.css";
 
 class TransformComponent extends React.Component {
   private wrapperRef = React.createRef<HTMLDivElement>();
@@ -22,10 +22,13 @@ class TransformComponent extends React.Component {
       transform: `translate(${positionX}px, ${positionY}px) scale(${scale})`,
     };
     return (
-      <div ref={this.wrapperRef} className={`react-transform-component `}>
+      <div
+        ref={this.wrapperRef}
+        className={`react-transform-component ${styles.container}`}
+      >
         <div
           ref={this.contentRef}
-          className={`react-transform-element `}
+          className={`react-transform-element ${styles.content}`}
           style={style}
         >
           {children}

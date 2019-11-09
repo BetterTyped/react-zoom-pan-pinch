@@ -1,46 +1,5 @@
-import { calculateBoundingArea } from "../utils";
+import { PropsList } from "./../interfaces/propsInterface";
 import { checkPositionBounds } from "../zoom/utils";
-
-function getSizes(wrapperComponent, contentComponent) {
-  const wrapperRect = wrapperComponent.getBoundingClientRect();
-  const contentRect = contentComponent.getBoundingClientRect();
-
-  const wrapperWidth = wrapperRect.width;
-  const wrapperHeight = wrapperRect.height;
-  const contentWidth = contentRect.width;
-  const contentHeight = contentRect.height;
-  const diffWidth = wrapperWidth - contentWidth;
-  const diffHeight = wrapperHeight - contentHeight;
-
-  return {
-    wrapperWidth,
-    wrapperHeight,
-    contentWidth,
-    diffWidth,
-    contentHeight,
-    diffHeight,
-  };
-}
-
-function handleCalculateBounds(wrapperComponent, contentComponent, limitToWrapperBounds) {
-  const {
-    wrapperWidth,
-    contentWidth,
-    diffWidth,
-    wrapperHeight,
-    contentHeight,
-    diffHeight,
-  } = getSizes(wrapperComponent, contentComponent);
-  return calculateBoundingArea(
-    wrapperWidth,
-    contentWidth,
-    diffWidth,
-    wrapperHeight,
-    contentHeight,
-    diffHeight,
-    limitToWrapperBounds
-  );
-}
 
 export function getClientPosition(event) {
   const { touches } = event;
@@ -57,7 +16,13 @@ export function getClientPosition(event) {
 }
 
 export function handlePanning(event) {
-  const { limitToBounds, positionX, positionY, lockAxisX, lockAxisY } = this.stateProvider;
+  const {
+    limitToBounds,
+    positionX,
+    positionY,
+    lockAxisX,
+    lockAxisY,
+  }: PropsList = this.stateProvider;
 
   if (!this.startCoords) return;
   const { x, y } = this.startCoords;
@@ -76,7 +41,7 @@ export function handlePanning(event) {
     newPositionX,
     newPositionY,
     this.bounds,
-    limitToBounds
+    limitToBounds,
   );
 
   // Save panned position

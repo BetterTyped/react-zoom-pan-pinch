@@ -33,7 +33,12 @@ export const boundLimiter = (value, minBound, maxBound, isActive) => {
  * Returns relative coords of mouse on wrapper element, and provides
  * info about it's width, height, with same info about its content(zoomed component) element
  */
-export const relativeCoords = (event, wrapperComponent, contentComponent, panningCase) => {
+export const relativeCoords = (
+  event,
+  wrapperComponent,
+  contentComponent,
+  panningCase,
+) => {
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
   const contentRect = contentComponent.getBoundingClientRect();
@@ -78,12 +83,16 @@ export const calculateBoundingArea = (
   wrapperHeight,
   contentHeight,
   diffHeight,
-  limitToWrapperBounds
+  limitToWrapperBounds,
 ) => {
   const scaleWidthFactor =
-    wrapperWidth > contentWidth ? diffWidth * (limitToWrapperBounds ? 1 : 0.5) : 0;
+    wrapperWidth > contentWidth
+      ? diffWidth * (limitToWrapperBounds ? 1 : 0.5)
+      : 0;
   const scaleHeightFactor =
-    wrapperHeight > contentHeight ? diffHeight * (limitToWrapperBounds ? 1 : 0.5) : 0;
+    wrapperHeight > contentHeight
+      ? diffHeight * (limitToWrapperBounds ? 1 : 0.5)
+      : 0;
 
   const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
   const maxPositionX = 0 + scaleWidthFactor;
@@ -98,12 +107,21 @@ export const calculateBoundingArea = (
  * Used to get middle point of two fingers pinch
  */
 
-export const getMiddleCoords = (firstPoint, secondPoint, contentComponent, scale) => {
+export const getMiddleCoords = (
+  firstPoint,
+  secondPoint,
+  contentComponent,
+  scale,
+) => {
   const contentRect = contentComponent.getBoundingClientRect();
 
   return {
-    x: ((firstPoint.clientX + secondPoint.clientX) / 2 - contentRect.left) / scale,
-    y: ((firstPoint.clientY + secondPoint.clientY) / 2 - contentRect.top) / scale,
+    x:
+      ((firstPoint.clientX + secondPoint.clientX) / 2 - contentRect.left) /
+      scale,
+    y:
+      ((firstPoint.clientY + secondPoint.clientY) / 2 - contentRect.top) /
+      scale,
   };
 };
 
@@ -111,7 +129,8 @@ export const getMiddleCoords = (firstPoint, secondPoint, contentComponent, scale
  * Returns middle position of PageX for touch events
  */
 export const getMidPagePosition = (firstPoint, secondPoint) => {
-  if (!firstPoint || !secondPoint) return console.warn("There are no points provided");
+  if (!firstPoint || !secondPoint)
+    return console.warn("There are no points provided");
   return {
     x: (firstPoint.clientX + secondPoint.clientX) / 2,
     y: (firstPoint.clientY + secondPoint.clientY) / 2,
@@ -124,7 +143,7 @@ export const getMidPagePosition = (firstPoint, secondPoint) => {
 export const getDistance = (firstPoint, secondPoint) => {
   return Math.sqrt(
     Math.pow(firstPoint.pageX - secondPoint.pageX, 2) +
-      Math.pow(firstPoint.pageY - secondPoint.pageY, 2)
+      Math.pow(firstPoint.pageY - secondPoint.pageY, 2),
   );
 };
 
@@ -135,7 +154,9 @@ export const getDistance = (firstPoint, secondPoint) => {
 
 export const deleteUndefinedProps = value => {
   let newObject = { ...value };
-  Object.keys(newObject).forEach(key => newObject[key] == undefined && delete newObject[key]);
+  Object.keys(newObject).forEach(
+    key => newObject[key] == undefined && delete newObject[key],
+  );
   return newObject;
 };
 
@@ -154,7 +175,7 @@ export const getRelativeZoomCoords = ({
     event,
     wrapperComponent,
     contentComponent,
-    true
+    true,
   );
   const x = (Math.abs(positionX) + wrapperWidth / 2) / scale;
   const y = (Math.abs(positionY) + wrapperHeight / 2) / scale;
@@ -176,8 +197,10 @@ export const handleWheelStop = (previousEvent, event, stateProvider) => {
   if (!previousEvent) return false;
   if (scale < maxScale || scale > minScale) return true;
   if (Math.sign(previousEvent.deltaY) !== Math.sign(event.deltaY)) return true;
-  if (previousEvent.deltaY > 0 && previousEvent.deltaY < event.deltaY) return true;
-  if (previousEvent.deltaY < 0 && previousEvent.deltaY > event.deltaY) return true;
+  if (previousEvent.deltaY > 0 && previousEvent.deltaY < event.deltaY)
+    return true;
+  if (previousEvent.deltaY < 0 && previousEvent.deltaY > event.deltaY)
+    return true;
   if (Math.sign(previousEvent.deltaY) !== Math.sign(event.deltaY)) return true;
   return false;
 };

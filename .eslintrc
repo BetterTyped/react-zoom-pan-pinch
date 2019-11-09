@@ -1,23 +1,47 @@
 {
-  "parser": "babel-eslint",
-  "extends": [
-    "standard",
-    "standard-react"
-  ],
-  "env": {
-    "es6": true
+  "globals": {
+    "window": "writable",
+    "document": "writable",
+    "localStorage": "writable",
+    "fetch": "readonly",
+    "FormData": "readonly",
+    "FileReader": "readonly",
+    "Headers": "readonly",
+    "navigator": "readonly",
+    "it": "readonly",
+    "test": "readonly",
+    "beforeEach": "readonly",
+    "describe": "readonly",
+    "expect": "readonly",
+    "cy": "readonly",
+    "should": "readonly"
   },
-  "plugins": [
-    "react"
-  ],
-  "parserOptions": {
-    "sourceType": "module"
-  },
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["prettier", "react", "jsx-a11y", "import"],
   "rules": {
-    // don't force es6 functions to include space before paren
-    "space-before-function-paren": 0,
-
-    // allow specifying true explicitly for boolean props
-    "react/jsx-boolean-value": 0
-  }
+    "prettier/prettier": ["error"],
+    "import/prefer-default-export": "off", // disabled because we don't want default exports in utils files etc.
+    "import/no-unresolved": "off", // disabled to allow absolute path imports
+    "prefer-template": "off", // disable because it is not necessary and valuable
+    "react/jsx-wrap-multilines": 0, // disabled because it's made automatically with prettier
+    "no-use-before-define": ["error", { "functions": false }], // disabled for making more structured components
+    "no-param-reassign": ["error", { "props": false }], // disabled to allow using draft, previous state props
+    "no-console": ["error", { "allow": ["warn", "error"] }], // warn and error logs are allowed for debug purposes
+    "jsx-a11y/label-has-for": [
+      "error",
+      {
+        "required": {
+          "every": ["id"]
+        }
+      }
+    ], // require only passing htmlFor to the label, nesting is an option
+    "import/no-extraneous-dependencies": 0 // allow dev dependencies
+  },
+  "parser": "babel-eslint",
+  "overrides": [
+    {
+      "files": ["*test.js", "*test.jsx", "utils.jsx"],
+      "rules": {}
+    }
+  ]
 }

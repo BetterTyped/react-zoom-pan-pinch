@@ -1,15 +1,27 @@
 import { boundLimiter, checkIsNumber } from "../utils";
 
-export function checkZoomBounds(zoom, minScale, maxScale, zoomPadding, enablePadding) {
+export function checkZoomBounds(
+  zoom,
+  minScale,
+  maxScale,
+  zoomPadding,
+  enablePadding,
+) {
   const scalePadding = enablePadding ? zoomPadding : 0;
   const minScaleWithPadding = minScale - scalePadding;
 
   if (!isNaN(maxScale) && zoom >= maxScale) return maxScale;
-  if (!isNaN(minScale) && zoom <= minScaleWithPadding) return minScaleWithPadding;
+  if (!isNaN(minScale) && zoom <= minScaleWithPadding)
+    return minScaleWithPadding;
   return zoom;
 }
 
-export function checkPositionBounds(positionX, positionY, bounds, limitToBounds) {
+export function checkPositionBounds(
+  positionX,
+  positionY,
+  bounds,
+  limitToBounds,
+) {
   const { minPositionX, minPositionY, maxPositionX, maxPositionY } = bounds;
   const x = boundLimiter(positionX, minPositionX, maxPositionX, limitToBounds);
   const y = boundLimiter(positionY, minPositionY, maxPositionY, limitToBounds);
@@ -22,14 +34,19 @@ export function getDelta(event, customDelta) {
   return delta;
 }
 
-export function wheelMousePosition(event, contentComponent, scale) {
+export function wheelMousePosition(
+  event,
+  contentComponent,
+  scale,
+): { mouseX: number; mouseY: number } {
   const contentRect = contentComponent.getBoundingClientRect();
 
   // mouse position x, y over wrapper component
   const mouseX = (event.clientX - contentRect.left) / scale;
   const mouseY = (event.clientY - contentRect.top) / scale;
 
-  if (isNaN(mouseX) || isNaN(mouseY)) return console.error("No mouse or touch offset found");
+  if (isNaN(mouseX) || isNaN(mouseY))
+    console.error("No mouse or touch offset found");
 
   return {
     mouseX,

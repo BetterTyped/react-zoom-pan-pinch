@@ -1,4 +1,4 @@
-import { roundNumber, checkIsNumber, handleCallback, calculateBoundingArea } from "../utils";
+import { roundNumber, checkIsNumber, calculateBoundingArea } from "../utils";
 import { animateComponent } from "../animations";
 import { initialState } from "../InitialState";
 import {
@@ -8,16 +8,23 @@ import {
   getDelta,
   wheelMousePosition,
 } from "./utils";
+import { PropsList } from "../interfaces/propsInterface";
 
 function handleCalculateZoom(delta, step) {
-  const { scale, maxScale, minScale, zoomPadding, enablePadding } = this.stateProvider;
+  const {
+    scale,
+    maxScale,
+    minScale,
+    zoomPadding,
+    enablePadding,
+  }: PropsList = this.stateProvider;
   const targetScale = scale + step * delta * (scale / 100);
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 2),
     minScale,
     maxScale,
     zoomPadding,
-    enablePadding
+    enablePadding,
   );
   return newScale;
 }
@@ -41,7 +48,7 @@ export function handleCalculateBounds(newScale, limitToWrapper) {
     wrapperHeight,
     newContentHeight,
     newDiffHeight,
-    limitToWrapper
+    limitToWrapper,
   );
 
   // Save bounds
@@ -49,7 +56,13 @@ export function handleCalculateBounds(newScale, limitToWrapper) {
   return bounds;
 }
 
-export function handleCalculatePositions(mouseX, mouseY, newScale, bounds, limitToBounds) {
+export function handleCalculatePositions(
+  mouseX,
+  mouseY,
+  newScale,
+  bounds,
+  limitToBounds,
+) {
   const { scale, positionX, positionY, transformEnabled } = this.stateProvider;
 
   const scaleDifference = newScale - scale;
@@ -57,7 +70,8 @@ export function handleCalculatePositions(mouseX, mouseY, newScale, bounds, limit
   if (typeof mouseX !== "number" || typeof mouseY !== "number")
     return console.error("Mouse X and Y position were not provided!");
 
-  if (!transformEnabled) return { newPositionX: positionX, newPositionY: positionY };
+  if (!transformEnabled)
+    return { newPositionX: positionX, newPositionY: positionY };
 
   const calculatedPositionX = positionX - mouseX * scaleDifference;
   const calculatedPositionY = positionY - mouseY * scaleDifference;
@@ -69,7 +83,7 @@ export function handleCalculatePositions(mouseX, mouseY, newScale, bounds, limit
     calculatedPositionX,
     calculatedPositionY,
     bounds,
-    limitToBounds
+    limitToBounds,
   );
 
   return newPositions;
@@ -92,24 +106,29 @@ export function handleWheelZoom(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  const delta = getDelta(event);
+  const delta = getDelta(event, null);
   const newScale = handleCalculateZoom.bind(this, delta, wheelStep)();
 
   if (scale === newScale) return;
 
-  const bounds = handleCalculateBounds.bind(this, newScale, limitToWrapperOnWheel)();
+  const bounds = handleCalculateBounds.bind(
+    this,
+    newScale,
+    limitToWrapperOnWheel,
+  )();
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
 
   const isLimitedToBounds =
-    limitToBounds && (!enablePadding || zoomPadding === 0 || limitToWrapperOnWheel);
+    limitToBounds &&
+    (!enablePadding || zoomPadding === 0 || limitToWrapperOnWheel);
   const { x, y } = handleCalculatePositions.bind(
     this,
     mouseX,
     mouseY,
     newScale,
     bounds,
-    isLimitedToBounds
+    isLimitedToBounds,
   )();
 
   this.stateProvider.previousScale = scale;
@@ -135,7 +154,13 @@ export function handleZoomToPoint(scale, mouseX, mouseY, event) {
   } = this.stateProvider;
   if (isDown || !zoomingEnabled || disabled) return;
 
-  const newScale = checkZoomBounds(roundNumber(scale, 2), minScale, maxScale, null);
+  const newScale = checkZoomBounds(
+    roundNumber(scale, 2),
+    minScale,
+    maxScale,
+    null,
+    null,
+  );
   const bounds = handleCalculateBounds.bind(this, newScale, false)();
 
   let mousePosX = mouseX;
@@ -154,7 +179,7 @@ export function handleZoomToPoint(scale, mouseX, mouseY, event) {
     mousePosY,
     newScale,
     bounds,
-    limitToBounds
+    limitToBounds,
   )();
 
   return { scale: newScale, positionX: x, positionY: y };
@@ -175,7 +200,13 @@ export function handlePaddingAnimation() {
   let mouseX = wrapperComponent.offsetWidth / 2;
   let mouseY = wrapperComponent.offsetHeight / 2;
 
-  const targetState = handleZoomToPoint.bind(this, minScale, mouseX, mouseY, null)();
+  const targetState = handleZoomToPoint.bind(
+    this,
+    minScale,
+    mouseX,
+    mouseY,
+    null,
+  )();
 
   animateComponent.bind(this, {
     targetState,
@@ -231,7 +262,9 @@ export function handleZoomControls(customDelta, customStep) {
   const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
   const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
 
-  const animationSpeed = customDelta ? zoomInAnimationSpeed : zoomOutAnimationSpeed;
+  const animationSpeed = customDelta
+    ? zoomInAnimationSpeed
+    : zoomOutAnimationSpeed;
 
   const newScale = handleCalculateZoom.bind(this, customDelta, customStep)();
   const targetState = handleZoomToPoint.bind(this, newScale, mouseX, mouseY)();
@@ -244,19 +277,38 @@ export function handleZoomControls(customDelta, customStep) {
 }
 
 export function resetTransformations(animationSpeed) {
-  const { defaultScale, defaultPositionX, defaultPositionY } = this.props.defaultValues;
-  const { scale, positionX, positionY, disabled, resetAnimationSpeed } = this.stateProvider;
+  const {
+    defaultScale,
+    defaultPositionX,
+    defaultPositionY,
+  } = this.props.defaultValues;
+  const {
+    scale,
+    positionX,
+    positionY,
+    disabled,
+    resetAnimationSpeed,
+  } = this.stateProvider;
   if (disabled) return;
-  if (scale === defaultScale && positionX === defaultPositionX && positionY === defaultPositionY)
+  if (
+    scale === defaultScale &&
+    positionX === defaultPositionX &&
+    positionY === defaultPositionY
+  )
     return;
 
-  const speed = typeof animationSpeed === "number" ? animationSpeed : resetAnimationSpeed;
+  const speed =
+    typeof animationSpeed === "number" ? animationSpeed : resetAnimationSpeed;
 
   const targetScale = checkIsNumber(defaultScale, initialState.scale);
   const newPositionX = checkIsNumber(defaultPositionX, initialState.positionX);
   const newPositionY = checkIsNumber(defaultPositionY, initialState.positionY);
 
-  const targetState = { scale: targetScale, positionX: newPositionX, positionY: newPositionY };
+  const targetState = {
+    scale: targetScale,
+    positionX: newPositionX,
+    positionY: newPositionY,
+  };
 
   animateComponent.bind(this, {
     targetState,

@@ -1,3 +1,4 @@
+import { PropsList } from "./../interfaces/propsInterface";
 import { checkZoomBounds } from "../zoom/utils";
 import { handleCalculatePositions, handleCalculateBounds } from "../zoom";
 import { getDistance, roundNumber } from "../utils";
@@ -16,8 +17,16 @@ function checkIfInfinite(number) {
 }
 
 export function calculatePinchZoom(currentDistance, pinchStartDistance) {
-  const { minScale, maxScale, zoomPadding, enablePadding } = this.stateProvider;
-  if (typeof pinchStartDistance !== "number" || typeof currentDistance !== "number")
+  const {
+    minScale,
+    maxScale,
+    zoomPadding,
+    enablePadding,
+  }: PropsList = this.stateProvider;
+  if (
+    typeof pinchStartDistance !== "number" ||
+    typeof currentDistance !== "number"
+  )
     return console.error("Pinch touches distance was not provided");
 
   if (currentDistance < 0) return;
@@ -29,7 +38,7 @@ export function calculatePinchZoom(currentDistance, pinchStartDistance) {
     minScale,
     maxScale,
     zoomPadding,
-    enablePadding
+    enablePadding,
   );
 }
 
@@ -77,22 +86,31 @@ export function handleZoomPinch(event) {
 
   const currentDistance = getCurrentDistance(event);
 
-  const newScale = calculatePinchZoom.bind(this, currentDistance, this.pinchStartDistance)();
+  const newScale = calculatePinchZoom.bind(
+    this,
+    currentDistance,
+    this.pinchStartDistance,
+  )();
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   // Get new element sizes to calculate bounds
-  const bounds = handleCalculateBounds.bind(this, newScale, limitToWrapperOnWheel)();
+  const bounds = handleCalculateBounds.bind(
+    this,
+    newScale,
+    limitToWrapperOnWheel,
+  )();
 
   // Calculate transformations
   const isLimitedToBounds =
-    limitToBounds && (!enablePadding || zoomPadding === 0 || limitToWrapperOnWheel);
+    limitToBounds &&
+    (!enablePadding || zoomPadding === 0 || limitToWrapperOnWheel);
   const { x, y } = handleCalculatePositions.bind(
     this,
     mouseX,
     mouseY,
     newScale,
     bounds,
-    isLimitedToBounds
+    isLimitedToBounds,
   )();
 
   this.lastDistance = currentDistance;

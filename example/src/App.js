@@ -107,6 +107,7 @@ export default class App extends Component {
                       <div className="tools">
                         <button
                           className="btn-gradient yellow small btn-type"
+                          data-testid="toggle-button"
                           onClick={() => {
                             resetTransform(0);
                             this.setState(p => ({ type: !p.type }));
@@ -115,37 +116,58 @@ export default class App extends Component {
                           {type ? "Div example" : "Image example"}
                         </button>
                         <div className="spacer" />
-                        <button className="btn-gradient cyan small" onClick={zoomIn}>
+                        <button
+                          className="btn-gradient cyan small"
+                          onClick={zoomIn}
+                          data-testid="zoom-in-button"
+                        >
                           <img src={zoom_in} alt="" />
                         </button>
-                        <button className="btn-gradient blue small" onClick={zoomOut}>
+                        <button
+                          className="btn-gradient blue small"
+                          onClick={zoomOut}
+                          data-testid="zoom-out-button"
+                        >
                           <img src={zoom_out} alt="" />
                         </button>
-                        <button className="btn-gradient purple small" onClick={resetTransform}>
+                        <button
+                          className="btn-gradient purple small"
+                          onClick={resetTransform}
+                          data-testid="reset-button"
+                        >
                           <img src={zoom_reset} alt="" />
                         </button>
                       </div>
                       <div className="element">
                         {type ? (
                           <TransformComponent>
-                            <img className="zoom" src={example_img} alt="test" />
+                            <img
+                              className="zoom"
+                              src={example_img}
+                              alt="example-image"
+                            />
                           </TransformComponent>
                         ) : (
                           <TransformComponent>
                             <div className="example-text">
                               <h1>Lorem ipsum</h1>
                               <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-                                ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                                aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                                culpa qui officia deserunt mollit anim id est laborum.
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut
+                                enim ad minim veniam, quis nostrud exercitation
+                                ullamco laboris nisi ut aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in
+                                reprehenderit in voluptate velit esse cillum
+                                dolore eu fugiat nulla pariatur. Excepteur sint
+                                occaecat cupidatat non proident, sunt in culpa
+                                qui officia deserunt mollit anim id est laborum.
                               </p>
                               <button
                                 type="button"
-                                onClick={() => alert("You can use nested buttons!")}
+                                onClick={() =>
+                                  alert("You can use nested buttons!")
+                                }
                                 className="btn-3d red small"
                               >
                                 Show alert!
@@ -157,9 +179,15 @@ export default class App extends Component {
                       <div className="info">
                         <h3>State</h3>
                         <h5>
-                          <span className="badge badge-secondary">Position x : {positionX}px</span>
-                          <span className="badge badge-secondary">Position y : {positionY}px</span>
-                          <span className="badge badge-secondary">Scale : {scale}</span>
+                          <span className="badge badge-secondary">
+                            Position x : {positionX}px
+                          </span>
+                          <span className="badge badge-secondary">
+                            Position y : {positionY}px
+                          </span>
+                          <span className="badge badge-secondary">
+                            Scale : {scale}
+                          </span>
                           <span className="badge badge-secondary">
                             Previous scale : {previousScale}
                           </span>
@@ -169,28 +197,38 @@ export default class App extends Component {
                         <h3>Functions</h3>
                         <h6>
                           <button
-                            className={"btn-gradient grey small" + (disabled ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (disabled ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("disabled")}
                           >
                             <span /> Disable
                           </button>
                           <button
-                            className={"btn-gradient grey small" + (limitToBounds ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (limitToBounds ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("limitToBounds")}
                           >
                             <span /> Limit bounds
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (limitToWrapperBounds ? " active" : "")
+                              "btn-gradient grey small" +
+                              (limitToWrapperBounds ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("limitToWrapperBounds")}
+                            onClick={() =>
+                              this.toggleSetting("limitToWrapperBounds")
+                            }
                           >
                             <span /> Limit to wrapper bounds
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (zoomingEnabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (zoomingEnabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("zoomingEnabled")}
                           >
@@ -198,81 +236,108 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (panningEnabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (panningEnabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("panningEnabled")}
                           >
                             <span /> Enable panning
                           </button>
                           <button
-                            className={"btn-gradient grey small" + (pinchEnabled ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (pinchEnabled ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("pinchEnabled")}
                           >
                             <span /> Enable pinch
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (transformEnabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (transformEnabled ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("transformEnabled")}
+                            onClick={() =>
+                              this.toggleSetting("transformEnabled")
+                            }
                           >
                             <span /> Enable transform
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (dbClickEnabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (dbClickEnabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("dbClickEnabled")}
                           >
                             <span /> Double click
                           </button>
                           <button
-                            className={"btn-gradient grey small" + (lockAxisX ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (lockAxisX ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("lockAxisX")}
                           >
                             <span /> Lock X axis
                           </button>
                           <button
-                            className={"btn-gradient grey small" + (lockAxisY ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (lockAxisY ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("lockAxisY")}
                           >
                             <span /> Lock Y axis
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (velocityTimeBasedOnMove ? " active" : "")
+                              "btn-gradient grey small" +
+                              (velocityTimeBasedOnMove ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("velocityTimeBasedOnMove")}
+                            onClick={() =>
+                              this.toggleSetting("velocityTimeBasedOnMove")
+                            }
                           >
                             <span /> Velocity time based on move
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (enableVelocity ? " active" : "")
+                              "btn-gradient grey small" +
+                              (enableVelocity ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("enableVelocity")}
                           >
                             <span /> Enable velocity
                           </button>
                           <button
-                            className={"btn-gradient grey small" + (enableWheel ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (enableWheel ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("enableWheel")}
                           >
                             <span /> Enable wheel
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (enableTouchPadPinch ? " active" : "")
+                              "btn-gradient grey small" +
+                              (enableTouchPadPinch ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("enableTouchPadPinch")}
+                            onClick={() =>
+                              this.toggleSetting("enableTouchPadPinch")
+                            }
                           >
                             <span /> Enable touch pad pinch
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (limitToWrapperOnWheel ? " active" : "")
+                              "btn-gradient grey small" +
+                              (limitToWrapperOnWheel ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("limitToWrapperOnWheel")}
+                            onClick={() =>
+                              this.toggleSetting("limitToWrapperOnWheel")
+                            }
                           >
                             <span /> Limit to wrapper on wheel
                           </button>
@@ -291,7 +356,11 @@ export default class App extends Component {
           <div className="container">
             <p className="m-0 text-center text-white small">
               MIT LICENSE ©{" "}
-              <a href="https://github.com/prc5" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/prc5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 prc5
               </a>
             </p>

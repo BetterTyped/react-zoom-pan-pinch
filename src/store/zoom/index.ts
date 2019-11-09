@@ -10,7 +10,7 @@ import {
 } from "./utils";
 import { PropsList } from "../interfaces/propsInterface";
 
-function handleCalculateZoom(delta, step) {
+function handleCalculateZoom(delta, step, disablePadding) {
   const {
     scale,
     maxScale,
@@ -24,7 +24,7 @@ function handleCalculateZoom(delta, step) {
     minScale,
     maxScale,
     zoomPadding,
-    enablePadding,
+    disablePadding ? false : enablePadding,
   );
   return newScale;
 }
@@ -107,7 +107,12 @@ export function handleWheelZoom(event) {
   event.stopPropagation();
 
   const delta = getDelta(event, null);
-  const newScale = handleCalculateZoom.bind(this, delta, wheelStep)();
+  const newScale = handleCalculateZoom.bind(
+    this,
+    delta,
+    wheelStep,
+    !event.ctrlKey,
+  )();
 
   if (scale === newScale) return;
 

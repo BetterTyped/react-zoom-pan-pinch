@@ -7,7 +7,8 @@ export interface PropsList {
   minScale: number;
   scaleAnimationPadding: number;
   wheelAnimationSpeed: number;
-  zoomAnimationSpeed: number;
+  zoomInAnimationSpeed: number;
+  zoomOutAnimationSpeed: number;
   pinchAnimationSpeed: number;
   panAnimationSpeed: number;
   resetAnimationSpeed: number;

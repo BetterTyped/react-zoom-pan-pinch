@@ -9658,7 +9658,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rollup-plugin-babel@^4.0.1:
+rollup-plugin-babel@^4.3.3:
   version "4.3.3"
   resolved "https://registry.yarnpkg.com/rollup-plugin-babel/-/rollup-plugin-babel-4.3.3.tgz#7eb5ac16d9b5831c3fd5d97e8df77ba25c72a2aa"
   integrity sha512-tKzWOCmIJD/6aKNz0H1GMM+lW1q9KyFubbWzGiOG540zxPPifnEAHTZwjo0g991Y+DyOZcLqBgqOdqazYE5fkw==

@@ -8,7 +8,6 @@ import {
   getDelta,
   wheelMousePosition,
 } from "./utils";
-import { PropsList } from "../interfaces/propsInterface";
 
 function handleCalculateZoom(delta, step, disablePadding) {
   const {
@@ -17,14 +16,15 @@ function handleCalculateZoom(delta, step, disablePadding) {
     minScale,
     zoomPadding,
     enablePadding,
-  }: PropsList = this.stateProvider;
+  } = this.stateProvider;
   const targetScale = scale + step * delta * (scale / 100);
+  const paddingEnabled = disablePadding ? false : enablePadding;
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 2),
     minScale,
     maxScale,
     zoomPadding,
-    disablePadding ? false : enablePadding,
+    paddingEnabled,
   );
   return newScale;
 }
@@ -114,6 +114,7 @@ export function handleWheelZoom(event) {
     !event.ctrlKey,
   )();
 
+  // if scale not change
   if (scale === newScale) return;
 
   const bounds = handleCalculateBounds.bind(
@@ -135,7 +136,6 @@ export function handleWheelZoom(event) {
     bounds,
     isLimitedToBounds,
   )();
-
   this.stateProvider.previousScale = scale;
   this.stateProvider.scale = newScale;
   this.stateProvider.bounds = bounds;
@@ -267,12 +267,11 @@ export function handleZoomControls(customDelta, customStep) {
   const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
   const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
 
-  const animationSpeed = customDelta
-    ? zoomInAnimationSpeed
-    : zoomOutAnimationSpeed;
-
   const newScale = handleCalculateZoom.bind(this, customDelta, customStep)();
   const targetState = handleZoomToPoint.bind(this, newScale, mouseX, mouseY)();
+
+  const animationSpeed =
+    newScale > scale ? zoomInAnimationSpeed : zoomOutAnimationSpeed;
 
   animateComponent.bind(this, {
     targetState,

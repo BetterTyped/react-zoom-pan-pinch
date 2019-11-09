@@ -77,7 +77,7 @@ export default class App extends Component {
                   enableTouchPadPinch={this.state.enableTouchPadPinch}
                   enableVelocity={this.state.enableVelocity}
                   limitToWrapperOnWheel={this.state.limitToWrapperOnWheel}
-                  minScale={0.9}
+                  minScale={1}
                 >
                   {({
                     zoomIn,

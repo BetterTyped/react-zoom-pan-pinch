@@ -1,4 +1,5 @@
 export const propsList = [
+  "previousScale",
   "scale",
   "positionX",
   "positionY",
@@ -7,7 +8,8 @@ export const propsList = [
   "minScale",
   "scaleAnimationPadding",
   "wheelAnimationSpeed",
-  "zoomAnimationSpeed",
+  "zoomInAnimationSpeed",
+  "zoomOutAnimationSpeed",
   "pinchAnimationSpeed",
   "panAnimationSpeed",
   "resetAnimationSpeed",

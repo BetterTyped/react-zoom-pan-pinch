@@ -71,6 +71,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   public throttle = false;
   // wheel helpers
   public previousWheelEvent = null;
+  public lastScale = null;
   // animations helpers
   public animate = null;
   public animation = null;
@@ -177,6 +178,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       enableTouchPadPinch,
       zoomingEnabled,
       disabled,
+      scale,
     } = this.stateProvider;
 
     const { onWheelStart, onWheel, onWheelStop, onZoomChange } = this.props;
@@ -197,6 +199,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
     // Wheel start event
     if (!wheelStopEventTimer) {
+      this.lastScale = scale;
       handleDisableAnimation.bind(this)();
       handleCallback(onWheelStart, this.getCallbackProps());
     }
@@ -221,10 +224,13 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     this.animate = false;
 
     // fire animation
-    clearTimeout(wheelAnimationTimer);
-    wheelAnimationTimer = setTimeout(() => {
-      handlePaddingAnimation.bind(this, { event })();
-    }, wheelAnimationTime);
+    if (this.lastScale !== scale) {
+      this.lastScale = scale;
+      clearTimeout(wheelAnimationTimer);
+      wheelAnimationTimer = setTimeout(() => {
+        handlePaddingAnimation.bind(this, { event })();
+      }, wheelAnimationTime);
+    }
   };
 
   //////////

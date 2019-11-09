@@ -2,6 +2,7 @@ import React from "react";
 import { StateProvider } from "../store/StateContext";
 import { deleteUndefinedProps } from "../store/utils";
 import { getValidPropsFromObject } from "../store/propsHandlers";
+import { TransformWrapperProps } from "../store/interfaces/transformWrapperInterface";
 
 const TransformWrapper = ({
   children,
@@ -19,7 +20,7 @@ const TransformWrapper = ({
   onPinchingStop,
   onZoomChange,
   ...rest
-}) => {
+}: TransformWrapperProps) => {
   return (
     <StateProvider
       defaultValues={deleteUndefinedProps({

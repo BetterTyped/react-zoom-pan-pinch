@@ -129,52 +129,77 @@ number | | minPositionY | null | null, number | | maxPositionY | null | null,
 number | | minScale | 1 | number | | maxScale | 8 | number | | limitToBounds |
 true | boolean | | centerContent | true | boolean |
 
-** scalePadding prop elements ** | Props | Default | Type | | :--------------- |
-:-----: | -------: | | disabled | false | boolean | | size | 0.45 | number | |
+#### scalePadding prop elements
+
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | size | 0.45 | number | | animationTime | 200 | number | |
+animationType | easeOut | string |
+
+#### Wheel prop elements
+
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | step | 6.5 | number | | wheelEnabled | true | boolean | |
+touchPadEnabled | true | boolean | | disableLimitsOnWheel | true | boolean |
+
+#### Pan prop elements
+
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | lockAxisX | false | boolean | | lockAxisY | false |
+boolean | | velocity | false | boolean | | velocityEqualToMove | false | boolean
+| | velocitySensitivity | 1 | number | | velocityActiveScale | 1 | number | |
+velocityMinSpeed | 1.8 | number | | velocityBaseTime | 1800 | number | |
+limitToWrapperBounds | false | boolean | | padding | true | boolean | |
+paddingSize | 100 | number | | animationTime | 200 | number | | animationType |
+easeOut | string |
+
+#### Pinch prop elements
+
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | step | 1 | number |
+
+#### zoomIn prop elements
+
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | step | 40 | number | | animation | true | boolean | |
 animationTime | 200 | number | | animationType | easeOut | string |
 
-** Wheel prop elements** | Props | Default | Type | | :--------------- | :-----:
-| -------: | | disabled | false | boolean | | step | 6.5 | number | |
-wheelEnabled | true | boolean | | touchPadEnabled | true | boolean | |
-disableLimitsOnWheel | true | boolean |
+#### zoomOut prop elements
 
-** Pan prop elements** | Props | Default | Type | | :--------------- | :-----: |
--------: | | disabled | false | boolean | | lockAxisX | false | boolean | |
-lockAxisY | false | boolean | | velocity | false | boolean | |
-velocityEqualToMove | false | boolean | | velocitySensitivity | 1 | number | |
-velocityActiveScale | 1 | number | | velocityMinSpeed | 1.8 | number | |
-velocityBaseTime | 1800 | number | | limitToWrapperBounds | false | boolean | |
-padding | true | boolean | | paddingSize | 100 | number | | animationTime | 200
-| number | | animationType | easeOut | string |
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | step | 40 | number | | animation | true | boolean | |
+animationTime | 200 | number | | animationType | easeOut | string |
 
-** Pinch prop elements** | Props | Default | Type | | :--------------- | :-----:
-| -------: | | disabled | false | boolean | | step | 1 | number |
+#### doubleClick prop elements
 
-** zoomIn prop elements** | Props | Default | Type | | :--------------- |
-:-----: | -------: | | disabled | false | boolean | | step | 40 | number | |
-animation | true | boolean | | animationTime | 200 | number | | animationType |
-easeOut | string |
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | step | 40 | number | | animation | true | boolean | |
+animationTime | 200 | number | | animationType | easeOut | string |
 
-** zoomOut prop elements** | Props | Default | Type | | :--------------- |
-:-----: | -------: | | disabled | false | boolean | | step | 40 | number | |
-animation | true | boolean | | animationTime | 200 | number | | animationType |
-easeOut | string |
+#### reset prop elements
 
-** doubleClick prop elements** | Props | Default | Type | | :--------------- |
-:-----: | -------: | | disabled | false | boolean | | step | 40 | number | |
-animation | true | boolean | | animationTime | 200 | number | | animationType |
-easeOut | string |
+| Props | Default | Type | | :--------------- | :-----: | -------: | | disabled
+| false | boolean | | step | 40 | number | | animation | true | boolean | |
+animationTime | 200 | number | | animationType | easeOut | string |
 
-** reset prop elements** | Props | Default | Type | | :--------------- | :-----:
-| -------: | | disabled | false | boolean | | step | 40 | number | | animation |
-true | boolean | | animationTime | 200 | number | | animationType | easeOut |
-string |
+#### Animations types
 
-** Animations types ** | Value | | :---------------------------------------- | |
-easeOut | | linear | | easeInQuad | | easeOutQuad | | easeInOutQuad | |
-easeInCubic | | easeOutCubic | | easeInOutCubic | | easeInQuart | | easeOutQuart
-| | easeInOutQuart | | easeInQuint | | easeOutQuint | | easeInOutQuint | |
-linear |
+| Value          |
+| :------------- |
+| easeOut        |
+| linear         |
+| easeInQuad     |
+| easeOutQuad    |
+| easeInOutQuad  |
+| easeInCubic    |
+| easeOutCubic   |
+| easeInOutCubic |
+| easeInQuart    |
+| easeOutQuart   |
+| easeInOutQuart |
+| easeInQuint    |
+| easeOutQuint   |
+| easeInOutQuint |
+| linear         |
 
 ## Values returned from TransformWrapper component
 

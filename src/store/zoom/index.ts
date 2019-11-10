@@ -1,5 +1,6 @@
 import { roundNumber, checkIsNumber, calculateBoundingArea } from "../utils";
 import { animateComponent } from "../animations";
+import { handlePanningAnimation } from "../pan";
 import { initialState } from "../InitialState";
 import {
   checkZoomBounds,
@@ -87,6 +88,7 @@ export function handleCalculatePositions(
     calculatedPositionY,
     bounds,
     limitToBounds,
+    0,
   );
 
   return newPositions;
@@ -108,34 +110,30 @@ export function handleWheelZoom(event) {
   event.stopPropagation();
 
   const delta = getDelta(event, null);
-  const newScale = handleCalculateZoom.bind(
-    this,
-    delta,
-    step,
-    !event.ctrlKey,
-  )();
+  const newScale = handleCalculateZoom.call(this, delta, step, !event.ctrlKey);
 
   // if scale not change
   if (scale === newScale) return;
 
-  const bounds = handleCalculateBounds.bind(
+  const bounds = handleCalculateBounds.call(
     this,
     newScale,
     disableLimitsOnWheel,
-  )();
+  );
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
 
   const isLimitedToBounds =
     limitToBounds && (disabled || size === 0 || disableLimitsOnWheel);
-  const { x, y } = handleCalculatePositions.bind(
+
+  const { x, y } = handleCalculatePositions.call(
     this,
     mouseX,
     mouseY,
     newScale,
     bounds,
     isLimitedToBounds,
-  )();
+  );
   this.bounds = bounds;
   this.stateProvider.previousScale = scale;
   this.stateProvider.scale = newScale;
@@ -161,7 +159,7 @@ export function handleZoomToPoint(isDisabled, scale, mouseX, mouseY, event) {
     null,
     null,
   );
-  const bounds = handleCalculateBounds.bind(this, newScale, false)();
+  const bounds = handleCalculateBounds.call(this, newScale, false);
 
   let mousePosX = mouseX;
   let mousePosY = mouseY;
@@ -173,14 +171,14 @@ export function handleZoomToPoint(isDisabled, scale, mouseX, mouseY, event) {
     mousePosY = mousePosition.mouseY;
   }
 
-  const { x, y } = handleCalculatePositions.bind(
+  const { x, y } = handleCalculatePositions.call(
     this,
     mousePosX,
     mousePosY,
     newScale,
     bounds,
     limitToBounds,
-  )();
+  );
 
   return { scale: newScale, positionX: x, positionY: y };
 }
@@ -194,25 +192,30 @@ export function handlePaddingAnimation() {
   } = this.stateProvider;
   const isDisabled = disabled || scale > minScale;
 
+  if (scale > minScale) {
+    // fire fit to bounds animation
+    handlePanningAnimation.call(this);
+  }
+
   if (isDisabled) return;
 
   let mouseX = wrapperComponent.offsetWidth / 2;
   let mouseY = wrapperComponent.offsetHeight / 2;
 
-  const targetState = handleZoomToPoint.bind(
+  const targetState = handleZoomToPoint.call(
     this,
     false,
     minScale,
     mouseX,
     mouseY,
     null,
-  )();
+  );
 
-  animateComponent.bind(this, {
+  animateComponent.call(this, {
     targetState,
     speed: animationTime,
     type: animationType,
-  })();
+  });
 }
 
 /**
@@ -229,26 +232,26 @@ export function handleDoubleClick(event) {
   } = this.stateProvider;
 
   if (mode === "reset") {
-    return resetTransformations.bind(this, event, animationTime)();
+    return resetTransformations.call(this, event, animationTime);
   }
   const delta = mode === "zoomOut" ? -1 : 1;
-  const newScale = handleCalculateZoom.bind(this, delta, step)();
+  const newScale = handleCalculateZoom.call(this, delta, step);
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
 
-  const targetState = handleZoomToPoint.bind(
+  const targetState = handleZoomToPoint.call(
     this,
     disabled,
     newScale,
     mouseX,
     mouseY,
-  )();
+  );
 
-  animateComponent.bind(this, {
+  animateComponent.call(this, {
     targetState,
     speed: animationTime,
     type: animationType,
-  })();
+  });
 }
 
 export function handleZoomControls(customDelta, customStep) {
@@ -266,7 +269,7 @@ export function handleZoomControls(customDelta, customStep) {
   const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
   const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
 
-  const newScale = handleCalculateZoom.bind(this, customDelta, customStep)();
+  const newScale = handleCalculateZoom.call(this, customDelta, customStep);
   const isZoomIn = newScale > scale;
   const animationSpeed = isZoomIn
     ? zoomIn.animationTime
@@ -274,21 +277,21 @@ export function handleZoomControls(customDelta, customStep) {
   const animationType = isZoomIn ? zoomIn.animationType : zoomOut.animationType;
   const isDisabled = isZoomIn ? zoomIn.disabled : zoomOut.disabled;
 
-  const targetState = handleZoomToPoint.bind(
+  const targetState = handleZoomToPoint.call(
     this,
     isDisabled,
     newScale,
     mouseX,
     mouseY,
-  )();
+  );
 
   if (targetState === scale) return;
 
-  animateComponent.bind(this, {
+  animateComponent.call(this, {
     targetState,
     speed: animationSpeed,
     type: animationType,
-  })();
+  });
 }
 
 export function resetTransformations(animationSpeed) {
@@ -319,9 +322,9 @@ export function resetTransformations(animationSpeed) {
     positionY: newPositionY,
   };
 
-  animateComponent.bind(this, {
+  animateComponent.call(this, {
     targetState,
     speed,
     type: reset.animationType,
-  })();
+  });
 }

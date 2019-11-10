@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { initialState } from "./InitialState";
 import {
+  mergeProps,
   roundNumber,
   getDistance,
   handleCallback,
@@ -16,7 +17,7 @@ import {
 } from "./zoom";
 import { handleDisableAnimation } from "./animations";
 import { handleZoomPinch } from "./pinch";
-import { handlePanning } from "./pan";
+import { handlePanning, handlePanningAnimation } from "./pan";
 import {
   handleFireVelocity,
   animateVelocity,
@@ -41,10 +42,9 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     wrapperComponent: undefined,
     contentComponent: undefined,
   };
-
   public stateProvider = {
     ...initialState,
-    ...this.props.dynamicValues,
+    ...mergeProps(initialState, this.props.dynamicValues),
     ...this.props.defaultValues,
     previousScale:
       this.props.dynamicValues.scale ||
@@ -152,17 +152,20 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       (wrapperComponent && contentComponent) ||
       oldProps.dynamicValues !== dynamicValues
     ) {
-      this.maxBounds = handleCalculateBounds.bind(
+      this.maxBounds = handleCalculateBounds.call(
         this,
         this.stateProvider.scale,
         this.stateProvider.pan.limitToWrapperBounds,
-      )();
+      );
     }
 
     // must be at the end of the update function, updates
     if (oldProps.dynamicValues !== dynamicValues) {
       this.animation = null;
-      this.stateProvider = { ...this.stateProvider, ...dynamicValues };
+      this.stateProvider = {
+        ...this.stateProvider,
+        ...mergeProps(this.stateProvider, dynamicValues),
+      };
       this.setContentComponentTransformation(null, null, null);
     }
   }
@@ -196,12 +199,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     // Wheel start event
     if (!wheelStopEventTimer) {
       this.lastScale = scale;
-      handleDisableAnimation.bind(this)();
+      handleDisableAnimation.call(this);
       handleCallback(onWheelStart, this.getCallbackProps());
     }
 
     // Wheel event
-    handleWheelZoom.bind(this, event)();
+    handleWheelZoom.call(this, event);
     handleCallback(onWheel, this.getCallbackProps());
     this.setContentComponentTransformation(null, null, null);
     this.previousWheelEvent = event;
@@ -224,7 +227,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.lastScale = scale;
       clearTimeout(wheelAnimationTimer);
       wheelAnimationTimer = setTimeout(() => {
-        handlePaddingAnimation.bind(this, { event })();
+        handlePaddingAnimation.call(this, event);
       }, wheelAnimationTime);
     }
   };
@@ -276,12 +279,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     )
       return;
 
-    handleDisableAnimation.bind(this)();
-    this.bounds = handleCalculateBounds.bind(
-      this,
-      scale,
-      limitToWrapperBounds,
-    )();
+    handleDisableAnimation.call(this);
+    this.bounds = handleCalculateBounds.call(this, scale, limitToWrapperBounds);
 
     // Mobile points
     if (touches && touches.length === 1) {
@@ -298,20 +297,38 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     if (this.checkIsPanningActive(event)) return;
     event.stopPropagation();
 
-    calculateVelocityStart.bind(this, event)();
-    handlePanning.bind(this, event)();
+    calculateVelocityStart.call(this, event);
+    handlePanning.call(this, event);
     handleCallback(this.props.onPanning, this.getCallbackProps());
   };
 
   handleStopPanning = () => {
     if (this.isDown) {
       this.isDown = false;
-      handleFireVelocity.bind(this)();
+      handleFireVelocity.call(this);
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
 
+      const { positionX, positionY } = this.stateProvider;
+      const {
+        minPositionX,
+        minPositionY,
+        maxPositionX,
+        maxPositionY,
+      } = this.bounds;
+
+      const isInsideBounds =
+        positionX > minPositionX &&
+        positionY > minPositionY &&
+        positionX < maxPositionX &&
+        positionY < maxPositionY;
+
       // start velocity animation
-      if (this.velocity && this.stateProvider.pan.velocity)
-        animateVelocity.bind(this)();
+      if (this.velocity && this.stateProvider.pan.velocity && isInsideBounds) {
+        animateVelocity.call(this);
+      } else {
+        // fire fit to bounds animation
+        handlePanningAnimation.call(this);
+      }
     }
   };
 
@@ -324,7 +341,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     event.preventDefault();
     event.stopPropagation();
 
-    handleDisableAnimation.bind(this)();
+    handleDisableAnimation.call(this);
     const distance = getDistance(event.touches[0], event.touches[1]);
     this.pinchStartDistance = distance;
     this.lastDistance = distance;
@@ -334,7 +351,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   handlePinch = event => {
-    handleZoomPinch.bind(this, event)();
+    handleZoomPinch.call(this, event);
     handleCallback(this.props.onPinching, this.getCallbackProps());
   };
 
@@ -343,7 +360,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.pinchStartDistance = null;
       this.lastDistance = null;
       this.pinchStartScale = null;
-      handlePaddingAnimation.bind(this, { event })();
+      handlePaddingAnimation.call(this, event);
       handleCallback(this.props.onPinchingStop, this.getCallbackProps());
     }
   };
@@ -361,7 +378,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !wrapperComponent || !contentComponent || scale < minScale)
       return;
-    handleDisableAnimation.bind(this)();
+    handleDisableAnimation.call(this);
 
     if (touches && touches.length === 1) return this.handleStartPanning(event);
     if (touches && touches.length === 2) return this.handlePinchStart(event);
@@ -395,7 +412,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     if (!event) throw Error("Zoom in function requires event prop");
     if (disabled || options.disabled || !wrapperComponent || !contentComponent)
       return;
-    handleZoomControls.bind(this, 1, step)();
+    handleZoomControls.call(this, 1, step);
   };
 
   zoomOut = event => {
@@ -408,7 +425,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     if (!event) throw Error("Zoom out function requires event prop");
     if (disabled || options.disabled || !wrapperComponent || !contentComponent)
       return;
-    handleZoomControls.bind(this, -1, step)();
+    handleZoomControls.call(this, -1, step);
   };
 
   handleDbClick = event => {
@@ -421,7 +438,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     if (!event) throw Error("Double click function requires event prop");
     if (disabled || options.disabled || !wrapperComponent || !contentComponent)
       return;
-    handleDoubleClick.bind(this, event, 1, step)();
+    handleDoubleClick.call(this, event, 1, step);
   };
 
   setScale = scale => {
@@ -476,7 +493,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       options: { disabled, transformEnabled },
     } = this.stateProvider;
     if (disabled || !transformEnabled) return;
-    resetTransformations.bind(this)();
+    resetTransformations.call(this);
   };
 
   //////////
@@ -515,6 +532,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   //////////
   // Props
   //////////
+
   getCallbackProps = () => getValidPropsFromObject(this.stateProvider);
 
   render() {

@@ -82,28 +82,28 @@ export function handleZoomPinch(event) {
 
   const currentDistance = getCurrentDistance(event);
 
-  const newScale = calculatePinchZoom.bind(
+  const newScale = calculatePinchZoom.call(
     this,
     currentDistance,
     this.pinchStartDistance,
-  )();
+  );
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   // Get new element sizes to calculate bounds
-  const bounds = handleCalculateBounds.bind(this, newScale)();
+  const bounds = handleCalculateBounds.call(this, newScale);
 
   // Calculate transformations
   const isLimitedToBounds =
     limitToBounds && (disabled || size === 0 || disableLimitsOnWheel);
 
-  const { x, y } = handleCalculatePositions.bind(
+  const { x, y } = handleCalculatePositions.call(
     this,
     mouseX,
     mouseY,
     newScale,
     bounds,
     isLimitedToBounds,
-  )();
+  );
 
   this.lastDistance = currentDistance;
 

@@ -38,6 +38,10 @@ export interface PropsList {
     lockAxisX: boolean;
     lockAxisY: boolean;
     limitToWrapperBounds: boolean;
+    padding: boolean;
+    paddingSize: number;
+    animationTime: number;
+    animationType: string;
   };
   pinch: {
     disabled: boolean;

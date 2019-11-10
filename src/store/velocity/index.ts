@@ -31,14 +31,13 @@ export function animateVelocity() {
     options: { limitToBounds },
     pan: { velocityBaseTime, lockAxisX, lockAxisY },
   } = this.stateProvider;
-  if (!this.velocity || !this.bounds)
-    return handleDisableAnimation.bind(this)();
+  if (!this.velocity || !this.bounds) return handleDisableAnimation.call(this);
   const { velocityX, velocityY, velocity } = this.velocity;
-  const animationTime = velocityTimeSpeed.bind(
+  const animationTime = velocityTimeSpeed.call(
     this,
     velocity,
     velocityBaseTime,
-  )();
+  );
   const targetX = velocityX;
   const targetY = velocityY;
 
@@ -46,7 +45,7 @@ export function animateVelocity() {
   this.offsetY = positionY;
 
   // animation start timestamp
-  animate.bind(this, "easeOut", animationTime, step => {
+  animate.call(this, "easeOut", animationTime, step => {
     const currentPositionX = lockAxisX
       ? positionX
       : this.offsetX + targetX - targetX * step;
@@ -59,6 +58,7 @@ export function animateVelocity() {
       currentPositionY,
       this.maxBounds,
       limitToBounds,
+      0,
     );
 
     this.offsetX = calculatedPosition.x;
@@ -70,7 +70,7 @@ export function animateVelocity() {
 
     // apply animation changes
     this.setContentComponentTransformation();
-  })();
+  });
 }
 
 export function calculateVelocityStart(event) {
@@ -80,7 +80,7 @@ export function calculateVelocityStart(event) {
     pan: { velocity, velocitySensitivity, velocityActiveScale },
   } = this.stateProvider;
   if (!velocity || velocityActiveScale >= scale || disabled) return;
-  handleEnableVelocity.bind(this)();
+  handleEnableVelocity.call(this);
   const now = Date.now();
   if (this.lastMousePosition) {
     const position = getClientPosition(event);

@@ -143,7 +143,9 @@ disableLimitsOnWheel | true | boolean |
 lockAxisY | false | boolean | | velocity | false | boolean | |
 velocityEqualToMove | false | boolean | | velocitySensitivity | 1 | number | |
 velocityActiveScale | 1 | number | | velocityMinSpeed | 1.8 | number | |
-velocityBaseTime | 1800 | number | | limitToWrapperBounds | false | boolean |
+velocityBaseTime | 1800 | number | | limitToWrapperBounds | false | boolean | |
+padding | true | boolean | | paddingSize | 100 | number | | animationTime | 200
+| number | | animationType | easeOut | string |
 
 ** Pinch prop elements** | Props | Default | Type | | :--------------- | :-----:
 | -------: | | disabled | false | boolean | | step | 1 | number |
@@ -168,24 +170,24 @@ easeOut | string |
 true | boolean | | animationTime | 200 | number | | animationType | easeOut |
 string |
 
+** Animations types ** | Value | | :---------------------------------------- | |
+easeOut | | linear | | easeInQuad | | easeOutQuad | | easeInOutQuad | |
+easeInCubic | | easeOutCubic | | easeInOutCubic | | easeInQuart | | easeOutQuart
+| | easeInOutQuart | | easeInQuint | | easeOutQuint | | easeInOutQuint | |
+linear |
+
 ## Values returned from TransformWrapper component
 
-| Value                                     | Description                                                                                            |      Type      |
-| :---------------------------------------- | :----------------------------------------------------------------------------------------------------- | :------------: |
-| minVelocity                               | Minimum mouse velocity which will be animated after panning is done                                    |     Number     |
-| minVelocityScale                          | Velocity will be disabled if value is equal or lower than given value                                  |     Number     |
-| velocityTimeBasedOnMove                   | Velocity duration is based on the mouse move - the longer the movement, the longer the animation lasts |    Boolean     |
-| limitToWrapperBounds                      | Enables panning when zoom is lower than 1, and limit it to the wrapper bounds                          |    Boolean     |
-| limitToWrapperOnWheel                     | Zoomed object is always inside wrapper if limitBounds is activated                                     |    Boolean     |
-| limitToBounds                             | Limit zooming and panning to wrapper boundaries                                                        |    Boolean     |
-| setScale(scale)                           | Sets scale                                                                                             |     Number     |
-| setPositionX(positionX)                   | Sets position x                                                                                        |     Number     |
-| setPositionY(positionY)                   | Sets position y                                                                                        |     Number     |
-| zoomIn()                                  | Zooming in function, used for controls button                                                          |      ---       |
-| zoomOut()                                 | Zooming out function, used for controls button                                                         |      ---       |
-| setTransform(positionX, positionY, scale) | Sets transformations of content                                                                        | Number or null |
-| resetTransform()                          | Reset transformations to the initial values                                                            |     Number     |
-| dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"                                                          |     String     |
+| Value                                     | Description                                    |      Type      |
+| :---------------------------------------- | :--------------------------------------------- | :------------: |
+| setScale(scale)                           | Sets scale                                     |     Number     |
+| setPositionX(positionX)                   | Sets position x                                |     Number     |
+| setPositionY(positionY)                   | Sets position y                                |     Number     |
+| zoomIn()                                  | Zooming in function, used for controls button  |      ---       |
+| zoomOut()                                 | Zooming out function, used for controls button |      ---       |
+| setTransform(positionX, positionY, scale) | Sets transformations of content                | Number or null |
+| resetTransform()                          | Reset transformations to the initial values    |     Number     |
+| dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"  |     String     |
 
 ## License
 

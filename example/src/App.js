@@ -10,7 +10,6 @@ export default class App extends Component {
   state = {
     type: true,
     limitToBounds: true,
-    zoomingEnabled: true,
     panningEnabled: true,
     transformEnabled: true,
     pinchEnabled: true,
@@ -19,11 +18,11 @@ export default class App extends Component {
     dbClickEnabled: true,
     lockAxisX: false,
     lockAxisY: false,
-    velocityTimeBasedOnMove: true,
+    velocityEqualToMove: true,
     enableWheel: true,
     enableTouchPadPinch: true,
     enableVelocity: true,
-    limitToWrapperOnWheel: true,
+    disableLimitsOnWheel: true,
   };
 
   toggleSetting = type => {
@@ -31,7 +30,23 @@ export default class App extends Component {
   };
 
   render() {
-    const { type } = this.state;
+    const {
+      type,
+      limitToBounds,
+      panningEnabled,
+      transformEnabled,
+      pinchEnabled,
+      limitToWrapperBounds,
+      disabled,
+      dbClickEnabled,
+      lockAxisX,
+      lockAxisY,
+      velocityEqualToMove,
+      enableWheel,
+      enableTouchPadPinch,
+      enableVelocity,
+      disableLimitsOnWheel,
+    } = this.state;
     return (
       <div className="body">
         {/* Header */}
@@ -62,22 +77,22 @@ export default class App extends Component {
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
                 <TransformWrapper
-                  limitToBounds={this.state.limitToBounds}
-                  zoomingEnabled={this.state.zoomingEnabled}
-                  panningEnabled={this.state.panningEnabled}
-                  transformEnabled={this.state.transformEnabled}
-                  pinchEnabled={this.state.pinchEnabled}
-                  limitToWrapperBounds={this.state.limitToWrapperBounds}
-                  disabled={this.state.disabled}
-                  dbClickEnabled={this.state.dbClickEnabled}
-                  lockAxisX={this.state.lockAxisX}
-                  lockAxisY={this.state.lockAxisY}
-                  velocityTimeBasedOnMove={this.state.velocityTimeBasedOnMove}
-                  enableWheel={this.state.enableWheel}
-                  enableTouchPadPinch={this.state.enableTouchPadPinch}
-                  enableVelocity={this.state.enableVelocity}
-                  limitToWrapperOnWheel={this.state.limitToWrapperOnWheel}
-                  minScale={1}
+                  options={{ limitToBounds, transformEnabled, disabled }}
+                  pan={{
+                    disabled: !panningEnabled,
+                    limitToWrapperBounds,
+                    lockAxisX,
+                    lockAxisY,
+                    velocityEqualToMove,
+                  }}
+                  pinch={{ disabled: !pinchEnabled }}
+                  doubleClick={{ disabled: !dbClickEnabled }}
+                  wheel={{
+                    disabled: !enableWheel,
+                    wheelEnabled: enableTouchPadPinch,
+                    touchPadEnabled: enableVelocity,
+                    disableLimitsOnWheel,
+                  }}
                 >
                   {({
                     zoomIn,
@@ -87,21 +102,8 @@ export default class App extends Component {
                     positionY,
                     scale,
                     previousScale,
-                    limitToBounds,
-                    zoomingEnabled,
-                    panningEnabled,
-                    transformEnabled,
-                    pinchEnabled,
-                    limitToWrapperBounds,
-                    disabled,
-                    dbClickEnabled,
-                    lockAxisX,
-                    lockAxisY,
-                    velocityTimeBasedOnMove,
-                    enableWheel,
-                    enableTouchPadPinch,
-                    enableVelocity,
-                    limitToWrapperOnWheel,
+                    options: { limitToBounds, transformEnabled, disabled },
+                    ...rest
                   }) => (
                     <React.Fragment>
                       <div className="tools">
@@ -144,7 +146,7 @@ export default class App extends Component {
                             <img
                               className="zoom"
                               src={example_img}
-                              alt="example-image"
+                              alt="example-element"
                             />
                           </TransformComponent>
                         ) : (
@@ -228,16 +230,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (zoomingEnabled ? " active" : "")
-                            }
-                            onClick={() => this.toggleSetting("zoomingEnabled")}
-                          >
-                            <span /> Enable zoom
-                          </button>
-                          <button
-                            className={
-                              "btn-gradient grey small" +
-                              (panningEnabled ? " active" : "")
+                              (!rest.pan.disabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("panningEnabled")}
                           >
@@ -246,7 +239,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (pinchEnabled ? " active" : "")
+                              (!rest.pinch.disabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("pinchEnabled")}
                           >
@@ -266,7 +259,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (dbClickEnabled ? " active" : "")
+                              (!rest.doubleClick.disabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("dbClickEnabled")}
                           >
@@ -275,7 +268,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (lockAxisX ? " active" : "")
+                              (rest.pan.lockAxisX ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("lockAxisX")}
                           >
@@ -284,7 +277,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (lockAxisY ? " active" : "")
+                              (rest.pan.lockAxisY ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("lockAxisY")}
                           >
@@ -293,10 +286,10 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (velocityTimeBasedOnMove ? " active" : "")
+                              (rest.pan.velocityEqualToMove ? " active" : "")
                             }
                             onClick={() =>
-                              this.toggleSetting("velocityTimeBasedOnMove")
+                              this.toggleSetting("velocityEqualToMove")
                             }
                           >
                             <span /> Velocity time based on move
@@ -304,7 +297,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (enableVelocity ? " active" : "")
+                              (rest.pan.velocity ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("enableVelocity")}
                           >
@@ -313,7 +306,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (enableWheel ? " active" : "")
+                              (rest.wheel.wheelEnabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("enableWheel")}
                           >
@@ -322,7 +315,7 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (enableTouchPadPinch ? " active" : "")
+                              (rest.wheel.touchPadEnabled ? " active" : "")
                             }
                             onClick={() =>
                               this.toggleSetting("enableTouchPadPinch")
@@ -333,10 +326,10 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (limitToWrapperOnWheel ? " active" : "")
+                              (rest.wheel.disableLimitsOnWheel ? " active" : "")
                             }
                             onClick={() =>
-                              this.toggleSetting("limitToWrapperOnWheel")
+                              this.toggleSetting("disableLimitsOnWheel")
                             }
                           >
                             <span /> Limit to wrapper on wheel

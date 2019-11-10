@@ -155,7 +155,7 @@ export const getDistance = (firstPoint, secondPoint) => {
 export const deleteUndefinedProps = value => {
   let newObject = { ...value };
   Object.keys(newObject).forEach(
-    key => newObject[key] == undefined && delete newObject[key],
+    key => newObject[key] === undefined && delete newObject[key],
   );
   return newObject;
 };
@@ -206,4 +206,18 @@ export const handleWheelStop = (previousEvent, event, stateProvider) => {
     return true;
   if (Math.sign(previousEvent.deltaY) !== Math.sign(event.deltaY)) return true;
   return false;
+};
+
+export const mergeProps = (initialState, dynamicProps) => {
+  return Object.keys(initialState).reduce((acc, curr) => {
+    if (typeof dynamicProps[curr] === "object" && dynamicProps[curr] !== null) {
+      acc[curr] = { ...initialState[curr], ...dynamicProps[curr] };
+    } else {
+      acc[curr] =
+        dynamicProps[curr] === undefined
+          ? initialState[curr]
+          : dynamicProps[curr];
+    }
+    return acc;
+  }, {});
 };

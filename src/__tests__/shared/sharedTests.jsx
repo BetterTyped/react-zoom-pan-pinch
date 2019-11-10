@@ -5,6 +5,5 @@ export const testComponentCssValueToBe = async (
 ) => {
   const cssValue = component.style[cssName];
   // Set timeout is needed due to styles update time after rerender
-  console.log(cssValue, expectedValue);
-  // expect(cssValue.includes(expectedValue)).toBe(true);
+  expect(cssValue.includes(expectedValue)).toBe(true);
 };

@@ -21,10 +21,21 @@ export function checkPositionBounds(
   positionY,
   bounds,
   limitToBounds,
+  paddingValue,
 ) {
   const { minPositionX, minPositionY, maxPositionX, maxPositionY } = bounds;
-  const x = boundLimiter(positionX, minPositionX, maxPositionX, limitToBounds);
-  const y = boundLimiter(positionY, minPositionY, maxPositionY, limitToBounds);
+  const x = boundLimiter(
+    positionX,
+    minPositionX - paddingValue,
+    maxPositionX + paddingValue,
+    limitToBounds,
+  );
+  const y = boundLimiter(
+    positionY,
+    minPositionY - paddingValue,
+    maxPositionY + paddingValue,
+    limitToBounds,
+  );
   return { x, y };
 }
 

@@ -18,10 +18,7 @@ function checkIfInfinite(number) {
 
 export function calculatePinchZoom(currentDistance, pinchStartDistance) {
   const {
-    minScale,
-    maxScale,
-    zoomPadding,
-    enablePadding,
+    options: { minScale, maxScale, scalePadding, scalePaddingEnabled },
   }: PropsList = this.stateProvider;
   if (
     typeof pinchStartDistance !== "number" ||
@@ -37,8 +34,8 @@ export function calculatePinchZoom(currentDistance, pinchStartDistance) {
     roundNumber(scaleDifference, 2),
     minScale,
     maxScale,
-    zoomPadding,
-    enablePadding,
+    scalePadding,
+    scalePaddingEnabled,
   );
 }
 
@@ -58,17 +55,13 @@ export function calculateMidpoint(event, scale, contentComponent) {
 
 export function handleZoomPinch(event) {
   const {
-    isDown,
-    zoomingEnabled,
-    disabled,
     scale,
-    limitToWrapperOnWheel,
-    limitToBounds,
-    enablePadding,
-    zoomPadding,
+    options: { disabled, scalePadding, limitToBounds, scalePaddingEnabled },
+    wheel: { disableLimitsOnWheel },
+    pinch,
   } = this.stateProvider;
   const { contentComponent } = this.state;
-  if (isDown || !zoomingEnabled || disabled) return;
+  if (this.isDown || pinch.disabled || disabled) return;
 
   if (event.cancelable) {
     event.preventDefault();
@@ -94,16 +87,13 @@ export function handleZoomPinch(event) {
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   // Get new element sizes to calculate bounds
-  const bounds = handleCalculateBounds.bind(
-    this,
-    newScale,
-    limitToWrapperOnWheel,
-  )();
+  const bounds = handleCalculateBounds.bind(this, newScale)();
 
   // Calculate transformations
   const isLimitedToBounds =
     limitToBounds &&
-    (!enablePadding || zoomPadding === 0 || limitToWrapperOnWheel);
+    (!scalePaddingEnabled || scalePadding === 0 || disableLimitsOnWheel);
+
   const { x, y } = handleCalculatePositions.bind(
     this,
     mouseX,

@@ -6,9 +6,11 @@ import { animate, handleDisableAnimation } from "../animations";
 const throttleTime = 40;
 
 function velocityTimeSpeed(speed, animationTime) {
-  const { velocityTimeBasedOnMove }: PropsList = this.stateProvider;
+  const {
+    pan: { velocityEqualToMove },
+  }: PropsList = this.stateProvider;
 
-  if (velocityTimeBasedOnMove) {
+  if (velocityEqualToMove) {
     return animationTime - animationTime / Math.max(1.6, speed);
   }
   return animationTime;
@@ -26,10 +28,8 @@ export function animateVelocity() {
   const {
     positionX,
     positionY,
-    limitToBounds,
-    velocityAnimationSpeed,
-    lockAxisX,
-    lockAxisY,
+    options: { limitToBounds, lockAxisX, lockAxisY },
+    pan: { velocityBaseTime },
   } = this.stateProvider;
   if (!this.velocity || !this.bounds)
     return handleDisableAnimation.bind(this)();
@@ -37,7 +37,7 @@ export function animateVelocity() {
   const animationTime = velocityTimeSpeed.bind(
     this,
     velocity,
-    velocityAnimationSpeed,
+    velocityBaseTime,
   )();
   const targetX = velocityX;
   const targetY = velocityY;
@@ -65,11 +65,9 @@ export function animateVelocity() {
     this.offsetY = calculatedPosition.y;
 
     // Save panned position
-    this.stateProvider = {
-      ...this.stateProvider,
-      positionX: calculatedPosition.x,
-      positionY: calculatedPosition.y,
-    };
+    this.stateProvider.positionX = calculatedPosition.x;
+    this.stateProvider.positionY = calculatedPosition.y;
+
     // apply animation changes
     this.setContentComponentTransformation();
   })();
@@ -77,13 +75,11 @@ export function animateVelocity() {
 
 export function calculateVelocityStart(event) {
   const {
-    enableVelocity,
-    minVelocityScale,
     scale,
-    disabled,
-    velocitySensitivity,
+    options: { disabled },
+    pan: { velocity, velocitySensitivity, velocityActiveScale },
   } = this.stateProvider;
-  if (!enableVelocity || minVelocityScale >= scale || disabled) return;
+  if (!velocity || velocityActiveScale >= scale || disabled) return;
   handleEnableVelocity.bind(this)();
   const now = Date.now();
   if (this.lastMousePosition) {

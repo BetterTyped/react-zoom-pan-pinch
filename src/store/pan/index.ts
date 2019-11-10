@@ -17,11 +17,9 @@ export function getClientPosition(event) {
 
 export function handlePanning(event) {
   const {
-    limitToBounds,
     positionX,
     positionY,
-    lockAxisX,
-    lockAxisY,
+    options: { limitToBounds, lockAxisX, lockAxisY },
   }: PropsList = this.stateProvider;
 
   if (!this.startCoords) return;

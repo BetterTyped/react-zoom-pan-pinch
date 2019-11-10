@@ -193,7 +193,10 @@ export const handleCallback = (callback, props) => {
 };
 
 export const handleWheelStop = (previousEvent, event, stateProvider) => {
-  const { scale, maxScale, minScale } = stateProvider;
+  const {
+    scale,
+    options: { maxScale, minScale },
+  } = stateProvider;
   if (!previousEvent) return false;
   if (scale < maxScale || scale > minScale) return true;
   if (Math.sign(previousEvent.deltaY) !== Math.sign(event.deltaY)) return true;

@@ -61,7 +61,6 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   public pinchStartScale = null;
   public distance = null;
   public bounds = null;
-  public startPanningCoords = null;
   // velocity helpers
   public velocityTime = null;
   public lastMousePosition = null;
@@ -156,7 +155,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.maxBounds = handleCalculateBounds.bind(
         this,
         this.stateProvider.scale,
-        this.stateProvider.limitToWrapperBounds,
+        this.stateProvider.pan.limitToWrapperBounds,
       )();
     }
 
@@ -174,11 +173,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   handleWheel = event => {
     const {
-      enableWheel,
-      enableTouchPadPinch,
-      zoomingEnabled,
-      disabled,
       scale,
+      wheel: { disabled, wheelEnabled, touchPadEnabled },
     } = this.stateProvider;
 
     const { onWheelStart, onWheel, onWheelStop, onZoomChange } = this.props;
@@ -186,16 +182,16 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
     if (
       this.isDown ||
-      !zoomingEnabled ||
       disabled ||
+      this.stateProvider.options.disabled ||
       !wrapperComponent ||
       !contentComponent
     )
       return;
 
     // ctrlKey detects if touchpad execute wheel or pinch gesture
-    if (!enableWheel && !event.ctrlKey) return;
-    if (!enableTouchPadPinch && event.ctrlKey) return;
+    if (!wheelEnabled && !event.ctrlKey) return;
+    if (!touchPadEnabled && event.ctrlKey) return;
 
     // Wheel start event
     if (!wheelStopEventTimer) {
@@ -238,13 +234,15 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   //////////
 
   checkIsPanningActive = event => {
-    const { panningEnabled, disabled } = this.stateProvider;
+    const {
+      pan: { disabled },
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
 
     return (
       !this.isDown ||
-      !panningEnabled ||
       disabled ||
+      this.stateProvider.options.disabled ||
       (event.touches &&
         (event.touches.length !== 1 ||
           Math.abs(this.startCoords.x - event.touches[0].clientX) < 1)) ||
@@ -263,18 +261,16 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   handleStartPanning = event => {
     const {
-      panningEnabled,
-      disabled,
       wrapperComponent,
-      minScale,
       scale,
-      limitToWrapperBounds,
+      options: { minScale },
+      pan: { disabled, limitToWrapperBounds },
     } = this.stateProvider;
     const { target, touches } = event;
 
     if (
-      !panningEnabled ||
       disabled ||
+      this.stateProvider.options.disabled ||
       (wrapperComponent && !wrapperComponent.contains(target)) ||
       scale < minScale
     )
@@ -314,7 +310,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
 
       // start velocity animation
-      if (this.velocity && this.stateProvider.enableVelocity)
+      if (this.velocity && this.stateProvider.pan.velocity)
         animateVelocity.bind(this)();
     }
   };
@@ -357,7 +353,10 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   //////////
 
   handleTouchStart = event => {
-    const { disabled, scale, minScale } = this.stateProvider;
+    const {
+      scale,
+      options: { disabled, minScale },
+    } = this.stateProvider;
     const { touches } = event;
     const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !wrapperComponent || !contentComponent || scale < minScale)
@@ -369,11 +368,11 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   handleTouch = event => {
-    const { panningEnabled, pinchEnabled, disabled } = this.stateProvider;
-    if (disabled) return;
-    if (panningEnabled && event.touches.length === 1)
+    const { pan, pinch, options } = this.stateProvider;
+    if (options.disabled) return;
+    if (pan.disabled && event.touches.length === 1)
       return this.handlePanning(event);
-    if (pinchEnabled && event.touches.length === 2)
+    if (pinch.disabled && event.touches.length === 2)
       return this.handlePinch(event);
   };
 
@@ -387,66 +386,61 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   //////////
 
   zoomIn = event => {
-    const { zoomingEnabled, disabled, zoomInStep } = this.stateProvider;
+    const {
+      zoomIn: { disabled, step },
+      options,
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
 
     if (!event) throw Error("Zoom in function requires event prop");
-    if (!zoomingEnabled || disabled || !wrapperComponent || !contentComponent)
+    if (disabled || options.disabled || !wrapperComponent || !contentComponent)
       return;
-    handleZoomControls.bind(this, 1, zoomInStep)();
+    handleZoomControls.bind(this, 1, step)();
   };
 
   zoomOut = event => {
-    const { zoomingEnabled, disabled, zoomOutStep } = this.stateProvider;
+    const {
+      zoomOut: { disabled, step },
+      options,
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
 
     if (!event) throw Error("Zoom out function requires event prop");
-    if (!zoomingEnabled || disabled || !wrapperComponent || !contentComponent)
+    if (disabled || options.disabled || !wrapperComponent || !contentComponent)
       return;
-    handleZoomControls.bind(this, -1, zoomOutStep)();
+    handleZoomControls.bind(this, -1, step)();
   };
 
   handleDbClick = event => {
     const {
-      zoomingEnabled,
-      disabled,
-      dbClickStep,
-      dbClickEnabled,
+      options,
+      doubleClick: { disabled, step },
     } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
 
     if (!event) throw Error("Double click function requires event prop");
-    if (
-      !zoomingEnabled ||
-      disabled ||
-      !dbClickEnabled ||
-      !wrapperComponent ||
-      !contentComponent
-    )
+    if (disabled || options.disabled || !wrapperComponent || !contentComponent)
       return;
-    handleDoubleClick.bind(this, event, 1, dbClickStep)();
+    handleDoubleClick.bind(this, event, 1, step)();
   };
 
   setScale = scale => {
-    const { zoomingEnabled, disabled } = this.stateProvider;
+    const {
+      options: { disabled },
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
-    if (!zoomingEnabled || disabled || !wrapperComponent || !contentComponent)
-      return;
+    if (disabled || !wrapperComponent || !contentComponent) return;
     this.stateProvider.scale = scale;
     // update component transformation
     this.setContentComponentTransformation(null, null, null);
   };
 
   setPositionX = positionX => {
-    const { zoomingEnabled, disabled, transformEnabled } = this.stateProvider;
+    const {
+      options: { disabled, transformEnabled },
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
-    if (
-      !zoomingEnabled ||
-      disabled ||
-      !transformEnabled ||
-      !wrapperComponent ||
-      !contentComponent
-    )
+    if (disabled || !transformEnabled || !wrapperComponent || !contentComponent)
       return;
     this.stateProvider.positionX = roundNumber(positionX, 3);
     // update component transformation
@@ -454,15 +448,11 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   setPositionY = positionY => {
-    const { zoomingEnabled, disabled, transformEnabled } = this.stateProvider;
+    const {
+      options: { disabled, transformEnabled },
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
-    if (
-      !zoomingEnabled ||
-      disabled ||
-      !transformEnabled ||
-      !wrapperComponent ||
-      !contentComponent
-    )
+    if (disabled || !transformEnabled || !wrapperComponent || !contentComponent)
       return;
     this.stateProvider.positionY = roundNumber(positionY, 3);
     // update component transformation
@@ -470,15 +460,11 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   setTransform = (positionX, positionY, scale) => {
-    const { zoomingEnabled, disabled, transformEnabled } = this.stateProvider;
+    const {
+      options: { disabled, transformEnabled },
+    } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
-    if (
-      !zoomingEnabled ||
-      disabled ||
-      !transformEnabled ||
-      !wrapperComponent ||
-      !contentComponent
-    )
+    if (disabled || !transformEnabled || !wrapperComponent || !contentComponent)
       return;
     !isNaN(scale) && this.setScale(scale);
     !isNaN(positionX) && this.setPositionX(positionX);
@@ -486,7 +472,9 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   resetTransform = () => {
-    const { disabled, transformEnabled } = this.stateProvider;
+    const {
+      options: { disabled, transformEnabled },
+    } = this.stateProvider;
     if (disabled || !transformEnabled) return;
     resetTransformations.bind(this)();
   };
@@ -501,7 +489,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   setContentComponent = contentComponent => {
     this.setState({ contentComponent }, () => {
-      if (this.stateProvider.isCentered) {
+      if (this.stateProvider.options.centerContent) {
         const { scale } = this.stateProvider;
         const rect = this.state.wrapperComponent.getBoundingClientRect();
         this.stateProvider.positionX = (rect.width - rect.width * scale) / 2;

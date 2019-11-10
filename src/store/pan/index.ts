@@ -39,8 +39,11 @@ export function handlePanning(event) {
   const newPositionX = lockAxisX ? positionX : mouseX;
   const newPositionY = lockAxisY ? positionY : mouseY;
 
+  const paddingScaleValue = () =>
+    (paddingSize * 100) / this.stateProvider.wrapperComponent.offsetWidth;
+
   // padding
-  const paddingValue = padding && scale >= minScale ? paddingSize : 0;
+  const paddingValue = padding && scale >= minScale ? paddingScaleValue() : 0;
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;

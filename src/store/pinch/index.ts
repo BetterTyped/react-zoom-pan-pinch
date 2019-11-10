@@ -63,8 +63,7 @@ export function handleZoomPinch(event) {
     pinch,
   } = this.stateProvider;
   const { contentComponent } = this.state;
-  if (this.isDown || pinch.disabled || this.stateProvider.options.disabled)
-    return;
+  if (pinch.disabled || this.stateProvider.options.disabled) return;
 
   if (event.cancelable) {
     event.preventDefault();

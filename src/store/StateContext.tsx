@@ -355,12 +355,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     handleCallback(this.props.onPinching, this.getCallbackProps());
   };
 
-  handlePinchStop = event => {
+  handlePinchStop = () => {
     if (typeof this.pinchStartScale === "number") {
       this.pinchStartDistance = null;
       this.lastDistance = null;
       this.pinchStartScale = null;
-      handlePaddingAnimation.call(this, event);
+      handlePaddingAnimation.call(this);
       handleCallback(this.props.onPinchingStop, this.getCallbackProps());
     }
   };
@@ -371,11 +371,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   handleTouchStart = event => {
     const {
+      wrapperComponent,
+      contentComponent,
       scale,
       options: { disabled, minScale },
     } = this.stateProvider;
     const { touches } = event;
-    const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !wrapperComponent || !contentComponent || scale < minScale)
       return;
     handleDisableAnimation.call(this);
@@ -387,14 +388,14 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   handleTouch = event => {
     const { pan, pinch, options } = this.stateProvider;
     if (options.disabled) return;
-    if (pan.disabled && event.touches.length === 1)
+    if (!pan.disabled && event.touches.length === 1)
       return this.handlePanning(event);
-    if (pinch.disabled && event.touches.length === 2)
+    if (!pinch.disabled && event.touches.length === 2)
       return this.handlePinch(event);
   };
 
-  handleTouchStop = event => {
-    this.handlePinchStop(event);
+  handleTouchStop = () => {
+    this.handlePinchStop();
     this.handleStopPanning();
   };
 

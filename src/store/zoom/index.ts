@@ -150,7 +150,7 @@ export function handleZoomToPoint(isDisabled, scale, mouseX, mouseY, event) {
     contentComponent,
     options: { disabled, minScale, maxScale, limitToBounds },
   } = this.stateProvider;
-  if (this.isDown || disabled || isDisabled) return;
+  if (disabled || isDisabled) return;
 
   const newScale = checkZoomBounds(
     roundNumber(scale, 2),

@@ -5,34 +5,19 @@
     "target": "es5",
     "sourceMap": true,
     "allowJs": false,
-    "jsx": "preserve",
+    "jsx": "react",
     "declaration": true,
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
+    // "noImplicitReturns": true,
+    // "noImplicitThis": true,
+    // "noImplicitAny": true,
+    // "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "example",
-    "rollup.config.js"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
 }

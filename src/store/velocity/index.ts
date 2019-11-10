@@ -1,4 +1,4 @@
-import { PropsList } from "./../interfaces/propsInterface";
+import { PropsList } from "../interfaces/propsInterface";
 import { checkPositionBounds } from "../zoom/utils";
 import { getClientPosition } from "../pan";
 import { animate, handleDisableAnimation } from "../animations";

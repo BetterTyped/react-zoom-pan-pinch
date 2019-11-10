@@ -21,7 +21,7 @@ describe("Example view", () => {
         ".react-transform-element",
       );
       // set transform element
-      environment.getImgElement = () => getByAltText("example-image");
+      environment.getImgElement = () => getByAltText("example-element");
       environment.getTextElement = () => getAllByText(/Lorem ipsum/)[0];
     });
     test("it renders entire example without errors", () => {

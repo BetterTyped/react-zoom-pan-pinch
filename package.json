@@ -18,7 +18,7 @@
     "test:verbose": "react-scripts test --verbose --env=jsdom --testPathIgnorePatterns=utils shared",
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "prepare": "yarn run build",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
@@ -36,7 +36,9 @@
     "@types/jest": "^23.1.5",
     "@types/react": "^16.8.0",
     "@types/react-dom": "^16.8.0",
+    "@typescript-eslint/parser": "^2.6.1",
     "all-contributors-cli": "^6.9.3",
+    "babel-eslint": "^9.0.0",
     "cross-env": "^5.1.4",
     "eslint": "5.12.0",
     "eslint-config-airbnb": "17.1.1",

@@ -14,11 +14,16 @@
     "describe": "readonly",
     "expect": "readonly",
     "cy": "readonly",
-    "should": "readonly"
+    "should": "readonly",
+    "ReactNode": "readonly"
   },
   "extends": ["airbnb", "prettier"],
   "plugins": ["prettier", "react", "jsx-a11y", "import"],
   "rules": {
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
     "prettier/prettier": ["error"],
     "import/prefer-default-export": "off", // disabled because we don't want default exports in utils files etc.
     "import/no-unresolved": "off", // disabled to allow absolute path imports

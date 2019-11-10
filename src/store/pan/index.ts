@@ -1,4 +1,4 @@
-import { PropsList } from "./../interfaces/propsInterface";
+import { PropsList } from "../interfaces/propsInterface";
 import { checkPositionBounds } from "../zoom/utils";
 import { handleCalculatePositions } from "../zoom";
 import { animateComponent } from "../animations";

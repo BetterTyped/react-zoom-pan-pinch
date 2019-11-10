@@ -18,6 +18,7 @@
     "test:verbose": "react-scripts test --verbose --env=jsdom --testPathIgnorePatterns=utils shared",
     "build": "rollup -c",
     "start": "rollup -c -w",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "prepare": "yarn run build",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"

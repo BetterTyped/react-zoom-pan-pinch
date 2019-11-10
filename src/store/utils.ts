@@ -2,7 +2,7 @@
  * Rounds number to given decimal
  * eg. roundNumber(2.34343, 1) => 2.3
  */
-export const roundNumber = (num, decimal = 5) => {
+export const roundNumber = (num, decimal) => {
   return Number(num.toFixed(decimal));
 };
 

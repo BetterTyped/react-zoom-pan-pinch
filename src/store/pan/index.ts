@@ -40,7 +40,7 @@ export function handlePanning(event) {
   const newPositionY = lockAxisY ? positionY : mouseY;
 
   const paddingScaleValue = () =>
-    (paddingSize * 100) / this.stateProvider.wrapperComponent.offsetWidth;
+    (paddingSize * this.stateProvider.wrapperComponent.offsetWidth) / 100;
 
   // padding
   const paddingValue = padding && scale >= minScale ? paddingScaleValue() : 0;

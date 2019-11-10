@@ -171,7 +171,7 @@ class Example extends Component {
 | velocityBaseTime     |  1800   |  number |
 | limitToWrapperBounds |  false  | boolean |
 | padding              |  true   | boolean |
-| paddingSize          |   100   |  number |
+| paddingSize          |    6    |  number |
 | animationTime        |   200   |  number |
 | animationType        | easeOut |  string |
 

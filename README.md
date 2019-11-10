@@ -240,7 +240,6 @@ class Example extends Component {
 | easeInQuint    |
 | easeOutQuint   |
 | easeInOutQuint |
-| linear         |
 
 ## Values returned from TransformWrapper component
 

@@ -14,13 +14,14 @@ export const initialState = {
     maxPositionY: null,
     minScale: 1,
     maxScale: 8,
-    scalePaddingEnabled: true,
-    scalePadding: 0.45,
-    scalePaddingTime: 200,
     limitToBounds: true,
-    lockAxisX: false,
-    lockAxisY: false,
     centerContent: true,
+  },
+  scalePadding: {
+    disabled: false,
+    size: 0.45,
+    animationTime: 200,
+    animationType: "easeOut",
   },
   wheel: {
     disabled: false,
@@ -31,6 +32,8 @@ export const initialState = {
   },
   pan: {
     disabled: false,
+    lockAxisX: false,
+    lockAxisY: false,
     velocity: true,
     velocityEqualToMove: true,
     velocitySensitivity: 1,

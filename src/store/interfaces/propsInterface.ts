@@ -11,13 +11,14 @@ export interface PropsList {
     maxPositionY: null | number;
     minScale: number;
     maxScale: number;
-    scalePaddingEnabled: boolean;
-    scalePadding: number;
-    scalePaddingTime: number;
     limitToBounds: boolean;
-    lockAxisX: boolean;
-    lockAxisY: boolean;
     centerContent: boolean;
+  };
+  scalePadding: {
+    disabled: boolean;
+    size: number;
+    animationTime: number;
+    animationType: string;
   };
   wheel: {
     disabled: boolean;
@@ -34,6 +35,8 @@ export interface PropsList {
     velocityActiveScale: number;
     velocityMinSpeed: number;
     velocityBaseTime: number;
+    lockAxisX: boolean;
+    lockAxisY: boolean;
     limitToWrapperBounds: boolean;
   };
   pinch: {

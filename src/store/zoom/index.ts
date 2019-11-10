@@ -12,15 +12,16 @@ import {
 function handleCalculateZoom(delta, step, disablePadding) {
   const {
     scale,
-    options: { maxScale, minScale, scalePadding, scalePaddingEnabled },
+    options: { maxScale, minScale },
+    scalePadding: { size, disabled },
   } = this.stateProvider;
   const targetScale = scale + step * delta * (scale / 100);
-  const paddingEnabled = disablePadding ? false : scalePaddingEnabled;
+  const paddingEnabled = disablePadding ? false : !disabled;
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 2),
     minScale,
     maxScale,
-    scalePadding,
+    size,
     paddingEnabled,
   );
   return newScale;
@@ -98,7 +99,8 @@ export function handleWheelZoom(event) {
   const {
     scale,
     contentComponent,
-    options: { limitToBounds, scalePadding, scalePaddingEnabled },
+    options: { limitToBounds },
+    scalePadding: { size, disabled },
     wheel: { step, disableLimitsOnWheel },
   } = this.stateProvider;
 
@@ -125,8 +127,7 @@ export function handleWheelZoom(event) {
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
 
   const isLimitedToBounds =
-    limitToBounds &&
-    (!scalePaddingEnabled || scalePadding === 0 || disableLimitsOnWheel);
+    limitToBounds && (disabled || size === 0 || disableLimitsOnWheel);
   const { x, y } = handleCalculatePositions.bind(
     this,
     mouseX,
@@ -188,11 +189,12 @@ export function handlePaddingAnimation() {
   const {
     scale,
     wrapperComponent,
-    options: { minScale, scalePaddingEnabled, scalePaddingTime },
+    options: { minScale },
+    scalePadding: { disabled, animationTime, animationType },
   } = this.stateProvider;
-  const disabled = !scalePaddingEnabled || scale > minScale;
+  const isDisabled = disabled || scale > minScale;
 
-  if (disabled) return;
+  if (isDisabled) return;
 
   let mouseX = wrapperComponent.offsetWidth / 2;
   let mouseY = wrapperComponent.offsetHeight / 2;
@@ -208,8 +210,8 @@ export function handlePaddingAnimation() {
 
   animateComponent.bind(this, {
     targetState,
-    speed: scalePaddingTime,
-    type: "easeOut",
+    speed: animationTime,
+    type: animationType,
   })();
 }
 

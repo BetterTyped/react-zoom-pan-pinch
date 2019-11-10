@@ -28,8 +28,8 @@ export function animateVelocity() {
   const {
     positionX,
     positionY,
-    options: { limitToBounds, lockAxisX, lockAxisY },
-    pan: { velocityBaseTime },
+    options: { limitToBounds },
+    pan: { velocityBaseTime, lockAxisX, lockAxisY },
   } = this.stateProvider;
   if (!this.velocity || !this.bounds)
     return handleDisableAnimation.bind(this)();

@@ -19,7 +19,8 @@ export function handlePanning(event) {
   const {
     positionX,
     positionY,
-    options: { limitToBounds, lockAxisX, lockAxisY },
+    options: { limitToBounds },
+    pan: { lockAxisX, lockAxisY },
   }: PropsList = this.stateProvider;
 
   if (!this.startCoords) return;

@@ -1,3 +1,4 @@
+import { PropsList } from "../interfaces/propsInterface";
 import { checkPositionBounds } from "../zoom/utils";
 import { getClientPosition } from "../pan";
 import { animate, handleDisableAnimation } from "../animations";
@@ -5,9 +6,11 @@ import { animate, handleDisableAnimation } from "../animations";
 const throttleTime = 40;
 
 function velocityTimeSpeed(speed, animationTime) {
-  const { velocityTimeBasedOnMove } = this.stateProvider;
+  const {
+    pan: { velocityEqualToMove },
+  }: PropsList = this.stateProvider;
 
-  if (velocityTimeBasedOnMove) {
+  if (velocityEqualToMove) {
     return animationTime - animationTime / Math.max(1.6, speed);
   }
   return animationTime;
@@ -25,14 +28,16 @@ export function animateVelocity() {
   const {
     positionX,
     positionY,
-    limitToBounds,
-    velocityAnimationSpeed,
-    lockAxisX,
-    lockAxisY,
+    options: { limitToBounds },
+    pan: { velocityBaseTime, lockAxisX, lockAxisY },
   } = this.stateProvider;
-  if (!this.velocity || !this.bounds) return handleDisableAnimation.bind(this)();
+  if (!this.velocity || !this.bounds) return handleDisableAnimation.call(this);
   const { velocityX, velocityY, velocity } = this.velocity;
-  const animationTime = velocityTimeSpeed.bind(this, velocity, velocityAnimationSpeed)();
+  const animationTime = velocityTimeSpeed.call(
+    this,
+    velocity,
+    velocityBaseTime,
+  );
   const targetX = velocityX;
   const targetY = velocityY;
 
@@ -40,41 +45,42 @@ export function animateVelocity() {
   this.offsetY = positionY;
 
   // animation start timestamp
-  animate.bind(this, "easeOut", animationTime, step => {
-    const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
-    const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
+  animate.call(this, "easeOut", animationTime, step => {
+    const currentPositionX = lockAxisX
+      ? positionX
+      : this.offsetX + targetX - targetX * step;
+    const currentPositionY = lockAxisY
+      ? positionY
+      : this.offsetY + targetY - targetY * step;
 
     const calculatedPosition = checkPositionBounds(
       currentPositionX,
       currentPositionY,
       this.maxBounds,
-      limitToBounds
+      limitToBounds,
+      0,
     );
 
     this.offsetX = calculatedPosition.x;
     this.offsetY = calculatedPosition.y;
 
     // Save panned position
-    this.stateProvider = {
-      ...this.stateProvider,
-      positionX: calculatedPosition.x,
-      positionY: calculatedPosition.y,
-    };
+    this.stateProvider.positionX = calculatedPosition.x;
+    this.stateProvider.positionY = calculatedPosition.y;
+
     // apply animation changes
     this.setContentComponentTransformation();
-  })();
+  });
 }
 
 export function calculateVelocityStart(event) {
   const {
-    enableVelocity,
-    minVelocityScale,
     scale,
-    disabled,
-    velocitySensitivity,
+    options: { disabled },
+    pan: { velocity, velocitySensitivity, velocityActiveScale },
   } = this.stateProvider;
-  if (!enableVelocity || minVelocityScale >= scale || disabled) return;
-  handleEnableVelocity.bind(this)();
+  if (!velocity || velocityActiveScale >= scale || disabled) return;
+  handleEnableVelocity.call(this);
   const now = Date.now();
   if (this.lastMousePosition) {
     const position = getClientPosition(event);
@@ -86,9 +92,11 @@ export function calculateVelocityStart(event) {
     const velocityX = (distanceX / interval) * velocitySensitivity;
     const velocityY = (distanceY / interval) * velocitySensitivity;
     const velocity =
-      (Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval) * velocitySensitivity;
+      (Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval) *
+      velocitySensitivity;
 
-    if (this.velocity && velocity < this.velocity.velocity && this.throttle) return;
+    if (this.velocity && velocity < this.velocity.velocity && this.throttle)
+      return;
     this.velocity = { velocityX, velocityY, velocity };
 
     // throttling

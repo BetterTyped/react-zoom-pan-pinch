@@ -1,8 +1,15 @@
 # react-zoom-pan-pinch
 
-[![NPM](https://img.shields.io/npm/v/react-zoom-pan-pinch.svg)](https://www.npmjs.com/package/react-zoom-pan-pinch) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-zoom-pan-pinch) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Package Quality](https://npm.packagequality.com/shield/react-zoom-pan-pinch.svg)](https://packagequality.com/#?package=react-zoom-pan-pinch) ![NPM](https://img.shields.io/npm/l/react-zoom-pan-pinch) ![npm](https://img.shields.io/npm/dm/react-zoom-pan-pinch) ![GitHub stars](https://img.shields.io/github/stars/prc5/react-zoom-pan-pinch?style=social)
+[![NPM](https://img.shields.io/npm/v/react-zoom-pan-pinch.svg)](https://www.npmjs.com/package/react-zoom-pan-pinch)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-zoom-pan-pinch)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Package Quality](https://npm.packagequality.com/shield/react-zoom-pan-pinch.svg)](https://packagequality.com/#?package=react-zoom-pan-pinch)
+![NPM](https://img.shields.io/npm/l/react-zoom-pan-pinch)
+![npm](https://img.shields.io/npm/dm/react-zoom-pan-pinch)
+![GitHub stars](https://img.shields.io/github/stars/prc5/react-zoom-pan-pinch?style=social)
 
-> Super fast and light react npm package for zooming, panning and pinching html elements in easy way
+> Super fast and light react npm package for zooming, panning and pinching html
+> elements in easy way
 
 ## Features
 
@@ -59,7 +66,11 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 class Example extends Component {
   render() {
     return (
-      <TransformWrapper defaultScale={1} defaultPositionX={200} defaultPositionY={100}>
+      <TransformWrapper
+        defaultScale={1}
+        defaultPositionX={200}
+        defaultPositionY={100}
+      >
         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
           <React.Fragment>
             <div className="tools">
@@ -81,79 +92,167 @@ class Example extends Component {
 
 ## Props of TransformWrapper
 
-| Props                   | Default  |           Type |
-| :---------------------- | :------: | -------------: |
-| isCentered              |   true   |        Boolean |
-| limitToBounds           |   true   |        Boolean |
-| limitToWrapperBounds    |  false   |        Boolean |
-| disabled                |  false   |        Boolean |
-| transformEnabled        |   true   |        Boolean |
-| positionX               |    0     |         Number |
-| positionY               |    0     |         Number |
-| maxPositionX            |   null   | Number or null |
-| minPositionX            |   null   | Number or null |
-| maxPositionY            |   null   | Number or null |
-| minPositionY            |   null   | Number or null |
-| zoomingEnabled          |   true   |        Boolean |
-| scale                   |    1     |         Number |
-| maxScale                |    8     | Number or null |
-| minScale                |    1     | Number or null |
-| scaleAnimationPadding   |   0.15   |         Number |
-| enableWheel             |   true   |        Boolean |
-| enableTouchPadPinch     |   true   |        Boolean |
-| wheelStep               |    4     |         Number |
-| limitToWrapperOnWheel   |  false   |        Boolean |
-| pinchEnabled            |   true   |        Boolean |
-| pinchSensitivity        |    1     |         Number |
-| panningEnabled          |   true   |        Boolean |
-| lockAxisX               |  false   |        Boolean |
-| lockAxisY               |  false   |        Boolean |
-| enableVelocity          |   true   |        Boolean |
-| velocityTimeBasedOnMove |   true   |        Boolean |
-| minVelocity             |   1.6    |         Number |
-| minVelocityScale        |    1     |         Number |
-| velocityAnimationSpeed  |   1800   |         Number |
-| velocitySensitivity     |    1     |         Number |
-| dbClickMode             | "zoomIn" |         String |
-| dbClickStep             |    40    |         Number |
-| zoomInStep              |    40    |         Number |
-| zoomOutStep             |    40    |         Number |
-| zoomInAnimationSpeed    |   200    |         Number |
-| zoomOutAnimationSpeed   |   200    |         Number |
-| dbClickAnimationSpeed   |   200    |         Number |
-| resetAnimationSpeed     |   200    |         Number |
-| paddingAnimationSpeed   |   200    |         Number |
-| onWheelStart            |   null   |       Function |
-| onWheel                 |   null   |       Function |
-| onWheelStop             |   null   |       Function |
-| onPanningStart          |   null   |       Function |
-| onPanning               |   null   |       Function |
-| onPanningStop           |   null   |       Function |
-| onPinchingStart         |   null   |       Function |
-| onPinching              |   null   |       Function |
-| onPinchingStop          |   null   |       Function |
-| onZoomChange            |   null   |       Function |
-| enablePadding           |   true   |        Boolean |
-| enablePanPadding        |   true   |        Boolean |
+| Props            | Default |     Type |
+| :--------------- | :-----: | -------: |
+| previousScale    |    1    |   number |
+| scale            |    1    |   number |
+| positionX        |  auto   |   number |
+| positionY        |  auto   |   number |
+| defaultPositionX |  null   |   number |
+| defaultPositionY |  null   |   number |
+| defaultScale     |  null   |   number |
+| options          |  {...}  |   object |
+| wheel            |  {...}  |   object |
+| pan              |  {...}  |   object |
+| pinch            |  {...}  |   object |
+| zoomIn           |  {...}  |   object |
+| zoomOut          |  {...}  |   object |
+| doubleClick      |  {...}  |   object |
+| reset            |  {...}  |   object |
+| onWheelStart     |  null   | Function |
+| onWheel          |  null   | Function |
+| onWheelStop      |  null   | Function |
+| onPanningStart   |  null   | Function |
+| onPanning        |  null   | Function |
+| onPanningStop    |  null   | Function |
+| onPinchingStart  |  null   | Function |
+| onPinching       |  null   | Function |
+| onPinchingStop   |  null   | Function |
+| onZoomChange     |  null   | Function |
+| enablePadding    |  true   |  Boolean |
+| enablePanPadding |  true   |  Boolean |
+
+#### Options prop elements
+
+| Props            | Default |         Type |
+| :--------------- | :-----: | -----------: |
+| disabled         |  false  |      boolean |
+| transformEnabled |  true   |      boolean |
+| minPositionX     |  null   | null, number |
+| maxPositionX     |  null   | null, number |
+| minPositionY     |  null   | null, number |
+| maxPositionY     |  null   | null, number |
+| minScale         |    1    |       number |
+| maxScale         |    8    |       number |
+| limitToBounds    |  true   |      boolean |
+| centerContent    |  true   |      boolean |
+
+#### scalePadding prop elements
+
+| Props         | Default |    Type |
+| :------------ | :-----: | ------: |
+| disabled      |  false  | boolean |
+| size          |  0.45   |  number |
+| animationTime |   200   |  number |
+| animationType | easeOut |  string |
+
+#### Wheel prop elements
+
+| Props                | Default |    Type |
+| :------------------- | :-----: | ------: |
+| disabled             |  false  | boolean |
+| step                 |   6.5   |  number |
+| wheelEnabled         |  true   | boolean |
+| touchPadEnabled      |  true   | boolean |
+| disableLimitsOnWheel |  true   | boolean |
+
+#### Pan prop elements
+
+| Props                | Default |    Type |
+| :------------------- | :-----: | ------: |
+| disabled             |  false  | boolean |
+| lockAxisX            |  false  | boolean |
+| lockAxisY            |  false  | boolean |
+| velocity             |  false  | boolean |
+| velocityEqualToMove  |  false  | boolean |
+| velocitySensitivity  |    1    |  number |
+| velocityActiveScale  |    1    |  number |
+| velocityMinSpeed     |   1.8   |  number |
+| velocityBaseTime     |  1800   |  number |
+| limitToWrapperBounds |  false  | boolean |
+| padding              |  true   | boolean |
+| paddingSize          |    6    |  number |
+| animationTime        |   200   |  number |
+| animationType        | easeOut |  string |
+
+#### Pinch prop elements
+
+| Props    | Default |    Type |
+| :------- | :-----: | ------: |
+| disabled |  false  | boolean |
+| step     |    1    |  number |
+
+#### zoomIn prop elements
+
+| Props         | Default |    Type |
+| :------------ | :-----: | ------: |
+| disabled      |  false  | boolean |
+| step          |   40    |  number |
+| animation     |  true   | boolean |
+| animationTime |   200   |  number |
+| animationType | easeOut |  string |
+
+#### zoomOut prop elements
+
+| Props         | Default |    Type |
+| :------------ | :-----: | ------: |
+| disabled      |  false  | boolean |
+| step          |   40    |  number |
+| animation     |  true   | boolean |
+| animationTime |   200   |  number |
+| animationType | easeOut |  string |
+
+#### doubleClick prop elements
+
+| Props         | Default |    Type |
+| :------------ | :-----: | ------: |
+| disabled      |  false  | boolean |
+| step          |   40    |  number |
+| animation     |  true   | boolean |
+| animationTime |   200   |  number |
+| animationType | easeOut |  string |
+
+#### reset prop elements
+
+| Props         | Default |    Type |
+| :------------ | :-----: | ------: |
+| disabled      |  false  | boolean |
+| step          |   40    |  number |
+| animation     |  true   | boolean |
+| animationTime |   200   |  number |
+| animationType | easeOut |  string |
+
+#### Animations types
+
+| Value          |
+| :------------- |
+| easeOut        |
+| linear         |
+| easeInQuad     |
+| easeOutQuad    |
+| easeInOutQuad  |
+| easeInCubic    |
+| easeOutCubic   |
+| easeInOutCubic |
+| easeInQuart    |
+| easeOutQuart   |
+| easeInOutQuart |
+| easeInQuint    |
+| easeOutQuint   |
+| easeInOutQuint |
 
 ## Values returned from TransformWrapper component
 
-| Value                                     | Description                                                                                            |      Type      |
-| :---------------------------------------- | :----------------------------------------------------------------------------------------------------- | :------------: |
-| minVelocity                               | Minimum mouse velocity which will be animated after panning is done                                    |     Number     |
-| minVelocityScale                          | Velocity will be disabled if value is equal or lower than given value                                  |     Number     |
-| velocityTimeBasedOnMove                   | Velocity duration is based on the mouse move - the longer the movement, the longer the animation lasts |    Boolean     |
-| limitToWrapperBounds                      | Enables panning when zoom is lower than 1, and limit it to the wrapper bounds                          |    Boolean     |
-| limitToWrapperOnWheel                     | Zoomed object is always inside wrapper if limitBounds is activated                                     |    Boolean     |
-| limitToBounds                             | Limit zooming and panning to wrapper boundaries                                                        |    Boolean     |
-| setScale(scale)                           | Sets scale                                                                                             |     Number     |
-| setPositionX(positionX)                   | Sets position x                                                                                        |     Number     |
-| setPositionY(positionY)                   | Sets position y                                                                                        |     Number     |
-| zoomIn()                                  | Zooming in function, used for controls button                                                          |      ---       |
-| zoomOut()                                 | Zooming out function, used for controls button                                                         |      ---       |
-| setTransform(positionX, positionY, scale) | Sets transformations of content                                                                        | Number or null |
-| resetTransform()                          | Reset transformations to the initial values                                                            |     Number     |
-| dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"                                                          |     String     |
+| Value                                     | Description                                    |      Type      |
+| :---------------------------------------- | :--------------------------------------------- | :------------: |
+| setScale(scale)                           | Sets scale                                     |     Number     |
+| setPositionX(positionX)                   | Sets position x                                |     Number     |
+| setPositionY(positionY)                   | Sets position y                                |     Number     |
+| zoomIn()                                  | Zooming in function, used for controls button  |      ---       |
+| zoomOut()                                 | Zooming out function, used for controls button |      ---       |
+| setTransform(positionX, positionY, scale) | Sets transformations of content                | Number or null |
+| resetTransform()                          | Reset transformations to the initial values    |     Number     |
+| dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"  |     String     |
 
 ## License
 
@@ -161,7 +260,8 @@ MIT © [prc5](https://github.com/prc5)
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful people
+([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -180,4 +280,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+This project follows the
+[all-contributors](https://github.com/all-contributors/all-contributors)
+specification. Contributions of any kind welcome!

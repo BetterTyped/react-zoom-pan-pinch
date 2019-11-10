@@ -1,5 +1,4 @@
-import { easeIn, easeOut, linear } from "./utils";
-import { handleZoomToPoint } from "../zoom";
+import { availableAnimations } from "./utils";
 
 export function handleDisableAnimation() {
   if (this.animation) {
@@ -14,20 +13,14 @@ export function animate(animationName, animationTime, callback) {
   const lastStep = 1;
 
   // if another animation is active
-  handleDisableAnimation.bind(this);
+  handleDisableAnimation.call(this);
 
   // new animation
   this.animation = () => {
     if (!this.animation) return;
     const frameTime = new Date().getTime() - startTime;
-
     const animationProgress = frameTime / animationTime;
-
-    const animationType = {
-      easeOut,
-      easeIn,
-      linear,
-    }[animationName];
+    const animationType = availableAnimations[animationName];
 
     const step = animationType(animationProgress);
 
@@ -51,7 +44,7 @@ export function animateComponent({ targetState, speed, type }) {
   const positionYDiff = targetState.positionY - positionY;
 
   // animation start timestamp
-  animate.bind(this, type, speed, step => {
+  animate.call(this, type, speed, step => {
     this.stateProvider.previousScale = this.stateProvider.scale;
     this.stateProvider.scale = scale + scaleDiff * step;
     this.stateProvider.positionX = positionX + positionXDiff * step;
@@ -59,5 +52,5 @@ export function animateComponent({ targetState, speed, type }) {
 
     // apply animation changes
     this.setContentComponentTransformation();
-  })();
+  });
 }

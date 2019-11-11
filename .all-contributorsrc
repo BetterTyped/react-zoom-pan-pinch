@@ -9,7 +9,8 @@
   "imageSize": 80,
   "commit": true,
   "commitConvention": "none",
-  "contributors": [{
+  "contributors": [
+    {
       "login": "prc5",
       "name": "Maciej Pyrc",
       "avatar_url": "https://avatars3.githubusercontent.com/u/20928302?v=4",
@@ -49,6 +50,16 @@
       "contributions": [
         "code"
       ]
-    }],
+    },
+    {
+      "login": "selvambe23",
+      "name": "Selvam M",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/14357334?v=4",
+      "profile": "https://github.com/selvambe23",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }

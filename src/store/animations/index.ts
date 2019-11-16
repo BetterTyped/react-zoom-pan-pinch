@@ -1,6 +1,9 @@
 import { availableAnimations } from "./utils";
 
 export function handleDisableAnimation() {
+  if (this.animation) {
+    cancelAnimationFrame(this.animation);
+  }
   this.animate = false;
   this.animation = false;
   this.velocity = null;

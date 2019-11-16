@@ -55,6 +55,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   public throttle = false;
   // wheel helpers
   public previousWheelEvent = null;
+  public lastScale = null;
   // animations helpers
   public animate = null;
   public animation = null;
@@ -121,6 +122,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   handleWheel = event => {
     const {
+      scale,
       wheel: { disabled, wheelEnabled, touchPadEnabled },
     } = this.stateProvider;
 
@@ -142,6 +144,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
     // Wheel start event
     if (!wheelStopEventTimer) {
+      this.lastScale = scale;
       handleDisableAnimation.call(this);
       handleCallback(onWheelStart, this.getCallbackProps());
     }
@@ -166,10 +169,13 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     this.animate = false;
 
     // fire animation
-    clearTimeout(wheelAnimationTimer);
-    wheelAnimationTimer = setTimeout(() => {
-      handlePaddingAnimation.call(this, event);
-    }, wheelAnimationTime);
+    if (this.lastScale !== this.stateProvider.scale) {
+      this.lastScale = this.stateProvider.scale;
+      clearTimeout(wheelAnimationTimer);
+      wheelAnimationTimer = setTimeout(() => {
+        handlePaddingAnimation.call(this, event);
+      }, wheelAnimationTime);
+    }
   };
 
   //////////
@@ -260,7 +266,11 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       handleFireVelocity.call(this);
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
 
-      const { positionX, positionY } = this.stateProvider;
+      const {
+        positionX,
+        positionY,
+        pan: { panPaddingShiftTime, velocity },
+      } = this.stateProvider;
       const { minPositionX, minPositionY, maxPositionX, maxPositionY } = this.bounds;
 
       const isInsideBounds =
@@ -270,13 +280,13 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
         positionY < maxPositionY;
 
       // start velocity animation
-      if (this.velocity && this.stateProvider.pan.velocity && isInsideBounds) {
+      if (this.velocity && velocity && isInsideBounds) {
         animateVelocity.call(this);
       } else {
         setTimeout(() => {
           // fire fit to bounds animation
           handlePanningAnimation.call(this);
-        }, this.stateProvider.pan.panTime + 30);
+        }, panPaddingShiftTime + 30);
       }
     }
   };
@@ -437,6 +447,18 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     resetTransformations.call(this);
   };
 
+  setDefaultState = () => {
+    this.animation = null;
+    this.stateProvider = {
+      ...this.stateProvider,
+      scale: initialState.scale,
+      positionX: initialState.positionX,
+      positionY: initialState.positionY,
+      ...this.props.defaultValues,
+    };
+    this.forceUpdate();
+  };
+
   //////////
   // Setters
   //////////
@@ -463,6 +485,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     const transform = `translate(${posX || this.stateProvider.positionX}px, ${posY ||
       this.stateProvider.positionY}px) scale(${scale || this.stateProvider.scale})`;
     contentComponent.style.transform = transform;
+    contentComponent.style.WebkitTransform = transform;
     // force update to inject state to the context
     this.forceUpdate();
   };
@@ -487,6 +510,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
         zoomOut: this.zoomOut,
         setTransform: this.setTransform,
         resetTransform: this.resetTransform,
+        setDefaultState: this.setDefaultState,
       },
       nodes: {
         setWrapperComponent: this.setWrapperComponent,

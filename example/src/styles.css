@@ -8,6 +8,12 @@ body {
   font-family: "Lato";
 }
 
+circle {
+  stroke: #f09;
+  fill: none;
+  stroke-width: 4px;
+}
+
 h1,
 h2,
 h3,

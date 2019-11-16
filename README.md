@@ -158,12 +158,12 @@ class Example extends Component {
 | disableOnTarget      |   []    | array of class names or node tags (div,span...) |
 | lockAxisX            |  false  |                                         boolean |
 | lockAxisY            |  false  |                                         boolean |
-| panTime              |   60    |                                          number |
+| panPaddingShiftTime  |   50    |                                          number |
 | panAnimationType     | easeOut |                                          string |
 | velocity             |  false  |                                         boolean |
 | velocityEqualToMove  |  false  |                                         boolean |
 | velocitySensitivity  |    1    |                                          number |
-| velocityMinSpeed     |   1.8   |                                          number |
+| velocityMinSpeed     |   0.2   |                                          number |
 | velocityBaseTime     |  1800   |                                          number |
 | limitToWrapperBounds |  false  |                                         boolean |
 | padding              |  true   |                                         boolean |
@@ -182,7 +182,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   40    |  number |
+| step          |   60    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -192,7 +192,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   40    |  number |
+| step          |   60    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -202,7 +202,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   40    |  number |
+| step          |   60    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -213,7 +213,6 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   40    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |

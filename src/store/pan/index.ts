@@ -119,13 +119,13 @@ export function handlePanToBounds() {
 function handlePaddingAnimation(positionX, positionY) {
   const {
     scale,
-    pan: { paddingSize, panTime, panAnimationType },
+    pan: { paddingSize, panPaddingShiftTime, panAnimationType },
   }: PropsList = this.stateProvider;
 
   const { maxPositionX, maxPositionY, minPositionX, minPositionY } = this.bounds;
 
   let time = 0;
-  const baseTime = panTime;
+  const baseTime = panPaddingShiftTime;
 
   if (positionX < minPositionX || positionX > maxPositionX) {
     const multiplier = getAnimationTimeMultiplier(Math.abs(positionX - minPositionX), paddingSize);

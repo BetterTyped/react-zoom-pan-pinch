@@ -225,7 +225,7 @@ export function handleDoubleClick(event) {
       speed: time,
       type: animationType,
     });
-  }, this.stateProvider.pan.panTime + 30);
+  }, this.stateProvider.pan.panPaddingShiftTime + 30);
 }
 
 export function handleZoomControls(customDelta, customStep) {

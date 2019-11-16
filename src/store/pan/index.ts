@@ -56,11 +56,7 @@ export function handlePanning(event) {
   );
 
   // Save panned position
-  this.stateProvider.positionX = calculatedPosition.x;
-  this.stateProvider.positionY = calculatedPosition.y;
-
-  // update component transformation
-  this.setContentComponentTransformation();
+  handlePaddingAnimation.call(this, calculatedPosition.x, calculatedPosition.y);
 }
 
 export function handlePanningAnimation() {
@@ -91,24 +87,15 @@ export function handlePanToBounds() {
   } = this.stateProvider;
   const { wrapperComponent } = this.state;
   if (disabled) return;
-  const {
-    maxPositionX,
-    minPositionX,
-    maxPositionY,
-    minPositionY,
-  } = this.bounds;
+  const { maxPositionX, minPositionX, maxPositionY, minPositionY } = this.bounds;
 
   const xChanged = positionX > maxPositionX || positionX < minPositionX;
   const yChanged = positionY > maxPositionY || positionY < minPositionY;
 
   let mouseX =
-    positionX > maxPositionX
-      ? wrapperComponent.offsetWidth
-      : this.stateProvider.minPositionX || 0;
+    positionX > maxPositionX ? wrapperComponent.offsetWidth : this.stateProvider.minPositionX || 0;
   let mouseY =
-    positionY > maxPositionY
-      ? wrapperComponent.offsetHeight
-      : this.stateProvider.minPositionY || 0;
+    positionY > maxPositionY ? wrapperComponent.offsetHeight : this.stateProvider.minPositionY || 0;
 
   let mousePosX = mouseX;
   let mousePosY = mouseY;
@@ -127,4 +114,38 @@ export function handlePanToBounds() {
     positionX: xChanged ? x : positionX,
     positionY: yChanged ? y : positionY,
   };
+}
+
+function handlePaddingAnimation(positionX, positionY) {
+  const {
+    scale,
+    pan: { paddingSize, panTime, panAnimationType },
+  }: PropsList = this.stateProvider;
+
+  const { maxPositionX, maxPositionY, minPositionX, minPositionY } = this.bounds;
+
+  let time = 0;
+  const baseTime = panTime;
+
+  if (positionX < minPositionX || positionX > maxPositionX) {
+    const multiplier = getAnimationTimeMultiplier(Math.abs(positionX - minPositionX), paddingSize);
+    const newTime = baseTime * multiplier;
+    if (newTime > time) time = newTime;
+  }
+  if (positionY < minPositionY || positionY > maxPositionY) {
+    const multiplier = getAnimationTimeMultiplier(Math.abs(positionY - minPositionY), paddingSize);
+    const newTime = baseTime * multiplier;
+    if (newTime > time) time = newTime;
+  }
+
+  //animate padding
+  animateComponent.call(this, {
+    targetState: { scale, positionX, positionY },
+    speed: time,
+    type: panAnimationType,
+  });
+}
+
+function getAnimationTimeMultiplier(padding, maxPadding) {
+  return Math.min(padding / maxPadding, 1);
 }

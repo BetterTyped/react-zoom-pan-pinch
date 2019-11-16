@@ -1,9 +1,7 @@
 import { availableAnimations } from "./utils";
 
 export function handleDisableAnimation() {
-  if (this.animation) {
-    cancelAnimationFrame(this.animation);
-  }
+  this.animate = false;
   this.animation = false;
   this.velocity = null;
 }
@@ -43,14 +41,21 @@ export function animateComponent({ targetState, speed, type }) {
   const positionXDiff = targetState.positionX - positionX;
   const positionYDiff = targetState.positionY - positionY;
 
-  // animation start timestamp
-  animate.call(this, type, speed, step => {
+  if (speed === 0) {
     this.stateProvider.previousScale = this.stateProvider.scale;
-    this.stateProvider.scale = scale + scaleDiff * step;
-    this.stateProvider.positionX = positionX + positionXDiff * step;
-    this.stateProvider.positionY = positionY + positionYDiff * step;
+    this.stateProvider.scale = targetState.scale;
+    this.stateProvider.positionX = targetState.positionX;
+    this.stateProvider.positionY = targetState.positionY;
+  } else {
+    // animation start timestamp
+    animate.call(this, type, speed, step => {
+      this.stateProvider.previousScale = this.stateProvider.scale;
+      this.stateProvider.scale = scale + scaleDiff * step;
+      this.stateProvider.positionX = positionX + positionXDiff * step;
+      this.stateProvider.positionY = positionY + positionYDiff * step;
 
-    // apply animation changes
-    this.setContentComponentTransformation();
-  });
+      // apply animation changes
+      this.setContentComponentTransformation();
+    });
+  }
 }

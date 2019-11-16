@@ -30,6 +30,8 @@ export interface PropsList {
   pan: {
     disabled: boolean;
     velocity: boolean;
+    panTime: number;
+    panAnimationType: string;
     velocityEqualToMove: boolean;
     velocitySensitivity: number;
     velocityActiveScale: number;

@@ -3,7 +3,7 @@ import { checkPositionBounds } from "../zoom/utils";
 import { getClientPosition } from "../pan";
 import { animate, handleDisableAnimation } from "../animations";
 
-const throttleTime = 40;
+const throttleTime = 10;
 
 function velocityTimeSpeed(speed, animationTime) {
   const {
@@ -32,12 +32,9 @@ export function animateVelocity() {
     pan: { velocityBaseTime, lockAxisX, lockAxisY },
   } = this.stateProvider;
   if (!this.velocity || !this.bounds) return handleDisableAnimation.call(this);
+
   const { velocityX, velocityY, velocity } = this.velocity;
-  const animationTime = velocityTimeSpeed.call(
-    this,
-    velocity,
-    velocityBaseTime,
-  );
+  const animationTime = velocityTimeSpeed.call(this, velocity, velocityBaseTime);
   const targetX = velocityX;
   const targetY = velocityY;
 
@@ -46,12 +43,8 @@ export function animateVelocity() {
 
   // animation start timestamp
   animate.call(this, "easeOut", animationTime, step => {
-    const currentPositionX = lockAxisX
-      ? positionX
-      : this.offsetX + targetX - targetX * step;
-    const currentPositionY = lockAxisY
-      ? positionY
-      : this.offsetY + targetY - targetY * step;
+    const currentPositionX = lockAxisX ? positionX : this.offsetX + targetX - targetX * step;
+    const currentPositionY = lockAxisY ? positionY : this.offsetY + targetY - targetY * step;
 
     const calculatedPosition = checkPositionBounds(
       currentPositionX,
@@ -79,6 +72,7 @@ export function calculateVelocityStart(event) {
     options: { disabled },
     pan: { velocity, velocitySensitivity, velocityActiveScale },
   } = this.stateProvider;
+
   if (!velocity || velocityActiveScale >= scale || disabled) return;
   handleEnableVelocity.call(this);
   const now = Date.now();
@@ -92,11 +86,9 @@ export function calculateVelocityStart(event) {
     const velocityX = (distanceX / interval) * velocitySensitivity;
     const velocityY = (distanceY / interval) * velocitySensitivity;
     const velocity =
-      (Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval) *
-      velocitySensitivity;
+      (Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval) * velocitySensitivity;
 
-    if (this.velocity && velocity < this.velocity.velocity && this.throttle)
-      return;
+    if (this.velocity && velocity < this.velocity.velocity && this.throttle) return;
     this.velocity = { velocityX, velocityY, velocity };
 
     // throttling

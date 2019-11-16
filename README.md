@@ -199,14 +199,14 @@ class Example extends Component {
 
 #### doubleClick prop elements
 
-| Props         | Default |    Type |
-| :------------ | :-----: | ------: |
-| disabled      |  false  | boolean |
-| step          |   60    |  number |
-| animation     |  true   | boolean |
-| animationTime |   200   |  number |
-| animationType | easeOut |  string |
-| mode          | zoomIn  |  string |
+| Props         | Default |                     Type |
+| :------------ | :-----: | -----------------------: |
+| disabled      |  false  |                  boolean |
+| step          |   60    |                   number |
+| animation     |  true   |                  boolean |
+| animationTime |   200   |                   number |
+| animationType | easeOut |                   string |
+| mode          | zoomIn  | zoomIn / zoomOut / reset |
 
 #### reset prop elements
 

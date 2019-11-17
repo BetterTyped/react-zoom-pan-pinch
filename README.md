@@ -159,11 +159,10 @@ class Example extends Component {
 | lockAxisX            |  false  |                                         boolean |
 | lockAxisY            |  false  |                                         boolean |
 | panPaddingShiftTime  |   50    |                                          number |
-| panAnimationType     | easeOut |                                          string |
 | velocity             |  false  |                                         boolean |
 | velocityEqualToMove  |  false  |                                         boolean |
 | velocitySensitivity  |    1    |                                          number |
-| velocityMinSpeed     |   0.2   |                                          number |
+| velocityMinSpeed     |   1.2   |                                          number |
 | velocityBaseTime     |  1800   |                                          number |
 | limitToWrapperBounds |  false  |                                         boolean |
 | padding              |  true   |                                         boolean |

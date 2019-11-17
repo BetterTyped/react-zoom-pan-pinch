@@ -161,14 +161,14 @@ export default class App extends Component {
                               </p>
                               <h1>SVG</h1>
                               <div>
-                                <svg width="300px" height="300px">
-                                  <g transform="translate(150, 150) scale( 1 )">
+                                <svg width="200px" height="200px">
+                                  <g transform="translate(100, 100) scale( 1 )">
                                     <circle r="50px" vectorEffect="non-scaling-stroke" />
                                   </g>
-                                  <g transform="translate(150, 150) scale( 0.5 )">
+                                  <g transform="translate(100, 100) scale( 0.5 )">
                                     <circle r="50px" vectorEffect="non-scaling-stroke" />
                                   </g>
-                                  <g transform="translate(150, 150) scale( 2 )">
+                                  <g transform="translate(100, 100) scale( 1.8 )">
                                     <circle r="50px" vectorEffect="non-scaling-stroke" />
                                   </g>
                                 </svg>

@@ -3,7 +3,7 @@ import { checkPositionBounds } from "../zoom/utils";
 import { getClientPosition } from "../pan";
 import { animate, handleDisableAnimation } from "../animations";
 
-const throttleTime = 10;
+const throttleTime = 30;
 
 function velocityTimeSpeed(speed, animationTime) {
   const {
@@ -71,6 +71,7 @@ export function calculateVelocityStart(event) {
     scale,
     options: { disabled },
     pan: { velocity, velocitySensitivity, velocityActiveScale },
+    wrapperComponent,
   } = this.stateProvider;
 
   if (!velocity || velocityActiveScale >= scale || disabled) return;
@@ -79,9 +80,14 @@ export function calculateVelocityStart(event) {
   if (this.lastMousePosition) {
     const position = getClientPosition(event);
     if (!position) return console.error("No mouse or touch position detected");
+    const windowToWrapperScaleX = getWindowScale(window.innerWidth / wrapperComponent.offsetWidth);
+    const windowToWrapperScaleY = getWindowScale(
+      window.innerHeight / wrapperComponent.offsetHeight,
+    );
+
     const { clientX, clientY } = position;
-    const distanceX = (clientX - this.lastMousePosition.clientX) * scale;
-    const distanceY = (clientY - this.lastMousePosition.clientY) * scale;
+    const distanceX = (clientX - this.lastMousePosition.clientX) * scale * windowToWrapperScaleX;
+    const distanceY = (clientY - this.lastMousePosition.clientY) * scale * windowToWrapperScaleY;
     const interval = now - this.velocityTime;
     const velocityX = (distanceX / interval) * velocitySensitivity;
     const velocityY = (distanceY / interval) * velocitySensitivity;
@@ -98,4 +104,11 @@ export function calculateVelocityStart(event) {
   const position = getClientPosition(event);
   this.lastMousePosition = position;
   this.velocityTime = now;
+}
+
+function getWindowScale(scale) {
+  if (scale < 1) {
+    return Math.max(3 - scale, 1);
+  }
+  return scale;
 }

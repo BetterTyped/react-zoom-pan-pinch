@@ -172,7 +172,7 @@ class Example extends Component {
 | velocityAnimationType | easeOut |                                          string |
 | limitToWrapperBounds  |  false  |                                         boolean |
 | padding               |  true   |                                         boolean |
-| paddingSize           |    6    |                                          number |
+| paddingSize           |   40    |                                          number |
 | animationTime         |   200   |                                          number |
 | animationType         | easeOut |                                          string |
 

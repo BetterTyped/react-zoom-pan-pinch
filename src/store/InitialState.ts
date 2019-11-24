@@ -28,7 +28,7 @@ export const initialState = {
   },
   pan: {
     disabled: false,
-    panPaddingShiftTime: 100,
+    panPaddingShiftTime: 40,
     panAnimationType: "linear",
     lockAxisX: false,
     lockAxisY: false,
@@ -41,7 +41,7 @@ export const initialState = {
     velocityAnimationType: "easeOut",
     limitToWrapperBounds: false,
     padding: true,
-    paddingSize: 20,
+    paddingSize: 40,
     panReturnAnimationTime: 200,
     panReturnAnimationType: "easeOut",
     disableOnTarget: [],

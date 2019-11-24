@@ -221,3 +221,5 @@ export const mergeProps = (initialState, dynamicProps) => {
     return acc;
   }, {});
 };
+
+export const additionalAnimationDelay = 45;

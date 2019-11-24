@@ -16,6 +16,8 @@ export const initialState = {
     maxScale: 8,
     limitToBounds: true,
     centerContent: true,
+    wrapperClass: "",
+    contentClass: "",
   },
   wheel: {
     disabled: false,

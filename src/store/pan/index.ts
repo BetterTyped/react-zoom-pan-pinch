@@ -47,6 +47,7 @@ export function handlePanning(event) {
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;
+
   const calculatedPosition = checkPositionBounds(
     newPositionX,
     newPositionY,
@@ -63,9 +64,9 @@ export function handlePanningAnimation() {
   const {
     scale,
     options: { minScale },
-    scalePadding: { disabled, animationTime, animationType },
+    pan: { disabled, padding, panReturnAnimationTime, panReturnAnimationType },
   } = this.stateProvider;
-  const isDisabled = disabled || scale < minScale;
+  const isDisabled = disabled || scale < minScale || !padding;
 
   if (isDisabled) return;
 
@@ -73,8 +74,8 @@ export function handlePanningAnimation() {
 
   animateComponent.call(this, {
     targetState,
-    speed: animationTime,
-    type: animationType,
+    speed: panReturnAnimationTime,
+    type: panReturnAnimationType,
   });
 }
 
@@ -87,15 +88,24 @@ export function handlePanToBounds() {
   } = this.stateProvider;
   const { wrapperComponent } = this.state;
   if (disabled) return;
-  const { maxPositionX, minPositionX, maxPositionY, minPositionY } = this.bounds;
+  const {
+    maxPositionX,
+    minPositionX,
+    maxPositionY,
+    minPositionY,
+  } = this.bounds;
 
   const xChanged = positionX > maxPositionX || positionX < minPositionX;
   const yChanged = positionY > maxPositionY || positionY < minPositionY;
 
   let mouseX =
-    positionX > maxPositionX ? wrapperComponent.offsetWidth : this.stateProvider.minPositionX || 0;
+    positionX > maxPositionX
+      ? wrapperComponent.offsetWidth
+      : this.stateProvider.minPositionX || 0;
   let mouseY =
-    positionY > maxPositionY ? wrapperComponent.offsetHeight : this.stateProvider.minPositionY || 0;
+    positionY > maxPositionY
+      ? wrapperComponent.offsetHeight
+      : this.stateProvider.minPositionY || 0;
 
   let mousePosX = mouseX;
   let mousePosY = mouseY;
@@ -122,18 +132,29 @@ function handlePaddingAnimation(positionX, positionY) {
     pan: { paddingSize, panPaddingShiftTime, panAnimationType },
   }: PropsList = this.stateProvider;
 
-  const { maxPositionX, maxPositionY, minPositionX, minPositionY } = this.bounds;
+  const {
+    maxPositionX,
+    maxPositionY,
+    minPositionX,
+    minPositionY,
+  } = this.bounds;
 
   let time = 0;
   const baseTime = panPaddingShiftTime;
 
   if (positionX < minPositionX || positionX > maxPositionX) {
-    const multiplier = getAnimationTimeMultiplier(Math.abs(positionX - minPositionX), paddingSize);
+    const multiplier = getAnimationTimeMultiplier(
+      Math.abs(positionX - minPositionX),
+      paddingSize,
+    );
     const newTime = baseTime * multiplier;
     if (newTime > time) time = newTime;
   }
   if (positionY < minPositionY || positionY > maxPositionY) {
-    const multiplier = getAnimationTimeMultiplier(Math.abs(positionY - minPositionY), paddingSize);
+    const multiplier = getAnimationTimeMultiplier(
+      Math.abs(positionY - minPositionY),
+      paddingSize,
+    );
     const newTime = baseTime * multiplier;
     if (newTime > time) time = newTime;
   }

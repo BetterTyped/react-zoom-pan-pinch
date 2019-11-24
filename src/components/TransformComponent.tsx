@@ -15,7 +15,12 @@ class TransformComponent extends React.Component {
   render() {
     const { children } = this.props;
     const {
-      state: { positionX, positionY, scale },
+      state: {
+        positionX,
+        positionY,
+        scale,
+        options: { wrapperClass, contentClass },
+      },
     } = this.context;
 
     const style = {
@@ -25,11 +30,11 @@ class TransformComponent extends React.Component {
     return (
       <div
         ref={this.wrapperRef}
-        className={`react-transform-component ${styles.container}`}
+        className={`react-transform-component ${styles.container} ${wrapperClass}`}
       >
         <div
           ref={this.contentRef}
-          className={`react-transform-element ${styles.content}`}
+          className={`react-transform-element ${styles.content} ${contentClass}`}
           style={style}
         >
           {children}

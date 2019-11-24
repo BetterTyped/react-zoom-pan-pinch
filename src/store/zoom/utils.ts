@@ -65,14 +65,21 @@ export function wheelMousePosition(
   };
 }
 
-export function getComponentsSizes(wrapperComponent, newScale) {
+export function getComponentsSizes(
+  wrapperComponent,
+  contentComponent,
+  newScale,
+) {
   const wrapperRect = wrapperComponent.getBoundingClientRect();
 
   const wrapperWidth = wrapperRect.width;
   const wrapperHeight = wrapperRect.height;
 
-  const newContentWidth = wrapperWidth * newScale;
-  const newContentHeight = wrapperHeight * newScale;
+  const contentWidth = contentComponent.offsetWidth;
+  const contentHeight = contentComponent.offsetHeight;
+
+  const newContentWidth = contentWidth * newScale;
+  const newContentHeight = contentHeight * newScale;
   const newDiffWidth = wrapperWidth - newContentWidth;
   const newDiffHeight = wrapperHeight - newContentHeight;
 

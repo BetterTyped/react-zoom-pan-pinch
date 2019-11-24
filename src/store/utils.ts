@@ -78,26 +78,26 @@ export const relativeCoords = (
  */
 export const calculateBoundingArea = (
   wrapperWidth,
-  contentWidth,
+  newContentWidth,
   diffWidth,
   wrapperHeight,
-  contentHeight,
+  newContentHeight,
   diffHeight,
   limitToWrapperBounds,
 ) => {
   const scaleWidthFactor =
-    wrapperWidth > contentWidth
+    wrapperWidth > newContentWidth
       ? diffWidth * (limitToWrapperBounds ? 1 : 0.5)
       : 0;
   const scaleHeightFactor =
-    wrapperHeight > contentHeight
+    wrapperHeight > newContentHeight
       ? diffHeight * (limitToWrapperBounds ? 1 : 0.5)
       : 0;
 
-  const minPositionX = wrapperWidth - contentWidth - scaleWidthFactor;
-  const maxPositionX = 0 + scaleWidthFactor;
-  const minPositionY = wrapperHeight - contentHeight - scaleHeightFactor;
-  const maxPositionY = 0 + scaleHeightFactor;
+  const minPositionX = wrapperWidth - newContentWidth - scaleWidthFactor;
+  const maxPositionX = scaleWidthFactor;
+  const minPositionY = wrapperHeight - newContentHeight - scaleHeightFactor;
+  const maxPositionY = scaleHeightFactor;
 
   return { minPositionX, maxPositionX, minPositionY, maxPositionY };
 };
@@ -221,3 +221,5 @@ export const mergeProps = (initialState, dynamicProps) => {
     return acc;
   }, {});
 };
+
+export const additionalAnimationDelay = 45;

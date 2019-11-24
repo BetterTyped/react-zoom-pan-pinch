@@ -243,16 +243,16 @@ class Example extends Component {
 
 ## Values returned from TransformWrapper component
 
-| Value                                     | Description                                    |      Type      |
-| :---------------------------------------- | :--------------------------------------------- | :------------: |
-| setScale(scale)                           | Sets scale                                     |     Number     |
-| setPositionX(positionX)                   | Sets position x                                |     Number     |
-| setPositionY(positionY)                   | Sets position y                                |     Number     |
-| zoomIn()                                  | Zooming in function, used for controls button  |      ---       |
-| zoomOut()                                 | Zooming out function, used for controls button |      ---       |
-| setTransform(positionX, positionY, scale) | Sets transformations of content                | Number or null |
-| resetTransform()                          | Reset transformations to the initial values    |     Number     |
-| dbClickMode                               | Available modes: "zoomIn", "zoomOut", "reset"  |     String     |
+| Value                                                                   | Description                                    |      Type      |
+| :---------------------------------------------------------------------- | :--------------------------------------------- | :------------: |
+| setScale(scale, animationTime, animationType)                           | Sets scale                                     |     Number     |
+| setPositionX(positionX, animationTime, animationType)                   | Sets position x                                |     Number     |
+| setPositionY(positionY, animationTime, animationType)                   | Sets position y                                |     Number     |
+| zoomIn()                                                                | Zooming in function, used for controls button  |      ---       |
+| zoomOut()                                                               | Zooming out function, used for controls button |      ---       |
+| setTransform(positionX, positionY, scale, animationTime, animationType) | Sets transformations of content                | Number or null |
+| resetTransform()                                                        | Reset transformations to the initial values    |     Number     |
+| dbClickMode                                                             | Available modes: "zoomIn", "zoomOut", "reset"  |     String     |
 
 ## License
 

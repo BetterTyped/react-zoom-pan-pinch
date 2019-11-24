@@ -104,6 +104,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.handleStopPanning,
       passiveOption,
     );
+    handleDisableAnimation.call(this);
   }
 
   componentDidUpdate(oldProps, oldState) {

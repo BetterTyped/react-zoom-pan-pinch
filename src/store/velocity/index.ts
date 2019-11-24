@@ -78,7 +78,12 @@ export function calculateVelocityStart(event) {
   const {
     scale,
     options: { disabled },
-    pan: { velocity, velocitySensitivity, velocityActiveScale },
+    pan: {
+      velocity,
+      velocitySensitivity,
+      velocityActiveScale,
+      velocityMinSpeed,
+    },
     wrapperComponent,
   } = this.stateProvider;
 
@@ -90,9 +95,11 @@ export function calculateVelocityStart(event) {
     if (!position) return console.error("No mouse or touch position detected");
     const windowToWrapperScaleX = getWindowScale(
       window.innerWidth / wrapperComponent.offsetWidth,
+      velocityMinSpeed,
     );
     const windowToWrapperScaleY = getWindowScale(
       window.innerHeight / wrapperComponent.offsetHeight,
+      velocityMinSpeed,
     );
 
     const { clientX, clientY } = position;
@@ -124,9 +131,9 @@ export function calculateVelocityStart(event) {
   this.velocityTime = now;
 }
 
-function getWindowScale(scale) {
-  if (scale < 1) {
-    return Math.max(3 - scale, 1);
+function getWindowScale(scale, velocityMinSpeed) {
+  if (scale < velocityMinSpeed) {
+    return velocityMinSpeed / scale + velocityMinSpeed;
   }
   return scale;
 }

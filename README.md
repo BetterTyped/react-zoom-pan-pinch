@@ -80,7 +80,7 @@ class Example extends Component {
             </div>
             <TransformComponent>
               <img src="image.jpg" alt="test" />
-              <div>Some text</div>
+              <div>Example text</div>
             </TransformComponent>
           </React.Fragment>
         )}

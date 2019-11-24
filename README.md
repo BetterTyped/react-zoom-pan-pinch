@@ -8,7 +8,8 @@
 ![npm](https://img.shields.io/npm/dm/react-zoom-pan-pinch)
 ![GitHub stars](https://img.shields.io/github/stars/prc5/react-zoom-pan-pinch?style=social)
 
-> Super fast and light react npm package for zooming, panning and pinching html elements in easy way
+> Super fast and light react npm package for zooming, panning and pinching html
+> elements in easy way
 
 ## Features
 
@@ -65,7 +66,11 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 class Example extends Component {
   render() {
     return (
-      <TransformWrapper defaultScale={1} defaultPositionX={200} defaultPositionY={100}>
+      <TransformWrapper
+        defaultScale={1}
+        defaultPositionX={200}
+        defaultPositionY={100}
+      >
         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
           <React.Fragment>
             <div className="tools">
@@ -152,23 +157,24 @@ class Example extends Component {
 
 #### Pan prop elements
 
-| Props                | Default |                                            Type |
-| :------------------- | :-----: | ----------------------------------------------: |
-| disabled             |  false  |                                         boolean |
-| disableOnTarget      |   []    | array of class names or node tags (div,span...) |
-| lockAxisX            |  false  |                                         boolean |
-| lockAxisY            |  false  |                                         boolean |
-| panPaddingShiftTime  |   50    |                                          number |
-| velocity             |  false  |                                         boolean |
-| velocityEqualToMove  |  false  |                                         boolean |
-| velocitySensitivity  |    1    |                                          number |
-| velocityMinSpeed     |   1.2   |                                          number |
-| velocityBaseTime     |  1800   |                                          number |
-| limitToWrapperBounds |  false  |                                         boolean |
-| padding              |  true   |                                         boolean |
-| paddingSize          |    6    |                                          number |
-| animationTime        |   200   |                                          number |
-| animationType        | easeOut |                                          string |
+| Props                 | Default |                                            Type |
+| :-------------------- | :-----: | ----------------------------------------------: |
+| disabled              |  false  |                                         boolean |
+| disableOnTarget       |   []    | array of class names or node tags (div,span...) |
+| lockAxisX             |  false  |                                         boolean |
+| lockAxisY             |  false  |                                         boolean |
+| panPaddingShiftTime   |   50    |                                          number |
+| velocity              |  false  |                                         boolean |
+| velocityEqualToMove   |  false  |                                         boolean |
+| velocitySensitivity   |    1    |                                          number |
+| velocityMinSpeed      |   1.2   |                                          number |
+| velocityBaseTime      |  1800   |                                          number |
+| velocityAnimationType | easeOut |                                          string |
+| limitToWrapperBounds  |  false  |                                         boolean |
+| padding               |  true   |                                         boolean |
+| paddingSize           |    6    |                                          number |
+| animationTime         |   200   |                                          number |
+| animationType         | easeOut |                                          string |
 
 #### Pinch prop elements
 
@@ -254,7 +260,8 @@ MIT © [prc5](https://github.com/prc5)
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful people
+([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
@@ -270,5 +277,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors)
+This project follows the
+[all-contributors](https://github.com/all-contributors/all-contributors)
 specification. Contributions of any kind welcome!

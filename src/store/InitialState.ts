@@ -38,6 +38,7 @@ export const initialState = {
     velocityActiveScale: 1,
     velocityMinSpeed: 1.2,
     velocityBaseTime: 1800,
+    velocityAnimationType: "easeOut",
     limitToWrapperBounds: false,
     padding: true,
     paddingSize: 60,

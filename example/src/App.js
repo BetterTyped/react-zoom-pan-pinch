@@ -84,13 +84,13 @@ export default class App extends Component {
                     lockAxisX,
                     lockAxisY,
                     velocityEqualToMove,
+                    velocity: enableVelocity,
                   }}
                   pinch={{ disabled: !pinchEnabled }}
                   doubleClick={{ disabled: !dbClickEnabled }}
                   wheel={{
-                    disabled: !enableWheel,
-                    wheelEnabled: enableTouchPadPinch,
-                    touchPadEnabled: enableVelocity,
+                    wheelEnabled: enableWheel,
+                    touchPadEnabled: enableTouchPadPinch,
                     disableLimitsOnWheel,
                   }}
                 >
@@ -144,39 +144,57 @@ export default class App extends Component {
                       <div className="element">
                         {type ? (
                           <TransformComponent>
-                            <img className="zoom" src={example_img} alt="example-element" />
+                            <img
+                              className="zoom"
+                              src={example_img}
+                              alt="example-element"
+                            />
                           </TransformComponent>
                         ) : (
                           <TransformComponent>
                             <div className="example-text">
                               <h1>Lorem ipsum</h1>
                               <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-                                ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                                aliquip ex ea commodo consequat. Duis aute irure dolor in
-                                reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                                culpa qui officia deserunt mollit anim id est laborum.
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut
+                                enim ad minim veniam, quis nostrud exercitation
+                                ullamco laboris nisi ut aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in
+                                reprehenderit in voluptate velit esse cillum
+                                dolore eu fugiat nulla pariatur. Excepteur sint
+                                occaecat cupidatat non proident, sunt in culpa
+                                qui officia deserunt mollit anim id est laborum.
                               </p>
                               <h1>SVG</h1>
                               <div>
                                 <svg width="200px" height="200px">
                                   <g transform="translate(100, 100) scale( 1 )">
-                                    <circle r="50px" vectorEffect="non-scaling-stroke" />
+                                    <circle
+                                      r="50px"
+                                      vectorEffect="non-scaling-stroke"
+                                    />
                                   </g>
                                   <g transform="translate(100, 100) scale( 0.5 )">
-                                    <circle r="50px" vectorEffect="non-scaling-stroke" />
+                                    <circle
+                                      r="50px"
+                                      vectorEffect="non-scaling-stroke"
+                                    />
                                   </g>
                                   <g transform="translate(100, 100) scale( 1.8 )">
-                                    <circle r="50px" vectorEffect="non-scaling-stroke" />
+                                    <circle
+                                      r="50px"
+                                      vectorEffect="non-scaling-stroke"
+                                    />
                                   </g>
                                 </svg>
                               </div>
                               <h1>Button</h1>
                               <button
                                 type="button"
-                                onClick={() => alert("You can use nested buttons!")}
+                                onClick={() =>
+                                  alert("You can use nested buttons!")
+                                }
                                 className="btn-3d red small"
                               >
                                 Show alert!
@@ -188,9 +206,15 @@ export default class App extends Component {
                       <div className="info">
                         <h3>State</h3>
                         <h5>
-                          <span className="badge badge-secondary">Position x : {positionX}px</span>
-                          <span className="badge badge-secondary">Position y : {positionY}px</span>
-                          <span className="badge badge-secondary">Scale : {scale}</span>
+                          <span className="badge badge-secondary">
+                            Position x : {positionX}px
+                          </span>
+                          <span className="badge badge-secondary">
+                            Position y : {positionY}px
+                          </span>
+                          <span className="badge badge-secondary">
+                            Scale : {scale}
+                          </span>
                           <span className="badge badge-secondary">
                             Previous scale : {previousScale}
                           </span>
@@ -200,28 +224,38 @@ export default class App extends Component {
                         <h3>Functions</h3>
                         <h6>
                           <button
-                            className={"btn-gradient grey small" + (disabled ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (disabled ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("disabled")}
                           >
                             <span /> Disable
                           </button>
                           <button
-                            className={"btn-gradient grey small" + (limitToBounds ? " active" : "")}
+                            className={
+                              "btn-gradient grey small" +
+                              (limitToBounds ? " active" : "")
+                            }
                             onClick={() => this.toggleSetting("limitToBounds")}
                           >
                             <span /> Limit bounds
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (limitToWrapperBounds ? " active" : "")
+                              "btn-gradient grey small" +
+                              (limitToWrapperBounds ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("limitToWrapperBounds")}
+                            onClick={() =>
+                              this.toggleSetting("limitToWrapperBounds")
+                            }
                           >
                             <span /> Limit to wrapper bounds
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (!rest.pan.disabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (!rest.pan.disabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("panningEnabled")}
                           >
@@ -229,7 +263,8 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (!rest.pinch.disabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (!rest.pinch.disabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("pinchEnabled")}
                           >
@@ -237,9 +272,12 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (transformEnabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (transformEnabled ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("transformEnabled")}
+                            onClick={() =>
+                              this.toggleSetting("transformEnabled")
+                            }
                           >
                             <span /> Enable transform
                           </button>
@@ -254,7 +292,8 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (rest.pan.lockAxisX ? " active" : "")
+                              "btn-gradient grey small" +
+                              (rest.pan.lockAxisX ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("lockAxisX")}
                           >
@@ -262,7 +301,8 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (rest.pan.lockAxisY ? " active" : "")
+                              "btn-gradient grey small" +
+                              (rest.pan.lockAxisY ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("lockAxisY")}
                           >
@@ -273,13 +313,16 @@ export default class App extends Component {
                               "btn-gradient grey small" +
                               (rest.pan.velocityEqualToMove ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("velocityEqualToMove")}
+                            onClick={() =>
+                              this.toggleSetting("velocityEqualToMove")
+                            }
                           >
                             <span /> Velocity time based on move
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (rest.pan.velocity ? " active" : "")
+                              "btn-gradient grey small" +
+                              (rest.pan.velocity ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("enableVelocity")}
                           >
@@ -287,7 +330,8 @@ export default class App extends Component {
                           </button>
                           <button
                             className={
-                              "btn-gradient grey small" + (rest.wheel.wheelEnabled ? " active" : "")
+                              "btn-gradient grey small" +
+                              (rest.wheel.wheelEnabled ? " active" : "")
                             }
                             onClick={() => this.toggleSetting("enableWheel")}
                           >
@@ -298,7 +342,9 @@ export default class App extends Component {
                               "btn-gradient grey small" +
                               (rest.wheel.touchPadEnabled ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("enableTouchPadPinch")}
+                            onClick={() =>
+                              this.toggleSetting("enableTouchPadPinch")
+                            }
                           >
                             <span /> Enable touch pad pinch
                           </button>
@@ -307,7 +353,9 @@ export default class App extends Component {
                               "btn-gradient grey small" +
                               (rest.wheel.disableLimitsOnWheel ? " active" : "")
                             }
-                            onClick={() => this.toggleSetting("disableLimitsOnWheel")}
+                            onClick={() =>
+                              this.toggleSetting("disableLimitsOnWheel")
+                            }
                           >
                             <span /> Limit to wrapper on wheel
                           </button>
@@ -326,7 +374,11 @@ export default class App extends Component {
           <div className="container">
             <p className="m-0 text-center text-white small">
               MIT LICENSE ©{" "}
-              <a href="https://github.com/prc5" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/prc5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 prc5
               </a>
             </p>

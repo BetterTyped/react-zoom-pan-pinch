@@ -94,8 +94,7 @@ export function calculateVelocityStart(event) {
     const position = getClientPosition(event);
     if (!position) return console.error("No mouse or touch position detected");
 
-    const scaleMultiplier =
-      window.innerWidth > 768 && scale > 5 ? scale : scale * (scale / 20);
+    const scaleMultiplier = scale / 10;
 
     const windowToWrapperScaleX = getWindowScale(
       window.innerWidth / wrapperComponent.offsetWidth,
@@ -108,12 +107,10 @@ export function calculateVelocityStart(event) {
 
     const { clientX, clientY } = position;
     const distanceX =
-      (clientX - this.lastMousePosition.clientX) *
-      scaleMultiplier *
+      ((clientX - this.lastMousePosition.clientX) / scaleMultiplier) *
       windowToWrapperScaleX;
     const distanceY =
-      (clientY - this.lastMousePosition.clientY) *
-      scaleMultiplier *
+      ((clientY - this.lastMousePosition.clientY) / scaleMultiplier) *
       windowToWrapperScaleY;
 
     const interval = now - this.velocityTime;

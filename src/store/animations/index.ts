@@ -49,6 +49,7 @@ export function animateComponent({ targetState, speed, type }) {
     this.stateProvider.scale = targetState.scale;
     this.stateProvider.positionX = targetState.positionX;
     this.stateProvider.positionY = targetState.positionY;
+    this.setContentComponentTransformation();
   } else {
     // animation start timestamp
     animate.call(this, type, speed, step => {

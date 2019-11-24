@@ -47,6 +47,7 @@ export function handlePanning(event) {
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;
+
   const calculatedPosition = checkPositionBounds(
     newPositionX,
     newPositionY,

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { initialState } from "./InitialState";
 import {
   mergeProps,
-  roundNumber,
   getDistance,
   handleCallback,
   handleWheelStop,
@@ -16,7 +15,7 @@ import {
   handleWheelZoom,
   handleCalculateBounds,
 } from "./zoom";
-import { handleDisableAnimation } from "./animations";
+import { handleDisableAnimation, animateComponent } from "./animations";
 import { handleZoomPinch } from "./pinch";
 import { handlePanning, handlePanningAnimation } from "./pan";
 import {
@@ -465,51 +464,103 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     handleDoubleClick.call(this, event, 1, step);
   };
 
-  setScale = scale => {
+  setScale = (newScale, speed = 200, type = "easeOut") => {
     const {
+      positionX,
+      positionY,
+      scale,
       options: { disabled },
     } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !wrapperComponent || !contentComponent) return;
-    this.stateProvider.scale = scale;
-    // update component transformation
-    this.setContentComponentTransformation(null, null, null);
+    const targetState = {
+      positionX,
+      positionY,
+      scale: isNaN(newScale) ? scale : newScale,
+    };
+
+    animateComponent.call(this, {
+      targetState,
+      speed,
+      type,
+    });
   };
 
-  setPositionX = positionX => {
+  setPositionX = (newPosX, speed = 200, type = "easeOut") => {
     const {
+      positionX,
+      positionY,
+      scale,
       options: { disabled, transformEnabled },
     } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !transformEnabled || !wrapperComponent || !contentComponent)
       return;
-    this.stateProvider.positionX = roundNumber(positionX, 3);
-    // update component transformation
-    this.setContentComponentTransformation(null, null, null);
+    const targetState = {
+      positionX: isNaN(newPosX) ? positionX : newPosX,
+      positionY,
+      scale,
+    };
+
+    animateComponent.call(this, {
+      targetState,
+      speed,
+      type,
+    });
   };
 
-  setPositionY = positionY => {
+  setPositionY = (newPosY, speed = 200, type = "easeOut") => {
     const {
+      positionX,
+      scale,
+      positionY,
       options: { disabled, transformEnabled },
     } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !transformEnabled || !wrapperComponent || !contentComponent)
       return;
-    this.stateProvider.positionY = roundNumber(positionY, 3);
-    // update component transformation
-    this.setContentComponentTransformation(null, null, null);
+
+    const targetState = {
+      positionX,
+      positionY: isNaN(newPosY) ? positionY : newPosY,
+      scale,
+    };
+
+    animateComponent.call(this, {
+      targetState,
+      speed,
+      type,
+    });
   };
 
-  setTransform = (positionX, positionY, scale) => {
+  setTransform = (
+    newPosX,
+    newPosY,
+    newScale,
+    speed = 200,
+    type = "easeOut",
+  ) => {
     const {
+      positionX,
+      positionY,
+      scale,
       options: { disabled, transformEnabled },
     } = this.stateProvider;
     const { wrapperComponent, contentComponent } = this.state;
     if (disabled || !transformEnabled || !wrapperComponent || !contentComponent)
       return;
-    !isNaN(scale) && this.setScale(scale);
-    !isNaN(positionX) && this.setPositionX(positionX);
-    !isNaN(positionY) && this.setPositionY(positionY);
+
+    const targetState = {
+      positionX: isNaN(newPosX) ? positionX : newPosX,
+      positionY: isNaN(newPosY) ? positionY : newPosY,
+      scale: isNaN(newScale) ? scale : newScale,
+    };
+
+    animateComponent.call(this, {
+      targetState,
+      speed,
+      type,
+    });
   };
 
   resetTransform = () => {

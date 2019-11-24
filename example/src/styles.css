@@ -76,7 +76,11 @@ header.masthead {
     from(rgba(104, 89, 205, 0.2)),
     to(rgba(104, 89, 205, 0.4))
   );
-  background: linear-gradient(0deg, rgba(104, 89, 205, 0.2) 0%, rgba(104, 89, 205, 0.4) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(104, 89, 205, 0.2) 0%,
+    rgba(104, 89, 205, 0.4) 100%
+  );
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: scroll;
@@ -107,7 +111,11 @@ header.masthead .bg-circle {
     from(rgb(65, 50, 100)),
     to(rgb(164, 157, 223))
   );
-  background: linear-gradient(0deg, rgb(65, 50, 100) 0%, rgb(164, 157, 223) 100%);
+  background: linear-gradient(
+    0deg,
+    rgb(65, 50, 100) 0%,
+    rgb(164, 157, 223) 100%
+  );
 }
 
 header.masthead .bg-circle-1 {
@@ -116,7 +124,11 @@ header.masthead .bg-circle-1 {
   bottom: -55rem;
   left: -55rem;
   filter: brightness(120%);
-  background: linear-gradient(0deg, rgb(65, 50, 100) 0%, rgb(100, 95, 206) 100%);
+  background: linear-gradient(
+    0deg,
+    rgb(65, 50, 100) 0%,
+    rgb(100, 95, 206) 100%
+  );
 }
 
 header.masthead .bg-circle-2 {
@@ -124,7 +136,11 @@ header.masthead .bg-circle-2 {
   width: 50rem;
   top: -25rem;
   right: -25rem;
-  background: linear-gradient(0deg, rgb(65, 50, 100) 0%, rgb(143, 136, 219) 100%);
+  background: linear-gradient(
+    0deg,
+    rgb(65, 50, 100) 0%,
+    rgb(143, 136, 219) 100%
+  );
 }
 
 header.masthead .bg-circle-3 {
@@ -132,7 +148,11 @@ header.masthead .bg-circle-3 {
   width: 20rem;
   bottom: -10rem;
   right: 5%;
-  background: linear-gradient(0deg, rgb(121, 115, 212) 0%, rgb(122, 115, 212) 100%);
+  background: linear-gradient(
+    0deg,
+    rgb(121, 115, 212) 0%,
+    rgb(122, 115, 212) 100%
+  );
 }
 
 header.masthead .bg-circle-4 {

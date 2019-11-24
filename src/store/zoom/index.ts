@@ -35,7 +35,7 @@ function handleCalculateZoom(delta, step, disablePadding, getTarget) {
 }
 
 export function handleCalculateBounds(newScale, limitToWrapper) {
-  const { wrapperComponent } = this.stateProvider;
+  const { wrapperComponent, contentComponent } = this.stateProvider;
 
   const {
     wrapperWidth,
@@ -44,7 +44,7 @@ export function handleCalculateBounds(newScale, limitToWrapper) {
     newDiffWidth,
     newContentHeight,
     newDiffHeight,
-  } = getComponentsSizes(wrapperComponent, newScale);
+  } = getComponentsSizes(wrapperComponent, contentComponent, newScale);
 
   const bounds = calculateBoundingArea(
     wrapperWidth,

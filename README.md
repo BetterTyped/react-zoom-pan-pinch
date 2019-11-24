@@ -187,7 +187,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   60    |  number |
+| step          |   70    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -197,7 +197,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   60    |  number |
+| step          |   70    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -207,7 +207,7 @@ class Example extends Component {
 | Props         | Default |                     Type |
 | :------------ | :-----: | -----------------------: |
 | disabled      |  false  |                  boolean |
-| step          |   60    |                   number |
+| step          |   70    |                   number |
 | animation     |  true   |                  boolean |
 | animationTime |   200   |                   number |
 | animationType | easeOut |                   string |

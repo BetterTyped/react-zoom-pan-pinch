@@ -38,7 +38,7 @@ let wheelAnimationTimer = null;
 const wheelAnimationTime = 180;
 
 class StateProvider extends Component<StateContextProps, StateContextState> {
-  private isMounted = true;
+  public mounted = true;
 
   public state = {
     wrapperComponent: undefined,
@@ -230,7 +230,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.lastScale = this.stateProvider.scale;
       clearTimeout(wheelAnimationTimer);
       wheelAnimationTimer = setTimeout(() => {
-        if (!this.isMounted) return;
+        if (!this.mounted) return;
         handlePaddingAnimation.call(this, event);
       }, wheelAnimationTime);
     }

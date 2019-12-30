@@ -1,7 +1,7 @@
 import { availableAnimations } from "./utils";
 
 export function handleDisableAnimation() {
-  if (!this.isMounted) return;
+  if (!this.mounted) return;
   if (this.animation) {
     cancelAnimationFrame(this.animation);
   }
@@ -11,7 +11,7 @@ export function handleDisableAnimation() {
 }
 
 export function animate(animationName, animationTime, callback) {
-  if (!this.isMounted) return;
+  if (!this.mounted) return;
   const startTime = new Date().getTime();
   const lastStep = 1;
 
@@ -20,7 +20,7 @@ export function animate(animationName, animationTime, callback) {
 
   // new animation
   this.animation = () => {
-    if (!this.animation || !this.isMounted) return;
+    if (!this.animation || !this.mounted) return;
     const frameTime = new Date().getTime() - startTime;
     const animationProgress = frameTime / animationTime;
     const animationType = availableAnimations[animationName];

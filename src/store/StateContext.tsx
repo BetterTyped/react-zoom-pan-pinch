@@ -37,7 +37,7 @@ const Context = React.createContext({});
 let wheelStopEventTimer = null;
 const wheelStopEventTime = 180;
 let wheelAnimationTimer = null;
-const wheelAnimationTime = 180;
+const wheelAnimationTime = 150;
 
 class StateProvider extends Component<StateContextProps, StateContextState> {
   public mounted = true;
@@ -231,14 +231,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     this.animate = false;
 
     // fire animation
-    if (this.lastScale !== this.stateProvider.scale) {
-      this.lastScale = this.stateProvider.scale;
-      clearTimeout(wheelAnimationTimer);
-      wheelAnimationTimer = setTimeout(() => {
-        if (!this.mounted) return;
-        handlePaddingAnimation.call(this, event);
-      }, wheelAnimationTime);
-    }
+    this.lastScale = this.stateProvider.scale;
+    clearTimeout(wheelAnimationTimer);
+    wheelAnimationTimer = setTimeout(() => {
+      if (!this.mounted) return;
+      handlePaddingAnimation.call(this, event);
+    }, wheelAnimationTime);
   };
 
   //////////
@@ -272,7 +270,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.stateProvider.options.disabled ||
       (event.touches &&
         (event.touches.length !== 1 ||
-          Math.abs(this.startCoords.x - event.touches[0].clientX) < 1)) ||
+          Math.abs(this.startCoords.x - event.touches[0].clientX) < 1 ||
+          Math.abs(this.startCoords.y - event.touches[0].clientY) < 1)) ||
       !wrapperComponent ||
       !contentComponent
     );

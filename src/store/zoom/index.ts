@@ -15,7 +15,13 @@ import {
   wheelMousePosition,
 } from "./utils";
 
-function handleCalculateZoom(delta, step, disablePadding, getTarget) {
+function handleCalculateZoom(
+  delta,
+  step,
+  disablePadding,
+  getTarget,
+  isBtnFunction,
+) {
   const {
     scale,
     options: { maxScale, minScale },
@@ -25,7 +31,7 @@ function handleCalculateZoom(delta, step, disablePadding, getTarget) {
   const wrapperToWindowScale = wrapperComponent.offsetWidth / window.innerWidth;
 
   let zoomFactor;
-  if (delta < 0) {
+  if (isBtnFunction && delta < 0) {
     zoomFactor = 30;
   } else {
     zoomFactor = 20;
@@ -257,7 +263,14 @@ export function handleDoubleClick(event) {
     return resetTransformations.call(this, event, animationTime);
   }
   const delta = mode === "zoomOut" ? -1 : 1;
-  const newScale = handleCalculateZoom.call(this, delta, step);
+  const newScale = handleCalculateZoom.call(
+    this,
+    delta,
+    step,
+    undefined,
+    undefined,
+    true,
+  );
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
   const targetState = handleZoomToPoint.call(
@@ -269,7 +282,14 @@ export function handleDoubleClick(event) {
   );
 
   if (targetState.scale === scale) return;
-  const targetScale = handleCalculateZoom.call(this, delta, step, true);
+  const targetScale = handleCalculateZoom.call(
+    this,
+    delta,
+    step,
+    true,
+    undefined,
+    true,
+  );
   const time = getButtonAnimationTime(targetScale, newScale, animationTime);
 
   setTimeout(() => {
@@ -296,7 +316,14 @@ export function handleZoomControls(customDelta, customStep) {
   const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
   const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
 
-  const newScale = handleCalculateZoom.call(this, customDelta, customStep);
+  const newScale = handleCalculateZoom.call(
+    this,
+    customDelta,
+    customStep,
+    undefined,
+    undefined,
+    true,
+  );
   const isZoomIn = newScale > scale;
   const animationSpeed = isZoomIn
     ? zoomIn.animationTime
@@ -317,6 +344,8 @@ export function handleZoomControls(customDelta, customStep) {
     this,
     customDelta,
     customStep,
+    true,
+    undefined,
     true,
   );
   const time = getButtonAnimationTime(targetScale, newScale, animationSpeed);

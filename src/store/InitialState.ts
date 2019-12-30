@@ -36,7 +36,7 @@ export const initialState = {
     velocityEqualToMove: true,
     velocitySensitivity: 10,
     velocityActiveScale: 1,
-    velocityMinSpeed: 1.9,
+    velocityMinSpeed: 2,
     velocityBaseTime: 1600,
     velocityAnimationType: "easeOut",
     limitToWrapperBounds: false,

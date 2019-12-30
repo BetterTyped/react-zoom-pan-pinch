@@ -94,31 +94,32 @@ export function calculateVelocityStart(event) {
     const position = getClientPosition(event);
     if (!position) return console.error("No mouse or touch position detected");
 
-    const scaleMultiplier = scale / 10;
-
-    const windowToWrapperScaleX = getWindowScale(
-      window.innerWidth / wrapperComponent.offsetWidth,
-      velocityMinSpeed,
-    );
-    const windowToWrapperScaleY = getWindowScale(
-      window.innerHeight / wrapperComponent.offsetHeight,
-      velocityMinSpeed,
-    );
-
     const { clientX, clientY } = position;
-    const distanceX =
-      ((clientX - this.lastMousePosition.clientX) / scaleMultiplier) *
-      windowToWrapperScaleX;
-    const distanceY =
-      ((clientY - this.lastMousePosition.clientY) / scaleMultiplier) *
-      windowToWrapperScaleY;
+    const distanceX = clientX - this.lastMousePosition.clientX;
+    const distanceY = clientY - this.lastMousePosition.clientY;
+
+    const wrapperToWindowScaleX =
+      2 - window.innerWidth / wrapperComponent.offsetWidth;
+    const scaleFactorX = Math.max(0.2, Math.min(0.99, wrapperToWindowScaleX));
+    const wrapperToWindowScaleY =
+      2 - window.innerHeight / wrapperComponent.offsetHeight;
+    const scaleFactorY = Math.max(0.2, Math.min(0.99, wrapperToWindowScaleY));
+
+    const scaledDistanceX =
+      distanceX -
+      distanceX / Math.max(velocityMinSpeed, scale - scale * scaleFactorX);
+    const scaledDistanceY =
+      distanceY -
+      distanceY / Math.max(velocityMinSpeed, scale - scale * scaleFactorY);
 
     const interval = now - this.velocityTime;
-    const velocityX = (distanceX / interval) * velocitySensitivity;
-    const velocityY = (distanceY / interval) * velocitySensitivity;
-    const velocity =
-      (Math.sqrt(distanceX * distanceX + distanceY * distanceY) / interval) *
-      velocitySensitivity;
+
+    const velocityX = (scaledDistanceX / interval) * velocitySensitivity;
+    const velocityY = (scaledDistanceY / interval) * velocitySensitivity;
+
+    const speed =
+      scaledDistanceX * scaledDistanceX + scaledDistanceY * scaledDistanceY;
+    const velocity = (Math.sqrt(speed) / interval) * velocitySensitivity;
 
     if (this.velocity && velocity < this.velocity.velocity && this.throttle)
       return;
@@ -131,11 +132,4 @@ export function calculateVelocityStart(event) {
   const position = getClientPosition(event);
   this.lastMousePosition = position;
   this.velocityTime = now;
-}
-
-function getWindowScale(scale, velocityMinSpeed) {
-  if (scale < velocityMinSpeed) {
-    return velocityMinSpeed / scale + velocityMinSpeed;
-  }
-  return scale;
 }

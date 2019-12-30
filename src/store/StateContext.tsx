@@ -37,7 +37,7 @@ const Context = React.createContext({});
 let wheelStopEventTimer = null;
 const wheelStopEventTime = 180;
 let wheelAnimationTimer = null;
-const wheelAnimationTime = 150;
+const wheelAnimationTime = 100;
 
 class StateProvider extends Component<StateContextProps, StateContextState> {
   public mounted = true;

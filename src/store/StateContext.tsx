@@ -264,7 +264,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.stateProvider.options.disabled ||
       (event.touches &&
         (event.touches.length !== 1 ||
-          Math.abs(this.startCoords.x - event.touches[0].clientX) < 1)) ||
+          Math.abs(this.startCoords.x - event.touches[0].clientX) < 1 ||
+          Math.abs(this.startCoords.y - event.touches[0].clientY) < 1)) ||
       !wrapperComponent ||
       !contentComponent
     );

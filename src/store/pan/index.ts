@@ -24,7 +24,8 @@ export function handlePanning(event) {
     positionY,
     options: { limitToBounds, minScale },
     pan: { lockAxisX, lockAxisY, padding, paddingSize },
-  }: PropsList = this.stateProvider;
+    wrapperComponent,
+  } = this.stateProvider;
 
   if (!this.startCoords) return;
   const { x, y } = this.startCoords;
@@ -39,11 +40,8 @@ export function handlePanning(event) {
   const newPositionX = lockAxisX ? positionX : mouseX;
   const newPositionY = lockAxisY ? positionY : mouseY;
 
-  const paddingScaleValue = () =>
-    (paddingSize * this.stateProvider.wrapperComponent.offsetWidth) / 100;
-
   // padding
-  const paddingValue = padding && scale >= minScale ? paddingScaleValue() : 0;
+  const paddingValue = padding && scale >= minScale ? paddingSize : 0;
 
   // If position didn't change
   if (newPositionX === positionX && newPositionY === positionY) return;
@@ -54,6 +52,7 @@ export function handlePanning(event) {
     this.bounds,
     limitToBounds,
     paddingValue,
+    wrapperComponent,
   );
 
   // Save panned position

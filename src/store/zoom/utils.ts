@@ -22,18 +22,25 @@ export function checkPositionBounds(
   bounds,
   limitToBounds,
   paddingValue,
+  wrapperComponent,
 ) {
   const { minPositionX, minPositionY, maxPositionX, maxPositionY } = bounds;
+  const paddingX = wrapperComponent
+    ? (paddingValue * wrapperComponent.offsetWidth) / 100
+    : 0;
+  const paddingY = wrapperComponent
+    ? (paddingValue * wrapperComponent.offsetHeight) / 100
+    : 0;
   const x = boundLimiter(
     positionX,
-    minPositionX - paddingValue,
-    maxPositionX + paddingValue,
+    minPositionX - paddingX,
+    maxPositionX + paddingX,
     limitToBounds,
   );
   const y = boundLimiter(
     positionY,
-    minPositionY - paddingValue,
-    maxPositionY + paddingValue,
+    minPositionY - paddingY,
+    maxPositionY + paddingY,
     limitToBounds,
   );
   return { x, y };

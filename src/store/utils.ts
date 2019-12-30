@@ -223,3 +223,13 @@ export const mergeProps = (initialState, dynamicProps) => {
 };
 
 export const additionalAnimationDelay = 45;
+
+export function getWindowScaleY(wrapper) {
+  if (!wrapper) return 0;
+  return window.innerHeight / wrapper.offsetHeight;
+}
+
+export function getWindowScaleX(wrapper) {
+  if (!wrapper) return 0;
+  return window.innerWidth / wrapper.offsetWidth;
+}

@@ -79,7 +79,7 @@ export const initialState = {
   },
   scalePadding: {
     disabled: false,
-    size: 0.45,
+    size: 0.15,
     animationTime: 200,
     animationType: "easeOut",
   },

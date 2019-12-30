@@ -51,7 +51,7 @@ export function animateComponent({ targetState, speed, type }) {
     this.stateProvider.scale = targetState.scale;
     this.stateProvider.positionX = targetState.positionX;
     this.stateProvider.positionY = targetState.positionY;
-    this.setContentComponentTransformation();
+    this.applyTransformation();
   } else {
     // animation start timestamp
     animate.call(this, type, speed, step => {
@@ -61,7 +61,7 @@ export function animateComponent({ targetState, speed, type }) {
       this.stateProvider.positionY = positionY + positionYDiff * step;
 
       // apply animation changes
-      this.setContentComponentTransformation();
+      this.applyTransformation();
     });
   }
 }

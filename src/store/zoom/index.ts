@@ -20,8 +20,21 @@ function handleCalculateZoom(delta, step, disablePadding, getTarget) {
     scale,
     options: { maxScale, minScale },
     scalePadding: { size, disabled },
+    wrapperComponent,
   } = this.stateProvider;
-  const targetScale = scale + step * delta * (scale / 100);
+  const wrapperToWindowScale = wrapperComponent.offsetWidth / window.innerWidth;
+
+  let zoomFactor;
+  if (delta < 0) {
+    zoomFactor = 30;
+  } else {
+    zoomFactor = 20;
+  }
+
+  const targetScale =
+    scale +
+    step * delta * ((scale - scale * wrapperToWindowScale) / zoomFactor);
+
   if (getTarget) return targetScale;
   const paddingEnabled = disablePadding ? false : !disabled;
   const newScale = checkZoomBounds(
@@ -140,11 +153,15 @@ export function handleWheelZoom(event) {
     bounds,
     isLimitedToBounds,
   );
+
+  // console.log(this.windowToWrapperScaleX);
+
   this.bounds = bounds;
   this.stateProvider.previousScale = scale;
   this.stateProvider.scale = newScale;
   this.stateProvider.positionX = x;
   this.stateProvider.positionY = y;
+  this.applyTransformation();
 }
 
 /**

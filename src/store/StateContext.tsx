@@ -181,7 +181,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       wheel: { disabled, wheelEnabled, touchPadEnabled },
     } = this.stateProvider;
 
-    const { onWheelStart, onWheel, onWheelStop, onZoomChange } = this.props;
+    const { onWheelStart, onWheel, onWheelStop } = this.props;
     const { wrapperComponent, contentComponent } = this.state;
 
     if (
@@ -215,7 +215,6 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       clearTimeout(wheelStopEventTimer);
       wheelStopEventTimer = setTimeout(() => {
         handleCallback(onWheelStop, this.getCallbackProps());
-        handleCallback(onZoomChange, this.getCallbackProps());
         wheelStopEventTimer = null;
       }, wheelStopEventTime);
     }
@@ -606,6 +605,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   setContentComponentTransformation = (scale, posX, posY) => {
     const { contentComponent } = this.state;
+    const { onZoomChange } = this.props;
     if (!contentComponent)
       return console.error("There is no content component");
     const transform = `translate(${posX ||
@@ -616,6 +616,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     contentComponent.style.WebkitTransform = transform;
     // force update to inject state to the context
     this.forceUpdate();
+    if (
+      onZoomChange &&
+      this.stateProvider.previousScale !== this.stateProvider.scale
+    ) {
+      handleCallback(onZoomChange, this.getCallbackProps());
+    }
   };
 
   //////////

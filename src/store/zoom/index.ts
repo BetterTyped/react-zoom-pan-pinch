@@ -28,23 +28,27 @@ function handleCalculateZoom(
     scalePadding: { size, disabled },
     wrapperComponent,
   } = this.stateProvider;
-  const wrapperToWindowScale = wrapperComponent.offsetWidth / window.innerWidth;
 
-  let zoomFactor;
-  if (isBtnFunction && delta < 0) {
-    zoomFactor = 30;
+  let targetScale = null;
+
+  if (isBtnFunction) {
+    const scaleFactor = window.innerWidth * 0.0001;
+    const zoomFactor = delta < 0 ? 30 : 20;
+    targetScale =
+      scale + (step - step * scaleFactor) * delta * (scale / zoomFactor);
   } else {
-    zoomFactor = 20;
+    const wrapperToWindowScale =
+      2 - window.innerWidth / wrapperComponent.offsetWidth;
+    const scaleFactor = Math.max(0.2, Math.min(0.99, wrapperToWindowScale));
+    const zoomFactor = 20;
+    targetScale =
+      scale + step * delta * ((scale - scale * scaleFactor) / zoomFactor);
   }
-
-  const targetScale =
-    scale +
-    step * delta * ((scale - scale * wrapperToWindowScale) / zoomFactor);
 
   if (getTarget) return targetScale;
   const paddingEnabled = disablePadding ? false : !disabled;
   const newScale = checkZoomBounds(
-    roundNumber(targetScale, 2),
+    roundNumber(targetScale, 3),
     minScale,
     maxScale,
     size,

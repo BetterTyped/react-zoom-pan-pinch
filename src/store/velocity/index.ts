@@ -78,7 +78,13 @@ export function calculateVelocityStart(event) {
   const {
     scale,
     options: { disabled },
-    pan: { velocity, velocitySensitivity, velocityActiveScale },
+    pan: {
+      velocity,
+      velocitySensitivity,
+      velocityActiveScale,
+      velocityMinSpeed,
+    },
+    wrapperComponent,
   } = this.stateProvider;
 
   if (!velocity || velocityActiveScale >= scale || disabled) return;
@@ -90,13 +96,22 @@ export function calculateVelocityStart(event) {
 
     const scaleMultiplier = scale / 10;
 
+    const windowToWrapperScaleX = getWindowScale(
+      window.innerWidth / wrapperComponent.offsetWidth,
+      velocityMinSpeed,
+    );
+    const windowToWrapperScaleY = getWindowScale(
+      window.innerHeight / wrapperComponent.offsetHeight,
+      velocityMinSpeed,
+    );
+
     const { clientX, clientY } = position;
     const distanceX =
       ((clientX - this.lastMousePosition.clientX) / scaleMultiplier) *
-      this.windowToWrapperScaleX;
+      windowToWrapperScaleX;
     const distanceY =
       ((clientY - this.lastMousePosition.clientY) / scaleMultiplier) *
-      this.windowToWrapperScaleY;
+      windowToWrapperScaleY;
 
     const interval = now - this.velocityTime;
     const velocityX = (distanceX / interval) * velocitySensitivity;
@@ -116,4 +131,11 @@ export function calculateVelocityStart(event) {
   const position = getClientPosition(event);
   this.lastMousePosition = position;
   this.velocityTime = now;
+}
+
+function getWindowScale(scale, velocityMinSpeed) {
+  if (scale < velocityMinSpeed) {
+    return velocityMinSpeed / scale + velocityMinSpeed;
+  }
+  return scale;
 }

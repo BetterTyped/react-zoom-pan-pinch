@@ -328,30 +328,23 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   handleStopPanning = () => {
     if (this.isDown) {
       this.isDown = false;
+      this.animate = false;
+      this.animation = false;
       handleFireVelocity.call(this);
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
 
       const {
-        positionX,
-        positionY,
         pan: { panPaddingShiftTime, velocity },
       } = this.stateProvider;
-      const {
-        minPositionX,
-        minPositionY,
-        maxPositionX,
-        maxPositionY,
-      } = this.bounds;
-
-      const isInsideBounds =
-        positionX > minPositionX &&
-        positionY > minPositionY &&
-        positionX < maxPositionX &&
-        positionY < maxPositionY;
 
       // start velocity animation
-      if (this.velocity && velocity && isInsideBounds) {
+      if (this.velocity && velocity) {
         animateVelocity.call(this);
+        setTimeout(() => {
+          if (this.mounted && (!this.animation || !this.animate)) {
+            animateVelocity.call(this);
+          }
+        }, additionalAnimationDelay);
       } else {
         setTimeout(() => {
           // fire fit to bounds animation
@@ -611,6 +604,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   applyTransformation = (newScale, posX, posY) => {
+    if (!this.mounted) return;
     const { contentComponent } = this.state;
     const { onZoomChange } = this.props;
     const { previousScale, scale, positionX, positionY } = this.stateProvider;

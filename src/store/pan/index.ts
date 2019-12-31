@@ -128,8 +128,10 @@ export function handlePanToBounds() {
 function handlePaddingAnimation(positionX, positionY) {
   const {
     scale,
-    pan: { paddingSize, panPaddingShiftTime, panAnimationType },
+    pan: { paddingSize, panPaddingShiftTime, panAnimationType, padding },
   }: PropsList = this.stateProvider;
+
+  if (!padding) return;
 
   const {
     maxPositionX,

@@ -118,6 +118,7 @@ export function handleCalculatePositions(
     bounds,
     limitToBounds,
     0,
+    null,
   );
 
   return newPositions;

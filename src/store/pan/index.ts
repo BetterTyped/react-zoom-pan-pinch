@@ -1,6 +1,5 @@
 import { PropsList } from "../interfaces/propsInterface";
-import { checkPositionBounds } from "../zoom/utils";
-import { handleCalculatePositions } from "../zoom";
+import { checkPositionBounds, handleCalculatePositions } from "../zoom/utils";
 import { animateComponent } from "../animations";
 
 export function getClientPosition(event) {

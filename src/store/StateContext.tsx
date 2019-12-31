@@ -593,8 +593,9 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   setContentComponent = contentComponent => {
     this.setState({ contentComponent }, () => {
-      if (this.stateProvider.options.centerContent) {
-        const { scale } = this.stateProvider;
+      const { options, scale } = this.stateProvider;
+      const { positionX, positionY } = this.props.defaultValues;
+      if (options.centerContent && !positionX && !positionY) {
         const rect = this.state.wrapperComponent.getBoundingClientRect();
         this.stateProvider.positionX = (rect.width - rect.width * scale) / 2;
         this.stateProvider.positionY = (rect.height - rect.height * scale) / 2;

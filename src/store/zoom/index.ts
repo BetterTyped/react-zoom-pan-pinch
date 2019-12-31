@@ -10,9 +10,9 @@ import { initialState } from "../InitialState";
 import {
   checkZoomBounds,
   getComponentsSizes,
-  checkPositionBounds,
   getDelta,
   wheelMousePosition,
+  handleCalculatePositions,
 } from "./utils";
 
 function handleCalculateZoom(
@@ -82,46 +82,6 @@ export function handleCalculateBounds(newScale, limitToWrapper) {
   // Save bounds
   this.bounds = bounds;
   return bounds;
-}
-
-export function handleCalculatePositions(
-  mouseX,
-  mouseY,
-  newScale,
-  bounds,
-  limitToBounds,
-) {
-  const {
-    scale,
-    positionX,
-    positionY,
-    options: { transformEnabled },
-  } = this.stateProvider;
-
-  const scaleDifference = newScale - scale;
-
-  if (typeof mouseX !== "number" || typeof mouseY !== "number")
-    return console.error("Mouse X and Y position were not provided!");
-
-  if (!transformEnabled)
-    return { newPositionX: positionX, newPositionY: positionY };
-
-  const calculatedPositionX = positionX - mouseX * scaleDifference;
-  const calculatedPositionY = positionY - mouseY * scaleDifference;
-
-  // do not limit to bounds when there is padding animation,
-  // it causes animation strange behaviour
-
-  const newPositions = checkPositionBounds(
-    calculatedPositionX,
-    calculatedPositionY,
-    bounds,
-    limitToBounds,
-    0,
-    null,
-  );
-
-  return newPositions;
 }
 
 /**

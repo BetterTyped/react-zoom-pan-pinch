@@ -10,22 +10,45 @@ import { initialState } from "../InitialState";
 import {
   checkZoomBounds,
   getComponentsSizes,
-  checkPositionBounds,
   getDelta,
   wheelMousePosition,
+  handleCalculatePositions,
 } from "./utils";
 
-function handleCalculateZoom(delta, step, disablePadding, getTarget) {
+function handleCalculateZoom(
+  delta,
+  step,
+  disablePadding,
+  getTarget,
+  isBtnFunction,
+) {
   const {
     scale,
     options: { maxScale, minScale },
     scalePadding: { size, disabled },
+    wrapperComponent,
   } = this.stateProvider;
-  const targetScale = scale + step * delta * (scale / 100);
+
+  let targetScale = null;
+
+  if (isBtnFunction) {
+    const scaleFactor = window.innerWidth * 0.0001;
+    const zoomFactor = delta < 0 ? 30 : 20;
+    targetScale =
+      scale + (step - step * scaleFactor) * delta * (scale / zoomFactor);
+  } else {
+    const wrapperToWindowScale =
+      2 - window.innerWidth / wrapperComponent.offsetWidth;
+    const scaleFactor = Math.max(0.2, Math.min(0.99, wrapperToWindowScale));
+    const zoomFactor = 20;
+    targetScale =
+      scale + step * delta * ((scale - scale * scaleFactor) / zoomFactor);
+  }
+
   if (getTarget) return targetScale;
   const paddingEnabled = disablePadding ? false : !disabled;
   const newScale = checkZoomBounds(
-    roundNumber(targetScale, 2),
+    roundNumber(targetScale, 3),
     minScale,
     maxScale,
     size,
@@ -59,45 +82,6 @@ export function handleCalculateBounds(newScale, limitToWrapper) {
   // Save bounds
   this.bounds = bounds;
   return bounds;
-}
-
-export function handleCalculatePositions(
-  mouseX,
-  mouseY,
-  newScale,
-  bounds,
-  limitToBounds,
-) {
-  const {
-    scale,
-    positionX,
-    positionY,
-    options: { transformEnabled },
-  } = this.stateProvider;
-
-  const scaleDifference = newScale - scale;
-
-  if (typeof mouseX !== "number" || typeof mouseY !== "number")
-    return console.error("Mouse X and Y position were not provided!");
-
-  if (!transformEnabled)
-    return { newPositionX: positionX, newPositionY: positionY };
-
-  const calculatedPositionX = positionX - mouseX * scaleDifference;
-  const calculatedPositionY = positionY - mouseY * scaleDifference;
-
-  // do not limit to bounds when there is padding animation,
-  // it causes animation strange behaviour
-
-  const newPositions = checkPositionBounds(
-    calculatedPositionX,
-    calculatedPositionY,
-    bounds,
-    limitToBounds,
-    0,
-  );
-
-  return newPositions;
 }
 
 /**
@@ -140,11 +124,15 @@ export function handleWheelZoom(event) {
     bounds,
     isLimitedToBounds,
   );
+
+  // console.log(this.windowToWrapperScaleX);
+
   this.bounds = bounds;
   this.stateProvider.previousScale = scale;
   this.stateProvider.scale = newScale;
   this.stateProvider.positionX = x;
   this.stateProvider.positionY = y;
+  this.applyTransformation();
 }
 
 /**
@@ -240,7 +228,14 @@ export function handleDoubleClick(event) {
     return resetTransformations.call(this, event, animationTime);
   }
   const delta = mode === "zoomOut" ? -1 : 1;
-  const newScale = handleCalculateZoom.call(this, delta, step);
+  const newScale = handleCalculateZoom.call(
+    this,
+    delta,
+    step,
+    undefined,
+    undefined,
+    true,
+  );
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
   const targetState = handleZoomToPoint.call(
@@ -252,7 +247,14 @@ export function handleDoubleClick(event) {
   );
 
   if (targetState.scale === scale) return;
-  const targetScale = handleCalculateZoom.call(this, delta, step, true);
+  const targetScale = handleCalculateZoom.call(
+    this,
+    delta,
+    step,
+    true,
+    undefined,
+    true,
+  );
   const time = getButtonAnimationTime(targetScale, newScale, animationTime);
 
   setTimeout(() => {
@@ -279,7 +281,14 @@ export function handleZoomControls(customDelta, customStep) {
   const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
   const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
 
-  const newScale = handleCalculateZoom.call(this, customDelta, customStep);
+  const newScale = handleCalculateZoom.call(
+    this,
+    customDelta,
+    customStep,
+    undefined,
+    undefined,
+    true,
+  );
   const isZoomIn = newScale > scale;
   const animationSpeed = isZoomIn
     ? zoomIn.animationTime
@@ -300,6 +309,8 @@ export function handleZoomControls(customDelta, customStep) {
     this,
     customDelta,
     customStep,
+    true,
+    undefined,
     true,
   );
   const time = getButtonAnimationTime(targetScale, newScale, animationSpeed);

@@ -1,6 +1,6 @@
 import { PropsList } from "../interfaces/propsInterface";
-import { checkZoomBounds } from "../zoom/utils";
-import { handleCalculatePositions, handleCalculateBounds } from "../zoom";
+import { checkZoomBounds, handleCalculatePositions } from "../zoom/utils";
+import { handleCalculateBounds } from "../zoom";
 import { getDistance, roundNumber } from "../utils";
 
 function round(number, decimal) {
@@ -21,14 +21,23 @@ export function calculatePinchZoom(currentDistance, pinchStartDistance) {
     options: { minScale, maxScale },
     scalePadding: { size, disabled },
   }: PropsList = this.stateProvider;
-  if (typeof pinchStartDistance !== "number" || typeof currentDistance !== "number")
+  if (
+    typeof pinchStartDistance !== "number" ||
+    typeof currentDistance !== "number"
+  )
     return console.error("Pinch touches distance was not provided");
 
   if (currentDistance < 0) return;
   const touchProportion = currentDistance / pinchStartDistance;
   const scaleDifference = touchProportion * this.pinchStartScale;
 
-  return checkZoomBounds(roundNumber(scaleDifference, 2), minScale, maxScale, size, !disabled);
+  return checkZoomBounds(
+    roundNumber(scaleDifference, 2),
+    minScale,
+    maxScale,
+    size,
+    !disabled,
+  );
 }
 
 export function calculateMidpoint(event, scale, contentComponent) {
@@ -72,14 +81,19 @@ export function handleZoomPinch(event) {
 
   const currentDistance = getCurrentDistance(event);
 
-  const newScale = calculatePinchZoom.call(this, currentDistance, this.pinchStartDistance);
+  const newScale = calculatePinchZoom.call(
+    this,
+    currentDistance,
+    this.pinchStartDistance,
+  );
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   // Get new element sizes to calculate bounds
   const bounds = handleCalculateBounds.call(this, newScale);
 
   // Calculate transformations
-  const isLimitedToBounds = limitToBounds && (disabled || size === 0 || !disableLimitsOnWheel);
+  const isLimitedToBounds =
+    limitToBounds && (disabled || size === 0 || !disableLimitsOnWheel);
 
   const { x, y } = handleCalculatePositions.call(
     this,
@@ -98,5 +112,5 @@ export function handleZoomPinch(event) {
   this.stateProvider.previousScale = scale;
 
   // update component transformation
-  this.setContentComponentTransformation();
+  this.applyTransformation();
 }

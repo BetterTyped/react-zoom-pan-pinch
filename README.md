@@ -107,6 +107,7 @@ class Example extends Component {
 | zoomOut          |  {...}  |   object |
 | doubleClick      |  {...}  |   object |
 | reset            |  {...}  |   object |
+| scalePadding     |  {...}  |   object |
 | onWheelStart     |  null   | Function |
 | onWheel          |  null   | Function |
 | onWheelStop      |  null   | Function |
@@ -240,6 +241,14 @@ class Example extends Component {
 | easeOutQuint   |
 | easeInOutQuint |
 
+#### Double click modes
+
+| Value   |
+| :------ |
+| zoomIn  |
+| zoomOut |
+| reset   |
+
 ## Values returned from TransformWrapper component
 
 | Value                                                                   | Description                                    |      Type      |
@@ -251,7 +260,6 @@ class Example extends Component {
 | zoomOut()                                                               | Zooming out function, used for controls button |      ---       |
 | setTransform(positionX, positionY, scale, animationTime, animationType) | Sets transformations of content                | Number or null |
 | resetTransform()                                                        | Reset transformations to the initial values    |     Number     |
-| dbClickMode                                                             | Available modes: "zoomIn", "zoomOut", "reset"  |     String     |
 
 ## License
 
@@ -278,6 +286,7 @@ Thanks goes to these wonderful people
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the

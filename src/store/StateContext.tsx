@@ -6,6 +6,8 @@ import {
   handleCallback,
   handleWheelStop,
   additionalAnimationDelay,
+  getWindowScaleX,
+  getWindowScaleY,
 } from "./utils";
 import {
   handleZoomControls,
@@ -35,9 +37,11 @@ const Context = React.createContext({});
 let wheelStopEventTimer = null;
 const wheelStopEventTime = 180;
 let wheelAnimationTimer = null;
-const wheelAnimationTime = 180;
+const wheelAnimationTime = 100;
 
 class StateProvider extends Component<StateContextProps, StateContextState> {
+  public mounted = true;
+
   public state = {
     wrapperComponent: undefined,
     contentComponent: undefined,
@@ -52,6 +56,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       initialState.scale,
   };
 
+  public windowToWrapperScaleX = 0;
+  public windowToWrapperScaleY = 0;
   // panning helpers
   public startCoords = null;
   public isDown = false;
@@ -118,6 +124,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       wrapperComponent !== undefined
     ) {
       this.stateProvider.wrapperComponent = wrapperComponent;
+      this.windowToWrapperScaleX = getWindowScaleX(wrapperComponent);
+      this.windowToWrapperScaleY = getWindowScaleY(wrapperComponent);
 
       // Zooming events on wrapper
       const passiveOption = makePassiveEventOption(false);
@@ -167,7 +175,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
         ...this.stateProvider,
         ...mergeProps(this.stateProvider, dynamicValues),
       };
-      this.setContentComponentTransformation(null, null, null);
+      this.applyTransformation(null, null, null);
     }
   }
 
@@ -207,7 +215,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     // Wheel event
     handleWheelZoom.call(this, event);
     handleCallback(onWheel, this.getCallbackProps());
-    this.setContentComponentTransformation(null, null, null);
+    this.applyTransformation(null, null, null);
     this.previousWheelEvent = event;
 
     // Wheel stop event
@@ -223,13 +231,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     this.animate = false;
 
     // fire animation
-    if (this.lastScale !== this.stateProvider.scale) {
-      this.lastScale = this.stateProvider.scale;
-      clearTimeout(wheelAnimationTimer);
-      wheelAnimationTimer = setTimeout(() => {
-        handlePaddingAnimation.call(this, event);
-      }, wheelAnimationTime);
-    }
+    this.lastScale = this.stateProvider.scale;
+    clearTimeout(wheelAnimationTimer);
+    wheelAnimationTimer = setTimeout(() => {
+      if (!this.mounted) return;
+      handlePaddingAnimation.call(this, event);
+    }, wheelAnimationTime);
   };
 
   //////////
@@ -321,30 +328,23 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   handleStopPanning = () => {
     if (this.isDown) {
       this.isDown = false;
+      this.animate = false;
+      this.animation = false;
       handleFireVelocity.call(this);
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
 
       const {
-        positionX,
-        positionY,
         pan: { panPaddingShiftTime, velocity },
       } = this.stateProvider;
-      const {
-        minPositionX,
-        minPositionY,
-        maxPositionX,
-        maxPositionY,
-      } = this.bounds;
-
-      const isInsideBounds =
-        positionX > minPositionX &&
-        positionY > minPositionY &&
-        positionX < maxPositionX &&
-        positionY < maxPositionY;
 
       // start velocity animation
-      if (this.velocity && velocity && isInsideBounds) {
+      if (this.velocity && velocity) {
         animateVelocity.call(this);
+        setTimeout(() => {
+          if (this.mounted && (!this.animation || !this.animate)) {
+            animateVelocity.call(this);
+          }
+        }, additionalAnimationDelay);
       } else {
         setTimeout(() => {
           // fire fit to bounds animation
@@ -593,33 +593,31 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   setContentComponent = contentComponent => {
     this.setState({ contentComponent }, () => {
-      if (this.stateProvider.options.centerContent) {
-        const { scale } = this.stateProvider;
+      const { options, scale } = this.stateProvider;
+      const { positionX, positionY } = this.props.defaultValues;
+      if (options.centerContent && !positionX && !positionY) {
         const rect = this.state.wrapperComponent.getBoundingClientRect();
         this.stateProvider.positionX = (rect.width - rect.width * scale) / 2;
         this.stateProvider.positionY = (rect.height - rect.height * scale) / 2;
       }
-      this.setContentComponentTransformation(null, null, null);
+      this.applyTransformation(null, null, null);
     });
   };
 
-  setContentComponentTransformation = (scale, posX, posY) => {
+  applyTransformation = (newScale, posX, posY) => {
+    if (!this.mounted) return;
     const { contentComponent } = this.state;
     const { onZoomChange } = this.props;
+    const { previousScale, scale, positionX, positionY } = this.stateProvider;
     if (!contentComponent)
       return console.error("There is no content component");
-    const transform = `translate(${posX ||
-      this.stateProvider.positionX}px, ${posY ||
-      this.stateProvider.positionY}px) scale(${scale ||
-      this.stateProvider.scale})`;
+    const transform = `translate(${posX || positionX}px, ${posY ||
+      positionY}px) scale(${newScale || scale})`;
     contentComponent.style.transform = transform;
     contentComponent.style.WebkitTransform = transform;
     // force update to inject state to the context
     this.forceUpdate();
-    if (
-      onZoomChange &&
-      this.stateProvider.previousScale !== this.stateProvider.scale
-    ) {
+    if (onZoomChange && previousScale !== scale) {
       handleCallback(onZoomChange, this.getCallbackProps());
     }
   };

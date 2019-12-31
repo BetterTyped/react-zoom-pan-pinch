@@ -126,47 +126,10 @@ export function handlePanToBounds() {
 
 function handlePaddingAnimation(positionX, positionY) {
   const {
-    scale,
-    pan: { paddingSize, panPaddingShiftTime, panAnimationType, padding },
+    pan: { padding },
   }: PropsList = this.stateProvider;
-
   if (!padding) return;
-
-  const {
-    maxPositionX,
-    maxPositionY,
-    minPositionX,
-    minPositionY,
-  } = this.bounds;
-
-  let time = 0;
-  const baseTime = panPaddingShiftTime;
-
-  if (positionX < minPositionX || positionX > maxPositionX) {
-    const multiplier = getAnimationTimeMultiplier(
-      Math.abs(positionX - minPositionX),
-      paddingSize,
-    );
-    const newTime = baseTime * multiplier;
-    if (newTime > time) time = newTime;
-  }
-  if (positionY < minPositionY || positionY > maxPositionY) {
-    const multiplier = getAnimationTimeMultiplier(
-      Math.abs(positionY - minPositionY),
-      paddingSize,
-    );
-    const newTime = baseTime * multiplier;
-    if (newTime > time) time = newTime;
-  }
-
-  //animate padding
-  animateComponent.call(this, {
-    targetState: { scale, positionX, positionY },
-    speed: time,
-    type: panAnimationType,
-  });
-}
-
-function getAnimationTimeMultiplier(padding, maxPadding) {
-  return Math.min(padding / maxPadding, 1);
+  this.stateProvider.positionX = positionX;
+  this.stateProvider.positionY = positionY;
+  this.applyTransformation();
 }

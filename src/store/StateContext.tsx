@@ -5,7 +5,6 @@ import {
   getDistance,
   handleCallback,
   handleWheelStop,
-  additionalAnimationDelay,
   getWindowScaleX,
   getWindowScaleY,
 } from "./utils";
@@ -334,22 +333,16 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       handleCallback(this.props.onPanningStop, this.getCallbackProps());
 
       const {
-        pan: { panPaddingShiftTime, velocity },
+        pan: { velocity },
+        scale,
       } = this.stateProvider;
 
       // start velocity animation
-      if (this.velocity && velocity) {
+      if (this.velocity && velocity && scale > 1) {
         animateVelocity.call(this);
-        setTimeout(() => {
-          if (this.mounted && (!this.animation || !this.animate)) {
-            animateVelocity.call(this);
-          }
-        }, additionalAnimationDelay);
       } else {
-        setTimeout(() => {
-          // fire fit to bounds animation
-          handlePanningAnimation.call(this);
-        }, panPaddingShiftTime + additionalAnimationDelay);
+        // fire fit to bounds animation
+        handlePanningAnimation.call(this);
       }
     }
   };
@@ -373,12 +366,14 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   handlePinch = event => {
+    this.isDown = false;
     handleZoomPinch.call(this, event);
     handleCallback(this.props.onPinching, this.getCallbackProps());
   };
 
   handlePinchStop = () => {
     if (typeof this.pinchStartScale === "number") {
+      this.velocity = null;
       this.pinchStartDistance = null;
       this.lastDistance = null;
       this.pinchStartScale = null;
@@ -417,8 +412,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   handleTouchStop = () => {
-    this.handlePinchStop();
     this.handleStopPanning();
+    this.handlePinchStop();
   };
 
   //////////

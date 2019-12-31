@@ -163,7 +163,6 @@ class Example extends Component {
 | disableOnTarget       |   []    | array of class names or node tags (div,span...) |
 | lockAxisX             |  false  |                                         boolean |
 | lockAxisY             |  false  |                                         boolean |
-| panPaddingShiftTime   |   50    |                                          number |
 | velocity              |  false  |                                         boolean |
 | velocityEqualToMove   |  false  |                                         boolean |
 | velocitySensitivity   |    1    |                                          number |

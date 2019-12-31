@@ -1,9 +1,4 @@
-import {
-  roundNumber,
-  checkIsNumber,
-  calculateBoundingArea,
-  additionalAnimationDelay,
-} from "../utils";
+import { roundNumber, checkIsNumber, calculateBoundingArea } from "../utils";
 import { animateComponent } from "../animations";
 import { handlePanningAnimation } from "../pan";
 import { initialState } from "../InitialState";
@@ -257,13 +252,11 @@ export function handleDoubleClick(event) {
   );
   const time = getButtonAnimationTime(targetScale, newScale, animationTime);
 
-  setTimeout(() => {
-    animateComponent.call(this, {
-      targetState,
-      speed: time,
-      type: animationType,
-    });
-  }, this.stateProvider.pan.panPaddingShiftTime + additionalAnimationDelay);
+  animateComponent.call(this, {
+    targetState,
+    speed: time,
+    type: animationType,
+  });
 }
 
 export function handleZoomControls(customDelta, customStep) {

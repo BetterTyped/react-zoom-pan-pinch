@@ -7,6 +7,7 @@ export function handleDisableAnimation() {
   }
   this.animate = false;
   this.animation = false;
+  this.velocity = false;
 }
 
 export function animate(animationName, animationTime, callback) {

@@ -73,6 +73,12 @@ export function animateVelocity() {
 
   const isReturnAnimationLonger = animationTime < panReturnAnimationTime;
 
+  const maxTargetX = positionX - maxPositionX;
+  const minTargetX = positionX - minPositionX;
+
+  const maxTargetY = positionY - maxPositionY;
+  const minTargetY = positionY - minPositionY;
+
   // animation start timestamp
   animate.call(this, velocityAnimationType, newAnimationTime, step => {
     let customReturnStep = isReturnAnimationLonger
@@ -91,6 +97,8 @@ export function animateVelocity() {
       limitToBounds,
       this.offsetX,
       positionX,
+      maxTargetX,
+      minTargetX,
     );
     const currentPositionY = getPosition(
       lockAxisY,
@@ -102,6 +110,8 @@ export function animateVelocity() {
       limitToBounds,
       this.offsetY,
       positionY,
+      maxTargetY,
+      minTargetY,
     );
 
     this.offsetX = currentPositionX;
@@ -186,21 +196,19 @@ function getPosition(
   limitToBounds,
   offset,
   startPosition,
+  maxTarget,
+  minTarget,
 ) {
   if (limitToBounds) {
     if (startPosition < minBound || startPosition > minBound) {
-      const maxTarget = startPosition - maxBound;
-      const minTarget = startPosition - minBound;
       if (offset > maxBound) {
         const newPosition =
           startPosition + maxTarget - maxTarget * panReturnStep;
-        if (maxBound < newPosition) return newPosition;
         return newPosition;
       }
       if (offset < minBound) {
         const newPosition =
           startPosition + minTarget - minTarget * panReturnStep;
-        if (minBound > newPosition) return newPosition;
         return newPosition;
       }
     }

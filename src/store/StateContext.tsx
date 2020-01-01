@@ -288,7 +288,6 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     const {
       wrapperComponent,
       scale,
-      options: { minScale },
       pan: { disabled, limitToWrapperBounds },
     } = this.stateProvider;
     const { target, touches } = event;
@@ -297,7 +296,6 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       disabled ||
       this.stateProvider.options.disabled ||
       (wrapperComponent && !wrapperComponent.contains(target)) ||
-      scale < minScale ||
       this.checkPanningTarget(event)
     )
       return;
@@ -361,12 +359,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     this.pinchStartDistance = distance;
     this.lastDistance = distance;
     this.pinchStartScale = scale;
+    this.isDown = false;
 
     handleCallback(this.props.onPinchingStart, this.getCallbackProps());
   };
 
   handlePinch = event => {
-    this.isDown = false;
     handleZoomPinch.call(this, event);
     handleCallback(this.props.onPinching, this.getCallbackProps());
   };
@@ -412,8 +410,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   handleTouchStop = () => {
-    this.handleStopPanning();
     this.handlePinchStop();
+    this.handleStopPanning();
   };
 
   //////////

@@ -73,10 +73,10 @@ export function animateVelocity() {
 
   const isReturnAnimationLonger = animationTime < panReturnAnimationTime;
 
-  const maxTargetX = positionX - minPositionX;
+  const maxTargetX = positionX - maxPositionX;
   const minTargetX = positionX - minPositionX;
 
-  const maxTargetY = positionY - minPositionY;
+  const maxTargetY = positionY - maxPositionY;
   const minTargetY = positionY - minPositionY;
 
   // animation start timestamp

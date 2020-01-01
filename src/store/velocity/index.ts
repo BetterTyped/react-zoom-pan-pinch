@@ -93,7 +93,7 @@ export function animateVelocity() {
       step,
       customReturnStep,
       minPositionX,
-      minPositionX,
+      maxPositionX,
       limitToBounds,
       this.offsetX,
       positionX,

@@ -31,12 +31,14 @@ export function checkPositionBounds(
   const paddingY = wrapperComponent
     ? (paddingValue * wrapperComponent.offsetHeight) / 100
     : 0;
+
   const x = boundLimiter(
     positionX,
     minPositionX - paddingX,
     maxPositionX + paddingX,
     limitToBounds,
   );
+
   const y = boundLimiter(
     positionY,
     minPositionY - paddingY,
@@ -77,10 +79,8 @@ export function getComponentsSizes(
   contentComponent,
   newScale,
 ) {
-  const wrapperRect = wrapperComponent.getBoundingClientRect();
-
-  const wrapperWidth = wrapperRect.width;
-  const wrapperHeight = wrapperRect.height;
+  const wrapperWidth = wrapperComponent.offsetWidth;
+  const wrapperHeight = wrapperComponent.offsetHeight;
 
   const contentWidth = contentComponent.offsetWidth;
   const contentHeight = contentComponent.offsetHeight;

@@ -41,7 +41,6 @@ export const initialState = {
     limitToWrapperBounds: false,
     padding: true,
     paddingSize: 30,
-    panPaddingShiftTime: 60,
     panReturnAnimationTime: 200,
     panReturnAnimationType: "easeOut",
     disableOnTarget: [],

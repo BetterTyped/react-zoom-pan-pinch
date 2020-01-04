@@ -1,5 +1,6 @@
 import { PropsList } from "../interfaces/propsInterface";
 import { getClientPosition, handlePanningAnimation } from "../pan";
+import { checkPositionBounds } from "../zoom/utils";
 import { boundLimiter } from "../utils";
 import { animate, handleDisableAnimation } from "../animations";
 
@@ -35,7 +36,10 @@ export function animateVelocity() {
       lockAxisY,
       velocityAnimationType,
       panReturnAnimationTime,
+      padding,
+      paddingSize,
     },
+    wrapperComponent,
   } = this.stateProvider;
   if (!this.mounted) return;
   if (!this.velocity || !this.bounds) return handleDisableAnimation.call(this);
@@ -79,6 +83,17 @@ export function animateVelocity() {
   const maxTargetY = positionY - maxPositionY;
   const minTargetY = positionY - minPositionY;
 
+  const paddingValue = padding ? paddingSize : 0;
+
+  const startPosition = checkPositionBounds(
+    positionX,
+    positionY,
+    this.bounds,
+    limitToBounds,
+    paddingValue,
+    wrapperComponent,
+  );
+
   // animation start timestamp
   animate.call(this, velocityAnimationType, newAnimationTime, step => {
     let customReturnStep = isReturnAnimationLonger
@@ -96,7 +111,7 @@ export function animateVelocity() {
       maxPositionX,
       limitToBounds,
       this.offsetX,
-      positionX,
+      startPosition.x,
       minTargetX,
       maxTargetX,
     );
@@ -109,20 +124,24 @@ export function animateVelocity() {
       maxPositionY,
       limitToBounds,
       this.offsetY,
-      positionY,
+      startPosition.y,
       minTargetY,
       maxTargetY,
     );
 
-    this.offsetX = currentPositionX;
-    this.offsetY = currentPositionY;
+    if (
+      this.offsetX !== currentPositionX ||
+      this.offsetY !== currentPositionY
+    ) {
+      // Save panned position
+      this.stateProvider.positionX = currentPositionX;
+      this.stateProvider.positionY = currentPositionY;
+      this.offsetX = currentPositionX;
+      this.offsetY = currentPositionY;
 
-    // Save panned position
-    this.stateProvider.positionX = currentPositionX;
-    this.stateProvider.positionY = currentPositionY;
-
-    // apply animation changes
-    this.applyTransformation();
+      // apply animation changes
+      this.applyTransformation();
+    }
   });
 }
 
@@ -179,7 +198,9 @@ export function calculateVelocityStart(event) {
 
     // throttling
     if (this.throttle) clearTimeout(this.throttle);
-    this.throttle = setTimeout(() => (this.throttle = false), throttleTime);
+    this.throttle = setTimeout(() => {
+      if (this.mounted) this.throttle = false;
+    }, throttleTime);
   }
   const position = getClientPosition(event);
   this.lastMousePosition = position;

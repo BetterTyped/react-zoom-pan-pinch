@@ -120,8 +120,6 @@ export function handleWheelZoom(event) {
     isLimitedToBounds,
   );
 
-  // console.log(this.windowToWrapperScaleX);
-
   this.bounds = bounds;
   this.stateProvider.previousScale = scale;
   this.stateProvider.scale = newScale;
@@ -181,7 +179,7 @@ export function handlePaddingAnimation() {
   } = this.stateProvider;
   const isDisabled = disabled || scale >= minScale;
 
-  if (scale >= minScale) {
+  if (scale >= 1) {
     // fire fit to bounds animation
     handlePanningAnimation.call(this);
   }

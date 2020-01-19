@@ -3,6 +3,7 @@ import { getClientPosition, handlePanningAnimation } from "../pan";
 import { checkPositionBounds } from "../zoom/utils";
 import { boundLimiter } from "../utils";
 import { animate, handleDisableAnimation } from "../animations";
+import { availableAnimations } from "../animations/utils";
 
 const throttleTime = 30;
 
@@ -36,6 +37,7 @@ export function animateVelocity() {
       lockAxisY,
       velocityAnimationType,
       panReturnAnimationTime,
+      panReturnAnimationType,
       padding,
       paddingSize,
     },
@@ -66,24 +68,26 @@ export function animateVelocity() {
   const targetX = velocityX;
   const targetY = velocityY;
 
-  this.offsetX = positionX;
-  this.offsetY = positionY;
-
   // pan return animation
   const newAnimationTime =
     animationTime > panReturnAnimationTime
       ? animationTime
       : panReturnAnimationTime;
 
-  const isReturnAnimationLonger = animationTime < panReturnAnimationTime;
-
-  const maxTargetX = positionX - maxPositionX;
-  const minTargetX = positionX - minPositionX;
-
-  const maxTargetY = positionY - maxPositionY;
-  const minTargetY = positionY - minPositionY;
-
   const paddingValue = padding ? paddingSize : 0;
+
+  const paddingX = wrapperComponent
+    ? (paddingValue * wrapperComponent.offsetWidth) / 100
+    : 0;
+  const paddingY = wrapperComponent
+    ? (paddingValue * wrapperComponent.offsetHeight) / 100
+    : 0;
+
+  const maxTargetX = maxPositionX + paddingX;
+  const minTargetX = minPositionX - paddingX;
+
+  const maxTargetY = maxPositionY + paddingY;
+  const minTargetY = minPositionY - paddingY;
 
   const startPosition = checkPositionBounds(
     positionX,
@@ -94,13 +98,23 @@ export function animateVelocity() {
     wrapperComponent,
   );
 
+  const startTime = new Date().getTime();
+
   // animation start timestamp
   animate.call(this, velocityAnimationType, newAnimationTime, step => {
-    let customReturnStep = isReturnAnimationLonger
-      ? step
-      : step * (newAnimationTime / panReturnAnimationTime);
+    const frameTime = new Date().getTime() - startTime;
+    const animationProgress = frameTime / panReturnAnimationTime;
+    const returnAnimation = availableAnimations[panReturnAnimationType];
 
-    if (customReturnStep === Infinity) customReturnStep = 1;
+    let customReturnStep = returnAnimation(animationProgress);
+
+    if (
+      frameTime > panReturnAnimationTime ||
+      customReturnStep > 1 ||
+      customReturnStep === Infinity ||
+      customReturnStep === -Infinity
+    )
+      customReturnStep = 1;
 
     const currentPositionX = getPosition(
       lockAxisX,
@@ -110,7 +124,7 @@ export function animateVelocity() {
       minPositionX,
       maxPositionX,
       limitToBounds,
-      this.offsetX,
+      positionX,
       startPosition.x,
       minTargetX,
       maxTargetX,
@@ -123,21 +137,16 @@ export function animateVelocity() {
       minPositionY,
       maxPositionY,
       limitToBounds,
-      this.offsetY,
+      positionY,
       startPosition.y,
       minTargetY,
       maxTargetY,
     );
 
-    if (
-      this.offsetX !== currentPositionX ||
-      this.offsetY !== currentPositionY
-    ) {
+    if (positionX !== currentPositionX || positionY !== currentPositionY) {
       // Save panned position
       this.stateProvider.positionX = currentPositionX;
       this.stateProvider.positionY = currentPositionY;
-      this.offsetX = currentPositionX;
-      this.offsetY = currentPositionY;
 
       // apply animation changes
       this.applyTransformation();
@@ -149,13 +158,7 @@ export function calculateVelocityStart(event) {
   const {
     scale,
     options: { disabled },
-    pan: {
-      velocity,
-      velocitySensitivity,
-      velocityActiveScale,
-      velocityMinSpeed,
-    },
-    wrapperComponent,
+    pan: { velocity, velocitySensitivity, velocityActiveScale },
   } = this.stateProvider;
 
   if (!velocity || velocityActiveScale >= scale || disabled) return;
@@ -169,27 +172,12 @@ export function calculateVelocityStart(event) {
     const distanceX = clientX - this.lastMousePosition.clientX;
     const distanceY = clientY - this.lastMousePosition.clientY;
 
-    const wrapperToWindowScaleX =
-      2 - window.innerWidth / wrapperComponent.offsetWidth;
-    const scaleFactorX = Math.max(0.1, Math.min(0.4, wrapperToWindowScaleX));
-    const wrapperToWindowScaleY =
-      2 - window.innerHeight / wrapperComponent.offsetHeight;
-    const scaleFactorY = Math.max(0.1, Math.min(0.4, wrapperToWindowScaleY));
-
-    const scaledDistanceX =
-      distanceX -
-      distanceX / Math.max(velocityMinSpeed, scale - scale * scaleFactorX);
-    const scaledDistanceY =
-      distanceY -
-      distanceY / Math.max(velocityMinSpeed, scale - scale * scaleFactorY);
-
     const interval = now - this.velocityTime;
 
-    const velocityX = (scaledDistanceX / interval) * velocitySensitivity;
-    const velocityY = (scaledDistanceY / interval) * velocitySensitivity;
+    const velocityX = (distanceX / interval) * velocitySensitivity * scale * 10;
+    const velocityY = (distanceY / interval) * velocitySensitivity * scale * 10;
 
-    const speed =
-      scaledDistanceX * scaledDistanceX + scaledDistanceY * scaledDistanceY;
+    const speed = distanceX * distanceX + distanceY * distanceY;
     const velocity = (Math.sqrt(speed) / interval) * velocitySensitivity;
 
     if (this.velocity && velocity < this.velocity.velocity && this.throttle)
@@ -222,19 +210,21 @@ function getPosition(
 ) {
   if (limitToBounds) {
     if (startPosition > minBound && offset > maxBound) {
-      const newPosition = startPosition + maxTarget - maxTarget * panReturnStep;
+      const newPosition =
+        startPosition - (startPosition - maxBound) * panReturnStep;
       if (newPosition > maxTarget) return maxTarget;
       if (newPosition < maxBound) return maxBound;
       return newPosition;
     }
     if (startPosition < minBound && offset < minBound) {
-      const newPosition = startPosition + minTarget - minTarget * panReturnStep;
+      const newPosition =
+        startPosition - (startPosition - minBound) * panReturnStep;
       if (newPosition < minTarget) return minTarget;
       if (newPosition > minBound) return minBound;
       return newPosition;
     }
   }
   if (isLocked) return startPosition;
-  const offsetPosition = offset + target - target * step;
+  const offsetPosition = offset + target * step;
   return boundLimiter(offsetPosition, minBound, maxBound, limitToBounds);
 }

@@ -158,7 +158,13 @@ export function calculateVelocityStart(event) {
   const {
     scale,
     options: { disabled },
-    pan: { velocity, velocitySensitivity, velocityActiveScale },
+    pan: {
+      velocity,
+      velocitySensitivity,
+      velocityActiveScale,
+      velocityMinSpeed,
+    },
+    wrapperComponent,
   } = this.stateProvider;
 
   if (!velocity || velocityActiveScale >= scale || disabled) return;
@@ -174,8 +180,20 @@ export function calculateVelocityStart(event) {
 
     const interval = now - this.velocityTime;
 
-    const velocityX = (distanceX / interval) * velocitySensitivity * scale * 10;
-    const velocityY = (distanceY / interval) * velocitySensitivity * scale * 10;
+    const wrapperToWindowScaleX =
+      2 - wrapperComponent.offsetWidth / window.innerWidth;
+    const wrapperToWindowScaleY =
+      2 - wrapperComponent.offsetHeight / window.innerHeight;
+
+    const scaledX =
+      20 * Math.max(velocityMinSpeed, Math.min(2, wrapperToWindowScaleX));
+    const scaledY =
+      20 * Math.max(velocityMinSpeed, Math.min(2, wrapperToWindowScaleY));
+
+    const velocityX =
+      (distanceX / interval) * velocitySensitivity * scale * scaledX;
+    const velocityY =
+      (distanceY / interval) * velocitySensitivity * scale * scaledY;
 
     const speed = distanceX * distanceX + distanceY * distanceY;
     const velocity = (Math.sqrt(speed) / interval) * velocitySensitivity;

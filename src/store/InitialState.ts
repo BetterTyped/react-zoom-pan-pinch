@@ -36,7 +36,7 @@ export const initialState = {
     velocityEqualToMove: true,
     velocitySensitivity: 1,
     velocityActiveScale: 1,
-    velocityMinSpeed: 2,
+    velocityMinSpeed: 1,
     velocityBaseTime: 1600,
     velocityAnimationType: "easeOutQuart",
     padding: true,

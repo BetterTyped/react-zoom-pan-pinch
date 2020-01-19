@@ -2,7 +2,7 @@ export const initialState = {
   wrapperComponent: null,
   contentComponent: null,
   previousScale: 1,
-  scale: 1,
+  scale: 0.5,
   positionX: 0,
   positionY: 0,
   options: {
@@ -12,7 +12,7 @@ export const initialState = {
     maxPositionX: null,
     minPositionY: null,
     maxPositionY: null,
-    minScale: 1,
+    minScale: 0.5,
     maxScale: 8,
     limitToBounds: true,
     centerContent: true,
@@ -24,7 +24,7 @@ export const initialState = {
     step: 5,
     wheelEnabled: true,
     touchPadEnabled: true,
-    disableLimitsOnWheel: true,
+    limitsOnWheel: false,
   },
   pan: {
     disabled: false,

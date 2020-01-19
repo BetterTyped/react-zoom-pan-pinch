@@ -579,6 +579,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       positionY: initialState.positionY,
       ...this.props.defaultValues,
     };
+
     this.forceUpdate();
   };
 
@@ -592,14 +593,41 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
 
   setContentComponent = contentComponent => {
     this.setState({ contentComponent }, () => {
-      const { options, scale } = this.stateProvider;
+      const {
+        wrapperComponent,
+        options: { centerContent, limitToBounds, limitToWrapper },
+        scale,
+      } = this.stateProvider;
+
       const { positionX, positionY } = this.props.defaultValues;
-      if (options.centerContent && !positionX && !positionY) {
-        const rect = this.state.wrapperComponent.getBoundingClientRect();
-        this.stateProvider.positionX = (rect.width - rect.width * scale) / 2;
-        this.stateProvider.positionY = (rect.height - rect.height * scale) / 2;
+
+      if (
+        (limitToBounds && !limitToWrapper) ||
+        (centerContent && !positionX && !positionY)
+      ) {
+        const transform = `translate(25%, 25%) scale(${scale})`;
+        contentComponent.style.transform = transform;
+        contentComponent.style.WebkitTransform = transform;
+        // force update to inject state to the context
+        this.forceUpdate();
+        const startTime = new Date().getTime();
+        const maxTimeWait = 2000;
+        let interval = setInterval(() => {
+          if (wrapperComponent.offsetWidth) {
+            const bounds = handleCalculateBounds.call(this, scale, false);
+            this.stateProvider.positionX = bounds.minPositionX;
+            this.stateProvider.positionY = bounds.minPositionY;
+            this.applyTransformation(null, null, null);
+            clearInterval(interval);
+            interval = null;
+          } else if (new Date().getTime() - startTime > maxTimeWait) {
+            clearInterval(interval);
+            interval = null;
+          }
+        }, 20);
+      } else {
+        this.applyTransformation(null, null, null);
       }
-      this.applyTransformation(null, null, null);
     });
   };
 
@@ -628,10 +656,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   getCallbackProps = () => getValidPropsFromObject(this.stateProvider);
 
   render() {
+    const { wrapperComponent, contentComponent } = this.state;
     /**
      * Context provider value
      */
     const value = {
+      loaded: Boolean(wrapperComponent && contentComponent),
       state: this.getCallbackProps(),
       dispatch: {
         setScale: this.setScale,

@@ -59,7 +59,7 @@ export function handleZoomPinch(event) {
     scale,
     options: { limitToBounds },
     scalePadding: { disabled, size },
-    wheel: { disableLimitsOnWheel },
+    wheel: { limitsOnWheel },
     pinch,
   } = this.stateProvider;
   const { contentComponent } = this.state;
@@ -93,7 +93,7 @@ export function handleZoomPinch(event) {
 
   // Calculate transformations
   const isLimitedToBounds =
-    limitToBounds && (disabled || size === 0 || !disableLimitsOnWheel);
+    limitToBounds && (disabled || size === 0 || limitsOnWheel);
 
   const { x, y } = handleCalculatePositions.call(
     this,

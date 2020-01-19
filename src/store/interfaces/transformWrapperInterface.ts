@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface TransformWrapperProps {
   children: ReactNode;
   defaultPositionX: number;

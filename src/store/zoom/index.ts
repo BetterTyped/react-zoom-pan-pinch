@@ -88,7 +88,7 @@ export function handleWheelZoom(event) {
     contentComponent,
     options: { limitToBounds },
     scalePadding: { size, disabled },
-    wheel: { step, disableLimitsOnWheel },
+    wheel: { step, limitsOnWheel },
   } = this.stateProvider;
 
   event.preventDefault();
@@ -100,16 +100,12 @@ export function handleWheelZoom(event) {
   // if scale not change
   if (scale === newScale) return;
 
-  const bounds = handleCalculateBounds.call(
-    this,
-    newScale,
-    disableLimitsOnWheel,
-  );
+  const bounds = handleCalculateBounds.call(this, newScale, !limitsOnWheel);
 
   const { mouseX, mouseY } = wheelMousePosition(event, contentComponent, scale);
 
   const isLimitedToBounds =
-    limitToBounds && (disabled || size === 0 || !disableLimitsOnWheel);
+    limitToBounds && (disabled || size === 0 || limitsOnWheel);
 
   const { x, y } = handleCalculatePositions.call(
     this,
@@ -174,12 +170,12 @@ export function handlePaddingAnimation() {
   const {
     scale,
     wrapperComponent,
-    options: { minScale },
+    options: { minScale, limitToBounds },
     scalePadding: { disabled, animationTime, animationType },
   } = this.stateProvider;
   const isDisabled = disabled || scale >= minScale;
 
-  if (scale >= 1) {
+  if (scale >= 1 || limitToBounds) {
     // fire fit to bounds animation
     handlePanningAnimation.call(this);
   }
@@ -269,8 +265,8 @@ export function handleZoomControls(customDelta, customStep) {
 
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
-  const mouseX = (Math.abs(positionX) + wrapperWidth / 2) / scale;
-  const mouseY = (Math.abs(positionY) + wrapperHeight / 2) / scale;
+  const mouseX = (wrapperWidth / 2 - positionX) / scale;
+  const mouseY = (wrapperHeight / 2 - positionY) / scale;
 
   const newScale = handleCalculateZoom.call(
     this,
@@ -319,7 +315,13 @@ export function resetTransformations(animationSpeed) {
     defaultPositionX,
     defaultPositionY,
   } = this.props.defaultValues;
-  const { scale, positionX, positionY, disabled, reset } = this.stateProvider;
+  const {
+    scale,
+    positionX,
+    positionY,
+    reset,
+    options: { disabled, limitToWrapper, limitToBounds, centerContent },
+  } = this.stateProvider;
   if (disabled || reset.disabled) return;
   if (
     scale === defaultScale &&
@@ -332,8 +334,14 @@ export function resetTransformations(animationSpeed) {
     typeof animationSpeed === "number" ? animationSpeed : reset.animationTime;
 
   const targetScale = checkIsNumber(defaultScale, initialState.scale);
-  const newPositionX = checkIsNumber(defaultPositionX, initialState.positionX);
-  const newPositionY = checkIsNumber(defaultPositionY, initialState.positionY);
+  let newPositionX = checkIsNumber(defaultPositionX, initialState.positionX);
+  let newPositionY = checkIsNumber(defaultPositionY, initialState.positionY);
+
+  if ((limitToBounds && !limitToWrapper) || centerContent) {
+    const bounds = handleCalculateBounds.call(this, targetScale, false);
+    newPositionX = bounds.minPositionX;
+    newPositionY = bounds.minPositionY;
+  }
 
   const targetState = {
     scale: targetScale,

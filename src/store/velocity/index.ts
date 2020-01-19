@@ -223,11 +223,13 @@ function getPosition(
   if (limitToBounds) {
     if (startPosition > minBound && offset > maxBound) {
       const newPosition = startPosition + maxTarget - maxTarget * panReturnStep;
+      if (newPosition > maxTarget) return maxTarget;
       if (newPosition < maxBound) return maxBound;
       return newPosition;
     }
     if (startPosition < minBound && offset < minBound) {
       const newPosition = startPosition + minTarget - minTarget * panReturnStep;
+      if (newPosition < minTarget) return minTarget;
       if (newPosition > minBound) return minBound;
       return newPosition;
     }

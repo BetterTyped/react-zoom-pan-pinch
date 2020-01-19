@@ -15,6 +15,7 @@ export const initialState = {
     minScale: 1,
     maxScale: 8,
     limitToBounds: true,
+    limitToWrapper: false,
     centerContent: true,
     wrapperClass: "",
     contentClass: "",

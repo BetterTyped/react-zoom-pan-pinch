@@ -13,7 +13,7 @@ export default class App extends Component {
     panningEnabled: true,
     transformEnabled: true,
     pinchEnabled: true,
-    limitToWrapperBounds: false,
+    limitToWrapper: false,
     disabled: false,
     dbClickEnabled: true,
     lockAxisX: false,
@@ -36,7 +36,7 @@ export default class App extends Component {
       panningEnabled,
       transformEnabled,
       pinchEnabled,
-      limitToWrapperBounds,
+      limitToWrapper,
       disabled,
       dbClickEnabled,
       lockAxisX,
@@ -77,10 +77,14 @@ export default class App extends Component {
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
                 <TransformWrapper
-                  options={{ limitToBounds, transformEnabled, disabled }}
+                  options={{
+                    limitToBounds,
+                    transformEnabled,
+                    disabled,
+                    limitToWrapper,
+                  }}
                   pan={{
                     disabled: !panningEnabled,
-                    limitToWrapperBounds,
                     lockAxisX,
                     lockAxisY,
                     velocityEqualToMove,
@@ -244,11 +248,9 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (limitToWrapperBounds ? " active" : "")
+                              (limitToWrapper ? " active" : "")
                             }
-                            onClick={() =>
-                              this.toggleSetting("limitToWrapperBounds")
-                            }
+                            onClick={() => this.toggleSetting("limitToWrapper")}
                           >
                             <span /> Limit to wrapper bounds
                           </button>

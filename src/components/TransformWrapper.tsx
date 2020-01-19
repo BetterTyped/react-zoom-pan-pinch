@@ -2,7 +2,7 @@ import React from "react";
 import { StateProvider } from "../store/StateContext";
 import { deleteUndefinedProps } from "../store/utils";
 import { getValidPropsFromObject } from "../store/propsHandlers";
-import { TransformWrapperProps } from "../store/interfaces/transformWrapperInterface";
+import { PropsList } from "../store/interfaces/propsInterface";
 
 const TransformWrapper = ({
   children,
@@ -20,7 +20,11 @@ const TransformWrapper = ({
   onPinchingStop,
   onZoomChange,
   ...rest
-}: TransformWrapperProps) => {
+}: PropsList) => {
+  const props = { ...rest };
+  if (props.options.limitToWrapper) {
+    props.options.limitToBounds = true;
+  }
   return (
     <StateProvider
       defaultValues={deleteUndefinedProps({
@@ -28,7 +32,7 @@ const TransformWrapper = ({
         positionY: defaultPositionY,
         scale: defaultScale,
       })}
-      dynamicValues={deleteUndefinedProps(getValidPropsFromObject(rest))}
+      dynamicValues={deleteUndefinedProps(getValidPropsFromObject(props))}
       onWheelStart={onWheelStart}
       onWheel={onWheel}
       onWheelStop={onWheelStop}

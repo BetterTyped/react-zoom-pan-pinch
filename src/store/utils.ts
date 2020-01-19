@@ -83,15 +83,15 @@ export const calculateBoundingArea = (
   wrapperHeight,
   newContentHeight,
   diffHeight,
-  limitToWrapperBounds,
+  limitToWrapper,
 ) => {
   const scaleWidthFactor =
     wrapperWidth > newContentWidth
-      ? diffWidth * (limitToWrapperBounds ? 1 : 0.5)
+      ? diffWidth * (limitToWrapper ? 1 : 0.5)
       : 0;
   const scaleHeightFactor =
     wrapperHeight > newContentHeight
-      ? diffHeight * (limitToWrapperBounds ? 1 : 0.5)
+      ? diffHeight * (limitToWrapper ? 1 : 0.5)
       : 0;
 
   const minPositionX = wrapperWidth - newContentWidth - scaleWidthFactor;

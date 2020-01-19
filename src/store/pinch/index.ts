@@ -57,7 +57,7 @@ export function calculateMidpoint(event, scale, contentComponent) {
 export function handleZoomPinch(event) {
   const {
     scale,
-    options: { limitToBounds },
+    options: { limitToBounds, limitToWrapper },
     scalePadding: { disabled, size },
     wheel: { limitsOnWheel },
     pinch,
@@ -89,7 +89,11 @@ export function handleZoomPinch(event) {
   if (checkIfInfinite(newScale) || newScale === scale) return;
 
   // Get new element sizes to calculate bounds
-  const bounds = handleCalculateBounds.call(this, newScale);
+  const bounds = handleCalculateBounds.call(
+    this,
+    newScale,
+    limitToWrapper,
+  );
 
   // Calculate transformations
   const isLimitedToBounds =

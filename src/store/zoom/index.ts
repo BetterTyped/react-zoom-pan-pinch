@@ -131,7 +131,7 @@ export function handleWheelZoom(event) {
 export function handleZoomToPoint(isDisabled, scale, mouseX, mouseY, event) {
   const {
     contentComponent,
-    options: { disabled, minScale, maxScale, limitToBounds },
+    options: { disabled, minScale, maxScale, limitToBounds, limitToWrapper },
   } = this.stateProvider;
   if (disabled || isDisabled) return;
 
@@ -142,7 +142,7 @@ export function handleZoomToPoint(isDisabled, scale, mouseX, mouseY, event) {
     null,
     null,
   );
-  const bounds = handleCalculateBounds.call(this, newScale, false);
+  const bounds = handleCalculateBounds.call(this, newScale, limitToWrapper);
 
   let mousePosX = mouseX;
   let mousePosY = mouseY;
@@ -320,7 +320,7 @@ export function resetTransformations(animationSpeed) {
     positionX,
     positionY,
     reset,
-    options: { disabled, limitToWrapper, limitToBounds, centerContent },
+    options: { disabled, limitToBounds, centerContent, limitToWrapper },
   } = this.stateProvider;
   if (disabled || reset.disabled) return;
   if (
@@ -338,7 +338,11 @@ export function resetTransformations(animationSpeed) {
   let newPositionY = checkIsNumber(defaultPositionY, initialState.positionY);
 
   if ((limitToBounds && !limitToWrapper) || centerContent) {
-    const bounds = handleCalculateBounds.call(this, targetScale, false);
+    const bounds = handleCalculateBounds.call(
+      this,
+      targetScale,
+      limitToWrapper,
+    );
     newPositionX = bounds.minPositionX;
     newPositionY = bounds.minPositionY;
   }

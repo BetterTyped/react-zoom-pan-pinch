@@ -169,7 +169,7 @@ class Example extends Component {
 | velocityMinSpeed      |   1.2   |                                          number |
 | velocityBaseTime      |  1800   |                                          number |
 | velocityAnimationType | easeOut |                                          string |
-| limitToWrapperBounds  |  false  |                                         boolean |
+| limitToWrapper  |  false  |                                         boolean |
 | padding               |  true   |                                         boolean |
 | paddingSize           |   40    |                                          number |
 | animationTime         |   200   |                                          number |

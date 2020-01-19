@@ -82,7 +82,7 @@ export function handlePanToBounds() {
     positionX,
     positionY,
     scale,
-    options: { disabled, limitToBounds },
+    options: { disabled, limitToBounds, limitToWrapper },
   } = this.stateProvider;
   const { wrapperComponent } = this.state;
   if (disabled) return;
@@ -114,7 +114,7 @@ export function handlePanToBounds() {
     mousePosY,
     scale,
     this.bounds,
-    limitToBounds,
+    limitToBounds || limitToWrapper,
   );
 
   return {

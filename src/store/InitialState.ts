@@ -39,7 +39,6 @@ export const initialState = {
     velocityMinSpeed: 2,
     velocityBaseTime: 1600,
     velocityAnimationType: "easeOut",
-    limitToWrapperBounds: false,
     padding: true,
     paddingSize: 30,
     panReturnAnimationTime: 200,

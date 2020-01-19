@@ -163,7 +163,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       this.maxBounds = handleCalculateBounds.call(
         this,
         this.stateProvider.scale,
-        this.stateProvider.pan.limitToWrapperBounds,
+        this.stateProvider.options.limitToWrapper,
       );
     }
 
@@ -289,8 +289,8 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     const {
       wrapperComponent,
       scale,
-      options: { minScale, maxScale },
-      pan: { disabled, limitToWrapperBounds },
+      options: { minScale, maxScale, limitToWrapper },
+      pan: { disabled },
     } = this.stateProvider;
     const { target, touches } = event;
 
@@ -305,7 +305,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       return;
 
     handleDisableAnimation.call(this);
-    this.bounds = handleCalculateBounds.call(this, scale, limitToWrapperBounds);
+    this.bounds = handleCalculateBounds.call(this, scale, limitToWrapper);
 
     // Mobile points
     if (touches && touches.length === 1) {

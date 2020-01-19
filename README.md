@@ -153,7 +153,7 @@ class Example extends Component {
 | step                 |   6.5   |  number |
 | wheelEnabled         |  true   | boolean |
 | touchPadEnabled      |  true   | boolean |
-| disableLimitsOnWheel |  true   | boolean |
+| limitsOnWheel |  true   | boolean |
 
 #### Pan prop elements
 

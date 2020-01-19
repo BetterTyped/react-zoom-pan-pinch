@@ -15,6 +15,7 @@ export const initialState = {
     minScale: 1,
     maxScale: 8,
     limitToBounds: true,
+    limitToWrapper: false,
     centerContent: true,
     wrapperClass: "",
     contentClass: "",
@@ -24,7 +25,7 @@ export const initialState = {
     step: 5,
     wheelEnabled: true,
     touchPadEnabled: true,
-    disableLimitsOnWheel: true,
+    limitsOnWheel: false,
   },
   pan: {
     disabled: false,

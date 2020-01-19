@@ -13,6 +13,7 @@ export interface PropsList {
     maxScale: number;
     limitToBounds: boolean;
     centerContent: boolean;
+    limitToWrapper: boolean;
   };
   scalePadding: {
     disabled: boolean;
@@ -25,7 +26,7 @@ export interface PropsList {
     step: number;
     wheelEnabled: boolean;
     touchPadEnabled: boolean;
-    disableLimitsOnWheel: boolean;
+    limitsOnWheel: boolean;
   };
   pan: {
     disabled: boolean;

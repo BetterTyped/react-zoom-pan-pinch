@@ -22,7 +22,7 @@ export default class App extends Component {
     enableWheel: true,
     enableTouchPadPinch: true,
     enableVelocity: true,
-    disableLimitsOnWheel: true,
+    limitsOnWheel: false,
   };
 
   toggleSetting = type => {
@@ -45,7 +45,7 @@ export default class App extends Component {
       enableWheel,
       enableTouchPadPinch,
       enableVelocity,
-      disableLimitsOnWheel,
+      limitsOnWheel,
     } = this.state;
     return (
       <div className="body">
@@ -91,7 +91,7 @@ export default class App extends Component {
                   wheel={{
                     wheelEnabled: enableWheel,
                     touchPadEnabled: enableTouchPadPinch,
-                    disableLimitsOnWheel,
+                    limitsOnWheel,
                   }}
                 >
                   {({
@@ -351,13 +351,11 @@ export default class App extends Component {
                           <button
                             className={
                               "btn-gradient grey small" +
-                              (rest.wheel.disableLimitsOnWheel ? " active" : "")
+                              (rest.wheel.limitsOnWheel ? " active" : "")
                             }
-                            onClick={() =>
-                              this.toggleSetting("disableLimitsOnWheel")
-                            }
+                            onClick={() => this.toggleSetting("limitsOnWheel")}
                           >
-                            <span /> Limit to wrapper on wheel
+                            <span /> Bound limits on wheel
                           </button>
                         </h6>
                       </div>

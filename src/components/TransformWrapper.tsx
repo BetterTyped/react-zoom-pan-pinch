@@ -22,7 +22,7 @@ const TransformWrapper = ({
   ...rest
 }: PropsList) => {
   const props = { ...rest };
-  if (props.options.limitToWrapper) {
+  if (props.options && props.options.limitToWrapper) {
     props.options.limitToBounds = true;
   }
   return (

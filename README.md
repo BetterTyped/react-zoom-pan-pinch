@@ -134,6 +134,7 @@ class Example extends Component {
 | minScale         |    1    |       number |
 | maxScale         |    8    |       number |
 | limitToBounds    |  true   |      boolean |
+| limitToWrapper   |  false  |      boolean |
 | centerContent    |  true   |      boolean |
 
 #### scalePadding prop elements
@@ -147,13 +148,13 @@ class Example extends Component {
 
 #### Wheel prop elements
 
-| Props                | Default |    Type |
-| :------------------- | :-----: | ------: |
-| disabled             |  false  | boolean |
-| step                 |   6.5   |  number |
-| wheelEnabled         |  true   | boolean |
-| touchPadEnabled      |  true   | boolean |
-| limitsOnWheel |  true   | boolean |
+| Props           | Default |    Type |
+| :-------------- | :-----: | ------: |
+| disabled        |  false  | boolean |
+| step            |   6.5   |  number |
+| wheelEnabled    |  true   | boolean |
+| touchPadEnabled |  true   | boolean |
+| limitsOnWheel   |  true   | boolean |
 
 #### Pan prop elements
 
@@ -169,7 +170,6 @@ class Example extends Component {
 | velocityMinSpeed      |   1.2   |                                          number |
 | velocityBaseTime      |  1800   |                                          number |
 | velocityAnimationType | easeOut |                                          string |
-| limitToWrapper  |  false  |                                         boolean |
 | padding               |  true   |                                         boolean |
 | paddingSize           |   40    |                                          number |
 | animationTime         |   200   |                                          number |

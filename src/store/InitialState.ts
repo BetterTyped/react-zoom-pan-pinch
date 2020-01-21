@@ -34,7 +34,7 @@ export const initialState = {
     lockAxisY: false,
     velocity: true,
     velocityEqualToMove: true,
-    velocitySensitivity: 1,
+    velocitySensitivity: 2,
     velocityActiveScale: 1,
     velocityMinSpeed: 1,
     velocityBaseTime: 1600,

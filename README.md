@@ -258,7 +258,7 @@ class Example extends Component {
 | zoomIn()                                                                | Zooming in function, used for controls button  |      ---       |
 | zoomOut()                                                               | Zooming out function, used for controls button |      ---       |
 | setTransform(positionX, positionY, scale, animationTime, animationType) | Sets transformations of content                | Number or null |
-| resetTransform()                                                        | Reset transformations to the initial values    |     Number     |
+| resetTransform(animationTime)                                           | Reset transformations to the initial values    |     Number     |
 
 ## License
 

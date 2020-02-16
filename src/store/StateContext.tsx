@@ -562,12 +562,12 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     });
   };
 
-  resetTransform = () => {
+  resetTransform = (speed = 200) => {
     const {
       options: { disabled, transformEnabled },
     } = this.stateProvider;
     if (disabled || !transformEnabled) return;
-    resetTransformations.call(this);
+    resetTransformations.call(this, speed);
   };
 
   setDefaultState = () => {

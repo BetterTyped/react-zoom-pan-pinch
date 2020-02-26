@@ -1,8 +1,8 @@
-import React from "react";
+import React, {Component} from "react";
 import { Context } from "../store/StateContext";
 import styles from "./TransformComponent.module.css";
 
-class TransformComponent extends React.Component {
+class TransformComponent extends Component {
   private wrapperRef = React.createRef<HTMLDivElement>();
   private contentRef = React.createRef<HTMLDivElement>();
 

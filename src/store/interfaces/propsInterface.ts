@@ -16,6 +16,8 @@ export interface PropsList {
     limitToBounds?: boolean;
     centerContent?: boolean;
     limitToWrapper?: boolean;
+    wrapperClass?: string;
+    contentClass?: string;
   };
   scalePadding?: {
     disabled?: boolean;

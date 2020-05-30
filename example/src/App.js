@@ -20,6 +20,7 @@ export default class App extends Component {
     lockAxisY: false,
     velocityEqualToMove: true,
     enableWheel: true,
+    enableWheelPan: false,
     enableTouchPadPinch: true,
     enableVelocity: true,
     limitsOnWheel: false,
@@ -43,6 +44,7 @@ export default class App extends Component {
       lockAxisY,
       velocityEqualToMove,
       enableWheel,
+      enableWheelPan,
       enableTouchPadPinch,
       enableVelocity,
       limitsOnWheel,
@@ -85,6 +87,7 @@ export default class App extends Component {
                   }}
                   pan={{
                     disabled: !panningEnabled,
+                    wheelEnabled: enableWheelPan,
                     lockAxisX,
                     lockAxisY,
                     velocityEqualToMove,
@@ -338,6 +341,15 @@ export default class App extends Component {
                             onClick={() => this.toggleSetting("enableWheel")}
                           >
                             <span /> Enable wheel
+                          </button>
+                          <button
+                            className={
+                              "btn-gradient grey small" +
+                              (rest.pan.wheelEnabled ? " active" : "")
+                            }
+                            onClick={() => this.toggleSetting("enableWheelPan")}
+                          >
+                            <span /> Enable wheel pan
                           </button>
                           <button
                             className={

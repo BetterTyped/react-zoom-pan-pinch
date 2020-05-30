@@ -29,6 +29,7 @@ export const initialState = {
   },
   pan: {
     disabled: false,
+    wheelEnabled: false,
     panAnimationType: "linear",
     lockAxisX: false,
     lockAxisY: false,

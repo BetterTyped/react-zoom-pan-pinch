@@ -58,6 +58,41 @@ export function handlePanning(event) {
   handlePaddingAnimation.call(this, calculatedPosition.x, calculatedPosition.y);
 }
 
+export function handlePanningUsingWheel(event) {
+  const {
+    scale,
+    positionX,
+    positionY,
+    options: { limitToBounds, minScale },
+    pan: { lockAxisX, lockAxisY, padding, paddingSize },
+    wrapperComponent,
+  } = this.stateProvider;
+
+  // Get Position
+  const mouseX = positionX - event.deltaX;
+  const mouseY = positionY - event.deltaY;
+  const newPositionX = lockAxisX ? positionX : mouseX;
+  const newPositionY = lockAxisY ? positionY : mouseY;
+
+  // padding
+  const paddingValue = padding && scale >= minScale ? paddingSize : 0;
+
+  // If position didn't change
+  if (newPositionX === positionX && newPositionY === positionY) return;
+
+  const calculatedPosition = checkPositionBounds(
+    newPositionX,
+    newPositionY,
+    this.bounds,
+    limitToBounds,
+    paddingValue,
+    wrapperComponent,
+  );
+
+  // Save panned position
+  handlePaddingAnimation.call(this, calculatedPosition.x, calculatedPosition.y);
+}
+
 export function handlePanningAnimation() {
   const {
     scale,

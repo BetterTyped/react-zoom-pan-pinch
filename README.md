@@ -158,22 +158,22 @@ class Example extends Component {
 
 #### Pan prop elements
 
-| Props                 | Default |                                            Type |
-| :-------------------- | :-----: | ----------------------------------------------: |
-| disabled              |  false  |                                         boolean |
-| disableOnTarget       |   []    | array of class names or node tags (div,span...) |
-| lockAxisX             |  false  |                                         boolean |
-| lockAxisY             |  false  |                                         boolean |
-| velocity              |  false  |                                         boolean |
-| velocityEqualToMove   |  false  |                                         boolean |
-| velocitySensitivity   |    1    |                                          number |
-| velocityMinSpeed      |   1.2   |                                          number |
-| velocityBaseTime      |  1800   |                                          number |
-| velocityAnimationType | easeOut |                                          string |
-| padding               |  true   |                                         boolean |
-| paddingSize           |   40    |                                          number |
-| animationTime         |   200   |                                          number |
-| animationType         | easeOut |                                          string |
+| Props                 | Default |               Type |
+| :-------------------- | :-----: | ------------------ |
+| disabled              |  false  |            boolean |
+| disableOnTarget       |   []    | array of selectors |
+| lockAxisX             |  false  |            boolean |
+| lockAxisY             |  false  |            boolean |
+| velocity              |  false  |            boolean |
+| velocityEqualToMove   |  false  |            boolean |
+| velocitySensitivity   |    1    |             number |
+| velocityMinSpeed      |   1.2   |             number |
+| velocityBaseTime      |  1800   |             number |
+| velocityAnimationType | easeOut |             string |
+| padding               |  true   |            boolean |
+| paddingSize           |   40    |             number |
+| animationTime         |   200   |             number |
+| animationType         | easeOut |             string |
 
 #### Pinch prop elements
 

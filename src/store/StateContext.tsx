@@ -248,14 +248,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       pan: { disableOnTarget },
     } = this.stateProvider;
 
-    return (
-      disableOnTarget
-        .map(tag => tag.toUpperCase())
-        .includes(event.target.tagName) ||
-      disableOnTarget.find(element =>
-        event.target.classList.value.includes(element),
-      )
-    );
+    return disableOnTarget.some((selector) => event.target.matches(selector));
   };
 
   checkIsPanningActive = event => {

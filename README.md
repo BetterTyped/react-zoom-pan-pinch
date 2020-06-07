@@ -136,6 +136,8 @@ class Example extends Component {
 | limitToBounds    |  true   |      boolean |
 | limitToWrapper   |  false  |      boolean |
 | centerContent    |  true   |      boolean |
+| wrapperClass     |   ""    |       string |
+| contentClass     |   ""    |       string |
 
 #### scalePadding prop elements
 

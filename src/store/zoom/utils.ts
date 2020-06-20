@@ -120,7 +120,7 @@ export function handleCalculatePositions(
     return console.error("Mouse X and Y position were not provided!");
 
   if (!transformEnabled)
-    return { newPositionX: positionX, newPositionY: positionY };
+    return { x: positionX, y: positionY };
 
   const calculatedPositionX = positionX - mouseX * scaleDifference;
   const calculatedPositionY = positionY - mouseY * scaleDifference;

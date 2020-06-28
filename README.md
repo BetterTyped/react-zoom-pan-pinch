@@ -151,7 +151,7 @@ class Example extends Component {
 | Props           | Default |    Type |
 | :-------------- | :-----: | ------: |
 | disabled        |  false  | boolean |
-| step            |   6.5   |  number |
+| step            |   5   |  number |
 | wheelEnabled    |  true   | boolean |
 | touchPadEnabled |  true   | boolean |
 | limitsOnWheel   |  true   | boolean |
@@ -186,7 +186,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   70    |  number |
+| step          |   20    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -196,7 +196,7 @@ class Example extends Component {
 | Props         | Default |    Type |
 | :------------ | :-----: | ------: |
 | disabled      |  false  | boolean |
-| step          |   70    |  number |
+| step          |   20    |  number |
 | animation     |  true   | boolean |
 | animationTime |   200   |  number |
 | animationType | easeOut |  string |
@@ -206,7 +206,7 @@ class Example extends Component {
 | Props         | Default |                     Type |
 | :------------ | :-----: | -----------------------: |
 | disabled      |  false  |                  boolean |
-| step          |   70    |                   number |
+| step          |   20    |                   number |
 | animation     |  true   |                  boolean |
 | animationTime |   200   |                   number |
 | animationType | easeOut |                   string |

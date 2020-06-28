@@ -1,6 +1,6 @@
 {
   "name": "@kwinto/react-zoom-pan-pinch",
-  "version": "2.0",
+  "version": "2.0.0",
   "description": "Zoom and pan html elements in easy way with a fixed zoom step",
   "author": "kwinto, prc5",
   "license": "MIT",

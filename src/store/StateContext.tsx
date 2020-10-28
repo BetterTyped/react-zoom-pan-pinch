@@ -253,7 +253,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
         .map(tag => tag.toUpperCase())
         .includes(event.target.tagName) ||
       disableOnTarget.find(element =>
-        event.target.classList.value.includes(element),
+        event.target.classList.contains(element),
       )
     );
   };

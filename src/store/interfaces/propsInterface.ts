@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { StateProvider } from '../StateContext';
 
-export type TransformWrapperChildrenFunctionProps = {
+export interface TransformWrapperChildrenFunctionProps {
   scale: number;
   positionX: number;
   positionY: number;

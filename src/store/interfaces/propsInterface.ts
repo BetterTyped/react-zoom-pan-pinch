@@ -1,4 +1,19 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import { StateProvider } from '../StateContext';
+
+export type TransformWrapperChildrenFunctionProps = {
+  scale: number;
+  positionX: number;
+  positionY: number;
+  previousScale: number;
+  setScale: typeof StateProvider.prototype.setPositionX;
+  setPositionX: typeof StateProvider.prototype.setPositionX;
+  setPositionY: typeof StateProvider.prototype.setPositionY;
+  zoomIn: typeof StateProvider.prototype.zoomIn;
+  zoomOut: typeof StateProvider.prototype.zoomOut;
+  setTransform: typeof StateProvider.prototype.setTransform;
+  resetTransform: typeof StateProvider.prototype.resetTransform;
+};
 
 export interface PropsList {
   scale?: number;
@@ -79,7 +94,7 @@ export interface PropsList {
     animationTime?: number;
     animationType?: string;
   };
-  children?: ReactNode;
+  children?: ReactNode | ((childrenFunctionProps: TransformWrapperChildrenFunctionProps) => ReactNode);
   defaultPositionX?: number;
   defaultPositionY?: number;
   defaultScale?: number;

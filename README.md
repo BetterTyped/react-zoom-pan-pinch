@@ -252,6 +252,10 @@ class Example extends Component {
 
 | Value                                                                   | Description                                    |      Type      |
 | :---------------------------------------------------------------------- | :--------------------------------------------- | :------------: |
+| scale                                                                   | Current scale value                            |     Number     |
+| positionX                                                               | Current position x                             |     Number     |
+| positionY                                                               | Current position y                             |     Number     |
+| previousScale                                                           | Previous scale value                           |     Number     |
 | setScale(scale, animationTime, animationType)                           | Sets scale                                     |     Number     |
 | setPositionX(positionX, animationTime, animationType)                   | Sets position x                                |     Number     |
 | setPositionY(positionY, animationTime, animationType)                   | Sets position y                                |     Number     |

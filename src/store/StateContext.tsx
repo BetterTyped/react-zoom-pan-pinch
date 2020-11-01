@@ -30,6 +30,9 @@ import {
   StateContextProps,
 } from "./interfaces/stateContextInterface";
 import { getValidPropsFromObject } from "./propsHandlers";
+import { availableAnimations } from "./animations/utils";
+
+type AvailableAnimations = keyof typeof availableAnimations
 
 const Context = React.createContext({});
 
@@ -463,7 +466,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     handleDoubleClick.call(this, event, 1, step);
   };
 
-  setScale = (newScale, speed = 200, type = "easeOut") => {
+  setScale = (newScale, speed = 200, type: AvailableAnimations = "easeOut") => {
     const {
       positionX,
       positionY,
@@ -485,7 +488,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     });
   };
 
-  setPositionX = (newPosX, speed = 200, type = "easeOut") => {
+  setPositionX = (newPosX, speed = 200, type: AvailableAnimations = "easeOut") => {
     const {
       positionX,
       positionY,
@@ -508,7 +511,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     });
   };
 
-  setPositionY = (newPosY, speed = 200, type = "easeOut") => {
+  setPositionY = (newPosY, speed = 200, type: AvailableAnimations = "easeOut") => {
     const {
       positionX,
       scale,
@@ -537,7 +540,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     newPosY,
     newScale,
     speed = 200,
-    type = "easeOut",
+    type: AvailableAnimations = "easeOut",
   ) => {
     const {
       positionX,

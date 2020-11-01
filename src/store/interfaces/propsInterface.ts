@@ -1,11 +1,14 @@
 import { ReactNode } from 'react';
 import { StateProvider } from '../StateContext';
 
-export interface TransformWrapperChildrenFunctionProps {
+export interface TransformWrapperCallbackProps {
   scale: number;
   positionX: number;
   positionY: number;
   previousScale: number;
+};
+
+export interface TransformWrapperChildrenFunctionProps extends TransformWrapperCallbackProps {
   setScale: typeof StateProvider.prototype.setPositionX;
   setPositionX: typeof StateProvider.prototype.setPositionX;
   setPositionY: typeof StateProvider.prototype.setPositionY;
@@ -98,14 +101,14 @@ export interface PropsList {
   defaultPositionX?: number;
   defaultPositionY?: number;
   defaultScale?: number;
-  onWheelStart?: any;
-  onWheel?: any;
-  onWheelStop?: any;
-  onPanningStart?: any;
-  onPanning?: any;
-  onPanningStop?: any;
-  onPinchingStart?: any;
-  onPinching?: any;
-  onPinchingStop?: any;
-  onZoomChange?: any;
+  onWheelStart?: (props: TransformWrapperCallbackProps) => void;
+  onWheel?: (props: TransformWrapperCallbackProps) => void;
+  onWheelStop?: (props: TransformWrapperCallbackProps) => void;
+  onPanningStart?: (props: TransformWrapperCallbackProps) => void;
+  onPanning?: (props: TransformWrapperCallbackProps) => void;
+  onPanningStop?: (props: TransformWrapperCallbackProps) => void;
+  onPinchingStart?: (props: TransformWrapperCallbackProps) => void;
+  onPinching?: (props: TransformWrapperCallbackProps) => void;
+  onPinchingStop?: (props: TransformWrapperCallbackProps) => void;
+  onZoomChange?: (props: TransformWrapperCallbackProps) => void;
 }

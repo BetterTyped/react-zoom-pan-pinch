@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { StateProvider } from '../StateContext';
+import { AnimationType } from './animationType';
 
 export interface TransformWrapperCallbackProps {
   scale: number;
@@ -39,7 +40,7 @@ export interface PropsList {
     disabled?: boolean;
     size?: number;
     animationTime?: number;
-    animationType?: string;
+    animationType?: AnimationType;
   };
   wheel?: {
     disabled?: boolean;
@@ -51,7 +52,7 @@ export interface PropsList {
   pan?: {
     disabled?: boolean;
     velocity?: boolean;
-    panAnimationType?: string;
+    panAnimationType?: AnimationType;
     velocityEqualToMove?: boolean;
     velocitySensitivity?: number;
     velocityActiveScale?: number;
@@ -62,7 +63,7 @@ export interface PropsList {
     padding?: boolean;
     paddingSize?: number;
     animationTime?: number;
-    animationType?: string;
+    animationType?: AnimationType;
   };
   pinch?: {
     disabled?: boolean;
@@ -73,14 +74,14 @@ export interface PropsList {
     step?: number;
     animation?: boolean;
     animationTime?: number;
-    animationType?: string;
+    animationType?: AnimationType;
   };
   zoomOut?: {
     disabled?: boolean;
     step?: number;
     animation?: boolean;
     animationTime?: number;
-    animationType?: string;
+    animationType?: AnimationType;
   };
   doubleClick?: {
     disabled?: boolean;
@@ -88,14 +89,14 @@ export interface PropsList {
     mode?: string;
     animation?: boolean;
     animationTime?: number;
-    animationType?: string;
+    animationType?: AnimationType;
   };
   reset?: {
     disabled?: boolean;
     step?: number;
     animation?: boolean;
     animationTime?: number;
-    animationType?: string;
+    animationType?: AnimationType;
   };
   children?: ReactNode | ((childrenFunctionProps: TransformWrapperChildrenFunctionProps) => ReactNode);
   defaultPositionX?: number;

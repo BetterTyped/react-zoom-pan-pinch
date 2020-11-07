@@ -10,7 +10,7 @@ export interface TransformWrapperCallbackProps {
 };
 
 export interface TransformWrapperChildrenFunctionProps extends TransformWrapperCallbackProps {
-  setScale: typeof StateProvider.prototype.setPositionX;
+  setScale: typeof StateProvider.prototype.setScale;
   setPositionX: typeof StateProvider.prototype.setPositionX;
   setPositionY: typeof StateProvider.prototype.setPositionY;
   zoomIn: typeof StateProvider.prototype.zoomIn;

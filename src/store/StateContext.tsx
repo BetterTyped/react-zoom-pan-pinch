@@ -464,7 +464,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     handleDoubleClick.call(this, event, 1, step);
   };
 
-  setScale = (newScale, speed = 200, type: AnimationType = "easeOut") => {
+  setScale = (newScale: number, speed = 200, type: AnimationType = "easeOut") => {
     const {
       positionX,
       positionY,
@@ -486,7 +486,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     });
   };
 
-  setPositionX = (newPosX, speed = 200, type: AnimationType = "easeOut") => {
+  setPositionX = (newPosX: number, speed = 200, type: AnimationType = "easeOut") => {
     const {
       positionX,
       positionY,
@@ -509,7 +509,7 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
     });
   };
 
-  setPositionY = (newPosY, speed = 200, type: AnimationType = "easeOut") => {
+  setPositionY = (newPosY: number, speed = 200, type: AnimationType = "easeOut") => {
     const {
       positionX,
       scale,
@@ -534,9 +534,9 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   };
 
   setTransform = (
-    newPosX,
-    newPosY,
-    newScale,
+    newPosX: number,
+    newPosY: number,
+    newScale: number,
     speed = 200,
     type: AnimationType = "easeOut",
   ) => {

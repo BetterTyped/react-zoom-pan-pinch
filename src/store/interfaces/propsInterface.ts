@@ -31,6 +31,7 @@ export interface PropsList {
     limitsOnWheel?: boolean;
   };
   pan?: {
+    wheelEnabled?: boolean;
     disabled?: boolean;
     velocity?: boolean;
     panAnimationType?: string;

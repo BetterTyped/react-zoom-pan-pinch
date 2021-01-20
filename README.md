@@ -161,6 +161,7 @@ class Example extends Component {
 | Props                 | Default |                                            Type |
 | :-------------------- | :-----: | ----------------------------------------------: |
 | disabled              |  false  |                                         boolean |
+| wheelEnabled          |  false  |                                         boolean |
 | disableOnTarget       |   []    | array of class names or node tags (div,span...) |
 | lockAxisX             |  false  |                                         boolean |
 | lockAxisY             |  false  |                                         boolean |

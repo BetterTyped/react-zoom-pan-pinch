@@ -18,7 +18,7 @@ import {
 } from "./zoom";
 import { handleDisableAnimation, animateComponent } from "./animations";
 import { handleZoomPinch } from "./pinch";
-import { handlePanning, handlePanningAnimation } from "./pan";
+import { handlePanning, handlePanningAnimation, handlePanningUsingWheel } from "./pan";
 import {
   handleFireVelocity,
   animateVelocity,
@@ -131,6 +131,11 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
       wrapperComponent.addEventListener(
         "wheel",
         this.handleWheel,
+        passiveOption,
+      );
+      wrapperComponent.addEventListener(
+        "wheel",
+        this.handleWheelPanning,
         passiveOption,
       );
       wrapperComponent.addEventListener(
@@ -347,6 +352,27 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
         handlePanningAnimation.call(this);
       }
     }
+  };
+
+  handleWheelPanning = event => {
+    const {
+      pan: { disabled, wheelEnabled }, wrapperComponent, contentComponent
+    } = this.stateProvider;
+
+    if (
+      this.isDown ||
+      disabled ||
+      this.stateProvider.options.disabled ||
+      !wrapperComponent ||
+      !contentComponent ||
+      !wheelEnabled
+    )
+      return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    handlePanningUsingWheel.call(this, event);
+    handleCallback(this.props.onPanning, this.getCallbackProps())
   };
 
   //////////

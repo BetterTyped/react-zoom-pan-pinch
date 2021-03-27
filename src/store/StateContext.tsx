@@ -320,7 +320,15 @@ class StateProvider extends Component<StateContextProps, StateContextState> {
   handlePanning = event => {
     if (this.isDown) event.preventDefault();
     if (this.checkIsPanningActive(event)) return;
-    event.stopPropagation();
+
+    const {
+      pan: { 
+        enableEventPropagation 
+      },
+    } = this.stateProvider;
+    if (!enableEventPropagation) {
+      event.stopPropagation();
+    }
     calculateVelocityStart.call(this, event);
     handlePanning.call(this, event);
     handleCallback(this.props.onPanning, this.getCallbackProps());

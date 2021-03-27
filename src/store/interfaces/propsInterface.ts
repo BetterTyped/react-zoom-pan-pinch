@@ -45,6 +45,7 @@ export interface PropsList {
     paddingSize?: number;
     animationTime?: number;
     animationType?: string;
+    enableEventPropagation?: boolean;
   };
   pinch?: {
     disabled?: boolean;

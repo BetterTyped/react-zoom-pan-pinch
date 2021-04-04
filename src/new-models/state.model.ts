@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export type ReactZoomPanPinchState = {
+export type ReactZoomPanPinchProps = {
   scale?: number;
   positionX?: number;
   positionY?: number;

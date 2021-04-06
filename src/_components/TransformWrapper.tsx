@@ -1,8 +1,8 @@
 import React from "react";
-import { StateProvider } from "../store/StateContext";
-import { deleteUndefinedProps } from "../store/utils";
-import { getValidPropsFromObject } from "../store/propsHandlers";
-import { PropsList } from "../store/interfaces/propsInterface";
+import { StateProvider } from "../_store/StateContext";
+import { deleteUndefinedProps } from "../_store/utils";
+import { getValidPropsFromObject } from "../_store/propsHandlers";
+import { PropsList } from "../_store/interfaces/propsInterface";
 
 const TransformWrapper = ({
   children,

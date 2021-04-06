@@ -349,4 +349,6 @@ class TransformContext extends Component<any, any> {
   }
 }
 
-export { Context, TransformContext };
+type ContextMethodsType = typeof TransformContext.prototype;
+
+export { Context, TransformContext, ContextMethodsType };

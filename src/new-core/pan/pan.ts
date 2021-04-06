@@ -1,5 +1,6 @@
 import { checkPositionBounds, handleCalculatePositions } from "../zoom/utils";
 import { animateComponent } from "../animations";
+import { ContextMethodsType } from "../../new-components/transform-context";
 
 export function getClientPosition(event: TouchEvent | MouseEvent) {
   const { touches } = event;
@@ -15,7 +16,7 @@ export function getClientPosition(event: TouchEvent | MouseEvent) {
   return null;
 }
 
-export function handlePanning(event) {
+export function handlePanning(event: TouchEvent | MouseEvent) {
   const {
     scale,
     positionX,
@@ -126,7 +127,7 @@ export function handlePanToBounds() {
 function handlePaddingAnimation(positionX, positionY) {
   const {
     pan: { padding },
-  }: PropsList = this.stateProvider;
+  } = this.stateProvider;
   if (!padding) return;
   this.stateProvider.positionX = positionX;
   this.stateProvider.positionY = positionY;

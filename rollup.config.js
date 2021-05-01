@@ -1,15 +1,12 @@
-import typescript from "rollup-plugin-typescript2";
-import commonjs from "rollup-plugin-commonjs";
+import babel from "@rollup/plugin-babel";
 import external from "rollup-plugin-peer-deps-external";
-// import postcss from 'rollup-plugin-postcss-modules'
+import del from "rollup-plugin-delete";
+import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
-import resolve from "rollup-plugin-node-resolve";
-import url from "rollup-plugin-url";
-import svgr from "@svgr/rollup";
 import pkg from "./package.json";
 
 export default {
-  input: "src/index.tsx",
+  input: pkg.source,
   output: [
     {
       file: pkg.main,
@@ -26,16 +23,14 @@ export default {
   ],
   plugins: [
     external(),
+    babel({
+      exclude: "node_modules/**",
+    }),
+    del({ targets: ["dist/*"] }),
+    typescript(),
     postcss({
       modules: true,
     }),
-    url({ exclude: ["**/*.svg"] }),
-    svgr(),
-    resolve(),
-    typescript({
-      rollupCommonJSResolveHack: true,
-      clean: true,
-    }),
-    commonjs(),
   ],
+  external: Object.keys(pkg.peerDependencies || {}),
 };

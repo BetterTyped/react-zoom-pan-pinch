@@ -1,6 +1,7 @@
 import React from "react";
 import { TransformContext } from "../components/transform-context";
 import { animations } from "../core/animations/animations.constants";
+import { DeepNonNullable } from "./helpers.model";
 
 export type ReactZoomPanPinchContext = typeof TransformContext.prototype;
 
@@ -101,22 +102,51 @@ export type ReactZoomPanPinchProps = {
     animationTime?: number;
     animationType?: keyof typeof animations;
   };
+  scalePadding?: {
+    disabled?: boolean;
+    size?: number;
+    animationTime?: number;
+    animationType?: keyof typeof animations;
+  };
   children?: React.ReactNode;
   defaultPositionX?: number;
   defaultPositionY?: number;
   defaultScale?: number;
-  onWheelStart?: any;
-  onWheel?: any;
-  onWheelStop?: any;
-  onPanningStart?: any;
-  onPanning?: any;
-  onPanningStop?: any;
-  onPinchingStart?: any;
-  onPinching?: any;
-  onPinchingStop?: any;
-  onZoomChange?: any;
+  onWheelStart?: (values: any) => void;
+  onWheel?: (values: any) => void;
+  onWheelStop?: (values: any) => void;
+  onPanningStart?: (values: any) => void;
+  onPanning?: (values: any) => void;
+  onPanningStop?: (values: any) => void;
+  onPinchingStart?: (values: any) => void;
+  onPinching?: (values: any) => void;
+  onPinchingStop?: (values: any) => void;
+  onZoomChange?: (values: any) => void;
 };
 
 export type ReactZoomPanPinchComponentHelpers = {
   setComponents: (wrapper: HTMLDivElement, content: HTMLDivElement) => void;
 };
+
+export type LibrarySetup = Pick<
+  ReactZoomPanPinchProps,
+  "minPositionX" | "maxPositionX" | "minPositionY" | "maxPositionY"
+> &
+  DeepNonNullable<
+    Omit<
+      ReactZoomPanPinchProps,
+      | "scale"
+      | "positionX"
+      | "positionY"
+      | "minPositionX"
+      | "maxPositionX"
+      | "minPositionY"
+      | "maxPositionY"
+      | "children"
+      | "defaultPositionX"
+      | "defaultPositionY"
+      | "defaultScale"
+      | "wrapperClass"
+      | "contentClass"
+    >
+  >;

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TransformComponent, TransformContext } from "react-zoom-pan-pinch";
+import { TransformContext, TransformComponent } from "react-zoom-pan-pinch";
 import zoom_in from "./images/zoom-in.svg";
 import zoom_out from "./images/zoom-out.svg";
 import zoom_reset from "./images/zoom-reset.svg";
@@ -49,8 +49,7 @@ export default class App extends Component {
     } = this.state;
     return (
       <div className="body">
-        {/* Header */}
-        <header className="masthead text-center text-white">
+        {/* <header className="masthead text-center text-white">
           <div className="masthead-content">
             <div className="container">
               <div className="logo">
@@ -69,7 +68,7 @@ export default class App extends Component {
           <div className="bg-circle-1 bg-circle" />
           <div className="bg-circle-2 bg-circle" />
           <div className="bg-circle-3 bg-circle" />
-        </header>
+        </header> */}
         <section>
           <br />
           <br />
@@ -77,12 +76,10 @@ export default class App extends Component {
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
                 <TransformContext
-                  options={{
-                    limitToBounds,
-                    transformEnabled,
-                    disabled,
-                    limitToWrapper,
-                  }}
+                  limitToBounds={limitToBounds}
+                  transformEnabled={transformEnabled}
+                  disabled={disabled}
+                  limitToWrapper={limitToWrapper}
                   pan={{
                     disabled: !panningEnabled,
                     lockAxisX,
@@ -98,27 +95,28 @@ export default class App extends Component {
                     limitsOnWheel,
                   }}
                 >
-                  {({
-                    zoomIn,
-                    zoomOut,
-                    resetTransform,
-                    setDefaultState,
-                    positionX,
-                    positionY,
-                    scale,
-                    previousScale,
-                    options: { limitToBounds, transformEnabled, disabled },
-                    ...rest
-                  }) => (
+                  {() => (
+                    //   {
+                    //   zoomIn,
+                    //   zoomOut,
+                    //   resetTransform,
+                    //   setDefaultState,
+                    //   positionX,
+                    //   positionY,
+                    //   scale,
+                    //   previousScale,
+                    //   options: { limitToBounds, transformEnabled, disabled },
+                    //   ...rest
+                    // }
                     <React.Fragment>
-                      <div className="tools">
+                      {/* <div className="tools">
                         <button
                           className="btn-gradient yellow small btn-type"
                           data-testid="toggle-button"
-                          onClick={() => {
-                            setDefaultState();
-                            this.setState((p) => ({ type: !p.type }));
-                          }}
+                          // onClick={() => {
+                          //   setDefaultState();
+                          //   this.setState((p) => ({ type: !p.type }));
+                          // }}
                         >
                           {type ? "Div example" : "Image example"}
                         </button>
@@ -144,18 +142,16 @@ export default class App extends Component {
                         >
                           <img src={zoom_reset} alt="" />
                         </button>
-                      </div>
+                      </div> */}
                       <div className="element">
-                        {type ? (
-                          <TransformComponent>
-                            <img
-                              className="zoom"
-                              src={example_img}
-                              alt="example-element"
-                            />
-                          </TransformComponent>
-                        ) : (
-                          <TransformComponent>
+                        <TransformComponent>
+                          <img
+                            className="zoom"
+                            src={example_img}
+                            alt="example-element"
+                          />
+                        </TransformComponent>
+                        {/* <TransformComponent>
                             <div className="example-text">
                               <h1>Lorem ipsum</h1>
                               <p>
@@ -204,10 +200,9 @@ export default class App extends Component {
                                 Show alert!
                               </button>
                             </div>
-                          </TransformComponent>
-                        )}
+                          </TransformComponent> */}
                       </div>
-                      <div className="info">
+                      {/* <div className="info">
                         <h3>State</h3>
                         <h5>
                           <span className="badge badge-secondary">
@@ -360,7 +355,7 @@ export default class App extends Component {
                             <span /> Bound limits on wheel
                           </button>
                         </h6>
-                      </div>
+                      </div> */}
                     </React.Fragment>
                   )}
                 </TransformContext>
@@ -369,8 +364,7 @@ export default class App extends Component {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-5 bg-black">
+        {/* <footer className="py-5 bg-black">
           <div className="container">
             <p className="m-0 text-center text-white small">
               MIT LICENSE ©{" "}
@@ -383,7 +377,7 @@ export default class App extends Component {
               </a>
             </p>
           </div>
-        </footer>
+        </footer> */}
       </div>
     );
   }

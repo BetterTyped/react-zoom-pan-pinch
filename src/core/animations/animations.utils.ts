@@ -1,7 +1,7 @@
 import { animations } from "./animations.constants";
 
-import { ReactZoomPanPinchContext } from "../../models";
-import { AnimationType, TargetStateType } from "./animations.types";
+import { AnimationType } from "./animations.types";
+import { ReactZoomPanPinchContext } from "../../models/context.model";
 
 const handleCancelAnimationFrame = (animation: AnimationType | null) => {
   if (typeof animation === "number") {
@@ -57,12 +57,12 @@ export function handleSetupAnimation(
   requestAnimationFrame(contextInstance.animation);
 }
 
-export function animate({
-  contextInstance,
-  targetState,
-  animationTime,
-  animationName,
-}: TargetStateType): void {
+export function animate(
+  contextInstance: ReactZoomPanPinchContext,
+  targetState: { scale: number; positionX: number; positionY: number },
+  animationTime: number,
+  animationName: string,
+): void {
   if (!contextInstance.mounted) return;
   const { scale, positionX, positionY } = contextInstance.transformState;
 

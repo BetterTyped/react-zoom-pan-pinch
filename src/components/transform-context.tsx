@@ -1,39 +1,45 @@
 import React, { Component } from "react";
 
-import { ReactZoomPanPinchProps, ReactZoomPanPinchState } from "../models";
+import {
+  LibrarySetup,
+  ReactZoomPanPinchProps,
+  ReactZoomPanPinchState,
+} from "../models";
 import { BoundsType } from "../core/bounds/bounds.types";
 import { AnimationType } from "../core/animations/animations.types";
 
 import { getContext } from "../utils/context.utils";
 import { makePassiveEventOption } from "../utils/event.utils";
-import { cancelTimeout } from "../utils/helpers.utils";
 import { getTransformStyles } from "../utils/styles.utils";
 import { handleCallback } from "../utils/callback.utils";
 
 import {
-  contextInitialState,
+  initialSetup,
   initialState,
+  contextInitialState,
 } from "../constants/state.constants";
 
 import { handleCancelAnimation } from "../core/animations/animations.utils";
+import { isWheelAllowed } from "../core/zoom/wheel.utils";
+
 import {
+  handleWheelStart,
   handleWheelZoom,
-  handleWheelZoomStop,
-  isWheelAllowed,
-} from "../core/zoom/zoom.utils";
-import { handleCalculateBounds } from "../core/bounds/bounds.utils";
+  handleWheelStop,
+} from "../core/zoom/wheel.logic";
+
+// import { handleCalculateBounds } from "../core/bounds/bounds.utils";
 
 type StartCoordsType = { x: number; y: number } | null;
 
 const Context = React.createContext(contextInitialState);
 
-const wheelStopEventTime = 180;
-const wheelAnimationTime = 100;
-
 class TransformContext extends Component<ReactZoomPanPinchProps> {
   public mounted = true;
 
   public transformState: ReactZoomPanPinchState = initialState;
+
+  public setup: LibrarySetup = initialSetup;
 
   // Components
   public wrapperComponent: HTMLDivElement | null = null;
@@ -89,7 +95,7 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
   }
 
   // componentDidUpdate(oldProps: ReactZoomPanPinchProps) {
-  //   const { dynamicProps } = this.props;
+  //   const { dynamicProps } = this.setup;
   //   const { scale, limitToWrapper } = this.transformState;
 
   //   const hasPropsChanged = oldProps.dynamicProps !== dynamicProps;
@@ -114,43 +120,36 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
     // this.windowToWrapperScaleX = getWindowScaleX(wrapper);
     // this.windowToWrapperScaleY = getWindowScaleY(wrapper);
 
-    wrapper.addEventListener("wheel", this.onZoom, passive);
+    wrapper.addEventListener("wheel", this.onWheelZoom, passive);
     // wrapper.addEventListener("dblclick", this.onDbClick, passive);
     // wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     // wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     // wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitializeContentEvents = (content: HTMLDivElement) => {
-    const {
-      positionX,
-      positionY,
-      centerContent,
-      limitToBounds,
-      limitToWrapper,
-    } = this.props;
+  handleInitializeContentEvents = (_content: HTMLDivElement) => {
+    // const { centerContent, limitToBounds, limitToWrapper } = this.setup;
+    // const { scale, positionX, positionY } = this.transformState;
 
-    const { scale } = this.transformState;
+    // const shouldFitComponent = limitToBounds && !limitToWrapper;
+    // const shouldCenterComponent = centerContent && !positionX && !positionY;
 
-    const shouldFitComponent = limitToBounds && !limitToWrapper;
-    const shouldCenterComponent = centerContent && !positionX && !positionY;
+    // if (shouldFitComponent || shouldCenterComponent) {
+    //   // TODO CHECK THIS LOGIC
+    //   const x = 25;
+    //   const y = 25;
+    //   const s = scale;
 
-    if (shouldFitComponent || shouldCenterComponent) {
-      // TODO CHECK THIS LOGIC
-      const x = 25;
-      const y = 25;
-      const s = scale;
+    //   const { transform, webkitTransform } = getTransformStyles(x, y, s, "%");
 
-      const { transform, webkitTransform } = getTransformStyles(x, y, s, "%");
+    //   content.style.transform = transform;
+    //   content.style.webkitTransform = webkitTransform;
 
-      content.style.transform = transform;
-      content.style.webkitTransform = webkitTransform;
+    //   const bounds = handleCalculateBounds(this, scale);
 
-      const bounds = handleCalculateBounds(this, scale, false);
-
-      this.transformState.positionX = bounds.minPositionX;
-      this.transformState.positionY = bounds.minPositionY;
-    }
+    //   this.transformState.positionX = bounds.minPositionX;
+    //   this.transformState.positionY = bounds.minPositionY;
+    // }
 
     this.handleStylesUpdate();
     this.forceUpdate();
@@ -160,49 +159,16 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
   // Wheel
   //////////
 
-  onZoom = (event: WheelEvent): void => {
-    const { disabled } = this.props;
-    if (!disabled) return;
+  onWheelZoom = (event: WheelEvent): void => {
+    const { disabled } = this.setup;
+    if (disabled) return;
 
-    const isAllowed = isWheelAllowed(this, event, this.props);
+    const isAllowed = isWheelAllowed(this, event);
     if (!isAllowed) return;
 
-    const { scale } = this.transformState;
-    const { onWheelStart, onWheel, onWheelStop } = this.props;
-
-    // Wheel start event
-    if (!this.wheelStopEventTimer) {
-      this.lastScale = scale;
-      handleCancelAnimation(this);
-      handleCallback(onWheelStart, getContext(this));
-    }
-
-    // Wheel event
+    handleWheelStart(this);
     handleWheelZoom(this, event);
-    handleCallback(onWheel, getContext(this));
-    this.handleStylesUpdate();
-    // TODO Somtehing wrong in here
-    this.previousWheelEvent = event;
-    this.lastScale = this.transformState.scale;
-
-    // fire animation
-    cancelTimeout(this.wheelAnimationTimer);
-    this.wheelAnimationTimer = setTimeout(() => {
-      if (!this.mounted) return;
-      // handlePaddingAnimation(this, event);
-      this.wheelAnimationTimer = null;
-    }, wheelAnimationTime);
-
-    // Wheel stop event
-    const hasStoppedZooming = handleWheelZoomStop(this, event);
-    if (hasStoppedZooming) {
-      cancelTimeout(this.wheelStopEventTimer);
-      this.wheelStopEventTimer = setTimeout(() => {
-        if (!this.mounted) return;
-        handleCallback(onWheelStop, getContext(this));
-        this.wheelStopEventTimer = null;
-      }, wheelStopEventTime);
-    }
+    handleWheelStop(this, event);
   };
 
   // //////////
@@ -239,7 +205,7 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
   //   handleCancelAnimation(this);
   //   handleRecalculateBounds(this, scale, limitToWrapper);
   //   handleSetUpPanning(this, event);
-  //   handleCallback(this.props.onPanningStart, getContext(this));
+  //   handleCallback(this.setup.onPanningStart, getContext(this));
   // };
 
   // onPanning = (event: MouseEvent) => {
@@ -249,12 +215,12 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
   //   event.stopPropagation();
   //   handleVelocity(this, event);
   //   handlePanning(this, event);
-  //   handleCallback(this.props.onPanning, getContext(this));
+  //   handleCallback(this.setup.onPanning, getContext(this));
   // };
 
   // onPanningStop = (): void => {
   //   if (!this.isMouseDown) return;
-  //   handleCallback(this.props.onPanningStop, getContext(this));
+  //   handleCallback(this.setup.onPanningStop, getContext(this));
   //   handleVelocityStart(this);
   //   handlePanningAnimation(this);
   // };
@@ -269,12 +235,12 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
 
   //   handlePinchStart(this, event);
   //   handleCancelAnimation(this);
-  //   handleCallback(this.props.onPinchingStart, getContext(this));
+  //   handleCallback(this.setup.onPinchingStart, getContext(this));
   // };
 
   // onPinch = (event) => {
   //   handleZoomPinch(this, event);
-  //   handleCallback(this.props.onPinching, getContext(this));
+  //   handleCallback(this.setup.onPinching, getContext(this));
   // };
 
   // onPinchStop = () => {
@@ -282,7 +248,7 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
 
   //   handlePinchStop(this, event);
   //   handlePaddingAnimation(this);
-  //   handleCallback(this.props.onPinchingStop, getContext(this));
+  //   handleCallback(this.setup.onPinchingStop, getContext(this));
   // };
 
   // //////////
@@ -340,7 +306,7 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
     posY?: number,
   ): void => {
     if (!this.mounted || !this.contentComponent) return;
-    const { onZoomChange } = this.props;
+    const { onZoomChange } = this.setup;
     const { scale, positionX, positionY } = this.transformState;
 
     // TODO check
@@ -378,3 +344,5 @@ class TransformContext extends Component<ReactZoomPanPinchProps> {
 }
 
 export { Context, TransformContext };
+
+export default TransformContext;

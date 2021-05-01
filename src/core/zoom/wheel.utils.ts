@@ -1,4 +1,4 @@
-import { ReactZoomPanPinchContext, ContextProps } from "../../models";
+import { ReactZoomPanPinchContext } from "../../models";
 import { BoundsType } from "../bounds/bounds.types";
 import { PositionType } from "../../models";
 
@@ -8,17 +8,21 @@ import {
   handleCalculateBounds,
 } from "../bounds/bounds.utils";
 
-export const handleWheelZoom = (
+export const useWheelZoom = (
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): void => {
+  const { contentComponent } = contextInstance;
+  const { scale } = contextInstance.transformState;
   const {
-    scale,
-    contentComponent,
     limitToBounds,
     scalePadding: { size, disabled },
     wheel: { step, limitsOnWheel },
-  } = contextInstance.transformState;
+  } = contextInstance.setup;
+
+  if (!contentComponent) {
+    throw new Error("Component not mounted");
+  }
 
   event.preventDefault();
   event.stopPropagation();
@@ -34,11 +38,7 @@ export const handleWheelZoom = (
   // if scale not change
   if (scale === newScale) return;
 
-  const bounds = handleCalculateBounds(
-    contextInstance,
-    newScale,
-    !limitsOnWheel,
-  );
+  const bounds = handleCalculateBounds(contextInstance, newScale);
 
   const mousePosition = wheelMousePosition(event, contentComponent, scale);
 
@@ -63,14 +63,18 @@ export const handleWheelZoom = (
 };
 
 export const isWheelAllowed = (
-  classInstance: ReactZoomPanPinchContext,
+  contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
-  props: ContextProps,
 ): boolean => {
-  const { disabled, wheelEnabled, touchPadEnabled } = props.wheel;
+  const {
+    disabled,
+    wheelEnabled,
+    touchPadEnabled,
+  } = contextInstance.setup.wheel;
+  const { isInitialized, isMouseDown } = contextInstance;
+
   const isDisabled = disabled;
-  const isAllowed =
-    !classInstance.isInitialized || classInstance.isMouseDown || !isDisabled;
+  const isAllowed = !isInitialized || isMouseDown || !isDisabled;
 
   // Check if it's possible to perform wheel event
   if (!isAllowed) return false;
@@ -134,12 +138,8 @@ export function handleCalculatePositions(
   bounds: BoundsType,
   limitToBounds: boolean,
 ): PositionType {
-  const {
-    scale,
-    positionX,
-    positionY,
-    options: { transformEnabled },
-  } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { transformEnabled } = contextInstance.setup;
 
   const scaleDifference = newScale - scale;
 
@@ -178,13 +178,17 @@ function handleCalculateZoom(
   getTarget?: boolean,
   isBtnFunction?: boolean,
 ): number {
+  const { scale } = contextInstance.transformState;
+  const { wrapperComponent } = contextInstance;
   const {
-    scale,
     maxScale,
     minScale,
-    wrapperComponent,
     scalePadding: { size, disabled },
-  } = contextInstance.transformState;
+  } = contextInstance.setup;
+
+  if (!wrapperComponent) {
+    throw new Error("Wrapper is not mounted");
+  }
 
   let targetScale = null;
 
@@ -219,7 +223,8 @@ export const handleWheelZoomStop = (
   event: WheelEvent,
 ): boolean => {
   const { previousWheelEvent } = contextInstance;
-  const { scale, maxScale, minScale } = contextInstance.transformState;
+  const { scale } = contextInstance.transformState;
+  const { maxScale, minScale } = contextInstance.setup;
 
   if (!previousWheelEvent) return false;
   if (scale < maxScale || scale > minScale) return true;

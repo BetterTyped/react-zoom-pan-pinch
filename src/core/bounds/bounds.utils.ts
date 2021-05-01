@@ -1,6 +1,6 @@
 import { roundNumber } from "../../utils";
 
-import { ContextProps } from "../../models";
+import { ReactZoomPanPinchContext } from "../../models";
 import { BoundsType, ComponentsSizesType } from "./bounds.types";
 
 export function getComponentsSizes(
@@ -54,12 +54,15 @@ export const getBounds = (
 };
 
 export const handleCalculateBounds = (
-  contextInstance: ContextInstanceType,
+  contextInstance: ReactZoomPanPinchContext,
   newScale: number,
-  props: ContextProps,
 ): BoundsType => {
-  const { wrapperComponent, contentComponent } = contextInstance.transformState;
-  const { limitToWrapper } = props;
+  const { wrapperComponent, contentComponent } = contextInstance;
+  const { limitToWrapper } = contextInstance.setup;
+
+  if (!wrapperComponent || !contentComponent) {
+    throw new Error("Components are not mounted");
+  }
 
   const {
     wrapperWidth,
@@ -77,7 +80,7 @@ export const handleCalculateBounds = (
     wrapperHeight,
     newContentHeight,
     newDiffHeight,
-    limitToWrapper,
+    Boolean(limitToWrapper),
   );
 
   // Save bounds

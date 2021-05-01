@@ -18,6 +18,6 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
+  "include": ["src", "old-lib/pan", "old-lib/_components"],
   "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
 }

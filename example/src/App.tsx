@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { TransformComponent, TransformContext } from "react-zoom-pan-pinch";
 import zoom_in from "./images/zoom-in.svg";
 import zoom_out from "./images/zoom-out.svg";
 import zoom_reset from "./images/zoom-reset.svg";
@@ -25,8 +25,8 @@ export default class App extends Component {
     limitsOnWheel: false,
   };
 
-  toggleSetting = type => {
-    this.setState(p => ({ [type]: !p[type] }));
+  toggleSetting = (type) => {
+    this.setState((p) => ({ [type]: !p[type] }));
   };
 
   render() {
@@ -76,7 +76,7 @@ export default class App extends Component {
           <div className="container">
             <div className="row align-items-center">
               <div className="col-lg-12 order-lg-2 example">
-                <TransformWrapper
+                <TransformContext
                   options={{
                     limitToBounds,
                     transformEnabled,
@@ -117,7 +117,7 @@ export default class App extends Component {
                           data-testid="toggle-button"
                           onClick={() => {
                             setDefaultState();
-                            this.setState(p => ({ type: !p.type }));
+                            this.setState((p) => ({ type: !p.type }));
                           }}
                         >
                           {type ? "Div example" : "Image example"}
@@ -363,7 +363,7 @@ export default class App extends Component {
                       </div>
                     </React.Fragment>
                   )}
-                </TransformWrapper>
+                </TransformContext>
               </div>
             </div>
           </div>

@@ -58,7 +58,7 @@ const easeInOutQuint = function (t: number): number {
   return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
 };
 
-export const availableAnimations = {
+export const animations = {
   easeOut,
   linear,
   easeInQuad,

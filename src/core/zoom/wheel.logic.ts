@@ -3,7 +3,7 @@ import { handleCallback } from "../../utils/callback.utils";
 import { getContext } from "../../utils/context.utils";
 import { cancelTimeout } from "../../utils/helpers.utils";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
-import { handleAlignPositionAnimation } from "../pan/pan.logic";
+import { handleAlignToBounds } from "../pan/panning.logic";
 import { handleWheelZoomStop, useWheelZoom } from "./wheel.utils";
 import { handleZoomToPoint } from "./zoom.logic";
 
@@ -31,9 +31,9 @@ export const handleWheelZoom = (
 
   useWheelZoom(contextInstance, event);
   handleCallback(onWheel, getContext(contextInstance));
-  contextInstance.handleStylesUpdate();
   contextInstance.previousWheelEvent = event;
   contextInstance.lastScale = contextInstance.transformState.scale;
+  contextInstance.applyTransformation();
 };
 
 export const handleWheelStop = (
@@ -46,7 +46,7 @@ export const handleWheelStop = (
   cancelTimeout(contextInstance.wheelAnimationTimer);
   contextInstance.wheelAnimationTimer = setTimeout(() => {
     if (!contextInstance.mounted) return;
-    handleAlignScaleAnimation(contextInstance, event);
+    handleAlignToScaleBounds(contextInstance, event);
     contextInstance.wheelAnimationTimer = null;
   }, wheelAnimationTime);
 
@@ -62,20 +62,20 @@ export const handleWheelStop = (
   }
 };
 
-export function handleAlignScaleAnimation(
+export function handleAlignToScaleBounds(
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): void {
   const { scale } = contextInstance.transformState;
   const { wrapperComponent } = contextInstance;
-  const { minScale, limitToBounds, scalePadding } = contextInstance.setup;
-  const { disabled, animationTime, animationType } = scalePadding;
+  const { minScale, limitToBounds, zoomAnimation } = contextInstance.setup;
+  const { disabled, animationTime, animationType } = zoomAnimation;
 
   const isDisabled = disabled || scale >= minScale;
 
   if (scale >= 1 || limitToBounds) {
     // fire fit to bounds animation
-    handleAlignPositionAnimation(contextInstance);
+    handleAlignToBounds(contextInstance);
   }
 
   if (isDisabled || !wrapperComponent || !contextInstance.mounted) return;

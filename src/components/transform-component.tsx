@@ -20,7 +20,7 @@ const TransformComponent: React.FC<Props> = ({ children }: Props) => {
     if (wrapper !== null && content !== null && setComponents) {
       setComponents(wrapper, content);
     }
-  }, [setComponents]);
+  }, []);
 
   return (
     <div

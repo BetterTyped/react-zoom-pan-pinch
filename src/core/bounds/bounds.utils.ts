@@ -1,6 +1,6 @@
 import { roundNumber } from "../../utils";
 
-import { ReactZoomPanPinchContext } from "../../models";
+import { PositionType, ReactZoomPanPinchContext } from "../../models";
 import { BoundsType, ComponentsSizesType } from "./bounds.types";
 
 export function getComponentsSizes(
@@ -95,14 +95,16 @@ export function getMouseBoundedPosition(
   limitToBounds: boolean,
   paddingValue: number,
   wrapperComponent: HTMLDivElement | null,
-): { x: number; y: number } {
+): PositionType {
   const { minPositionX, minPositionY, maxPositionX, maxPositionY } = bounds;
-  const paddingX = wrapperComponent
-    ? (paddingValue * wrapperComponent.offsetWidth) / 100
-    : 0;
-  const paddingY = wrapperComponent
-    ? (paddingValue * wrapperComponent.offsetHeight) / 100
-    : 0;
+
+  let paddingX = 0;
+  let paddingY = 0;
+
+  if (wrapperComponent) {
+    paddingX = (paddingValue * wrapperComponent.offsetWidth) / 100;
+    paddingY = (paddingValue * wrapperComponent.offsetHeight) / 100;
+  }
 
   const x = boundLimiter(
     positionX,

@@ -15,7 +15,7 @@ export const handleCancelAnimation = (
   if (!contextInstance.mounted) return;
   handleCancelAnimationFrame(contextInstance.animation);
   // Clear animation state
-  contextInstance.animate = null;
+  contextInstance.animate = false;
   contextInstance.animation = null;
   contextInstance.velocity = null;
 };
@@ -76,7 +76,7 @@ export function animate(
     contextInstance.transformState.scale = targetState.scale;
     contextInstance.transformState.positionX = targetState.positionX;
     contextInstance.transformState.positionY = targetState.positionY;
-    contextInstance.handleStylesUpdate();
+    contextInstance.applyTransformation();
   } else {
     // animation start timestamp
     handleSetupAnimation(
@@ -93,7 +93,7 @@ export function animate(
           positionY + positionYDiff * step;
 
         // apply animation changes
-        contextInstance.handleStylesUpdate();
+        contextInstance.applyTransformation();
       },
     );
   }

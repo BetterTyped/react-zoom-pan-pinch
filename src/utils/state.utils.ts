@@ -1,12 +1,17 @@
-import { ReactZoomPanPinchProps } from "../models/context.model";
+import {
+  ReactZoomPanPinchProps,
+  ReactZoomPanPinchState,
+} from "../models/context.model";
 import { initialState } from "../constants/state.constants";
 
 export const createState = (
   _props: ReactZoomPanPinchProps,
-): NonNullable<ReactZoomPanPinchProps> => {
+): ReactZoomPanPinchState => {
   return initialState;
 };
 
-export const updateDynamicProps = (): ReactZoomPanPinchProps => {
-  return {};
+export const updateDynamicProps = (
+  props: ReactZoomPanPinchProps,
+): ReactZoomPanPinchProps => {
+  return props;
 };

@@ -1,4 +1,5 @@
 import React from "react";
+
 import { TransformContext } from "../components/transform-context";
 import { animations } from "../core/animations/animations.constants";
 import { DeepNonNullable } from "./helpers.model";
@@ -24,6 +25,7 @@ export type ReactZoomPanPinchSetters = {
 };
 
 export type ReactZoomPanPinchProps = {
+  ref?: any;
   scale?: number;
   positionX?: number;
   positionY?: number;
@@ -41,45 +43,25 @@ export type ReactZoomPanPinchProps = {
   wrapperClass?: string;
   contentClass?: string;
   wheel?: {
-    disabled?: boolean;
     step?: number;
-    wheelEnabled?: boolean;
-    touchPadEnabled?: boolean;
-    limitsOnWheel?: boolean;
-  };
-  pan?: {
     disabled?: boolean;
-    velocity?: boolean;
-    panAnimationType?: keyof typeof animations;
-    velocityEqualToMove?: boolean;
-    velocitySensitivity?: number;
-    velocityActiveScale?: number;
-    velocityMinSpeed?: number;
-    velocityBaseTime?: number;
+    wheelDisabled?: boolean;
+    touchPadDisabled?: boolean;
+    activationKeys?: string[];
+    excluded?: string[];
+  };
+  panning?: {
+    disabled?: boolean;
+    velocityDisabled?: boolean;
     lockAxisX?: boolean;
     lockAxisY?: boolean;
-    padding?: boolean;
-    paddingSize?: number;
-    animationTime?: number;
-    animationType?: keyof typeof animations;
+    activationKeys?: string[];
+    excluded?: string[];
   };
   pinch?: {
-    disabled?: boolean;
     step?: number;
-  };
-  zoomIn?: {
     disabled?: boolean;
-    step?: number;
-    animation?: boolean;
-    animationTime?: number;
-    animationType?: keyof typeof animations;
-  };
-  zoomOut?: {
-    disabled?: boolean;
-    step?: number;
-    animation?: boolean;
-    animationTime?: number;
-    animationType?: keyof typeof animations;
+    excluded?: string[];
   };
   doubleClick?: {
     disabled?: boolean;
@@ -89,24 +71,23 @@ export type ReactZoomPanPinchProps = {
     animationTime?: number;
     animationType?: keyof typeof animations;
   };
-  reset?: {
-    disabled?: boolean;
-    step?: number;
-    animation?: boolean;
-    animationTime?: number;
-    animationType?: keyof typeof animations;
-  };
-  zoomAnimations?: {
+  zoomAnimation?: {
     disabled?: boolean;
     size?: number;
     animationTime?: number;
     animationType?: keyof typeof animations;
   };
-  scalePadding?: {
+  alignmentAnimation?: {
     disabled?: boolean;
     size?: number;
     animationTime?: number;
     animationType?: keyof typeof animations;
+  };
+  velocityAnimation: {
+    disabled?: boolean;
+    animationTime?: number;
+    animationType?: keyof typeof animations;
+    equalToMove?: boolean;
   };
   children?: React.ReactNode;
   defaultPositionX?: number;
@@ -135,6 +116,7 @@ export type LibrarySetup = Pick<
   DeepNonNullable<
     Omit<
       ReactZoomPanPinchProps,
+      | "ref"
       | "scale"
       | "positionX"
       | "positionY"

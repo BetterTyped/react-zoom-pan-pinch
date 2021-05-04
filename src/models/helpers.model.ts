@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-export type PositionType = {
-  x: number;
-  y: number;
-};
-
 export type DeepNonNullable<T> = T extends (...args: any[]) => any
   ? T
   : T extends any[]

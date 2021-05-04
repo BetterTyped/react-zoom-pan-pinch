@@ -8,17 +8,51 @@ import {
   handleCalculateBounds,
 } from "../bounds/bounds.utils";
 
+export const isWheelAllowed = (
+  contextInstance: ReactZoomPanPinchContext,
+  event: WheelEvent,
+): boolean => {
+  const {
+    disabled,
+    wheelDisabled,
+    touchPadDisabled,
+    excluded,
+  } = contextInstance.setup.wheel;
+  const { isInitialized, isMouseDown } = contextInstance;
+
+  const target = event.target as HTMLElement;
+  const isAllowed = isInitialized && !isMouseDown && !disabled && target;
+
+  if (!isAllowed) return false;
+  // Event ctrlKey detects if touchpad action is executing wheel or pinch gesture
+  if (wheelDisabled && !event.ctrlKey) return false;
+  if (touchPadDisabled && event.ctrlKey) return false;
+
+  const targetTagName = target.tagName.toUpperCase();
+  const isExcludedTag = excluded.find(
+    (tag) => tag.toUpperCase() === targetTagName,
+  );
+
+  if (isExcludedTag) return false;
+
+  const isExcludedClassName = excluded.find((tag) =>
+    target.classList.contains(tag),
+  );
+
+  if (isExcludedClassName) return false;
+
+  return true;
+};
+
 export const useWheelZoom = (
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): void => {
-  const { contentComponent } = contextInstance;
-  const { scale } = contextInstance.transformState;
-  const {
-    limitToBounds,
-    scalePadding: { size, disabled },
-    wheel: { step, limitsOnWheel },
-  } = contextInstance.setup;
+  const { contentComponent, setup, transformState } = contextInstance;
+  const { scale } = transformState;
+  const { limitToBounds, limitToWrapper, zoomAnimation, wheel } = setup;
+  const { size, disabled } = zoomAnimation;
+  const { step } = wheel;
 
   if (!contentComponent) {
     throw new Error("Component not mounted");
@@ -43,7 +77,7 @@ export const useWheelZoom = (
   const mousePosition = wheelMousePosition(event, contentComponent, scale);
 
   const isLimitedToBounds =
-    limitToBounds && (disabled || size === 0 || limitsOnWheel);
+    limitToBounds && (disabled || size === 0 || limitToWrapper);
 
   const { x, y } = handleCalculatePositions(
     contextInstance,
@@ -59,30 +93,7 @@ export const useWheelZoom = (
   contextInstance.transformState.scale = newScale;
   contextInstance.transformState.positionX = x;
   contextInstance.transformState.positionY = y;
-  contextInstance.handleStylesUpdate();
-};
-
-export const isWheelAllowed = (
-  contextInstance: ReactZoomPanPinchContext,
-  event: WheelEvent,
-): boolean => {
-  const {
-    disabled,
-    wheelEnabled,
-    touchPadEnabled,
-  } = contextInstance.setup.wheel;
-  const { isInitialized, isMouseDown } = contextInstance;
-
-  const isDisabled = disabled;
-  const isAllowed = !isInitialized || isMouseDown || !isDisabled;
-
-  // Check if it's possible to perform wheel event
-  if (!isAllowed) return false;
-  // Event ctrlKey detects if touchpad action is executing wheel or pinch gesture
-  if (!wheelEnabled && !event.ctrlKey) return false;
-  if (!touchPadEnabled && event.ctrlKey) return false;
-
-  return true;
+  contextInstance.applyTransformation();
 };
 
 export function checkZoomBounds(
@@ -179,12 +190,9 @@ function handleCalculateZoom(
   isBtnFunction?: boolean,
 ): number {
   const { scale } = contextInstance.transformState;
-  const { wrapperComponent } = contextInstance;
-  const {
-    maxScale,
-    minScale,
-    scalePadding: { size, disabled },
-  } = contextInstance.setup;
+  const { wrapperComponent, setup } = contextInstance;
+  const { maxScale, minScale, zoomAnimation } = setup;
+  const { size, disabled } = zoomAnimation;
 
   if (!wrapperComponent) {
     throw new Error("Wrapper is not mounted");

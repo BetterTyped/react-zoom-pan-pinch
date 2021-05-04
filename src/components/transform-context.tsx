@@ -6,9 +6,10 @@ import {
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
   VelocityType,
+  ReactZoomPanPinchContext,
+  BoundsType,
+  AnimationType,
 } from "../models";
-import { BoundsType } from "../core/bounds/bounds.types";
-import { AnimationType } from "../core/animations/animations.types";
 
 import { getContext } from "../utils/context.utils";
 import { makePassiveEventOption } from "../utils/event.utils";
@@ -39,13 +40,21 @@ import {
   handlePanningEnd,
   handlePanningStart,
 } from "../core/pan/panning.logic";
+import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
+import {
+  handlePinchStart,
+  handlePinchStop,
+  handlePinchZoom,
+} from "../core/pinch/pinch.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 
 const Context = React.createContext(contextInitialState);
 
 class TransformContext extends Component<
-  ReactZoomPanPinchProps & { setRef: (values: any) => void }
+  ReactZoomPanPinchProps & {
+    setRef: (context: ReactZoomPanPinchContext) => void;
+  }
 > {
   public mounted = true;
 
@@ -58,36 +67,27 @@ class TransformContext extends Component<
   public contentComponent: HTMLDivElement | null = null;
   // Initialization
   public isInitialized = false;
-  // Scale helpers
-  public windowToWrapperScaleX = 0;
-  public windowToWrapperScaleY = 0;
-  // panning helpers
-  public startCoords: StartCoordsType = null;
-  public isMouseDown = false;
-  // pinch helpers
-  public pinchStartDistance = null;
-  public lastDistance = null;
-  public pinchStartScale = null;
-  public distance = null;
   public bounds: BoundsType | null = null;
-  // velocity helpers
-  public velocityTime: number | null = null;
-  public lastMousePosition: PositionType | null = null;
-  public velocity: VelocityType | null = null;
-  public velocityModifier: any | null = null;
-  public offsetX: number | null = null;
-  public offsetY: number | null = null;
-  public throttle: ReturnType<typeof setTimeout> | null = null;
   // wheel helpers
   public previousWheelEvent: WheelEvent | null = null;
-  public lastScale: number | null = null;
+  public wheelStopEventTimer: ReturnType<typeof setTimeout> | null = null;
+  public wheelAnimationTimer: ReturnType<typeof setTimeout> | null = null;
+  // panning helpers
+  public isPanning = false;
+  public startCoords: StartCoordsType = null;
+  // pinch helpers
+  public distance: null | number = null;
+  public lastDistance: null | number = null;
+  public pinchStartDistance: null | number = null;
+  public pinchStartScale: null | number = null;
+  // velocity helpers
+  public velocity: VelocityType | null = null;
+  public velocityTime: number | null = null;
+  public lastMousePosition: PositionType | null = null;
   // animations helpers
   public animate = false;
   public animation: AnimationType | null = null;
   public maxBounds: BoundsType | null = null;
-  // wheel event timers
-  public wheelStopEventTimer: ReturnType<typeof setTimeout> | null = null;
-  public wheelAnimationTimer: ReturnType<typeof setTimeout> | null = null;
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
@@ -138,9 +138,6 @@ class TransformContext extends Component<
     // Zooming events on wrapper
     const passive = makePassiveEventOption();
 
-    // this.windowToWrapperScaleX = getWindowScaleX(wrapper);
-    // this.windowToWrapperScaleY = getWindowScaleY(wrapper);
-
     wrapper.addEventListener("wheel", this.onWheelZoom, passive);
     // wrapper.addEventListener("dblclick", this.onDbClick, passive);
     // wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
@@ -177,7 +174,7 @@ class TransformContext extends Component<
   };
 
   //////////
-  // Wheel
+  // Zoom
   //////////
 
   onWheelZoom = (event: WheelEvent): void => {
@@ -196,11 +193,12 @@ class TransformContext extends Component<
   };
 
   //////////
-  // Panning
+  // Pan
   //////////
 
   onPanningStart = (event: MouseEvent): void => {
     const { disabled } = this.setup;
+    const { onPanningStart } = this.props;
     if (disabled) return;
 
     const isAllowed = isPanningStartAllowed(this, event);
@@ -209,12 +207,17 @@ class TransformContext extends Component<
     const keysPressed = this.isPressingKeys(this.setup.wheel.activationKeys);
     if (!keysPressed) return;
 
+    event.preventDefault();
+    event.stopPropagation();
+
     handleCancelAnimation(this);
     handlePanningStart(this, event);
+    handleCallback(getContext(this), onPanningStart);
   };
 
   onPanning = (event: MouseEvent): void => {
     const { disabled } = this.setup;
+    const { onPanning } = this.props;
 
     if (disabled) return;
 
@@ -227,75 +230,125 @@ class TransformContext extends Component<
     event.preventDefault();
     event.stopPropagation();
 
-    // handleVelocityCalculations(this, event);
     handlePanning(this, event.clientX, event.clientY);
+    handleCallback(getContext(this), onPanning);
   };
 
   onPanningStop = (): void => {
-    if (!this.isMouseDown) return;
+    const { onPanningStop } = this.props;
 
-    handlePanningEnd(this);
+    if (this.isPanning) {
+      handlePanningEnd(this);
+      handleCallback(getContext(this), onPanningStop);
+    }
   };
 
-  // //////////
-  // // Pinch
-  // //////////
+  //////////
+  // Pinch
+  //////////
 
-  // onPinchStart = (event) => {
-  //   event.preventDefault();
-  //   event.stopPropagation();
+  onPinchStart = (event: TouchEvent): void => {
+    const { disabled } = this.setup;
+    const { onPinchingStart, onZoomStart } = this.props;
+    if (disabled) return;
 
-  //   handlePinchStart(this, event);
-  //   handleCancelAnimation(this);
-  //   handleCallback(this.setup.onPinchingStart, getContext(this));
-  // };
+    const isAllowed = isPinchStartAllowed(this, event);
+    if (!isAllowed) return;
 
-  // onPinch = (event) => {
-  //   handleZoomPinch(this, event);
-  //   handleCallback(this.setup.onPinching, getContext(this));
-  // };
+    event.preventDefault();
+    event.stopPropagation();
 
-  // onPinchStop = () => {
-  //   if (!this.pinchStartScale) return;
+    handlePinchStart(this, event);
+    handleCancelAnimation(this);
+    handleCallback(getContext(this), onPinchingStart);
+    handleCallback(getContext(this), onZoomStart);
+  };
 
-  //   handlePinchStop(this, event);
-  //   handlePaddingAnimation(this);
-  //   handleCallback(this.setup.onPinchingStop, getContext(this));
-  // };
+  onPinch = (event: TouchEvent): void => {
+    const { disabled } = this.setup;
+    const { onPinching, onZoom } = this.props;
 
-  // //////////
-  // // Touch Events
-  // //////////
+    if (disabled) return;
 
-  // onTouchPanningStart = (event: TouchEvent) => {
-  //   const isAllowed = getTouchPanningStartAllowed(this);
-  //   if (!isAllowed) return;
+    const isAllowed = isPinchAllowed(this);
+    if (!isAllowed) return;
 
-  //   handleCancelAnimation(this);
+    event.preventDefault();
+    event.stopPropagation();
 
-  //   const isPanningAction = touches?.length === 1;
-  //   const isPinchAction = touches?.length === 2;
+    handlePinchZoom(this, event);
+    handleCallback(getContext(this), onPinching);
+    handleCallback(getContext(this), onZoom);
+  };
 
-  //   if (isPanningAction) return this.handleStartPanning(event);
-  //   if (isPinchAction) return this.handlePinchStart(event);
-  // };
+  onPinchStop = (): void => {
+    const { onPinchingStop, onZoomStop } = this.props;
+    if (!this.pinchStartScale && !this.isPanning) return;
 
-  // onTouchPanning = (event: TouchEvent) => {
-  //   const { pan, pinch, options } = this.transformState;
-  //   const isAllowed = options.disabled;
-  //   if (!isAllowed) return;
+    handlePinchStop(this);
+    handleCallback(getContext(this), onPinchingStop);
+    handleCallback(getContext(this), onZoomStop);
+  };
 
-  //   const isPanningAction = !pan.disabled && event.touches.length === 1;
-  //   const isPinchAction = !pinch.disabled && event.touches.length === 2;
+  //////////
+  // Touch
+  //////////
 
-  //   if (isPanningAction) return this.handlePanning(event);
-  //   if (isPinchAction) return this.handlePinch(event);
-  // };
+  onTouchPanningStart = (event: TouchEvent): void => {
+    const { disabled } = this.setup;
+    const { onPanningStart } = this.props;
 
-  // onTouchPanningStop = () => {
-  //   this.onPanningStop();
-  //   this.onPinchStop();
-  // };
+    if (disabled) return;
+
+    const isAllowed = isPanningStartAllowed(this, event);
+    if (!isAllowed) return;
+
+    handleCancelAnimation(this);
+
+    const { touches } = event;
+
+    const isPanningAction = touches.length === 1;
+    const isPinchAction = touches.length === 2;
+
+    if (isPanningAction) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      handleCancelAnimation(this);
+      handlePanningStart(this, event);
+      handleCallback(getContext(this), onPanningStart);
+    }
+    if (isPinchAction) {
+      this.onPinchStart(event);
+    }
+  };
+
+  onTouchPanning = (event: TouchEvent): void => {
+    const { disabled } = this.setup;
+    const { onPanning } = this.props;
+
+    const isPanningAction = event.touches.length === 1;
+    const isPinchAction = event.touches.length === 2;
+
+    if (isPanningAction) {
+      if (disabled) return;
+
+      const isAllowed = isPanningAllowed(this);
+      if (!isAllowed) return;
+
+      const touch = event.touches[0];
+      handlePanning(this, touch.clientX, touch.clientY);
+      handleCallback(getContext(this), onPanning);
+    }
+    if (isPinchAction) {
+      this.onPinch(event);
+    }
+  };
+
+  onTouchPanningStop = (): void => {
+    this.onPinchStop();
+    this.onPanningStop();
+  };
 
   //////////
   // Helpers
@@ -309,11 +362,11 @@ class TransformContext extends Component<
     this.pressedKeys[e.key] = false;
   };
 
-  isPressingKeys = (requiredKeys: string[]): boolean => {
-    if (!requiredKeys.length) {
+  isPressingKeys = (keys: string[]): boolean => {
+    if (!keys.length) {
       return true;
     }
-    return Boolean(requiredKeys.find((key) => this.pressedKeys[key]));
+    return Boolean(keys.find((key) => this.pressedKeys[key]));
   };
 
   setComponents = (
@@ -327,38 +380,27 @@ class TransformContext extends Component<
     this.isInitialized = true;
   };
 
-  applyTransformation = (
-    customScale?: number,
-    customPosX?: number,
-    customPosY?: number,
-  ): void => {
+  applyTransformation = (): void => {
     if (!this.mounted || !this.contentComponent) return;
-    const { onZoomChange } = this.setup;
     const { scale, positionX, positionY } = this.transformState;
 
-    // TODO check
-    const newPositionX = customPosX || positionX;
-    const newPositionY = customPosY || positionY;
-    const newScale = customScale || scale;
-    const { transform } = getTransformStyles(
-      newPositionX,
-      newPositionY,
-      newScale,
-    );
+    const newPositionX = positionX;
+    const newPositionY = positionY;
+    const newScale = scale;
+    const transform = getTransformStyles(newPositionX, newPositionY, newScale);
 
     this.contentComponent.style.transform = transform;
 
     // force update to inject state to the context and avoid async set state causing animations problems
     this.forceUpdate();
     this.handleRef();
-    handleCallback(onZoomChange, getContext(this));
   };
 
-  handleRef = () => {
+  handleRef = (): void => {
     this.props.setRef(getContext(this));
   };
 
-  render() {
+  render(): JSX.Element {
     const value = getContext(this);
     const { children } = this.props;
     const content = typeof children === "function" ? children(value) : children;
@@ -379,7 +421,7 @@ class TransformContext extends Component<
 }
 
 export default React.forwardRef((props: ReactZoomPanPinchProps, ref: any) => {
-  const [innerRef, setRef] = useState(null);
+  const [innerRef, setRef] = useState<any>(null);
 
   useImperativeHandle(ref, () => innerRef, [innerRef]);
 

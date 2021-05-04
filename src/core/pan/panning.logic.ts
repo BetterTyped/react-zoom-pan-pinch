@@ -7,6 +7,7 @@ import {
   handleNewPosition,
   handlePanningSetup,
   handlePanToBounds,
+  handleTouchPanningSetup,
 } from "./panning.utils";
 import {
   handleVelocityPanning,
@@ -15,13 +16,17 @@ import {
 
 export function handlePanningStart(
   contextInstance: ReactZoomPanPinchContext,
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
 ): void {
   const { scale } = contextInstance.transformState;
 
   handleCancelAnimation(contextInstance);
   handleCalculateBounds(contextInstance, scale);
-  handlePanningSetup(contextInstance, event);
+  if ((event as any).touches) {
+    handleTouchPanningSetup(contextInstance, event as TouchEvent);
+  } else {
+    handlePanningSetup(contextInstance, event as MouseEvent);
+  }
 }
 
 export function handlePanning(
@@ -43,21 +48,23 @@ export function handlePanning(
 export function handlePanningEnd(
   contextInstance: ReactZoomPanPinchContext,
 ): void {
-  if (contextInstance.isMouseDown) {
+  if (contextInstance.isPanning) {
     const { scale } = contextInstance.transformState;
     const { velocityDisabled } = contextInstance.setup.panning;
     const { velocity } = contextInstance;
 
-    contextInstance.isMouseDown = false;
+    contextInstance.isPanning = false;
     contextInstance.animate = false;
     contextInstance.animation = null;
-    // handleCallback(this.props.onPanningStop, this.getCallbackProps());
-
     contextInstance.forceUpdate();
 
     const isContentBiggerThanWrapper = scale > 1;
-
-    if (!velocityDisabled && velocity && isContentBiggerThanWrapper) {
+    if (
+      !velocityDisabled &&
+      velocity &&
+      velocity.total > 0.1 &&
+      isContentBiggerThanWrapper
+    ) {
       handleVelocityPanning(contextInstance);
     } else {
       handleAlignToBounds(contextInstance);

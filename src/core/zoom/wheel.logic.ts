@@ -2,10 +2,16 @@ import { ReactZoomPanPinchContext } from "../../models";
 import { handleCallback } from "../../utils/callback.utils";
 import { getContext } from "../../utils/context.utils";
 import { cancelTimeout } from "../../utils/helpers.utils";
-import { animate, handleCancelAnimation } from "../animations/animations.utils";
-import { handleAlignToBounds } from "../pan/panning.logic";
-import { handleWheelZoomStop, useWheelZoom } from "./wheel.utils";
-import { handleZoomToPoint } from "./zoom.logic";
+import { handleCancelAnimation } from "../animations/animations.utils";
+import { handleCalculateBounds } from "../bounds/bounds.utils";
+import {
+  getDelta,
+  handleCalculateWheelZoom,
+  handleWheelZoomStop,
+  wheelMousePosition,
+} from "./wheel.utils";
+import { handleAlignToScaleBounds } from "./zoom.logic";
+import { handleCalculateZoomPositions } from "./zoom.utils";
 
 const wheelStopEventTime = 160;
 const wheelAnimationTime = 100;
@@ -13,13 +19,12 @@ const wheelAnimationTime = 100;
 export const handleWheelStart = (
   contextInstance: ReactZoomPanPinchContext,
 ): void => {
-  const { scale } = contextInstance.transformState;
-  const { onWheelStart } = contextInstance.setup;
+  const { onWheelStart, onZoomStart } = contextInstance.props;
 
   if (!contextInstance.wheelStopEventTimer) {
-    contextInstance.lastScale = scale;
     handleCancelAnimation(contextInstance);
-    handleCallback(onWheelStart, getContext(contextInstance));
+    handleCallback(getContext(contextInstance), onWheelStart);
+    handleCallback(getContext(contextInstance), onZoomStart);
   }
 };
 
@@ -27,20 +32,63 @@ export const handleWheelZoom = (
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): void => {
-  const { onWheel } = contextInstance.setup;
+  const { onWheel, onZoom } = contextInstance.props;
 
-  useWheelZoom(contextInstance, event);
-  handleCallback(onWheel, getContext(contextInstance));
+  const { contentComponent, setup, transformState } = contextInstance;
+  const { scale } = transformState;
+  const { limitToBounds, limitToWrapper, zoomAnimation, wheel } = setup;
+  const { size, disabled } = zoomAnimation;
+  const { step } = wheel;
+
+  if (!contentComponent) {
+    throw new Error("Component not mounted");
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const delta = getDelta(event, null);
+  const newScale = handleCalculateWheelZoom(
+    contextInstance,
+    delta,
+    step,
+    !event.ctrlKey,
+  );
+
+  // if scale not change
+  if (scale === newScale) return;
+
+  const bounds = handleCalculateBounds(contextInstance, newScale);
+  const mousePosition = wheelMousePosition(event, contentComponent, scale);
+
+  const isPaddingDisabled = disabled || size === 0 || limitToWrapper;
+  const isLimitedToBounds = limitToBounds && isPaddingDisabled;
+
+  const { x, y } = handleCalculateZoomPositions(
+    contextInstance,
+    mousePosition.x,
+    mousePosition.y,
+    newScale,
+    bounds,
+    isLimitedToBounds,
+  );
+
   contextInstance.previousWheelEvent = event;
-  contextInstance.lastScale = contextInstance.transformState.scale;
+  contextInstance.transformState.previousScale = scale;
+  contextInstance.transformState.scale = newScale;
+  contextInstance.transformState.positionX = x;
+  contextInstance.transformState.positionY = y;
   contextInstance.applyTransformation();
+
+  handleCallback(getContext(contextInstance), onWheel);
+  handleCallback(getContext(contextInstance), onZoom);
 };
 
 export const handleWheelStop = (
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): void => {
-  const { onWheelStop } = contextInstance.setup;
+  const { onWheelStop, onZoomStop } = contextInstance.props;
 
   // fire animation
   cancelTimeout(contextInstance.wheelAnimationTimer);
@@ -56,43 +104,9 @@ export const handleWheelStop = (
     cancelTimeout(contextInstance.wheelStopEventTimer);
     contextInstance.wheelStopEventTimer = setTimeout(() => {
       if (!contextInstance.mounted) return;
-      handleCallback(onWheelStop, getContext(contextInstance));
       contextInstance.wheelStopEventTimer = null;
+      handleCallback(getContext(contextInstance), onWheelStop);
+      handleCallback(getContext(contextInstance), onZoomStop);
     }, wheelStopEventTime);
   }
 };
-
-export function handleAlignToScaleBounds(
-  contextInstance: ReactZoomPanPinchContext,
-  event: WheelEvent,
-): void {
-  const { scale } = contextInstance.transformState;
-  const { wrapperComponent } = contextInstance;
-  const { minScale, limitToBounds, zoomAnimation } = contextInstance.setup;
-  const { disabled, animationTime, animationType } = zoomAnimation;
-
-  const isDisabled = disabled || scale >= minScale;
-
-  if (scale >= 1 || limitToBounds) {
-    // fire fit to bounds animation
-    handleAlignToBounds(contextInstance);
-  }
-
-  if (isDisabled || !wrapperComponent || !contextInstance.mounted) return;
-
-  const mouseX = wrapperComponent.offsetWidth / 2;
-  const mouseY = wrapperComponent.offsetHeight / 2;
-
-  const targetState = handleZoomToPoint(
-    contextInstance,
-    false,
-    minScale,
-    mouseX,
-    mouseY,
-    event,
-  );
-
-  if (targetState) {
-    animate(contextInstance, targetState, animationTime, animationType);
-  }
-}

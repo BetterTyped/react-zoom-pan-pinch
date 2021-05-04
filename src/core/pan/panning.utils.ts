@@ -3,12 +3,13 @@ import {
   ReactZoomPanPinchContext,
   ReactZoomPanPinchState,
 } from "../../models";
+import { isExcludedNode } from "../../utils";
 import { getMouseBoundedPosition } from "../bounds/bounds.utils";
-import { handleCalculatePositions } from "../zoom/wheel.utils";
+import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
 export const isPanningStartAllowed = (
   contextInstance: ReactZoomPanPinchContext,
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
 ): boolean => {
   const { excluded } = contextInstance.setup.panning;
   const { isInitialized, wrapperComponent } = contextInstance;
@@ -19,18 +20,9 @@ export const isPanningStartAllowed = (
 
   if (!isAllowed) return false;
 
-  const targetTagName = target.tagName.toUpperCase();
-  const isExcludedTag = excluded.find(
-    (tag) => tag.toUpperCase() === targetTagName,
-  );
+  const isExcluded = isExcludedNode(target, excluded);
 
-  if (isExcludedTag) return false;
-
-  const isExcludedClassName = excluded.find((tag) =>
-    target.classList.contains(tag),
-  );
-
-  if (isExcludedClassName) return false;
+  if (isExcluded) return false;
 
   return true;
 };
@@ -38,10 +30,10 @@ export const isPanningStartAllowed = (
 export const isPanningAllowed = (
   contextInstance: ReactZoomPanPinchContext,
 ): boolean => {
-  const { isInitialized, isMouseDown, setup } = contextInstance;
+  const { isInitialized, isPanning, setup } = contextInstance;
   const { disabled } = setup.panning;
 
-  const isAllowed = isInitialized && isMouseDown && !disabled;
+  const isAllowed = isInitialized && isPanning && !disabled;
 
   if (!isAllowed) return false;
 
@@ -54,7 +46,7 @@ export const handlePanningSetup = (
 ): void => {
   const { positionX, positionY } = contextInstance.transformState;
 
-  contextInstance.isMouseDown = true;
+  contextInstance.isPanning = true;
 
   // Panning with mouse
   const x = event.clientX;
@@ -70,7 +62,7 @@ export const handleTouchPanningSetup = (
   const touches = event.touches;
   const { positionX, positionY } = contextInstance.transformState;
 
-  contextInstance.isMouseDown = true;
+  contextInstance.isPanning = true;
 
   // Panning with touch
   const oneFingerTouch = touches.length === 1;
@@ -108,7 +100,7 @@ export function handlePanToBounds(
       ? wrapperComponent.offsetHeight
       : contextInstance.setup.minPositionY || 0;
 
-  const { x, y } = handleCalculatePositions(
+  const { x, y } = handleCalculateZoomPositions(
     contextInstance,
     mousePosX,
     mousePosY,

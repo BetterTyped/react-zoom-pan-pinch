@@ -13,7 +13,6 @@ export const initialState: ReactZoomPanPinchState = {
 
 export const contextInitialState: ReactZoomPanPinchComponentHelpers &
   ReactZoomPanPinchState &
-  // ReactZoomPanPinchSetters &
   Pick<ReactZoomPanPinchProps, "wrapperClass" | "contentClass"> = {
   ...initialState,
   wrapperClass: "",
@@ -84,18 +83,9 @@ export const initialSetup: LibrarySetup = {
   },
   velocityAnimation: {
     disabled: false,
-    animationTime: 1000,
-    animationType: "easeOutQuart",
+    sensitivity: 1,
+    animationTime: 600,
+    animationType: "easeOut",
     equalToMove: true,
   },
-  onWheelStart: () => undefined,
-  onWheel: () => undefined,
-  onWheelStop: () => undefined,
-  onPanningStart: () => undefined,
-  onPanning: () => undefined,
-  onPanningStop: () => undefined,
-  onPinchingStart: () => undefined,
-  onPinching: () => undefined,
-  onPinchingStop: () => undefined,
-  onZoomChange: () => undefined,
 };

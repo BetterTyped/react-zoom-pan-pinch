@@ -1,7 +1,9 @@
+import { ReactZoomPanPinchContext } from "../models";
+
 export const handleCallback = (
-  callback: (context: any) => void,
-  context: any,
-) => {
+  context: ReactZoomPanPinchContext,
+  callback?: (context: any) => void,
+): void => {
   if (callback && typeof callback === "function") {
     callback(context);
   }

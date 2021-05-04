@@ -8,3 +8,12 @@ export type VelocityType = {
   velocityY: number;
   total: number;
 };
+
+export type BoundsType = {
+  minPositionX: number;
+  maxPositionX: number;
+  minPositionY: number;
+  maxPositionY: number;
+};
+
+export type AnimationType = () => void | number;

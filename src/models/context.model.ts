@@ -85,6 +85,7 @@ export type ReactZoomPanPinchProps = {
   };
   velocityAnimation: {
     disabled?: boolean;
+    sensitivity?: number;
     animationTime?: number;
     animationType?: keyof typeof animations;
     equalToMove?: boolean;
@@ -102,7 +103,9 @@ export type ReactZoomPanPinchProps = {
   onPinchingStart?: (values: any) => void;
   onPinching?: (values: any) => void;
   onPinchingStop?: (values: any) => void;
-  onZoomChange?: (values: any) => void;
+  onZoomStart?: (values: any) => void;
+  onZoom?: (values: any) => void;
+  onZoomStop?: (values: any) => void;
 };
 
 export type ReactZoomPanPinchComponentHelpers = {
@@ -130,5 +133,17 @@ export type LibrarySetup = Pick<
       | "defaultScale"
       | "wrapperClass"
       | "contentClass"
+      | "onWheelStart"
+      | "onWheel"
+      | "onWheelStop"
+      | "onPanningStart"
+      | "onPanning"
+      | "onPanningStop"
+      | "onPinchingStart"
+      | "onPinching"
+      | "onPinchingStop"
+      | "onZoomStart"
+      | "onZoom"
+      | "onZoomStop"
     >
   >;

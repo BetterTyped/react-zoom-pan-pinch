@@ -37,45 +37,43 @@ export function getVelocityMoveTime(
   velocity: number,
 ): number {
   const { velocityAnimation } = contextInstance.setup;
-  const { equalToMove, animationTime } = velocityAnimation;
+  const { equalToMove, animationTime, sensitivity } = velocityAnimation;
 
   if (equalToMove) {
-    return animationTime / (velocity / 2);
+    return animationTime * velocity * sensitivity;
   }
   return animationTime;
 }
 
 export function getVelocityPosition(
   newPosition: number,
-  position: number,
+  startPosition: number,
+  currentPosition: number,
+  isLocked: boolean,
+  limitToBounds: boolean,
   minPosition: number,
   maxPosition: number,
   minTarget: number,
   maxTarget: number,
-  limitToBounds: boolean,
-  lockAxis: boolean,
-  velocity: number,
+  step: number,
 ): number {
   if (limitToBounds) {
-    if (newPosition > minPosition && newPosition > maxPosition) {
-      const calculatedPosition = position * velocity;
+    if (startPosition > maxPosition && currentPosition > maxPosition) {
+      const calculatedPosition =
+        maxPosition + (newPosition - maxPosition) * step;
+
       if (calculatedPosition > maxTarget) return maxTarget;
       if (calculatedPosition < maxPosition) return maxPosition;
       return calculatedPosition;
     }
-    if (position < minPosition && newPosition < minPosition) {
-      const calculatedPosition = position * velocity;
+    if (startPosition < minPosition && currentPosition < minPosition) {
+      const calculatedPosition =
+        minPosition + (newPosition - minPosition) * step;
       if (calculatedPosition < minTarget) return minTarget;
       if (calculatedPosition > minPosition) return minPosition;
       return calculatedPosition;
     }
   }
-  if (lockAxis) return position;
-  const offsetPosition = position * velocity;
-  return boundLimiter(
-    position - offsetPosition,
-    minPosition,
-    maxPosition,
-    limitToBounds,
-  );
+  if (isLocked) return startPosition;
+  return boundLimiter(newPosition, minPosition, maxPosition, limitToBounds);
 }

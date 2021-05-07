@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const TransformComponent: React.FC<Props> = ({ children }: Props) => {
+export const TransformComponent: React.FC<Props> = ({ children }: Props) => {
   const { wrapperClass, contentClass, setComponents } = useContext(Context);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);

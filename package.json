@@ -1,6 +1,6 @@
 {
   "name": "react-zoom-pan-pinch",
-  "version": "1.6.1",
+  "version": "2.0.0",
   "description": "Zoom and pan html elements in easy way",
   "author": "prc5",
   "license": "MIT",
@@ -23,10 +23,9 @@
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "prepare": "yarn run build",
     "predeploy": "cd example && yarn install && yarn run build",
-    "deploy": "gh-pages -d example/build"
+    "deploy": "gh-pages -d storybook-static"
   },
   "peerDependencies": {
-    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
@@ -35,9 +34,13 @@
     "@babel/runtime": "^7.13.10",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-typescript": "^8.2.1",
+    "@storybook/addon-a11y": "^6.2.9",
     "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-docs": "^6.2.9",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
+    "@storybook/addon-storysource": "^6.2.9",
+    "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.2.9",
     "@testing-library/react": "^11.2.6",
     "@types/jest": "^26.0.22",
@@ -59,8 +62,6 @@
     "eslint-plugin-react": "^7.23.1",
     "gh-pages": "^3.1.0",
     "postcss": "^8.2.13",
-    "react": "^17.0.2",
-    "react-dom": "^16.11.0",
     "react-scripts": "^4.0.3",
     "rollup": "^2.46.0",
     "rollup-plugin-delete": "^2.0.0",

@@ -1,4 +1,8 @@
-import { ReactZoomPanPinchProps, LibrarySetup } from "../models/context.model";
+import {
+  ReactZoomPanPinchProps,
+  LibrarySetup,
+  ReactZoomPanPinchContext,
+} from "../models/context.model";
 import {
   ReactZoomPanPinchComponentHelpers,
   ReactZoomPanPinchState,
@@ -13,11 +17,14 @@ export const initialState: ReactZoomPanPinchState = {
 
 export const contextInitialState: ReactZoomPanPinchComponentHelpers &
   ReactZoomPanPinchState &
-  Pick<ReactZoomPanPinchProps, "wrapperClass" | "contentClass"> = {
+  Pick<ReactZoomPanPinchProps, "wrapperClass" | "contentClass"> & {
+    contextInstance: ReactZoomPanPinchContext | null;
+  } = {
   ...initialState,
   wrapperClass: "",
   contentClass: "",
   setComponents: () => undefined,
+  contextInstance: null,
   // setScale: () => undefined,
   // setPositionX: () => undefined,
   // setPositionY: () => undefined,

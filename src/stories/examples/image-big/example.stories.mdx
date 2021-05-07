@@ -1,0 +1,36 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { TransformComponent } from "../../../components/transform-component";
+import { argsTypes } from "../../types/args.types.ts";
+
+import exampleImg from "../../assets/big-example.jpeg";
+
+export const Template = (args) => (
+  <TransformWrapper {...args}>
+    <TransformComponent>
+      <img src={exampleImg} alt="" />
+    </TransformComponent>
+  </TransformWrapper>
+);
+
+<Meta
+  title="Examples/Big Image"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Big Image
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="BigImage">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="BigImage" />

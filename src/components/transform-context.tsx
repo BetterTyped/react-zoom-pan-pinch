@@ -1,4 +1,4 @@
-import React, { Component, useImperativeHandle, useState } from "react";
+import React, { Component } from "react";
 
 import {
   LibrarySetup,
@@ -412,6 +412,7 @@ class TransformContext extends Component<
           wrapperClass: this.props.wrapperClass || "",
           contentClass: this.props.contentClass || "",
           setComponents: this.setComponents,
+          contextInstance: this,
         }}
       >
         {content}
@@ -419,13 +420,5 @@ class TransformContext extends Component<
     );
   }
 }
-
-export default React.forwardRef((props: ReactZoomPanPinchProps, ref: any) => {
-  const [innerRef, setRef] = useState<any>(null);
-
-  useImperativeHandle(ref, () => innerRef, [innerRef]);
-
-  return <TransformContext {...props} setRef={setRef} />;
-});
 
 export { Context, TransformContext };

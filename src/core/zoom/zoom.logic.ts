@@ -3,7 +3,7 @@ import { roundNumber } from "../../utils";
 import { animate } from "../animations/animations.utils";
 import { handleCalculateBounds } from "../bounds/bounds.utils";
 import { handleAlignToBounds } from "../pan/panning.logic";
-import { wheelMousePosition } from "./wheel.utils";
+import { getMousePosition } from "./wheel.utils";
 import { checkZoomBounds, handleCalculateZoomPositions } from "./zoom.utils";
 
 export function handleAlignToScaleBounds(
@@ -29,7 +29,6 @@ export function handleAlignToScaleBounds(
 
   const targetState = handleZoomToPoint(
     contextInstance,
-    false,
     minScale,
     mouseX,
     mouseY,
@@ -43,16 +42,13 @@ export function handleAlignToScaleBounds(
 
 export function handleZoomToPoint(
   contextInstance: ReactZoomPanPinchContext,
-  isDisabled: boolean,
   scale: number,
   mouseX: number,
   mouseY: number,
   event?: WheelEvent,
 ): Omit<ReactZoomPanPinchState, "previousScale"> | undefined {
   const { contentComponent } = contextInstance;
-  const { disabled, minScale, maxScale, limitToBounds } = contextInstance.setup;
-
-  if (disabled || isDisabled) return;
+  const { minScale, maxScale, limitToBounds } = contextInstance.setup;
 
   const newScale = checkZoomBounds(
     roundNumber(scale, 2),
@@ -68,7 +64,7 @@ export function handleZoomToPoint(
 
   // if event is present - use it's mouse position
   if (event && contentComponent) {
-    const mousePosition = wheelMousePosition(event, contentComponent, scale);
+    const mousePosition = getMousePosition(event, contentComponent, scale);
     mousePosX = mousePosition.x;
     mousePosY = mousePosition.y;
   }

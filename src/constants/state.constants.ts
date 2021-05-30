@@ -1,5 +1,4 @@
 import {
-  ReactZoomPanPinchProps,
   LibrarySetup,
   ReactZoomPanPinchContext,
 } from "../models/context.model";
@@ -16,28 +15,16 @@ export const initialState: ReactZoomPanPinchState = {
 };
 
 export const contextInitialState: ReactZoomPanPinchComponentHelpers &
-  ReactZoomPanPinchState &
-  Pick<ReactZoomPanPinchProps, "wrapperClass" | "contentClass"> & {
+  ReactZoomPanPinchState & {
     contextInstance: ReactZoomPanPinchContext | null;
   } = {
   ...initialState,
-  wrapperClass: "",
-  contentClass: "",
   setComponents: () => undefined,
   contextInstance: null,
-  // setScale: () => undefined,
-  // setPositionX: () => undefined,
-  // setPositionY: () => undefined,
-  // zoomIn: () => undefined,
-  // zoomOut: () => undefined,
-  // setTransform: () => undefined,
-  // resetTransform: () => undefined,
-  // setDefaultState: () => undefined,
 };
 
 export const initialSetup: LibrarySetup = {
   disabled: false,
-  transformEnabled: true,
   minPositionX: null,
   maxPositionX: null,
   minPositionY: null,
@@ -46,9 +33,9 @@ export const initialSetup: LibrarySetup = {
   maxScale: 8,
   limitToBounds: true,
   limitToWrapper: false,
-  centerContent: true,
+  centerOnInit: false,
   wheel: {
-    step: 5,
+    step: 0.2,
     disabled: false,
     wheelDisabled: false,
     touchPadDisabled: false,
@@ -70,9 +57,8 @@ export const initialSetup: LibrarySetup = {
   },
   doubleClick: {
     disabled: false,
-    step: 20,
+    step: 0.7,
     mode: "zoomIn",
-    animation: true,
     animationType: "easeOut",
     animationTime: 200,
   },
@@ -86,6 +72,7 @@ export const initialSetup: LibrarySetup = {
     disabled: false,
     size: 30,
     animationTime: 200,
+    velocityAlignmentTime: 400,
     animationType: "easeOut",
   },
   velocityAnimation: {

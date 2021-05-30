@@ -9,8 +9,8 @@ export const isExcludedNode = (
 
   if (isExcludedTag) return true;
 
-  const isExcludedClassName = excluded.find((tag) =>
-    node.classList.contains(tag),
+  const isExcludedClassName = excluded.find((className) =>
+    node.classList.contains(className),
   );
 
   if (isExcludedClassName) return true;

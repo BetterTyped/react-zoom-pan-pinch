@@ -22,7 +22,7 @@ export function handlePanningStart(
 
   handleCancelAnimation(contextInstance);
   handleCalculateBounds(contextInstance, scale);
-  if ((event as any).touches) {
+  if ((event as TouchEvent).touches) {
     handleTouchPanningSetup(contextInstance, event as TouchEvent);
   } else {
     handlePanningSetup(contextInstance, event as MouseEvent);
@@ -49,22 +49,28 @@ export function handlePanningEnd(
   contextInstance: ReactZoomPanPinchContext,
 ): void {
   if (contextInstance.isPanning) {
-    const { scale } = contextInstance.transformState;
     const { velocityDisabled } = contextInstance.setup.panning;
-    const { velocity } = contextInstance;
+    const { velocity, wrapperComponent, contentComponent } = contextInstance;
 
     contextInstance.isPanning = false;
     contextInstance.animate = false;
     contextInstance.animation = null;
     contextInstance.forceUpdate();
 
-    const isContentBiggerThanWrapper = scale > 1;
-    if (
-      !velocityDisabled &&
-      velocity &&
-      velocity.total > 0.1 &&
-      isContentBiggerThanWrapper
-    ) {
+    const wrapperRect = wrapperComponent?.getBoundingClientRect();
+    const contentRect = contentComponent?.getBoundingClientRect();
+
+    const wrapperWidth = wrapperRect?.width || 0;
+    const wrapperHeight = wrapperRect?.height || 0;
+    const contentWidth = contentRect?.width || 0;
+    const contentHeight = contentRect?.height || 0;
+    const isZoomed =
+      wrapperWidth < contentWidth || wrapperHeight < contentHeight;
+
+    const shouldAnimate =
+      !velocityDisabled && velocity && velocity?.total > 0.1 && isZoomed;
+
+    if (shouldAnimate) {
       handleVelocityPanning(contextInstance);
     } else {
       handleAlignToBounds(contextInstance);

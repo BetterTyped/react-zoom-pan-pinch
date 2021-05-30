@@ -14,16 +14,11 @@ export function handleCalculateZoomPositions(
   limitToBounds: boolean,
 ): PositionType {
   const { scale, positionX, positionY } = contextInstance.transformState;
-  const { transformEnabled } = contextInstance.setup;
 
   const scaleDifference = newScale - scale;
 
   if (typeof mouseX !== "number" || typeof mouseY !== "number") {
     console.error("Mouse X and Y position were not provided!");
-    return { x: positionX, y: positionY };
-  }
-
-  if (!transformEnabled) {
     return { x: positionX, y: positionY };
   }
 

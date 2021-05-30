@@ -6,10 +6,20 @@ import styles from "./transform-component.module.css";
 
 type Props = {
   children: React.ReactNode;
+  wrapperClass?: string;
+  contentClass?: string;
+  wrapperStyle?: React.CSSProperties;
+  contentStyle?: React.CSSProperties;
 };
 
-export const TransformComponent: React.FC<Props> = ({ children }: Props) => {
-  const { wrapperClass, contentClass, setComponents } = useContext(Context);
+export const TransformComponent: React.FC<Props> = ({
+  children,
+  wrapperClass,
+  contentClass,
+  wrapperStyle,
+  contentStyle,
+}: Props) => {
+  const { setComponents } = useContext(Context);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -26,10 +36,12 @@ export const TransformComponent: React.FC<Props> = ({ children }: Props) => {
     <div
       ref={wrapperRef}
       className={`react-transform-wrapper ${styles.wrapper} ${wrapperClass}`}
+      style={wrapperStyle}
     >
       <div
         ref={contentRef}
         className={`react-transform-content ${styles.content} ${contentClass}`}
+        style={contentStyle}
       >
         {children}
       </div>

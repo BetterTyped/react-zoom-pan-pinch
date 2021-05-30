@@ -6,6 +6,11 @@ import { DeepNonNullable } from "./helpers.model";
 
 export type ReactZoomPanPinchContext = typeof TransformContext.prototype;
 
+export type ReactZoomPanPinchRef = {
+  instance: ReactZoomPanPinchContext;
+  state: ReactZoomPanPinchState;
+} & ReactZoomPanPinchHandlers;
+
 export type ReactZoomPanPinchState = {
   previousScale: number;
   scale: number;
@@ -13,24 +18,33 @@ export type ReactZoomPanPinchState = {
   positionY: number;
 };
 
-export type ReactZoomPanPinchSetters = {
-  setScale: () => void;
-  setPositionX: () => void;
-  setPositionY: () => void;
-  zoomIn: () => void;
-  zoomOut: () => void;
-  setTransform: () => void;
+export type ReactZoomPanPinchHandlers = {
+  zoomIn: (
+    step: number,
+    animationTime: number,
+    animationName: keyof typeof animations,
+  ) => void;
+  zoomOut: (
+    step: number,
+    animationTime: number,
+    animationName: keyof typeof animations,
+  ) => void;
+  setTransform: (
+    positionX: number,
+    positionY: number,
+    scale: number,
+    animationTime: number,
+    animationName: keyof typeof animations,
+  ) => void;
   resetTransform: () => void;
-  setDefaultState: () => void;
 };
 
 export type ReactZoomPanPinchProps = {
   ref?: any;
-  scale?: number;
-  positionX?: number;
-  positionY?: number;
+  initialScale?: number;
+  initialPositionX?: number;
+  initialPositionY?: number;
   disabled?: boolean;
-  transformEnabled?: boolean;
   minPositionX?: null | number;
   maxPositionX?: null | number;
   minPositionY?: null | number;
@@ -38,10 +52,8 @@ export type ReactZoomPanPinchProps = {
   minScale?: number;
   maxScale?: number;
   limitToBounds?: boolean;
-  centerContent?: boolean;
   limitToWrapper?: boolean;
-  wrapperClass?: string;
-  contentClass?: string;
+  centerOnInit?: boolean;
   wheel?: {
     step?: number;
     disabled?: boolean;
@@ -66,8 +78,7 @@ export type ReactZoomPanPinchProps = {
   doubleClick?: {
     disabled?: boolean;
     step?: number;
-    mode?: string;
-    animation?: boolean;
+    mode?: "zoomIn" | "zoomOut" | "reset";
     animationTime?: number;
     animationType?: keyof typeof animations;
   };
@@ -81,6 +92,7 @@ export type ReactZoomPanPinchProps = {
     disabled?: boolean;
     size?: number;
     animationTime?: number;
+    velocityAlignmentTime?: number;
     animationType?: keyof typeof animations;
   };
   velocityAnimation: {
@@ -120,9 +132,9 @@ export type LibrarySetup = Pick<
     Omit<
       ReactZoomPanPinchProps,
       | "ref"
-      | "scale"
-      | "positionX"
-      | "positionY"
+      | "initialScale"
+      | "initialPositionX"
+      | "initialPositionY"
       | "minPositionX"
       | "maxPositionX"
       | "minPositionY"

@@ -6,24 +6,26 @@ import {
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
   VelocityType,
-  ReactZoomPanPinchContext,
   BoundsType,
   AnimationType,
+  ReactZoomPanPinchRef,
 } from "../models";
 
-import { getContext } from "../utils/context.utils";
-import { makePassiveEventOption } from "../utils/event.utils";
-import { getTransformStyles } from "../utils/styles.utils";
-import { handleCallback } from "../utils/callback.utils";
-
 import {
-  initialSetup,
-  initialState,
-  contextInitialState,
-} from "../constants/state.constants";
+  createSetup,
+  createState,
+  handleCallback,
+  getTransformStyles,
+  makePassiveEventOption,
+  getContext,
+} from "../utils";
+
+import { contextInitialState } from "../constants/state.constants";
 
 import { handleCancelAnimation } from "../core/animations/animations.utils";
 import { isWheelAllowed } from "../core/zoom/wheel.utils";
+import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
+import { handleCalculateBounds } from "../core/bounds/bounds.utils";
 
 import {
   handleWheelStart,
@@ -40,12 +42,15 @@ import {
   handlePanningEnd,
   handlePanningStart,
 } from "../core/pan/panning.logic";
-import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
 import {
   handlePinchStart,
   handlePinchStop,
   handlePinchZoom,
 } from "../core/pinch/pinch.logic";
+import {
+  handleDoubleClick,
+  isDoubleClickAllowed,
+} from "../core/handlers/handlers.utils";
 
 type StartCoordsType = { x: number; y: number } | null;
 
@@ -53,14 +58,14 @@ const Context = React.createContext(contextInitialState);
 
 class TransformContext extends Component<
   ReactZoomPanPinchProps & {
-    setRef: (context: ReactZoomPanPinchContext) => void;
+    setRef: (context: ReactZoomPanPinchRef) => void;
   }
 > {
   public mounted = true;
 
-  public transformState: ReactZoomPanPinchState = initialState;
+  public transformState: ReactZoomPanPinchState = createState(this.props);
 
-  public setup: LibrarySetup = initialSetup;
+  public setup: LibrarySetup = createSetup(this.props);
 
   // Components
   public wrapperComponent: HTMLDivElement | null = null;
@@ -115,59 +120,40 @@ class TransformContext extends Component<
     handleCancelAnimation(this);
   }
 
-  // componentDidUpdate(oldProps: ReactZoomPanPinchProps) {
-  //   const { dynamicProps } = this.setup;
-  //   const { scale, limitToWrapper } = this.transformState;
+  componentDidUpdate(oldProps: ReactZoomPanPinchProps): void {
+    if (oldProps !== this.props) {
+      handleCalculateBounds(this, this.transformState.scale);
+      this.setup = createSetup(this.props);
+    }
+  }
 
-  //   const hasPropsChanged = oldProps.dynamicProps !== dynamicProps;
-  //   const isContinuedUpdate = Boolean(oldProps.dynamicProps);
-
-  //   // set bound for animations
-  //   if (this.isInitialized || hasPropsChanged) {
-  //     handleRecalculateBounds(this, scale, limitToWrapper);
-  //   }
-
-  //   if (isContinuedUpdate && hasPropsChanged) {
-  //     this.animation = null;
-  //     this.transformState = updateState(this, dynamicProps);
-  //     this.applyTransformation();
-  //   }
-  // }
-
-  handleInitializeWrapperEvents = (wrapper: HTMLDivElement) => {
+  handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
     // Zooming events on wrapper
     const passive = makePassiveEventOption();
 
     wrapper.addEventListener("wheel", this.onWheelZoom, passive);
-    // wrapper.addEventListener("dblclick", this.onDbClick, passive);
-    // wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
-    // wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
-    // wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
+    wrapper.addEventListener("dblclick", this.onDoubleClick, passive);
+    wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
+    wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
+    wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitializeContentEvents = (_content: HTMLDivElement) => {
-    // const { centerContent, limitToBounds, limitToWrapper } = this.setup;
-    // const { scale, positionX, positionY } = this.transformState;
+  handleInitializeContentEvents = (content: HTMLDivElement): void => {
+    const { centerOnInit, limitToBounds, limitToWrapper } = this.setup;
+    const { scale, positionX, positionY } = this.transformState;
 
-    // const shouldFitComponent = limitToBounds && !limitToWrapper;
-    // const shouldCenterComponent = centerContent && !positionX && !positionY;
+    const shouldFitComponent = limitToBounds && !limitToWrapper;
+    const shouldCenterComponent = centerOnInit && !positionX && !positionY;
 
-    // if (shouldFitComponent || shouldCenterComponent) {
-    //   // TODO CHECK THIS LOGIC
-    //   const x = 25;
-    //   const y = 25;
-    //   const s = scale;
+    // Todo check if it works
+    if (shouldFitComponent || shouldCenterComponent) {
+      const x = 25;
+      const y = 25;
 
-    //   const { transform, webkitTransform } = getTransformStyles(x, y, s, "%");
+      const transform = getTransformStyles(x, y, scale, "%");
 
-    //   content.style.transform = transform;
-    //   content.style.webkitTransform = webkitTransform;
-
-    //   const bounds = handleCalculateBounds(this, scale);
-
-    //   this.transformState.positionX = bounds.minPositionX;
-    //   this.transformState.positionY = bounds.minPositionY;
-    // }
+      content.style.transform = transform;
+    }
 
     this.applyTransformation();
     this.forceUpdate();
@@ -351,6 +337,20 @@ class TransformContext extends Component<
   };
 
   //////////
+  // Double Click
+  //////////
+
+  onDoubleClick = (event: MouseEvent): void => {
+    const { disabled } = this.setup;
+    if (disabled) return;
+
+    const isAllowed = isDoubleClickAllowed(this);
+    if (!isAllowed) return;
+
+    handleDoubleClick(this, event);
+  };
+
+  //////////
   // Helpers
   //////////
 
@@ -373,10 +373,11 @@ class TransformContext extends Component<
     wrapperComponent: HTMLDivElement,
     contentComponent: HTMLDivElement,
   ): void => {
-    this.handleInitializeWrapperEvents(wrapperComponent);
-    this.handleInitializeContentEvents(contentComponent);
     this.wrapperComponent = wrapperComponent;
     this.contentComponent = contentComponent;
+    handleCalculateBounds(this, this.transformState.scale);
+    this.handleInitializeWrapperEvents(wrapperComponent);
+    this.handleInitializeContentEvents(contentComponent);
     this.isInitialized = true;
   };
 
@@ -391,7 +392,7 @@ class TransformContext extends Component<
 
     this.contentComponent.style.transform = transform;
 
-    // force update to inject state to the context and avoid async set state causing animations problems
+    // force update to inject state to the context and avoid async set state which caused animations/updates problems
     this.forceUpdate();
     this.handleRef();
   };
@@ -409,8 +410,6 @@ class TransformContext extends Component<
       <Context.Provider
         value={{
           ...this.transformState,
-          wrapperClass: this.props.wrapperClass || "",
-          contentClass: this.props.contentClass || "",
           setComponents: this.setComponents,
           contextInstance: this,
         }}

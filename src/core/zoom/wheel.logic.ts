@@ -8,7 +8,7 @@ import {
   getDelta,
   handleCalculateWheelZoom,
   handleWheelZoomStop,
-  wheelMousePosition,
+  getMousePosition,
 } from "./wheel.utils";
 import { handleAlignToScaleBounds } from "./zoom.logic";
 import { handleCalculateZoomPositions } from "./zoom.utils";
@@ -59,7 +59,7 @@ export const handleWheelZoom = (
   if (scale === newScale) return;
 
   const bounds = handleCalculateBounds(contextInstance, newScale);
-  const mousePosition = wheelMousePosition(event, contentComponent, scale);
+  const mousePosition = getMousePosition(event, contentComponent, scale);
 
   const isPaddingDisabled = disabled || size === 0 || limitToWrapper;
   const isLimitedToBounds = limitToBounds && isPaddingDisabled;

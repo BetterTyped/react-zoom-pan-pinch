@@ -2,10 +2,9 @@ import React from "react";
 import { render } from "@testing-library/react";
 import {
   TransformWrapper,
-  TransformComponent
+  TransformComponent,
 } from "./node_modules/react-zoom-pan-pinch";
-import { clickOnComponent } from "./utils";
-import logoImg from "../../logo/logo.png";
+import logoImg from "logo/logo.png";
 
 const App = (
   <TransformWrapper>
@@ -24,7 +23,7 @@ describe("Library components", () => {
       const { container } = component;
       environment.component = component;
       environment.transformComponent = container.querySelector(
-        ".react-transform-element"
+        ".react-transform-element",
       );
     });
     describe("When library components have been rendered", () => {

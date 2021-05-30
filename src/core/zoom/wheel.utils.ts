@@ -40,8 +40,8 @@ export function getDelta(
   return delta;
 }
 
-export function wheelMousePosition(
-  event: WheelEvent,
+export function getMousePosition(
+  event: WheelEvent | MouseEvent,
   contentComponent: HTMLDivElement,
   scale: number,
 ): PositionType {
@@ -66,7 +66,6 @@ export const handleCalculateWheelZoom = (
   step: number,
   disablePadding: boolean,
   getTarget?: boolean,
-  isBtnFunction?: boolean,
 ): number => {
   const { scale } = contextInstance.transformState;
   const { wrapperComponent, setup } = contextInstance;
@@ -77,21 +76,7 @@ export const handleCalculateWheelZoom = (
     throw new Error("Wrapper is not mounted");
   }
 
-  let targetScale = null;
-
-  if (isBtnFunction) {
-    const scaleFactor = window.innerWidth * 0.0001;
-    const zoomFactor = delta < 0 ? 30 : 20;
-    targetScale =
-      scale + (step - step * scaleFactor) * delta * (scale / zoomFactor);
-  } else {
-    const wrapperToWindowScale =
-      2 - window.innerWidth / wrapperComponent.offsetWidth;
-    const scaleFactor = Math.max(0.2, Math.min(0.99, wrapperToWindowScale));
-    const zoomFactor = 20;
-    targetScale =
-      scale + step * delta * ((scale - scale * scaleFactor) / zoomFactor);
-  }
+  const targetScale = scale + delta * (scale - scale * step) * step;
 
   if (getTarget) return targetScale;
   const paddingEnabled = disablePadding ? false : !disabled;

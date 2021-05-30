@@ -58,7 +58,7 @@ export function handleVelocityPanning(
   const { lockAxisY, lockAxisX } = panning;
   const { animationType } = zoomAnimation;
 
-  const alignAnimationTime = alignmentAnimation.animationTime * 2;
+  const alignAnimationTime = alignmentAnimation.velocityAlignmentTime;
   const moveAnimationTime = getVelocityMoveTime(contextInstance, total);
   const finalAnimationTime = Math.max(moveAnimationTime, alignAnimationTime);
 

@@ -6,7 +6,6 @@ export type ReactZoomPanPinchProps = {
   positionY?: number;
   options?: {
     disabled?: boolean;
-    transformEnabled?: boolean;
     minPositionX?: null | number;
     maxPositionX?: null | number;
     minPositionY?: null | number;

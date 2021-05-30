@@ -4,19 +4,22 @@ import { action } from "@storybook/addon-actions";
 import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
 import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs } from "../../utils";
 
-import exampleImg from "../../assets/big-example.jpeg";
+import exampleImg from "../../assets/big-image.jpeg";
 
 export const Template = (args) => (
-  <TransformWrapper {...args}>
-    <TransformComponent>
+  <TransformWrapper {...normalizeArgs(args)}>
+    <TransformComponent
+      wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
+    >
       <img src={exampleImg} alt="" />
     </TransformComponent>
   </TransformWrapper>
 );
 
 <Meta
-  title="Examples/Big Image"
+  title="Examples/Image Big"
   component={TransformWrapper}
   argTypes={argsTypes}
 />

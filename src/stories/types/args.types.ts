@@ -5,7 +5,7 @@ export const argsTypes = {
     },
   },
   "wheel.step": {
-    defaultValue: 5,
+    defaultValue: 0.1,
     control: {
       type: "number",
       min: 0,
@@ -47,11 +47,11 @@ export const argsTypes = {
     },
   },
   "wheel.excluded": {
-    defaultValue: "",
-    control: { type: "text" },
+    defaultValue: [],
+    control: { type: "array" },
     table: {
       defaultValue: { summary: "" },
-      type: { summary: "string" },
+      type: { summary: "array" },
     },
   },
   panning: {
@@ -100,11 +100,11 @@ export const argsTypes = {
     },
   },
   "panning.excluded": {
-    defaultValue: "",
-    control: { type: "text" },
+    defaultValue: [],
+    control: { type: "array" },
     table: {
       defaultValue: { summary: "" },
-      type: { summary: "string" },
+      type: { summary: "array" },
     },
   },
   pinch: {
@@ -131,11 +131,11 @@ export const argsTypes = {
     },
   },
   "pinch.excluded": {
-    defaultValue: "",
-    control: { type: "text" },
+    defaultValue: [],
+    control: { type: "array" },
     table: {
       defaultValue: { summary: "" },
-      type: { summary: "string" },
+      type: { summary: "array" },
     },
   },
 };

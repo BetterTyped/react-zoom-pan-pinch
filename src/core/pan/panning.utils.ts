@@ -76,7 +76,7 @@ export function handlePanToBounds(
   contextInstance: ReactZoomPanPinchContext,
 ): Omit<ReactZoomPanPinchState, "previousScale"> | undefined {
   const { positionX, positionY, scale } = contextInstance.transformState;
-  const { disabled, limitToBounds, limitToWrapper } = contextInstance.setup;
+  const { disabled, limitToBounds, centerZoomedOut } = contextInstance.setup;
   const { wrapperComponent } = contextInstance;
 
   if (disabled || !wrapperComponent || !contextInstance.bounds) return;
@@ -106,7 +106,7 @@ export function handlePanToBounds(
     mousePosY,
     scale,
     contextInstance.bounds,
-    limitToBounds || limitToWrapper,
+    limitToBounds || centerZoomedOut,
   );
 
   return {

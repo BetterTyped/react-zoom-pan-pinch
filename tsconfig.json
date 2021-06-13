@@ -19,6 +19,6 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src"
   },
-  "include": ["src", "old-lib/pan", "old-lib/_components"],
-  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
+  "include": ["src"],
+  "exclude": ["node_modules", "build", "dist", "rollup.config.js"]
 }

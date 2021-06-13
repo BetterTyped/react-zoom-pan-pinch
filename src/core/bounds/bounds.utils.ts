@@ -40,13 +40,15 @@ export const getBounds = (
   wrapperHeight: number,
   newContentHeight: number,
   diffHeight: number,
-  limitToWrapper: boolean,
+  centerZoomedOut: boolean,
 ): BoundsType => {
   const scaleWidthFactor =
-    wrapperWidth > newContentWidth ? diffWidth * (limitToWrapper ? 1 : 0.5) : 0;
+    wrapperWidth > newContentWidth
+      ? diffWidth * (centerZoomedOut ? 1 : 0.5)
+      : 0;
   const scaleHeightFactor =
     wrapperHeight > newContentHeight
-      ? diffHeight * (limitToWrapper ? 1 : 0.5)
+      ? diffHeight * (centerZoomedOut ? 1 : 0.5)
       : 0;
 
   const minPositionX = wrapperWidth - newContentWidth - scaleWidthFactor;
@@ -62,7 +64,7 @@ export const handleCalculateBounds = (
   newScale: number,
 ): BoundsType => {
   const { wrapperComponent, contentComponent } = contextInstance;
-  const { limitToWrapper } = contextInstance.setup;
+  const { centerZoomedOut } = contextInstance.setup;
 
   if (!wrapperComponent || !contentComponent) {
     throw new Error("Components are not mounted");
@@ -84,7 +86,7 @@ export const handleCalculateBounds = (
     wrapperHeight,
     newContentHeight,
     newDiffHeight,
-    Boolean(limitToWrapper),
+    Boolean(centerZoomedOut),
   );
 
   // Save bounds

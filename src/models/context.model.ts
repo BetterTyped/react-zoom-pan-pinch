@@ -40,7 +40,8 @@ export type ReactZoomPanPinchHandlers = {
 };
 
 export type ReactZoomPanPinchProps = {
-  ref?: any;
+  children?: React.ReactNode;
+  ref?: React.Ref<ReactZoomPanPinchRef>;
   initialScale?: number;
   initialPositionX?: number;
   initialPositionY?: number;
@@ -52,7 +53,7 @@ export type ReactZoomPanPinchProps = {
   minScale?: number;
   maxScale?: number;
   limitToBounds?: boolean;
-  limitToWrapper?: boolean;
+  centerZoomedOut?: boolean;
   centerOnInit?: boolean;
   wheel?: {
     step?: number;
@@ -81,6 +82,7 @@ export type ReactZoomPanPinchProps = {
     mode?: "zoomIn" | "zoomOut" | "reset";
     animationTime?: number;
     animationType?: keyof typeof animations;
+    excluded?: string[];
   };
   zoomAnimation?: {
     disabled?: boolean;
@@ -102,22 +104,18 @@ export type ReactZoomPanPinchProps = {
     animationType?: keyof typeof animations;
     equalToMove?: boolean;
   };
-  children?: React.ReactNode;
-  defaultPositionX?: number;
-  defaultPositionY?: number;
-  defaultScale?: number;
-  onWheelStart?: (values: any) => void;
-  onWheel?: (values: any) => void;
-  onWheelStop?: (values: any) => void;
-  onPanningStart?: (values: any) => void;
-  onPanning?: (values: any) => void;
-  onPanningStop?: (values: any) => void;
-  onPinchingStart?: (values: any) => void;
-  onPinching?: (values: any) => void;
-  onPinchingStop?: (values: any) => void;
-  onZoomStart?: (values: any) => void;
-  onZoom?: (values: any) => void;
-  onZoomStop?: (values: any) => void;
+  onWheelStart?: (ref: ReactZoomPanPinchRef) => void;
+  onWheel?: (ref: ReactZoomPanPinchRef) => void;
+  onWheelStop?: (ref: ReactZoomPanPinchRef) => void;
+  onPanningStart?: (ref: ReactZoomPanPinchRef) => void;
+  onPanning?: (ref: ReactZoomPanPinchRef) => void;
+  onPanningStop?: (ref: ReactZoomPanPinchRef) => void;
+  onPinchingStart?: (ref: ReactZoomPanPinchRef) => void;
+  onPinching?: (ref: ReactZoomPanPinchRef) => void;
+  onPinchingStop?: (ref: ReactZoomPanPinchRef) => void;
+  onZoomStart?: (ref: ReactZoomPanPinchRef) => void;
+  onZoom?: (ref: ReactZoomPanPinchRef) => void;
+  onZoomStop?: (ref: ReactZoomPanPinchRef) => void;
 };
 
 export type ReactZoomPanPinchComponentHelpers = {

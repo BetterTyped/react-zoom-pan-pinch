@@ -9,7 +9,7 @@ import { normalizeArgs } from "../../utils";
 import exampleImg from "../../assets/medium-image.jpg";
 
 export const Template = (args) => (
-  <TransformWrapper {...normalizeArgs(args)}>
+  <TransformWrapper {...normalizeArgs(args)} initialScale={0.4} minScale={0.2}>
     <TransformComponent>
       <img src={exampleImg} alt="" />
     </TransformComponent>
@@ -17,21 +17,21 @@ export const Template = (args) => (
 );
 
 <Meta
-  title="Examples/Medium Image"
+  title="Examples/Zoomed Out"
   component={TransformWrapper}
   argTypes={argsTypes}
 />
 
-# Medium Image
+# Zoomed Out
 
 <br />
 
 ### Preview:
 
 <Canvas>
-  <Story name="Medium Image">{(args) => <Template {...args} />}</Story>
+  <Story name="Zoomed Out">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
 ## Component API
 
-<ArgsTable story="Medium Image" />
+<ArgsTable story="Zoomed Out" />

@@ -1,4 +1,4 @@
-export const normalizeArgs = (args: { [key: string]: any }) => {
+export const normalizeArgs = (args: { [key: string]: any }): any => {
   const newArgs = {};
 
   Object.keys(args).forEach((key) => {

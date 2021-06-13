@@ -10,6 +10,22 @@ import {
   isVelocityCalculationAllowed,
 } from "./velocity.utils";
 
+export function getSizeMultiplier(
+  wrapperComponent: HTMLDivElement,
+  equalToMove: boolean,
+): number {
+  const defaultMultiplier = 1;
+
+  if (equalToMove) {
+    return Math.min(
+      defaultMultiplier,
+      wrapperComponent.offsetWidth / window.innerWidth,
+    );
+  }
+
+  return defaultMultiplier;
+}
+
 export function handleCalculateVelocity(
   contextInstance: ReactZoomPanPinchContext,
   position: PositionType,
@@ -20,16 +36,19 @@ export function handleCalculateVelocity(
     return;
   }
 
-  const { lastMousePosition, velocityTime } = contextInstance;
+  const { lastMousePosition, velocityTime, setup } = contextInstance;
   const { wrapperComponent } = contextInstance;
+  const { equalToMove } = setup.velocityAnimation;
 
   const now = Date.now();
   if (lastMousePosition && velocityTime && wrapperComponent) {
+    const sizeMultiplier = getSizeMultiplier(wrapperComponent, equalToMove);
+
     const distanceX = position.x - lastMousePosition.x;
     const distanceY = position.y - lastMousePosition.y;
 
-    const velocityX = distanceX;
-    const velocityY = distanceY;
+    const velocityX = distanceX / sizeMultiplier;
+    const velocityY = distanceY / sizeMultiplier;
 
     const interval = now - velocityTime;
     const speed = distanceX * distanceX + distanceY * distanceY;

@@ -1,23 +1,24 @@
 import React, { Component } from "react";
 
 import {
+  BoundsType,
   LibrarySetup,
   PositionType,
-  ReactZoomPanPinchProps,
-  ReactZoomPanPinchState,
   VelocityType,
-  BoundsType,
   AnimationType,
   ReactZoomPanPinchRef,
+  ReactZoomPanPinchProps,
+  ReactZoomPanPinchState,
 } from "../models";
 
 import {
+  getContext,
   createSetup,
   createState,
   handleCallback,
   getTransformStyles,
   makePassiveEventOption,
-  getContext,
+  getCenteredTransformStyles,
 } from "../utils";
 
 import { contextInitialState } from "../constants/state.constants";
@@ -102,6 +103,7 @@ class TransformContext extends Component<
     window.addEventListener("mousedown", this.onPanningStart, passive);
     window.addEventListener("mousemove", this.onPanning, passive);
     window.addEventListener("mouseup", this.onPanningStop, passive);
+    document.addEventListener("mouseleave", this.clearPanning, passive);
     window.addEventListener("keyup", this.setKeyUnPressed, passive);
     window.addEventListener("keydown", this.setKeyPressed, passive);
 
@@ -138,25 +140,30 @@ class TransformContext extends Component<
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitializeContentEvents = (content: HTMLDivElement): void => {
-    const { centerOnInit, limitToBounds, limitToWrapper } = this.setup;
-    const { scale, positionX, positionY } = this.transformState;
-
-    const shouldFitComponent = limitToBounds && !limitToWrapper;
-    const shouldCenterComponent = centerOnInit && !positionX && !positionY;
-
-    // Todo check if it works
-    if (shouldFitComponent || shouldCenterComponent) {
-      const x = 25;
-      const y = 25;
-
-      const transform = getTransformStyles(x, y, scale, "%");
-
-      content.style.transform = transform;
-    }
+  handleInitializeContentEvents = (
+    content: HTMLDivElement,
+    wrapper: HTMLDivElement,
+  ): void => {
+    const { centerOnInit } = this.setup;
+    const { scale } = this.transformState;
+    const { initialPositionX, initialPositionY } = this.props;
 
     this.applyTransformation();
-    this.forceUpdate();
+
+    if (centerOnInit) {
+      // we need to wait for initial render
+      setTimeout(() => {
+        const { transform, positionsState } = getCenteredTransformStyles(
+          initialPositionX,
+          initialPositionY,
+          scale,
+          wrapper,
+          content,
+        );
+        content.style.transform = transform;
+        this.transformState = { ...this.transformState, ...positionsState };
+      }, 0);
+    }
   };
 
   //////////
@@ -236,6 +243,7 @@ class TransformContext extends Component<
   onPinchStart = (event: TouchEvent): void => {
     const { disabled } = this.setup;
     const { onPinchingStart, onZoomStart } = this.props;
+
     if (disabled) return;
 
     const isAllowed = isPinchStartAllowed(this, event);
@@ -287,6 +295,7 @@ class TransformContext extends Component<
     if (disabled) return;
 
     const isAllowed = isPanningStartAllowed(this, event);
+
     if (!isAllowed) return;
 
     handleCancelAnimation(this);
@@ -344,7 +353,7 @@ class TransformContext extends Component<
     const { disabled } = this.setup;
     if (disabled) return;
 
-    const isAllowed = isDoubleClickAllowed(this);
+    const isAllowed = isDoubleClickAllowed(this, event);
     if (!isAllowed) return;
 
     handleDoubleClick(this, event);
@@ -353,6 +362,12 @@ class TransformContext extends Component<
   //////////
   // Helpers
   //////////
+
+  clearPanning = (): void => {
+    if (this.isPanning) {
+      this.onPanningStop();
+    }
+  };
 
   setKeyPressed = (e: KeyboardEvent): void => {
     this.pressedKeys[e.key] = true;
@@ -377,23 +392,17 @@ class TransformContext extends Component<
     this.contentComponent = contentComponent;
     handleCalculateBounds(this, this.transformState.scale);
     this.handleInitializeWrapperEvents(wrapperComponent);
-    this.handleInitializeContentEvents(contentComponent);
+    this.handleInitializeContentEvents(contentComponent, wrapperComponent);
+    this.handleRef();
     this.isInitialized = true;
   };
 
   applyTransformation = (): void => {
     if (!this.mounted || !this.contentComponent) return;
     const { scale, positionX, positionY } = this.transformState;
-
-    const newPositionX = positionX;
-    const newPositionY = positionY;
-    const newScale = scale;
-    const transform = getTransformStyles(newPositionX, newPositionY, newScale);
-
+    const transform = getTransformStyles(positionX, positionY, scale);
     this.contentComponent.style.transform = transform;
 
-    // force update to inject state to the context and avoid async set state which caused animations/updates problems
-    this.forceUpdate();
     this.handleRef();
   };
 

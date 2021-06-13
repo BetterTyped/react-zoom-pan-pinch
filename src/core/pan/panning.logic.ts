@@ -55,7 +55,6 @@ export function handlePanningEnd(
     contextInstance.isPanning = false;
     contextInstance.animate = false;
     contextInstance.animation = null;
-    contextInstance.forceUpdate();
 
     const wrapperRect = wrapperComponent?.getBoundingClientRect();
     const contentRect = contentComponent?.getBoundingClientRect();

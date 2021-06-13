@@ -31,7 +31,7 @@ export const handlePinchZoom = (
   const { scale } = contextInstance.transformState;
   const {
     limitToBounds,
-    limitToWrapper,
+    centerZoomedOut,
     zoomAnimation,
   } = contextInstance.setup;
   const { disabled, size } = zoomAnimation;
@@ -51,7 +51,7 @@ export const handlePinchZoom = (
 
   const bounds = handleCalculateBounds(contextInstance, newScale);
 
-  const isPaddingDisabled = disabled || size === 0 || limitToWrapper;
+  const isPaddingDisabled = disabled || size === 0 || centerZoomedOut;
   const isLimitedToBounds = limitToBounds && isPaddingDisabled;
 
   const { x, y } = handleCalculateZoomPositions(

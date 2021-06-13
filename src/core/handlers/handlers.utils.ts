@@ -5,7 +5,7 @@ import { getMousePosition } from "../zoom/wheel.utils";
 import { animate } from "../animations/animations.utils";
 import { createState } from "../../utils/state.utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
-import { roundNumber } from "../../utils";
+import { isExcludedNode, roundNumber } from "../../utils";
 
 export const handleCalculateButtonZoom = (
   contextInstance: ReactZoomPanPinchContext,
@@ -88,11 +88,20 @@ export function resetTransformations(
 
 export const isDoubleClickAllowed = (
   contextInstance: ReactZoomPanPinchContext,
+  event: MouseEvent,
 ): boolean => {
-  const { isInitialized, setup } = contextInstance;
-  const { disabled } = setup.doubleClick;
+  const { isInitialized, setup, wrapperComponent } = contextInstance;
+  const { disabled, excluded } = setup.doubleClick;
 
-  const isAllowed = isInitialized && !disabled;
+  const target = event.target as HTMLElement;
+  const isWrapperChild = wrapperComponent?.contains(target);
+  const isAllowed = isInitialized && target && isWrapperChild && !disabled;
+
+  if (!isAllowed) return false;
+
+  const isExcluded = isExcludedNode(target, excluded);
+
+  if (isExcluded) return false;
 
   if (!isAllowed) return false;
 

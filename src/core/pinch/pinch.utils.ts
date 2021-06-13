@@ -25,9 +25,10 @@ export const isPinchAllowed = (
   contextInstance: ReactZoomPanPinchContext,
 ): boolean => {
   const { disabled } = contextInstance.setup.pinch;
-  const { isInitialized, isPanning, distance } = contextInstance;
+  const { isInitialized, isPanning, pinchStartDistance } = contextInstance;
 
-  const isAllowed = isInitialized && !isPanning && !disabled && distance;
+  const isAllowed =
+    isInitialized && !isPanning && !disabled && pinchStartDistance;
 
   if (!isAllowed) return false;
 

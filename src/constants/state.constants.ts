@@ -32,8 +32,8 @@ export const initialSetup: LibrarySetup = {
   minScale: 1,
   maxScale: 8,
   limitToBounds: true,
-  limitToWrapper: false,
-  centerOnInit: false,
+  centerZoomedOut: false,
+  centerOnInit: true,
   wheel: {
     step: 0.2,
     disabled: false,
@@ -61,6 +61,7 @@ export const initialSetup: LibrarySetup = {
     mode: "zoomIn",
     animationType: "easeOut",
     animationTime: 200,
+    excluded: [],
   },
   zoomAnimation: {
     disabled: false,
@@ -78,7 +79,7 @@ export const initialSetup: LibrarySetup = {
   velocityAnimation: {
     disabled: false,
     sensitivity: 1,
-    animationTime: 600,
+    animationTime: 400,
     animationType: "easeOut",
     equalToMove: true,
   },

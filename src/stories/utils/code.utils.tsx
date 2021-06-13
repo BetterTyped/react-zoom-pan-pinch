@@ -2,7 +2,9 @@ import React from "react";
 import Highlight, { defaultProps } from "prism-react-renderer";
 import vsLight from "prism-react-renderer/themes/vsLight";
 
-export const Code = ({ code }: { code: string }) => (
+type Props = { code: string };
+
+export const Code: React.FC<Props> = ({ code }: Props) => (
   <Highlight {...defaultProps} code={code} theme={vsLight} language="tsx">
     {({ className, style, tokens, getLineProps, getTokenProps }) => (
       <pre className={className} style={style}>

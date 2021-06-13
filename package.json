@@ -15,16 +15,16 @@
     "npm": ">=5"
   },
   "scripts": {
-    "test": "react-scripts test --env=jsdom --testPathIgnorePatterns=utils shared",
-    "test:watch": "react-scripts test --watch --env=jsdom --testPathIgnorePatterns=utils shared",
-    "test:verbose": "react-scripts test --verbose --env=jsdom --testPathIgnorePatterns=utils shared",
+    "test": "react-scripts test --watchAll=false --passWithNoTests",
     "build": "rollup -c",
     "build:docs": "build-storybook",
     "start": "start-storybook -p 6006 --no-manager-cache",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "prepare": "install-peers && yarn build",
-    "predeploy": "yarn install && yarn run build:docs",
-    "deploy": "gh-pages -d storybook-static"
+    "predeploy": "yarn run build:docs",
+    "deploy": "gh-pages -d storybook-static",
+    "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts",
+    "test:prettier": "npm run prettier -check \"**/*.+(js|json|ts|tsx)\""
   },
   "peerDependencies": {
     "react": "^17.0.2",

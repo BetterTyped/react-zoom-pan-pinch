@@ -2,7 +2,7 @@ import { ReactZoomPanPinchContext } from "../../models";
 import { handleZoomToViewCenter, resetTransformations } from "./handlers.utils";
 import { animations } from "../animations/animations.constants";
 import { animate } from "../animations/animations.utils";
-import { getCenteredTransformStyles } from "utils";
+import { getCenteredTransformStyles } from "../../utils";
 
 export const zoomIn = (contextInstance: ReactZoomPanPinchContext) => (
   step = 0.5,

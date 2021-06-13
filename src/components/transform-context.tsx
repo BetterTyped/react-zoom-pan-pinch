@@ -51,7 +51,7 @@ import {
   handleDoubleClick,
   isDoubleClickAllowed,
 } from "../core/handlers/handlers.utils";
-import { centerView } from "core/handlers/handlers.logic";
+import { centerView } from "../core/handlers/handlers.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 

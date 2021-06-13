@@ -4,7 +4,7 @@ import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
 import { normalizeArgs } from "../../utils";
 
-export const Example = (args: any) => {
+export const Example: React.FC<any> = (args: any) => {
   const [firstBlock, setFirstBlock] = useState(false);
   const [secondBlock, setSecondBlock] = useState(false);
   const [thirdBlock, setThirdBlock] = useState(false);

@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { clickOnComponent } from "./utils";
-import App from "../../example/src/App";
+import App from "example/src/App";
 
 describe("Example view", () => {
   describe("When example view has been rendered", () => {

@@ -1,41 +1,51 @@
-import typescript from "rollup-plugin-typescript2";
-import commonjs from "rollup-plugin-commonjs";
+import babel from "@rollup/plugin-babel";
 import external from "rollup-plugin-peer-deps-external";
-// import postcss from 'rollup-plugin-postcss-modules'
+import del from "rollup-plugin-delete";
+import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
-import resolve from "rollup-plugin-node-resolve";
-import url from "rollup-plugin-url";
-import svgr from "@svgr/rollup";
+import dts from "rollup-plugin-dts";
 import pkg from "./package.json";
 
-export default {
-  input: "src/index.tsx",
-  output: [
-    {
-      file: pkg.main,
-      format: "cjs",
-      exports: "named",
-      sourcemap: true,
-    },
-    {
-      file: pkg.module,
-      format: "es",
-      exports: "named",
-      sourcemap: true,
-    },
-  ],
-  plugins: [
-    external(),
-    postcss({
-      modules: true,
-    }),
-    url({ exclude: ["**/*.svg"] }),
-    svgr(),
-    resolve(),
-    typescript({
-      rollupCommonJSResolveHack: true,
-      clean: true,
-    }),
-    commonjs(),
-  ],
-};
+export default [
+  {
+    input: pkg.source,
+    output: [
+      {
+        file: pkg.main,
+        format: "cjs",
+        exports: "named",
+        sourcemap: true,
+      },
+      {
+        file: pkg.module,
+        format: "es",
+        exports: "named",
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      external(),
+      babel({
+        exclude: "node_modules/**",
+      }),
+      del({ targets: ["dist/*"] }),
+      typescript(),
+      postcss({
+        modules: true,
+      }),
+    ],
+    external: Object.keys(pkg.peerDependencies || {}),
+  },
+  {
+    input: pkg.source,
+    output: [{ file: pkg.types, format: "es" }],
+    plugins: [
+      external(),
+      dts({
+        compilerOptions: {
+          baseUrl: "./src",
+        },
+      }),
+    ],
+  },
+];

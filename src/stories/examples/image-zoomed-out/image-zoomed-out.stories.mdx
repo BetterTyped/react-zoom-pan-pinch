@@ -1,0 +1,37 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { TransformComponent } from "../../../components/transform-component";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs } from "../../utils";
+
+import exampleImg from "../../assets/medium-image.jpg";
+
+export const Template = (args) => (
+  <TransformWrapper {...normalizeArgs(args)} initialScale={0.4} minScale={0.2}>
+    <TransformComponent>
+      <img src={exampleImg} alt="" />
+    </TransformComponent>
+  </TransformWrapper>
+);
+
+<Meta
+  title="Examples/Zoomed Out"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Zoomed Out
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Zoomed Out">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Zoomed Out" />

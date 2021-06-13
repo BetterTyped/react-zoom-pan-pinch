@@ -1,0 +1,48 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import { getPropsTable } from "./props.tsx";
+import { Code } from "../utils";
+
+<Meta title="Docs/Props" />
+
+# Props
+
+List of props
+
+<table className="props-table">
+  <thead>
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Default
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {getPropsTable().map(row => (
+      <tr className={row.isObjectRow ? "is-object-row" : ""}>
+        <td>
+          {row.name}
+        </td>
+        <td>
+          {row.type.map(type => (<Code code={type} />))}
+        </td>
+        <td>
+          <Code code={row.defaultValue} />
+        </td>
+        <td>
+          {row.description}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+
+</table>

@@ -1,0 +1,46 @@
+body {
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 130%;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.react-transform-wrapper {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+body td > pre.prism-code {
+  background: transparent !important;
+  overflow: auto;
+}
+
+.props-table {
+  width: 100%;
+}
+
+.props-table th {
+  text-align: left;
+}
+
+.props-table td:nth-child(2),
+.props-table td:nth-child(3) {
+  max-width: 200px;
+}
+
+.props-table td:nth-child(4) {
+  min-width: 250px;
+}
+
+.is-object-row td {
+  background: #d8e2f5;
+  border-top: 2px solid rgb(173 173 173) !important;
+}
+
+.react-transform-wrapper {
+  max-width: 80vw;
+  max-height: 80vh;
+}

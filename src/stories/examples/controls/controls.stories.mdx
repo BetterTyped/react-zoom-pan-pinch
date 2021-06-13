@@ -1,0 +1,75 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { TransformComponent } from "../../../components/transform-component";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs } from "../../utils";
+
+import exampleImg from "../../assets/small-image.jpg";
+
+export const Template = (args) => (
+  <TransformWrapper {...normalizeArgs(args)}>
+    {({ zoomIn, zoomOut, resetTransform }) => (
+      <div>
+        <div>
+          <button onClick={() => zoomIn()}>Zoom In</button>
+          <button onClick={() => zoomOut()}>Zoom Out</button>
+          <button onClick={() => resetTransform()}>Reset</button>
+        </div>
+        <TransformComponent
+          wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
+        >
+          <div style={{ background: "#444", color: "white", padding: "50px" }}>
+            <h1>No scrollbars needed</h1>
+            <h2>Use mouse or gestures to move around</h2>
+            <button
+              onClick={() => alert("You can still interact with click events!")}
+            >
+              Click me!
+            </button>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+              sunt in culpa qui officia deserunt mollit anim id est laborum
+            </p>
+            <img src={exampleImg} alt="" />
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+              sunt in culpa qui officia deserunt mollit anim id est laborum
+            </p>
+          </div>
+        </TransformComponent>
+      </div>
+    )}
+  </TransformWrapper>
+);
+
+<Meta
+  title="Examples/Controls"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Controls
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Controls">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Controls" />

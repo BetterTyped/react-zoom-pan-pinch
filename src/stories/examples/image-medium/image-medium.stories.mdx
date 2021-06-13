@@ -1,0 +1,37 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { TransformComponent } from "../../../components/transform-component";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs } from "../../utils";
+
+import exampleImg from "../../assets/medium-image.jpg";
+
+export const Template = (args) => (
+  <TransformWrapper {...normalizeArgs(args)}>
+    <TransformComponent>
+      <img src={exampleImg} alt="" />
+    </TransformComponent>
+  </TransformWrapper>
+);
+
+<Meta
+  title="Examples/Medium Image"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Medium Image
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Medium Image">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Medium Image" />

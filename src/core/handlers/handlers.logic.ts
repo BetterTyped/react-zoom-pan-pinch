@@ -2,6 +2,7 @@ import { ReactZoomPanPinchContext } from "../../models";
 import { handleZoomToViewCenter, resetTransformations } from "./handlers.utils";
 import { animations } from "../animations/animations.constants";
 import { animate } from "../animations/animations.utils";
+import { getCenteredTransformStyles } from "utils";
 
 export const zoomIn = (contextInstance: ReactZoomPanPinchContext) => (
   step = 0.5,
@@ -58,4 +59,27 @@ export const resetTransform = (contextInstance: ReactZoomPanPinchContext) => (
   animationType: keyof typeof animations = "easeOut",
 ): void => {
   resetTransformations(contextInstance, animationTime, animationType);
+};
+
+export const centerView = (contextInstance: ReactZoomPanPinchContext): void => {
+  const { initialPositionX, initialPositionY } = contextInstance.props;
+  const {
+    transformState,
+    wrapperComponent,
+    contentComponent,
+  } = contextInstance;
+  if (wrapperComponent && contentComponent) {
+    const { transform, positionsState } = getCenteredTransformStyles(
+      initialPositionX,
+      initialPositionY,
+      transformState.scale,
+      wrapperComponent,
+      contentComponent,
+    );
+    contentComponent.style.transform = transform;
+    contextInstance.transformState = {
+      ...contextInstance.transformState,
+      ...positionsState,
+    };
+  }
 };

@@ -77,11 +77,9 @@ export const handlePinchZoom = (
 export const handlePinchStop = (
   contextInstance: ReactZoomPanPinchContext,
 ): void => {
-  if (contextInstance.isPanning) {
-    contextInstance.velocity = null;
-    contextInstance.lastDistance = null;
-    contextInstance.pinchStartScale = null;
-    contextInstance.pinchStartDistance = null;
-    handleAlignToScaleBounds(contextInstance);
-  }
+  contextInstance.velocity = null;
+  contextInstance.lastDistance = null;
+  contextInstance.pinchStartScale = null;
+  contextInstance.pinchStartDistance = null;
+  handleAlignToScaleBounds(contextInstance);
 };

@@ -40,9 +40,7 @@ body td > pre.prism-code {
   border-top: 2px solid rgb(173 173 173) !important;
 }
 
-@media (max-width: 992px) {
-  .react-transform-wrapper {
-    max-width: 80vw;
-    max-height: 80vh;
-  }
+.react-transform-wrapper {
+  max-width: 80vw;
+  max-height: 80vh;
 }

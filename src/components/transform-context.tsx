@@ -18,7 +18,6 @@ import {
   handleCallback,
   getTransformStyles,
   makePassiveEventOption,
-  getCenteredTransformStyles,
 } from "../utils";
 
 import { contextInitialState } from "../constants/state.constants";
@@ -52,6 +51,7 @@ import {
   handleDoubleClick,
   isDoubleClickAllowed,
 } from "../core/handlers/handlers.utils";
+import { centerView } from "core/handlers/handlers.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 
@@ -140,29 +140,31 @@ class TransformContext extends Component<
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitializeContentEvents = (
-    content: HTMLDivElement,
-    wrapper: HTMLDivElement,
-  ): void => {
+  handleInitialize = (): void => {
     const { centerOnInit } = this.setup;
-    const { scale } = this.transformState;
-    const { initialPositionX, initialPositionY } = this.props;
 
     this.applyTransformation();
+    this.forceUpdate();
 
     if (centerOnInit) {
-      // we need to wait for initial render
+      // this has to be redone once the right solution is found
+      // problem is - we need to execute it after mounting
+      // it gets fired 3 times to handle all cases found during development
       setTimeout(() => {
-        const { transform, positionsState } = getCenteredTransformStyles(
-          initialPositionX,
-          initialPositionY,
-          scale,
-          wrapper,
-          content,
-        );
-        content.style.transform = transform;
-        this.transformState = { ...this.transformState, ...positionsState };
+        if (this.mounted) {
+          centerView(this);
+        }
       }, 0);
+      setTimeout(() => {
+        if (this.mounted) {
+          centerView(this);
+        }
+      }, 15);
+      setTimeout(() => {
+        if (this.mounted) {
+          centerView(this);
+        }
+      }, 30);
     }
   };
 
@@ -277,11 +279,12 @@ class TransformContext extends Component<
 
   onPinchStop = (): void => {
     const { onPinchingStop, onZoomStop } = this.props;
-    if (!this.pinchStartScale && !this.isPanning) return;
 
-    handlePinchStop(this);
-    handleCallback(getContext(this), onPinchingStop);
-    handleCallback(getContext(this), onZoomStop);
+    if (this.pinchStartScale) {
+      handlePinchStop(this);
+      handleCallback(getContext(this), onPinchingStop);
+      handleCallback(getContext(this), onZoomStop);
+    }
   };
 
   //////////
@@ -306,9 +309,6 @@ class TransformContext extends Component<
     const isPinchAction = touches.length === 2;
 
     if (isPanningAction) {
-      event.preventDefault();
-      event.stopPropagation();
-
       handleCancelAnimation(this);
       handlePanningStart(this, event);
       handleCallback(getContext(this), onPanningStart);
@@ -322,10 +322,7 @@ class TransformContext extends Component<
     const { disabled } = this.setup;
     const { onPanning } = this.props;
 
-    const isPanningAction = event.touches.length === 1;
-    const isPinchAction = event.touches.length === 2;
-
-    if (isPanningAction) {
+    if (this.isPanning) {
       if (disabled) return;
 
       const isAllowed = isPanningAllowed(this);
@@ -334,15 +331,14 @@ class TransformContext extends Component<
       const touch = event.touches[0];
       handlePanning(this, touch.clientX, touch.clientY);
       handleCallback(getContext(this), onPanning);
-    }
-    if (isPinchAction) {
+    } else if (event.touches.length > 1) {
       this.onPinch(event);
     }
   };
 
   onTouchPanningStop = (): void => {
-    this.onPinchStop();
     this.onPanningStop();
+    this.onPinchStop();
   };
 
   //////////
@@ -392,7 +388,7 @@ class TransformContext extends Component<
     this.contentComponent = contentComponent;
     handleCalculateBounds(this, this.transformState.scale);
     this.handleInitializeWrapperEvents(wrapperComponent);
-    this.handleInitializeContentEvents(contentComponent, wrapperComponent);
+    this.handleInitialize();
     this.handleRef();
     this.isInitialized = true;
   };

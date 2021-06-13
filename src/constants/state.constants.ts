@@ -33,7 +33,7 @@ export const initialSetup: LibrarySetup = {
   maxScale: 8,
   limitToBounds: true,
   centerZoomedOut: false,
-  centerOnInit: true,
+  centerOnInit: false,
   wheel: {
     step: 0.2,
     disabled: false,

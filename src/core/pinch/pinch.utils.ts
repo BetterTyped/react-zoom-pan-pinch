@@ -7,10 +7,10 @@ export const isPinchStartAllowed = (
   event: TouchEvent,
 ): boolean => {
   const { disabled, excluded } = contextInstance.setup.pinch;
-  const { isInitialized, isPanning } = contextInstance;
+  const { isInitialized } = contextInstance;
 
   const target = event.target as HTMLElement;
-  const isAllowed = isInitialized && !isPanning && !disabled && target;
+  const isAllowed = isInitialized && !disabled && target;
 
   if (!isAllowed) return false;
 
@@ -25,10 +25,9 @@ export const isPinchAllowed = (
   contextInstance: ReactZoomPanPinchContext,
 ): boolean => {
   const { disabled } = contextInstance.setup.pinch;
-  const { isInitialized, isPanning, pinchStartDistance } = contextInstance;
+  const { isInitialized, pinchStartDistance } = contextInstance;
 
-  const isAllowed =
-    isInitialized && !isPanning && !disabled && pinchStartDistance;
+  const isAllowed = isInitialized && !disabled && pinchStartDistance;
 
   if (!isAllowed) return false;
 

@@ -22,7 +22,7 @@
     "build:docs": "build-storybook",
     "start": "start-storybook -p 6006 --no-manager-cache",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
-    "prepare": "install-peers && yarn run build",
+    "prepare": "install-peers",
     "predeploy": "yarn install && yarn run build:docs",
     "deploy": "gh-pages -d storybook-static"
   },
@@ -65,8 +65,7 @@
     "gh-pages": "^3.1.0",
     "install-peers-cli": "^2.2.0",
     "postcss": "^8.2.13",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "prism-react-renderer": "^1.2.1",
     "react-scripts": "^4.0.3",
     "rollup": "^2.46.0",
     "rollup-plugin-delete": "^2.0.0",

@@ -3,12 +3,15 @@ import { ReactZoomPanPinchProps, ReactZoomPanPinchRef } from "../models";
 import { TransformContext } from "./transform-context";
 
 export const TransformWrapper = React.forwardRef(
-  (props: ReactZoomPanPinchProps, ref: any) => {
+  (
+    props: Omit<ReactZoomPanPinchProps, "ref">,
+    ref: React.Ref<ReactZoomPanPinchRef>,
+  ) => {
     const [innerRef, setRef] = useState<ReactZoomPanPinchRef | null>(null);
 
-    useImperativeHandle(ref, () => innerRef, [innerRef]);
+    useImperativeHandle(ref, () => innerRef as any, [innerRef]);
 
-    return <TransformContext {...props} setRef={setRef} />;
+    return <TransformContext {...props} setRef={setRef as any} />;
   },
 );
 

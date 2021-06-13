@@ -58,7 +58,7 @@ type StartCoordsType = { x: number; y: number } | null;
 const Context = React.createContext(contextInitialState);
 
 class TransformContext extends Component<
-  ReactZoomPanPinchProps & {
+  Omit<ReactZoomPanPinchProps, "ref"> & {
     setRef: (context: ReactZoomPanPinchRef) => void;
   }
 > {

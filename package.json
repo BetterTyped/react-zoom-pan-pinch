@@ -15,9 +15,7 @@
     "npm": ">=5"
   },
   "scripts": {
-    "test": "react-scripts test --env=jsdom --testPathIgnorePatterns=utils shared",
-    "test:watch": "react-scripts test --watch --env=jsdom --testPathIgnorePatterns=utils shared",
-    "test:verbose": "react-scripts test --verbose --env=jsdom --testPathIgnorePatterns=utils shared",
+    "test": "react-scripts test --watchAll=false --passWithNoTests",
     "build": "rollup -c",
     "build:docs": "build-storybook",
     "start": "start-storybook -p 6006 --no-manager-cache",

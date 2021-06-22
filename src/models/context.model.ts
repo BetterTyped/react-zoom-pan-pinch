@@ -97,7 +97,7 @@ export type ReactZoomPanPinchProps = {
     velocityAlignmentTime?: number;
     animationType?: keyof typeof animations;
   };
-  velocityAnimation: {
+  velocityAnimation?: {
     disabled?: boolean;
     sensitivity?: number;
     animationTime?: number;

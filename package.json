@@ -9,7 +9,7 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "jsnext:main": "dist/index.es.js",
+  "jsnext:main": "dist/index.esm.js",
   "engines": {
     "node": ">=8",
     "npm": ">=5"

@@ -41,15 +41,24 @@ export function getDelta(
 }
 
 export function getMousePosition(
-  event: WheelEvent | MouseEvent,
+  event: WheelEvent | MouseEvent | TouchEvent,
   contentComponent: HTMLDivElement,
   scale: number,
 ): PositionType {
   const contentRect = contentComponent.getBoundingClientRect();
 
-  // mouse position x, y over wrapper component
-  const mouseX = (event.clientX - contentRect.left) / scale;
-  const mouseY = (event.clientY - contentRect.top) / scale;
+  let mouseX = 0;
+  let mouseY = 0;
+
+  if ("clientX" in event) {
+    // mouse position x, y over wrapper component
+    mouseX = (event.clientX - contentRect.left) / scale;
+    mouseY = (event.clientY - contentRect.top) / scale;
+  } else {
+    const touch = event.touches[0];
+    mouseX = (touch.clientX - contentRect.left) / scale;
+    mouseY = (touch.clientY - contentRect.top) / scale;
+  }
 
   if (isNaN(mouseX) || isNaN(mouseY))
     console.error("No mouse or touch offset found");

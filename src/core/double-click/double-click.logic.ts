@@ -11,7 +11,7 @@ import {
 
 export function handleDoubleClick(
   contextInstance: ReactZoomPanPinchContext,
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
 ): void {
   const {
     disabled,
@@ -54,7 +54,7 @@ export function handleDoubleClick(
 
 export const isDoubleClickAllowed = (
   contextInstance: ReactZoomPanPinchContext,
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
 ): boolean => {
   const { isInitialized, setup, wrapperComponent } = contextInstance;
   const { disabled, excluded } = setup.doubleClick;

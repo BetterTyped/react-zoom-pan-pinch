@@ -81,6 +81,7 @@ class TransformContext extends Component<
   // panning helpers
   public isPanning = false;
   public startCoords: StartCoordsType = null;
+  public lastTouch: number | null = null;
   // pinch helpers
   public distance: null | number = null;
   public lastDistance: null | number = null;
@@ -293,23 +294,31 @@ class TransformContext extends Component<
 
     if (!isAllowed) return;
 
-    event.preventDefault();
-    event.stopPropagation();
+    const isDoubleTap = this.lastTouch && +new Date() - this.lastTouch < 200;
 
-    handleCancelAnimation(this);
+    if (isDoubleTap && event.touches.length === 1) {
+      this.onDoubleClick(event);
+    } else {
+      event.preventDefault();
+      event.stopPropagation();
 
-    const { touches } = event;
+      this.lastTouch = +new Date();
 
-    const isPanningAction = touches.length === 1;
-    const isPinchAction = touches.length === 2;
-
-    if (isPanningAction) {
       handleCancelAnimation(this);
-      handlePanningStart(this, event);
-      handleCallback(getContext(this), event, onPanningStart);
-    }
-    if (isPinchAction) {
-      this.onPinchStart(event);
+
+      const { touches } = event;
+
+      const isPanningAction = touches.length === 1;
+      const isPinchAction = touches.length === 2;
+
+      if (isPanningAction) {
+        handleCancelAnimation(this);
+        handlePanningStart(this, event);
+        handleCallback(getContext(this), event, onPanningStart);
+      }
+      if (isPinchAction) {
+        this.onPinchStart(event);
+      }
     }
   };
 
@@ -317,7 +326,7 @@ class TransformContext extends Component<
     const { disabled } = this.setup;
     const { onPanning } = this.props;
 
-    if (this.isPanning) {
+    if (this.isPanning && event.touches.length === 1) {
       if (disabled) return;
 
       const isAllowed = isPanningAllowed(this);
@@ -343,7 +352,7 @@ class TransformContext extends Component<
   // Double Click
   //////////
 
-  onDoubleClick = (event: MouseEvent): void => {
+  onDoubleClick = (event: MouseEvent | TouchEvent): void => {
     const { disabled } = this.setup;
     if (disabled) return;
 

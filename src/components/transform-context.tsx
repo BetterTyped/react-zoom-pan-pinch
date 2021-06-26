@@ -197,6 +197,9 @@ class TransformContext extends Component<
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
 
+    event.preventDefault();
+    event.stopPropagation();
+
     handleCancelAnimation(this);
     handlePanningStart(this, event);
     handleCallback(getContext(this), event, onPanningStart);
@@ -213,6 +216,9 @@ class TransformContext extends Component<
 
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
+
+    event.preventDefault();
+    event.stopPropagation();
 
     handlePanning(this, event.clientX, event.clientY);
     handleCallback(getContext(this), event, onPanning);

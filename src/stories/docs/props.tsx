@@ -372,64 +372,64 @@ export const propsTable: ComponentProps = {
     },
   },
   onWheelStart: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when wheel/touchpad events are started",
   },
   onWheel: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when wheel/touchpad events are ongoing",
   },
   onWheelStop: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when wheel/touchpad events are finished",
   },
   onPanningStart: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when panning event has started",
   },
   onPanning: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when panning event is ongoing",
   },
   onPanningStop: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when panning event has finished",
   },
   onPinchingStart: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event has started",
   },
   onPinching: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event is ongoing",
   },
   onPinchingStop: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event has finished",
   },
   onZoomStart: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description:
       "Callback fired when any of zoom events are started (wheel/touchpad/pinch)",
   },
   onZoom: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description:
       "Callback fired when any of zoom events are ongoing (wheel/touchpad/pinch)",
   },
   onZoomStop: {
-    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description:
       "Callback fired when any of zoom events are finished (wheel/touchpad/pinch)",

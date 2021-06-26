@@ -7,6 +7,10 @@ import { checkZoomBounds } from "../zoom/zoom.utils";
 import { roundNumber } from "../../utils";
 import { initialState } from "../../constants/state.constants";
 import { PositionType } from "../../models/calculations.model";
+import {
+  calculateBounds,
+  getMouseBoundedPosition,
+} from "core/bounds/bounds.utils";
 
 export const handleCalculateButtonZoom = (
   contextInstance: ReactZoomPanPinchContext,
@@ -92,6 +96,7 @@ export function calculateZoomToNode(
   node: HTMLElement,
 ): { positionX: number; positionY: number; scale: number } {
   const { wrapperComponent } = contextInstance;
+  const { limitToBounds } = contextInstance.setup;
   if (!wrapperComponent) return initialState;
 
   const wrapperRect = wrapperComponent.getBoundingClientRect();
@@ -113,7 +118,18 @@ export function calculateZoomToNode(
   const newPositionX = (wrapperRect.left - nodeLeft) * newScale + offsetX;
   const newPositionY = (wrapperRect.top - nodeTop) * newScale + offsetY;
 
-  return { positionX: newPositionX, positionY: newPositionY, scale: newScale };
+  const bounds = calculateBounds(contextInstance, newScale);
+
+  const { x, y } = getMouseBoundedPosition(
+    newPositionX,
+    newPositionY,
+    bounds,
+    limitToBounds,
+    0,
+    wrapperComponent,
+  );
+
+  return { positionX: x, positionY: y, scale: newScale };
 }
 
 function getOffset(element: HTMLElement): PositionType {

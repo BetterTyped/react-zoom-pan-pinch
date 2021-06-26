@@ -59,7 +59,7 @@ export const getBounds = (
   return { minPositionX, maxPositionX, minPositionY, maxPositionY };
 };
 
-export const handleCalculateBounds = (
+export const calculateBounds = (
   contextInstance: ReactZoomPanPinchContext,
   newScale: number,
 ): BoundsType => {
@@ -88,6 +88,14 @@ export const handleCalculateBounds = (
     newDiffHeight,
     Boolean(centerZoomedOut),
   );
+  return bounds;
+};
+
+export const handleCalculateBounds = (
+  contextInstance: ReactZoomPanPinchContext,
+  newScale: number,
+): BoundsType => {
+  const bounds = calculateBounds(contextInstance, newScale);
 
   // Save bounds
   contextInstance.bounds = bounds;

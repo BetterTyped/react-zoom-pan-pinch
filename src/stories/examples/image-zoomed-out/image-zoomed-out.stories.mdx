@@ -9,7 +9,12 @@ import { normalizeArgs } from "../../utils";
 import exampleImg from "../../assets/medium-image.jpg";
 
 export const Template = (args) => (
-  <TransformWrapper {...normalizeArgs(args)} initialScale={0.4} minScale={0.2}>
+  <TransformWrapper
+    {...normalizeArgs(args)}
+    initialScale={0.4}
+    minScale={0.2}
+    centerOnInit={true}
+  >
     <TransformComponent>
       <img src={exampleImg} alt="" />
     </TransformComponent>

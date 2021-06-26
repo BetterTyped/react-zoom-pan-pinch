@@ -1,11 +1,12 @@
 import { ReactZoomPanPinchContext } from "../../models";
 import { animations } from "../animations/animations.constants";
 import { handleZoomToPoint } from "../zoom/zoom.logic";
-import { getMousePosition } from "../zoom/wheel.utils";
 import { animate } from "../animations/animations.utils";
 import { createState } from "../../utils/state.utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
-import { isExcludedNode, roundNumber } from "../../utils";
+import { roundNumber } from "../../utils";
+import { initialState } from "../../constants/state.constants";
+import { PositionType } from "../../models/calculations.model";
 
 export const handleCalculateButtonZoom = (
   contextInstance: ReactZoomPanPinchContext,
@@ -86,70 +87,50 @@ export function resetTransformations(
   animate(contextInstance, initialTransformation, animationTime, animationType);
 }
 
-export const isDoubleClickAllowed = (
+export function calculateZoomToNode(
   contextInstance: ReactZoomPanPinchContext,
-  event: MouseEvent,
-): boolean => {
-  const { isInitialized, setup, wrapperComponent } = contextInstance;
-  const { disabled, excluded } = setup.doubleClick;
+  node: HTMLElement,
+): { positionX: number; positionY: number; scale: number } {
+  const { wrapperComponent } = contextInstance;
+  if (!wrapperComponent) return initialState;
 
-  const target = event.target as HTMLElement;
-  const isWrapperChild = wrapperComponent?.contains(target);
-  const isAllowed = isInitialized && target && isWrapperChild && !disabled;
+  const wrapperRect = wrapperComponent.getBoundingClientRect();
+  const nodeRect = getOffset(node);
 
-  if (!isAllowed) return false;
+  const nodeLeft = nodeRect.x;
+  const nodeTop = nodeRect.y;
+  const nodeWidth = node.offsetWidth;
+  const nodeHeight = node.offsetHeight;
 
-  const isExcluded = isExcludedNode(target, excluded);
+  const scaleX = wrapperComponent.offsetWidth / nodeWidth;
+  const scaleY = wrapperComponent.offsetHeight / nodeHeight;
 
-  if (isExcluded) return false;
+  const newScale = Math.min(scaleX, scaleY);
 
-  if (!isAllowed) return false;
+  const offsetX = (wrapperRect.width - nodeWidth * newScale) / 2;
+  const offsetY = (wrapperRect.height - nodeHeight * newScale) / 2;
 
-  return true;
-};
+  const newPositionX = (wrapperRect.left - nodeLeft) * newScale + offsetX;
+  const newPositionY = (wrapperRect.top - nodeTop) * newScale + offsetY;
 
-export function handleDoubleClick(
-  contextInstance: ReactZoomPanPinchContext,
-  event: MouseEvent,
-): void {
-  const {
-    disabled,
-    mode,
-    step,
-    animationTime,
-    animationType,
-  } = contextInstance.setup.doubleClick;
+  return { positionX: newPositionX, positionY: newPositionY, scale: newScale };
+}
 
-  if (disabled) return;
+function getOffset(element: HTMLElement): PositionType {
+  let el = element;
 
-  event.preventDefault();
-  event.stopPropagation();
+  let offsetLeft = 0;
+  let offsetTop = 0;
 
-  if (mode === "reset") {
-    return resetTransformations(contextInstance, animationTime, animationType);
+  while (el) {
+    offsetLeft += el.offsetLeft;
+    offsetTop += el.offsetTop;
+
+    el = el.offsetParent as HTMLElement;
   }
 
-  const { scale } = contextInstance.transformState;
-  const { contentComponent } = contextInstance;
-
-  if (!contentComponent) return console.error("No ContentComponent found");
-
-  const delta = mode === "zoomOut" ? -1 : 1;
-
-  const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
-  const mousePosition = getMousePosition(event, contentComponent, scale);
-  const targetState = handleZoomToPoint(
-    contextInstance,
-    newScale,
-    mousePosition.x,
-    mousePosition.y,
-  );
-
-  if (!targetState) {
-    return console.error(
-      "Error during zoom event. New transformation state was not calculated.",
-    );
-  }
-
-  animate(contextInstance, targetState, animationTime, animationType);
+  return {
+    x: offsetLeft,
+    y: offsetTop,
+  };
 }

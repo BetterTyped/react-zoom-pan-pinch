@@ -1,0 +1,48 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+import { getHandlersTable } from "./handlers.tsx";
+import { Code } from "../utils";
+
+<Meta title="Docs/Handlers" />
+
+# Handlers
+
+List of additionaly added handlers - you can acces them via ref or render props
+
+<table className="handlers-table">
+  <thead>
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Default
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {getHandlersTable().map(row => (
+      <tr className={row.isObjectRow ? "is-object-row" : ""}>
+        <td>
+          {row.name}
+        </td>
+        <td>
+          {row.type.map(type => (<Code code={type} />))}
+        </td>
+        <td>
+          {row.parameters.map(param => (<Code code={param} />))}
+        </td>
+        <td>
+          {row.description}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+
+</table>

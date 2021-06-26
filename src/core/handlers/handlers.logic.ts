@@ -1,7 +1,11 @@
 import { ReactZoomPanPinchContext } from "../../models";
-import { handleZoomToViewCenter, resetTransformations } from "./handlers.utils";
+import {
+  calculateZoomToNode,
+  handleZoomToViewCenter,
+  resetTransformations,
+} from "./handlers.utils";
 import { animations } from "../animations/animations.constants";
-import { animate } from "../animations/animations.utils";
+import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import { getCenteredTransformStyles } from "../../utils";
 
 export const zoomIn = (contextInstance: ReactZoomPanPinchContext) => (
@@ -36,7 +40,7 @@ export const setTransform = (contextInstance: ReactZoomPanPinchContext) => (
   newPositionX: number,
   newPositionY: number,
   newScale: number,
-  animationTime = 200,
+  animationTime = 300,
   animationType: keyof typeof animations = "easeOut",
 ): void => {
   const { positionX, positionY, scale } = contextInstance.transformState;
@@ -61,7 +65,9 @@ export const resetTransform = (contextInstance: ReactZoomPanPinchContext) => (
   resetTransformations(contextInstance, animationTime, animationType);
 };
 
-export const centerView = (contextInstance: ReactZoomPanPinchContext): void => {
+export const centerView = (
+  contextInstance: ReactZoomPanPinchContext,
+) => (): void => {
   const { initialPositionX, initialPositionY } = contextInstance.props;
   const {
     transformState,
@@ -81,5 +87,23 @@ export const centerView = (contextInstance: ReactZoomPanPinchContext): void => {
       ...contextInstance.transformState,
       ...positionsState,
     };
+  }
+};
+
+export const zoomToElement = (contextInstance: ReactZoomPanPinchContext) => (
+  node: HTMLElement | string,
+  animationTime = 600,
+  animationName: keyof typeof animations = "easeOut",
+): void => {
+  handleCancelAnimation(contextInstance);
+
+  const { wrapperComponent } = contextInstance;
+
+  const target: HTMLElement | null =
+    typeof node === "string" ? document.getElementById(node) : node;
+
+  if (wrapperComponent && target && wrapperComponent.contains(target)) {
+    const targetState = calculateZoomToNode(contextInstance, target);
+    animate(contextInstance, targetState, animationTime, animationName);
   }
 };

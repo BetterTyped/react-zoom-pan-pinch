@@ -18,13 +18,14 @@ const wheelAnimationTime = 100;
 
 export const handleWheelStart = (
   contextInstance: ReactZoomPanPinchContext,
+  event: WheelEvent,
 ): void => {
   const { onWheelStart, onZoomStart } = contextInstance.props;
 
   if (!contextInstance.wheelStopEventTimer) {
     handleCancelAnimation(contextInstance);
-    handleCallback(getContext(contextInstance), onWheelStart);
-    handleCallback(getContext(contextInstance), onZoomStart);
+    handleCallback(getContext(contextInstance), event, onWheelStart);
+    handleCallback(getContext(contextInstance), event, onZoomStart);
   }
 };
 
@@ -80,8 +81,8 @@ export const handleWheelZoom = (
   contextInstance.transformState.positionY = y;
   contextInstance.applyTransformation();
 
-  handleCallback(getContext(contextInstance), onWheel);
-  handleCallback(getContext(contextInstance), onZoom);
+  handleCallback(getContext(contextInstance), event, onWheel);
+  handleCallback(getContext(contextInstance), event, onZoom);
 };
 
 export const handleWheelStop = (
@@ -94,7 +95,7 @@ export const handleWheelStop = (
   cancelTimeout(contextInstance.wheelAnimationTimer);
   contextInstance.wheelAnimationTimer = setTimeout(() => {
     if (!contextInstance.mounted) return;
-    handleAlignToScaleBounds(contextInstance, event);
+    handleAlignToScaleBounds(contextInstance, event.x, event.y);
     contextInstance.wheelAnimationTimer = null;
   }, wheelAnimationTime);
 
@@ -105,8 +106,8 @@ export const handleWheelStop = (
     contextInstance.wheelStopEventTimer = setTimeout(() => {
       if (!contextInstance.mounted) return;
       contextInstance.wheelStopEventTimer = null;
-      handleCallback(getContext(contextInstance), onWheelStop);
-      handleCallback(getContext(contextInstance), onZoomStop);
+      handleCallback(getContext(contextInstance), event, onWheelStop);
+      handleCallback(getContext(contextInstance), event, onZoomStop);
     }, wheelStopEventTime);
   }
 };

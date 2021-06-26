@@ -3,6 +3,14 @@ import React from "react";
 import { TransformContext } from "../components/transform-context";
 import { animations } from "../core/animations/animations.constants";
 import { DeepNonNullable } from "./helpers.model";
+import {
+  zoomIn,
+  zoomToElement,
+  centerView,
+  resetTransform,
+  setTransform,
+  zoomOut,
+} from "../core/handlers/handlers.logic";
 
 export type ReactZoomPanPinchContext = typeof TransformContext.prototype;
 
@@ -19,28 +27,16 @@ export type ReactZoomPanPinchState = {
 };
 
 export type ReactZoomPanPinchHandlers = {
-  zoomIn: (
-    step: number,
-    animationTime: number,
-    animationName: keyof typeof animations,
-  ) => void;
-  zoomOut: (
-    step: number,
-    animationTime: number,
-    animationName: keyof typeof animations,
-  ) => void;
-  setTransform: (
-    positionX: number,
-    positionY: number,
-    scale: number,
-    animationTime: number,
-    animationName: keyof typeof animations,
-  ) => void;
-  resetTransform: () => void;
+  zoomIn: ReturnType<typeof zoomIn>;
+  zoomOut: ReturnType<typeof zoomOut>;
+  setTransform: ReturnType<typeof setTransform>;
+  resetTransform: ReturnType<typeof resetTransform>;
+  centerView: ReturnType<typeof centerView>;
+  zoomToElement: ReturnType<typeof zoomToElement>;
 };
 
 export type ReactZoomPanPinchProps = {
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((ref: ReactZoomPanPinchRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
   initialScale?: number;
   initialPositionX?: number;

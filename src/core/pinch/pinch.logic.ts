@@ -63,6 +63,7 @@ export const handlePinchZoom = (
     isLimitedToBounds,
   );
 
+  contextInstance.pinchMidpoint = midPoint;
   contextInstance.lastDistance = currentDistance;
 
   contextInstance.transformState.positionX = x;
@@ -77,9 +78,12 @@ export const handlePinchZoom = (
 export const handlePinchStop = (
   contextInstance: ReactZoomPanPinchContext,
 ): void => {
+  const { pinchMidpoint } = contextInstance;
+
   contextInstance.velocity = null;
   contextInstance.lastDistance = null;
+  contextInstance.pinchMidpoint = null;
   contextInstance.pinchStartScale = null;
   contextInstance.pinchStartDistance = null;
-  handleAlignToScaleBounds(contextInstance);
+  handleAlignToScaleBounds(contextInstance, pinchMidpoint?.x, pinchMidpoint?.y);
 };

@@ -7,6 +7,8 @@ import {
   zoomOut,
   setTransform,
   resetTransform,
+  zoomToElement,
+  centerView,
 } from "../core/handlers/handlers.logic";
 
 export const getContext = (
@@ -19,5 +21,7 @@ export const getContext = (
     zoomOut: zoomOut(contextInstance),
     setTransform: setTransform(contextInstance),
     resetTransform: resetTransform(contextInstance),
+    centerView: centerView(contextInstance),
+    zoomToElement: zoomToElement(contextInstance),
   };
 };

@@ -50,7 +50,7 @@ import {
 import {
   handleDoubleClick,
   isDoubleClickAllowed,
-} from "../core/handlers/handlers.utils";
+} from "../core/double-click/double-click.logic";
 import { centerView } from "../core/handlers/handlers.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
@@ -86,6 +86,7 @@ class TransformContext extends Component<
   public lastDistance: null | number = null;
   public pinchStartDistance: null | number = null;
   public pinchStartScale: null | number = null;
+  public pinchMidpoint: null | PositionType = null;
   // velocity helpers
   public velocity: VelocityType | null = null;
   public velocityTime: number | null = null;
@@ -148,23 +149,17 @@ class TransformContext extends Component<
 
     if (centerOnInit) {
       // this has to be redone once the right solution is found
-      // problem is - we need to execute it after mounting
-      // it gets fired 3 times to handle all cases found during development
+      // problem is - we need to execute it after mounted component specify it's height / width
       setTimeout(() => {
         if (this.mounted) {
-          centerView(this);
+          centerView(this)();
         }
-      }, 0);
+      }, 50);
       setTimeout(() => {
         if (this.mounted) {
-          centerView(this);
+          centerView(this)();
         }
-      }, 15);
-      setTimeout(() => {
-        if (this.mounted) {
-          centerView(this);
-        }
-      }, 30);
+      }, 100);
     }
   };
 
@@ -182,7 +177,7 @@ class TransformContext extends Component<
     const keysPressed = this.isPressingKeys(this.setup.wheel.activationKeys);
     if (!keysPressed) return;
 
-    handleWheelStart(this);
+    handleWheelStart(this, event);
     handleWheelZoom(this, event);
     handleWheelStop(this, event);
   };
@@ -202,12 +197,9 @@ class TransformContext extends Component<
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-
     handleCancelAnimation(this);
     handlePanningStart(this, event);
-    handleCallback(getContext(this), onPanningStart);
+    handleCallback(getContext(this), event, onPanningStart);
   };
 
   onPanning = (event: MouseEvent): void => {
@@ -222,19 +214,16 @@ class TransformContext extends Component<
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-
     handlePanning(this, event.clientX, event.clientY);
-    handleCallback(getContext(this), onPanning);
+    handleCallback(getContext(this), event, onPanning);
   };
 
-  onPanningStop = (): void => {
+  onPanningStop = (event: MouseEvent | TouchEvent): void => {
     const { onPanningStop } = this.props;
 
     if (this.isPanning) {
       handlePanningEnd(this);
-      handleCallback(getContext(this), onPanningStop);
+      handleCallback(getContext(this), event, onPanningStop);
     }
   };
 
@@ -251,13 +240,10 @@ class TransformContext extends Component<
     const isAllowed = isPinchStartAllowed(this, event);
     if (!isAllowed) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-
     handlePinchStart(this, event);
     handleCancelAnimation(this);
-    handleCallback(getContext(this), onPinchingStart);
-    handleCallback(getContext(this), onZoomStart);
+    handleCallback(getContext(this), event, onPinchingStart);
+    handleCallback(getContext(this), event, onZoomStart);
   };
 
   onPinch = (event: TouchEvent): void => {
@@ -273,8 +259,8 @@ class TransformContext extends Component<
     event.stopPropagation();
 
     handlePinchZoom(this, event);
-    handleCallback(getContext(this), onPinching);
-    handleCallback(getContext(this), onZoom);
+    handleCallback(getContext(this), event, onPinching);
+    handleCallback(getContext(this), event, onZoom);
   };
 
   onPinchStop = (): void => {
@@ -282,8 +268,8 @@ class TransformContext extends Component<
 
     if (this.pinchStartScale) {
       handlePinchStop(this);
-      handleCallback(getContext(this), onPinchingStop);
-      handleCallback(getContext(this), onZoomStop);
+      handleCallback(getContext(this), event, onPinchingStop);
+      handleCallback(getContext(this), event, onZoomStop);
     }
   };
 
@@ -311,7 +297,7 @@ class TransformContext extends Component<
     if (isPanningAction) {
       handleCancelAnimation(this);
       handlePanningStart(this, event);
-      handleCallback(getContext(this), onPanningStart);
+      handleCallback(getContext(this), event, onPanningStart);
     }
     if (isPinchAction) {
       this.onPinchStart(event);
@@ -330,14 +316,14 @@ class TransformContext extends Component<
 
       const touch = event.touches[0];
       handlePanning(this, touch.clientX, touch.clientY);
-      handleCallback(getContext(this), onPanning);
+      handleCallback(getContext(this), event, onPanning);
     } else if (event.touches.length > 1) {
       this.onPinch(event);
     }
   };
 
-  onTouchPanningStop = (): void => {
-    this.onPanningStop();
+  onTouchPanningStop = (event: TouchEvent): void => {
+    this.onPanningStop(event);
     this.onPinchStop();
   };
 
@@ -359,9 +345,9 @@ class TransformContext extends Component<
   // Helpers
   //////////
 
-  clearPanning = (): void => {
+  clearPanning = (event: MouseEvent): void => {
     if (this.isPanning) {
-      this.onPanningStop();
+      this.onPanningStop(event);
     }
   };
 

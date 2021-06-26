@@ -14,8 +14,8 @@ type Props = {
 
 export const TransformComponent: React.FC<Props> = ({
   children,
-  wrapperClass,
-  contentClass,
+  wrapperClass = "",
+  contentClass = "",
   wrapperStyle,
   contentStyle,
 }: Props) => {
@@ -40,7 +40,7 @@ export const TransformComponent: React.FC<Props> = ({
     >
       <div
         ref={contentRef}
-        className={`react-transform-content ${styles.content} ${contentClass}`}
+        className={`react-transform-component ${styles.content} ${contentClass}`}
         style={contentStyle}
       >
         {children}

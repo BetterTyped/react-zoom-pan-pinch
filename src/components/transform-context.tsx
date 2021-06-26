@@ -293,6 +293,9 @@ class TransformContext extends Component<
 
     if (!isAllowed) return;
 
+    event.preventDefault();
+    event.stopPropagation();
+
     handleCancelAnimation(this);
 
     const { touches } = event;
@@ -319,6 +322,9 @@ class TransformContext extends Component<
 
       const isAllowed = isPanningAllowed(this);
       if (!isAllowed) return;
+
+      event.preventDefault();
+      event.stopPropagation();
 
       const touch = event.touches[0];
       handlePanning(this, touch.clientX, touch.clientY);

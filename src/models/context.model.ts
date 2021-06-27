@@ -167,5 +167,6 @@ export type LibrarySetup = Pick<
       | "onZoomStart"
       | "onZoom"
       | "onZoomStop"
+      | "onInit"
     >
   >;

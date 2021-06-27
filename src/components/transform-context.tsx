@@ -270,7 +270,7 @@ class TransformContext extends Component<
     handleCallback(getContext(this), event, onZoom);
   };
 
-  onPinchStop = (): void => {
+  onPinchStop = (event: TouchEvent): void => {
     const { onPinchingStop, onZoomStop } = this.props;
 
     if (this.pinchStartScale) {
@@ -342,7 +342,7 @@ class TransformContext extends Component<
 
   onTouchPanningStop = (event: TouchEvent): void => {
     this.onPanningStop(event);
-    this.onPinchStop();
+    this.onPinchStop(event);
   };
 
   //////////

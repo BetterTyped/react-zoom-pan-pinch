@@ -299,9 +299,6 @@ class TransformContext extends Component<
     if (isDoubleTap && event.touches.length === 1) {
       this.onDoubleClick(event);
     } else {
-      event.preventDefault();
-      event.stopPropagation();
-
       this.lastTouch = +new Date();
 
       handleCancelAnimation(this);
@@ -398,6 +395,7 @@ class TransformContext extends Component<
     this.handleInitialize();
     this.handleRef();
     this.isInitialized = true;
+    handleCallback(getContext(this), undefined, this.props.onInit);
   };
 
   applyTransformation = (): void => {

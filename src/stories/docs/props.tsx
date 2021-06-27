@@ -434,4 +434,9 @@ export const propsTable: ComponentProps = {
     description:
       "Callback fired when any of zoom events are finished (wheel/touchpad/pinch)",
   },
+  onInit: {
+    type: ["(ref: ReactZoomPanPinchRef) => void"],
+    defaultValue: "undefined",
+    description: "Callback fired when components get mounted",
+  },
 };

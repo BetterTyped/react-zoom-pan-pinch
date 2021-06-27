@@ -100,18 +100,34 @@ export type ReactZoomPanPinchProps = {
     animationType?: keyof typeof animations;
     equalToMove?: boolean;
   };
-  onWheelStart?: (ref: ReactZoomPanPinchRef) => void;
-  onWheel?: (ref: ReactZoomPanPinchRef) => void;
-  onWheelStop?: (ref: ReactZoomPanPinchRef) => void;
-  onPanningStart?: (ref: ReactZoomPanPinchRef) => void;
-  onPanning?: (ref: ReactZoomPanPinchRef) => void;
-  onPanningStop?: (ref: ReactZoomPanPinchRef) => void;
-  onPinchingStart?: (ref: ReactZoomPanPinchRef) => void;
-  onPinching?: (ref: ReactZoomPanPinchRef) => void;
-  onPinchingStop?: (ref: ReactZoomPanPinchRef) => void;
-  onZoomStart?: (ref: ReactZoomPanPinchRef) => void;
-  onZoom?: (ref: ReactZoomPanPinchRef) => void;
-  onZoomStop?: (ref: ReactZoomPanPinchRef) => void;
+  onWheelStart?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
+  onWheel?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
+  onWheelStop?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
+  onPanningStart?: (
+    ref: ReactZoomPanPinchRef,
+    event: TouchEvent | MouseEvent,
+  ) => void;
+  onPanning?: (
+    ref: ReactZoomPanPinchRef,
+    event: TouchEvent | MouseEvent,
+  ) => void;
+  onPanningStop?: (
+    ref: ReactZoomPanPinchRef,
+    event: TouchEvent | MouseEvent,
+  ) => void;
+  onPinchingStart?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinching?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinchingStop?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onZoomStart?: (
+    ref: ReactZoomPanPinchRef,
+    event: TouchEvent | MouseEvent,
+  ) => void;
+  onZoom?: (ref: ReactZoomPanPinchRef, event: TouchEvent | MouseEvent) => void;
+  onZoomStop?: (
+    ref: ReactZoomPanPinchRef,
+    event: TouchEvent | MouseEvent,
+  ) => void;
+  onInit?: (ref: ReactZoomPanPinchRef) => void;
 };
 
 export type ReactZoomPanPinchComponentHelpers = {

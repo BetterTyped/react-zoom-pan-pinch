@@ -48,6 +48,36 @@ body td > pre.prism-code {
   text-align: left;
 }
 
+.styles_controlPanel__Qc0xI {
+  position: absolute;
+  z-index: 2;
+  transform: translate(10px, 10px);
+  max-width: calc(100% - 20px);
+}
+.styles_controlBtn__3KyDO {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid grey;
+  border-radius: 5px;
+  margin-right: 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.styles_controlBtn__3KyDO:focus {
+  filter: brightness(90%);
+}
+
+.styles_controlBtn__3KyDO:hover {
+  filter: brightness(120%);
+}
+
+.styles_controlBtn__3KyDO:active {
+  opacity: 0.9;
+}
+
 .transform-component_wrapper__2Hyo4 {
   position: relative;
   width: -webkit-fit-content;
@@ -83,4 +113,4 @@ body td > pre.prism-code {
 }
 
 
-/*# sourceMappingURL=main.c298a8fa.chunk.css.map*/
+/*# sourceMappingURL=main.1294fa44.chunk.css.map*/

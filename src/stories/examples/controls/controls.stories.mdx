@@ -4,19 +4,15 @@ import { action } from "@storybook/addon-actions";
 import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs } from "../../utils";
+import { normalizeArgs, Controls } from "../../utils";
 
 import exampleImg from "../../assets/small-image.jpg";
 
 export const Template = (args) => (
   <TransformWrapper {...normalizeArgs(args)}>
-    {({ zoomIn, zoomOut, resetTransform }) => (
+    {(utils) => (
       <div>
-        <div>
-          <button onClick={() => zoomIn()}>Zoom In</button>
-          <button onClick={() => zoomOut()}>Zoom Out</button>
-          <button onClick={() => resetTransform()}>Reset</button>
-        </div>
+        <Controls {...utils} />
         <TransformComponent
           wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
         >

@@ -1,6 +1,10 @@
 import { animations } from "./animations.constants";
 
-import { AnimationType, ReactZoomPanPinchContext } from "../../models";
+import {
+  AnimationType,
+  ReactZoomPanPinchContext,
+  StateType,
+} from "../../models";
 
 const handleCancelAnimationFrame = (animation: AnimationType | null) => {
   if (typeof animation === "number") {
@@ -58,11 +62,13 @@ export function handleSetupAnimation(
 
 export function animate(
   contextInstance: ReactZoomPanPinchContext,
-  targetState: { scale: number; positionX: number; positionY: number },
+  targetState: StateType,
   animationTime: number,
   animationName: string,
 ): void {
-  if (!contextInstance.mounted) return;
+  const isValid = isValidTargetState(targetState);
+  if (!contextInstance.mounted || !isValid) return;
+  const { setTransformState } = contextInstance;
   const { scale, positionX, positionY } = contextInstance.transformState;
 
   const scaleDiff = targetState.scale - scale;
@@ -70,12 +76,11 @@ export function animate(
   const positionYDiff = targetState.positionY - positionY;
 
   if (animationTime === 0) {
-    contextInstance.transformState.previousScale =
-      contextInstance.transformState.scale;
-    contextInstance.transformState.scale = targetState.scale;
-    contextInstance.transformState.positionX = targetState.positionX;
-    contextInstance.transformState.positionY = targetState.positionY;
-    contextInstance.applyTransformation();
+    setTransformState(
+      targetState.scale,
+      targetState.positionX,
+      targetState.positionY,
+    );
   } else {
     // animation start timestamp
     handleSetupAnimation(
@@ -83,17 +88,22 @@ export function animate(
       animationName,
       animationTime,
       (step: number) => {
-        contextInstance.transformState.previousScale =
-          contextInstance.transformState.scale;
-        contextInstance.transformState.scale = scale + scaleDiff * step;
-        contextInstance.transformState.positionX =
-          positionX + positionXDiff * step;
-        contextInstance.transformState.positionY =
-          positionY + positionYDiff * step;
+        const newScale = scale + scaleDiff * step;
+        const newPositionX = positionX + positionXDiff * step;
+        const newPositionY = positionY + positionYDiff * step;
 
-        // apply animation changes
-        contextInstance.applyTransformation();
+        setTransformState(newScale, newPositionX, newPositionY);
       },
     );
   }
+}
+
+function isValidTargetState(targetState: StateType): boolean {
+  const { scale, positionX, positionY } = targetState;
+
+  if (isNaN(scale) || isNaN(positionX) || isNaN(positionY)) {
+    return false;
+  }
+
+  return true;
 }

@@ -2,37 +2,38 @@ import { ReactZoomPanPinchContext } from "../../models";
 import {
   calculateZoomToNode,
   handleZoomToViewCenter,
+  isValidZoomNode,
   resetTransformations,
 } from "./handlers.utils";
 import { animations } from "../animations/animations.constants";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
-import { getCenteredTransformStyles } from "../../utils";
+import { getCenterPosition } from "../../utils";
 
 export const zoomIn = (contextInstance: ReactZoomPanPinchContext) => (
   step = 0.5,
   animationTime = 300,
-  animationName: keyof typeof animations = "easeOut",
+  animationType: keyof typeof animations = "easeOut",
 ): void => {
   handleZoomToViewCenter(
     contextInstance,
     1,
     step,
     animationTime,
-    animationName,
+    animationType,
   );
 };
 
 export const zoomOut = (contextInstance: ReactZoomPanPinchContext) => (
   step = 0.5,
   animationTime = 300,
-  animationName: keyof typeof animations = "easeOut",
+  animationType: keyof typeof animations = "easeOut",
 ): void => {
   handleZoomToViewCenter(
     contextInstance,
     -1,
     step,
     animationTime,
-    animationName,
+    animationType,
   );
 };
 
@@ -65,35 +66,32 @@ export const resetTransform = (contextInstance: ReactZoomPanPinchContext) => (
   resetTransformations(contextInstance, animationTime, animationType);
 };
 
-export const centerView = (
-  contextInstance: ReactZoomPanPinchContext,
-) => (): void => {
-  const { initialPositionX, initialPositionY } = contextInstance.props;
+export const centerView = (contextInstance: ReactZoomPanPinchContext) => (
+  scale?: number,
+  animationTime = 200,
+  animationType: keyof typeof animations = "easeOut",
+): void => {
   const {
     transformState,
     wrapperComponent,
     contentComponent,
   } = contextInstance;
   if (wrapperComponent && contentComponent) {
-    const { transform, positionsState } = getCenteredTransformStyles(
-      initialPositionX,
-      initialPositionY,
-      transformState.scale,
+    const targetState = getCenterPosition(
+      scale || transformState.scale,
       wrapperComponent,
       contentComponent,
     );
-    contentComponent.style.transform = transform;
-    contextInstance.transformState = {
-      ...contextInstance.transformState,
-      ...positionsState,
-    };
+
+    animate(contextInstance, targetState, animationTime, animationType);
   }
 };
 
 export const zoomToElement = (contextInstance: ReactZoomPanPinchContext) => (
   node: HTMLElement | string,
+  scale?: number,
   animationTime = 600,
-  animationName: keyof typeof animations = "easeOut",
+  animationType: keyof typeof animations = "easeOut",
 ): void => {
   handleCancelAnimation(contextInstance);
 
@@ -102,8 +100,13 @@ export const zoomToElement = (contextInstance: ReactZoomPanPinchContext) => (
   const target: HTMLElement | null =
     typeof node === "string" ? document.getElementById(node) : node;
 
-  if (wrapperComponent && target && wrapperComponent.contains(target)) {
-    const targetState = calculateZoomToNode(contextInstance, target);
-    animate(contextInstance, targetState, animationTime, animationName);
+  if (
+    wrapperComponent &&
+    isValidZoomNode(target) &&
+    target &&
+    wrapperComponent.contains(target)
+  ) {
+    const targetState = calculateZoomToNode(contextInstance, target, scale);
+    animate(contextInstance, targetState, animationTime, animationType);
   }
 };

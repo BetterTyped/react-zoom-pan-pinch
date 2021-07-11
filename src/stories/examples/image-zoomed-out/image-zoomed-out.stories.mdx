@@ -4,7 +4,7 @@ import { action } from "@storybook/addon-actions";
 import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs } from "../../utils";
+import { normalizeArgs, Controls } from "../../utils";
 
 import exampleImg from "../../assets/medium-image.jpg";
 
@@ -15,9 +15,14 @@ export const Template = (args) => (
     minScale={0.2}
     centerOnInit={true}
   >
-    <TransformComponent>
-      <img src={exampleImg} alt="" />
-    </TransformComponent>
+    {(utils) => (
+      <div>
+        <Controls {...utils} />
+        <TransformComponent>
+          <img src={exampleImg} alt="" />
+        </TransformComponent>
+      </div>
+    )}
   </TransformWrapper>
 );
 

@@ -98,7 +98,7 @@ export function handleVelocityPanning(
     animationType,
     finalAnimationTime,
     (step: number) => {
-      const { positionX, positionY } = contextInstance.transformState;
+      const { scale, positionX, positionY } = contextInstance.transformState;
       const frameTime = new Date().getTime() - startTime;
       const animationProgress = frameTime / alignAnimationTime;
       const alignAnimation = animations[alignmentAnimation.animationType];
@@ -135,9 +135,11 @@ export function handleVelocityPanning(
       );
 
       if (positionX !== newPositionX || positionY !== newPositionY) {
-        contextInstance.transformState.positionX = currentPositionX;
-        contextInstance.transformState.positionY = currentPositionY;
-        contextInstance.applyTransformation();
+        contextInstance.setTransformState(
+          scale,
+          currentPositionX,
+          currentPositionY,
+        );
       }
     },
   );

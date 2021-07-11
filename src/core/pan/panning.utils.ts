@@ -121,13 +121,12 @@ export function handlePaddingAnimation(
   positionX: number,
   positionY: number,
 ): void {
+  const { scale } = contextInstance.transformState;
   const { size } = contextInstance.setup.alignmentAnimation;
 
   if (!size) return;
 
-  contextInstance.transformState.positionX = positionX;
-  contextInstance.transformState.positionY = positionY;
-  contextInstance.applyTransformation();
+  contextInstance.setTransformState(scale, positionX, positionY);
 }
 
 export function handleNewPosition(
@@ -138,7 +137,7 @@ export function handleNewPosition(
 ): void {
   const { limitToBounds } = contextInstance.setup;
   const { wrapperComponent, bounds } = contextInstance;
-  const { positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.transformState;
 
   const hasPositionXChanged = newPositionX !== positionX;
   const hasPositionYChanged = newPositionY !== positionY;
@@ -158,9 +157,7 @@ export function handleNewPosition(
     wrapperComponent,
   );
 
-  contextInstance.transformState.positionX = x;
-  contextInstance.transformState.positionY = y;
-  contextInstance.applyTransformation();
+  contextInstance.setTransformState(scale, x, y);
 }
 
 export const getPanningClientPosition = (

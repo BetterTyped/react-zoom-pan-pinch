@@ -1,3 +1,5 @@
+import { StateType } from "models";
+
 export const getTransformStyles = (
   x: number,
   y: number,
@@ -6,39 +8,20 @@ export const getTransformStyles = (
   return `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
 };
 
-export const getCenteredTransformStyles = (
-  initialPositionX: number | undefined,
-  initialPositionY: number | undefined,
+export const getCenterPosition = (
   scale: number,
   wrapperComponent: HTMLDivElement,
   contentComponent: HTMLDivElement,
-): {
-  transform: string;
-  positionsState: { positionX: number; positionY: number };
-} => {
-  const { centerPositionX, centerPositionY } = getCenterPosition(
-    wrapperComponent,
-    contentComponent,
-  );
+): StateType => {
+  const contentWidth = contentComponent.offsetWidth * scale;
+  const contentHeight = contentComponent.offsetHeight * scale;
 
-  const x = initialPositionX ?? centerPositionX;
-  const y = initialPositionY ?? centerPositionY;
+  const centerPositionX = (wrapperComponent.offsetWidth - contentWidth) / 2;
+  const centerPositionY = (wrapperComponent.offsetHeight - contentHeight) / 2;
 
   return {
-    transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-    positionsState: { positionX: x, positionY: y },
+    scale,
+    positionX: centerPositionX,
+    positionY: centerPositionY,
   };
-};
-
-export const getCenterPosition = (
-  wrapperComponent: HTMLDivElement,
-  contentComponent: HTMLDivElement,
-): { centerPositionX: number; centerPositionY: number } => {
-  const wrapperRect = wrapperComponent.getBoundingClientRect();
-  const contentRect = contentComponent.getBoundingClientRect();
-
-  const centerPositionX = (wrapperRect.width - contentRect.width) / 2;
-  const centerPositionY = (wrapperRect.height - contentRect.height) / 2;
-
-  return { centerPositionX, centerPositionY };
 };

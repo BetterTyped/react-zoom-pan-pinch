@@ -18,7 +18,7 @@ export type ComponentProps = Record<
   | Record<string, Omit<ControlsOptionsType, "name" | "isObjectRow">>
 >;
 
-export const getPropsTable = (): ControlsOptionsType[] => {
+const getPropsTable = (propsTable: any): ControlsOptionsType[] => {
   return Object.keys(propsTable).reduce<ControlsOptionsType[]>((acc, key) => {
     if (Array.isArray(propsTable[key]?.type)) {
       acc.push({
@@ -45,7 +45,33 @@ export const getPropsTable = (): ControlsOptionsType[] => {
   }, []);
 };
 
-export const propsTable: ComponentProps = {
+export const componentPropsTable: Record<
+  string,
+  Omit<ControlsOptionsType, "name">
+> = {
+  wrapperClass: {
+    type: ["string"],
+    defaultValue: "''",
+    description: "Wrapper element class",
+  },
+  contentClass: {
+    type: ["string"],
+    defaultValue: "''",
+    description: "Content element class",
+  },
+  wrapperStyle: {
+    type: ["ReactCSSProperties"],
+    defaultValue: "undefined",
+    description: "Wrapper element style object",
+  },
+  contentStyle: {
+    type: ["ReactCSSProperties"],
+    defaultValue: "undefined",
+    description: "Content element style object",
+  },
+};
+
+export const wrapperPropsTable: ComponentProps = {
   ref: {
     type: ["React.Ref<ReactZoomPanPinchRef>"],
     defaultValue: "undefined",
@@ -440,3 +466,6 @@ export const propsTable: ComponentProps = {
     description: "Callback fired when components get mounted",
   },
 };
+
+export const componentProps = getPropsTable(componentPropsTable);
+export const wrapperProps = getPropsTable(wrapperPropsTable);

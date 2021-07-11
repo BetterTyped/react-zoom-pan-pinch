@@ -66,13 +66,7 @@ export const handlePinchZoom = (
   contextInstance.pinchMidpoint = midPoint;
   contextInstance.lastDistance = currentDistance;
 
-  contextInstance.transformState.positionX = x;
-  contextInstance.transformState.positionY = y;
-  contextInstance.transformState.scale = newScale;
-  contextInstance.transformState.previousScale = scale;
-
-  // update component transformation
-  contextInstance.applyTransformation();
+  contextInstance.setTransformState(newScale, x, y);
 };
 
 export const handlePinchStop = (

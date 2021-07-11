@@ -78,25 +78,51 @@ export function resetTransformations(
   animationTime: number,
   animationType: keyof typeof animations,
 ): void {
+  const { setup, wrapperComponent } = contextInstance;
+  const { limitToBounds } = setup;
   const initialTransformation = createState(contextInstance.props);
   const { scale, positionX, positionY } = contextInstance.transformState;
+
+  if (!wrapperComponent) return;
+
+  const newBounds = calculateBounds(
+    contextInstance,
+    initialTransformation.scale,
+  );
+
+  const boundedPositions = getMouseBoundedPosition(
+    initialTransformation.positionX,
+    initialTransformation.positionY,
+    newBounds,
+    limitToBounds,
+    0,
+    wrapperComponent,
+  );
+
+  const newState = {
+    scale: initialTransformation.scale,
+    positionX: boundedPositions.x,
+    positionY: boundedPositions.y,
+  };
 
   if (
     scale === initialTransformation.scale &&
     positionX === initialTransformation.positionX &&
     positionY === initialTransformation.positionY
-  )
+  ) {
     return;
+  }
 
-  animate(contextInstance, initialTransformation, animationTime, animationType);
+  animate(contextInstance, newState, animationTime, animationType);
 }
 
 export function calculateZoomToNode(
   contextInstance: ReactZoomPanPinchContext,
   node: HTMLElement,
+  customZoom?: number,
 ): { positionX: number; positionY: number; scale: number } {
   const { wrapperComponent } = contextInstance;
-  const { limitToBounds } = contextInstance.setup;
+  const { limitToBounds, minScale, maxScale } = contextInstance.setup;
   if (!wrapperComponent) return initialState;
 
   const wrapperRect = wrapperComponent.getBoundingClientRect();
@@ -110,7 +136,13 @@ export function calculateZoomToNode(
   const scaleX = wrapperComponent.offsetWidth / nodeWidth;
   const scaleY = wrapperComponent.offsetHeight / nodeHeight;
 
-  const newScale = Math.min(scaleX, scaleY);
+  const newScale = checkZoomBounds(
+    customZoom || Math.min(scaleX, scaleY),
+    minScale,
+    maxScale,
+    0,
+    false,
+  );
 
   const offsetX = (wrapperRect.width - nodeWidth * newScale) / 2;
   const offsetY = (wrapperRect.height - nodeHeight * newScale) / 2;
@@ -149,4 +181,20 @@ function getOffset(element: HTMLElement): PositionType {
     x: offsetLeft,
     y: offsetTop,
   };
+}
+
+export function isValidZoomNode(node: HTMLElement | null): boolean {
+  if (!node) {
+    console.error("Zoom node not found");
+    return false;
+  } else if (
+    node?.offsetWidth === undefined ||
+    node?.offsetHeight === undefined
+  ) {
+    console.error(
+      "Zoom node is not valid - it must contain offsetWidth and offsetHeight",
+    );
+    return false;
+  }
+  return true;
 }

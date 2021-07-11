@@ -1,11 +1,11 @@
 import { Meta } from "@storybook/addon-docs/blocks";
 
-import { getPropsTable } from "./props.tsx";
+import { componentProps, wrapperProps } from "./props.tsx";
 import { Code } from "../utils";
 
 <Meta title="Docs/Props" />
 
-# Props
+# TransformComponent Props
 
 List of props
 
@@ -27,7 +27,51 @@ List of props
     </tr>
   </thead>
   <tbody>
-    {getPropsTable().map(row => (
+    {componentProps.map(row => (
+      <tr className={row.isObjectRow ? "is-object-row" : ""}>
+        <td>
+          {row.name}
+        </td>
+        <td>
+          {row.type.map(type => (<Code code={type} />))}
+        </td>
+        <td>
+          <Code code={row.defaultValue} />
+        </td>
+        <td>
+          {row.description}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+
+</table>
+
+<br />
+
+# TransformWrapper Props
+
+List of props
+
+<table className="props-table">
+  <thead>
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Default
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {wrapperProps.map(row => (
       <tr className={row.isObjectRow ? "is-object-row" : ""}>
         <td>
           {row.name}

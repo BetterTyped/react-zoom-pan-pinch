@@ -1,7 +1,7 @@
 import { ReactZoomPanPinchContext } from "../../models";
 
 import { animate } from "../animations/animations.utils";
-import { getMousePosition } from "core/zoom/wheel.utils";
+import { getMousePosition } from "core/wheel/wheel.utils";
 import { handleZoomToPoint } from "core/zoom/zoom.logic";
 import { isExcludedNode } from "utils";
 import {

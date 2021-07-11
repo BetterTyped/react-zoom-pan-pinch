@@ -4,22 +4,38 @@ import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
 import { normalizeArgs } from "../../utils";
 
+import styles from "../../utils/styles.module.css";
+
 export const Example: React.FC<any> = (args: any) => {
   return (
     <TransformWrapper {...normalizeArgs(args)}>
       {({ zoomToElement, resetTransform }) => (
         <>
           <div>
-            <button onClick={() => zoomToElement("element1")}>
+            <button
+              className={styles.controlBtn}
+              onClick={() => zoomToElement("element1")}
+            >
               Zoom to element 1
             </button>
-            <button onClick={() => zoomToElement("element2")}>
+            <button
+              className={styles.controlBtn}
+              onClick={() => zoomToElement("element2")}
+            >
               Zoom to element 2
             </button>
-            <button onClick={() => zoomToElement("element3")}>
+            <button
+              className={styles.controlBtn}
+              onClick={() => zoomToElement("element3")}
+            >
               Zoom to element 3
             </button>
-            <button onClick={() => resetTransform()}>Reset</button>
+            <button
+              className={styles.controlBtn}
+              onClick={() => resetTransform()}
+            >
+              Reset
+            </button>
           </div>
           <TransformComponent
             wrapperStyle={{

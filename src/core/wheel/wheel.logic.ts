@@ -10,8 +10,8 @@ import {
   handleWheelZoomStop,
   getMousePosition,
 } from "./wheel.utils";
-import { handleAlignToScaleBounds } from "./zoom.logic";
-import { handleCalculateZoomPositions } from "./zoom.utils";
+import { handleAlignToScaleBounds } from "../zoom/zoom.logic";
+import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
 const wheelStopEventTime = 160;
 const wheelAnimationTime = 100;
@@ -60,6 +60,7 @@ export const handleWheelZoom = (
   if (scale === newScale) return;
 
   const bounds = handleCalculateBounds(contextInstance, newScale);
+
   const mousePosition = getMousePosition(event, contentComponent, scale);
 
   const isPaddingDisabled = disabled || size === 0 || centerZoomedOut;
@@ -75,11 +76,8 @@ export const handleWheelZoom = (
   );
 
   contextInstance.previousWheelEvent = event;
-  contextInstance.transformState.previousScale = scale;
-  contextInstance.transformState.scale = newScale;
-  contextInstance.transformState.positionX = x;
-  contextInstance.transformState.positionY = y;
-  contextInstance.applyTransformation();
+
+  contextInstance.setTransformState(newScale, x, y);
 
   handleCallback(getContext(contextInstance), event, onWheel);
   handleCallback(getContext(contextInstance), event, onZoom);

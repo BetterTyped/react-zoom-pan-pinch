@@ -72,9 +72,9 @@ class Example extends Component {
         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
           <React.Fragment>
             <div className="tools">
-              <button onClick={zoomIn}>+</button>
-              <button onClick={zoomOut}>-</button>
-              <button onClick={resetTransform}>x</button>
+              <button onClick={() => zoomIn()}>+</button>
+              <button onClick={() => zoomOut()}>-</button>
+              <button onClick={() => resetTransform()}>x</button>
             </div>
             <TransformComponent>
               <img src="image.jpg" alt="test" />

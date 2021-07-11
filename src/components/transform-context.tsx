@@ -18,12 +18,13 @@ import {
   handleCallback,
   getTransformStyles,
   makePassiveEventOption,
+  getCenterPosition,
 } from "../utils";
 
 import { contextInitialState } from "../constants/state.constants";
 
 import { handleCancelAnimation } from "../core/animations/animations.utils";
-import { isWheelAllowed } from "../core/zoom/wheel.utils";
+import { isWheelAllowed } from "../core/wheel/wheel.utils";
 import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
 import { handleCalculateBounds } from "../core/bounds/bounds.utils";
 
@@ -31,8 +32,7 @@ import {
   handleWheelStart,
   handleWheelZoom,
   handleWheelStop,
-} from "../core/zoom/wheel.logic";
-
+} from "../core/wheel/wheel.logic";
 import {
   isPanningAllowed,
   isPanningStartAllowed,
@@ -51,7 +51,6 @@ import {
   handleDoubleClick,
   isDoubleClickAllowed,
 } from "../core/double-click/double-click.logic";
-import { centerView } from "../core/handlers/handlers.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 
@@ -150,15 +149,15 @@ class TransformContext extends Component<
 
     if (centerOnInit) {
       // this has to be redone once the right solution is found
-      // problem is - we need to execute it after mounted component specify it's height / width
+      // problem is - we need to execute it after mounted component specify it's height / width, images are fetched async so it's tricky
       setTimeout(() => {
         if (this.mounted) {
-          centerView(this)();
+          this.setCenter();
         }
       }, 50);
       setTimeout(() => {
         if (this.mounted) {
-          centerView(this)();
+          this.setCenter();
         }
       }, 100);
     }
@@ -396,6 +395,36 @@ class TransformContext extends Component<
     this.handleRef();
     this.isInitialized = true;
     handleCallback(getContext(this), undefined, this.props.onInit);
+  };
+
+  setTransformState = (scale: number, positionX: number, positionY: number) => {
+    if (!isNaN(scale) && !isNaN(positionX) && !isNaN(positionY)) {
+      if (scale !== this.transformState.scale) {
+        this.transformState.previousScale = this.transformState.scale;
+        this.transformState.scale = scale;
+      }
+      this.transformState.positionX = positionX;
+      this.transformState.positionY = positionY;
+
+      this.applyTransformation();
+    } else {
+      console.error("Detected NaN set state values");
+    }
+  };
+
+  setCenter = (): void => {
+    if (this.wrapperComponent && this.contentComponent) {
+      const targetState = getCenterPosition(
+        this.transformState.scale,
+        this.wrapperComponent,
+        this.contentComponent,
+      );
+      this.setTransformState(
+        targetState.scale,
+        targetState.positionX,
+        targetState.positionY,
+      );
+    }
   };
 
   applyTransformation = (): void => {

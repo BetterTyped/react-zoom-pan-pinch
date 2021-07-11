@@ -85,18 +85,23 @@ export const handlersTable: ComponentProps = {
     description: "Function used for reset button",
   },
   centerView: {
-    type: ["function()"],
-    parameters: [],
+    type: ["function(scale, animationTime, animationName)"],
+    parameters: [
+      "scale: number = undefined",
+      "animationTime: number = 300",
+      "animationName: string = easeOut",
+    ],
     description: "Function used for centering the content component",
   },
   zoomToElement: {
-    type: ["function(node, animationTime, animationName)"],
+    type: ["function(node, customZoom, animationTime, animationName)"],
     parameters: [
       "node: HTMLElement | string",
+      "customScale: number = undefined",
       "animationTime: number = 300",
       "animationName: string = easeOut",
     ],
     description:
-      "This function make a transition for certain node provided to the function(as node element or it's id string).",
+      "This function make a transition for certain node provided to the function(as node element or it's id string). It allows only to zoom elements with offsetWidth and offsetHeight properties - since SVG's doesn't have those, it is impossible to perform it on such elements.",
   },
 };

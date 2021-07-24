@@ -80,11 +80,11 @@ body td > pre.prism-code {
 
 .transform-component_wrapper__2Hyo4 {
   position: relative;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
+  width: -webkit-fit-content;
   width: fit-content;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
+  height: -webkit-fit-content;
   height: fit-content;
   overflow: hidden;
   -webkit-touch-callout: none; /* iOS Safari */
@@ -98,11 +98,11 @@ body td > pre.prism-code {
 .transform-component_content__VbazE {
   display: flex;
   flex-wrap: wrap;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
+  width: -webkit-fit-content;
   width: fit-content;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
+  height: -webkit-fit-content;
   height: fit-content;
   margin: 0;
   padding: 0;
@@ -113,4 +113,4 @@ body td > pre.prism-code {
 }
 
 
-/*# sourceMappingURL=main.1294fa44.chunk.css.map*/
+/*# sourceMappingURL=main.b3b77696.chunk.css.map*/

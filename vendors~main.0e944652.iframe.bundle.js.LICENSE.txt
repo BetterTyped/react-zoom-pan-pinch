@@ -48,7 +48,7 @@ object-assign
  * Released under the MIT License.
  */
 
-/*! axe v4.2.2
+/*! axe v4.3.1
  * Copyright (c) 2021 Deque Systems, Inc.
  *
  * Your use of this Source Code Form is subject to the terms of the Mozilla Public

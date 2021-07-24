@@ -34,6 +34,7 @@ export function handleCalculateZoomPositions(
     bounds,
     limitToBounds,
     0,
+    0,
     null,
   );
 

@@ -340,9 +340,15 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.alignmentAnimation.disabled),
       description: "Disable the double click feature.",
     },
-    size: {
+    sizeX: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.disabled),
+      defaultValue: String(initialSetup.alignmentAnimation.sizeX),
+      description:
+        "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
+    },
+    sizeY: {
+      type: ["number"],
+      defaultValue: String(initialSetup.alignmentAnimation.sizeY),
       description:
         "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
     },

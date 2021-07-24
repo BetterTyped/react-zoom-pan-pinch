@@ -160,6 +160,11 @@ class TransformContext extends Component<
           this.setCenter();
         }
       }, 100);
+      setTimeout(() => {
+        if (this.mounted) {
+          this.setCenter();
+        }
+      }, 200);
     }
   };
 
@@ -397,7 +402,11 @@ class TransformContext extends Component<
     handleCallback(getContext(this), undefined, this.props.onInit);
   };
 
-  setTransformState = (scale: number, positionX: number, positionY: number) => {
+  setTransformState = (
+    scale: number,
+    positionX: number,
+    positionY: number,
+  ): void => {
     if (!isNaN(scale) && !isNaN(positionX) && !isNaN(positionY)) {
       if (scale !== this.transformState.scale) {
         this.transformState.previousScale = this.transformState.scale;

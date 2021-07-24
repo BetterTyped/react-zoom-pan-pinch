@@ -96,6 +96,7 @@ export function resetTransformations(
     newBounds,
     limitToBounds,
     0,
+    0,
     wrapperComponent,
   );
 
@@ -157,6 +158,7 @@ export function calculateZoomToNode(
     newPositionY,
     bounds,
     limitToBounds,
+    0,
     0,
     wrapperComponent,
   );

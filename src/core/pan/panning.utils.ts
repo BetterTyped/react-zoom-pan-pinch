@@ -122,9 +122,9 @@ export function handlePaddingAnimation(
   positionY: number,
 ): void {
   const { scale } = contextInstance.transformState;
-  const { size } = contextInstance.setup.alignmentAnimation;
+  const { sizeX, sizeY } = contextInstance.setup.alignmentAnimation;
 
-  if (!size) return;
+  if (!sizeX && !sizeY) return;
 
   contextInstance.setTransformState(scale, positionX, positionY);
 }
@@ -133,7 +133,8 @@ export function handleNewPosition(
   contextInstance: ReactZoomPanPinchContext,
   newPositionX: number,
   newPositionY: number,
-  paddingValue: number,
+  paddingValueX: number,
+  paddingValueY: number,
 ): void {
   const { limitToBounds } = contextInstance.setup;
   const { wrapperComponent, bounds } = contextInstance;
@@ -153,7 +154,8 @@ export function handleNewPosition(
     newPositionY,
     bounds,
     limitToBounds,
-    paddingValue,
+    paddingValueX,
+    paddingValueY,
     wrapperComponent,
   );
 
@@ -184,11 +186,11 @@ export const getPanningClientPosition = (
 
 export const getPaddingValue = (
   contextInstance: ReactZoomPanPinchContext,
+  size: number,
 ): number => {
   const { setup, transformState } = contextInstance;
   const { scale } = transformState;
-  const { minScale, alignmentAnimation } = setup;
-  const { size } = alignmentAnimation;
+  const { minScale } = setup;
 
   if (size > 0 && scale >= minScale) {
     return size;

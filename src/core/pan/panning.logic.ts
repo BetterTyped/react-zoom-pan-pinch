@@ -34,15 +34,17 @@ export function handlePanning(
   clientX: number,
   clientY: number,
 ): void {
-  const { startCoords } = contextInstance;
+  const { startCoords, setup } = contextInstance;
+  const { sizeX, sizeY } = setup.alignmentAnimation;
 
   if (!startCoords) return;
 
   const { x, y } = getPanningClientPosition(contextInstance, clientX, clientY);
-  const paddingValue = getPaddingValue(contextInstance);
+  const paddingValueX = getPaddingValue(contextInstance, sizeX);
+  const paddingValueY = getPaddingValue(contextInstance, sizeY);
 
   handleCalculateVelocity(contextInstance, { x, y });
-  handleNewPosition(contextInstance, x, y, paddingValue);
+  handleNewPosition(contextInstance, x, y, paddingValueX, paddingValueY);
 }
 
 export function handlePanningEnd(
@@ -82,9 +84,15 @@ export function handleAlignToBounds(
 ): void {
   const { scale } = contextInstance.transformState;
   const { minScale, alignmentAnimation } = contextInstance.setup;
-  const { disabled, size, animationTime, animationType } = alignmentAnimation;
+  const {
+    disabled,
+    sizeX,
+    sizeY,
+    animationTime,
+    animationType,
+  } = alignmentAnimation;
 
-  const isDisabled = disabled || scale < minScale || !size;
+  const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
 
   if (isDisabled) return;
 

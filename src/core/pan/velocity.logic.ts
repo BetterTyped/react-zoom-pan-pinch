@@ -76,14 +76,16 @@ export function handleVelocityPanning(
   const { zoomAnimation, panning } = setup;
   const { lockAxisY, lockAxisX } = panning;
   const { animationType } = zoomAnimation;
+  const { sizeX, sizeY, velocityAlignmentTime } = alignmentAnimation;
 
-  const alignAnimationTime = alignmentAnimation.velocityAlignmentTime;
+  const alignAnimationTime = velocityAlignmentTime;
   const moveAnimationTime = getVelocityMoveTime(contextInstance, total);
   const finalAnimationTime = Math.max(moveAnimationTime, alignAnimationTime);
 
-  const paddingValue = getPaddingValue(contextInstance);
-  const paddingX = (paddingValue * wrapperComponent.offsetWidth) / 100;
-  const paddingY = (paddingValue * wrapperComponent.offsetHeight) / 100;
+  const paddingValueX = getPaddingValue(contextInstance, sizeX);
+  const paddingValueY = getPaddingValue(contextInstance, sizeY);
+  const paddingX = (paddingValueX * wrapperComponent.offsetWidth) / 100;
+  const paddingY = (paddingValueY * wrapperComponent.offsetHeight) / 100;
   const maxTargetX = maxPositionX + paddingX;
   const minTargetX = minPositionX - paddingX;
 

@@ -15,5 +15,19 @@ export const normalizeArgs = (args: { [key: string]: any }): any => {
     }
   });
 
-  return newArgs;
+  return {
+    ...newArgs,
+    onWheelStart: undefined,
+    onWheel: undefined,
+    onWheelStop: undefined,
+    onZoomStart: undefined,
+    onZoom: undefined,
+    onZoomStop: undefined,
+    onPanningStart: undefined,
+    onPanning: undefined,
+    onPanningStop: undefined,
+    onPinchStart: undefined,
+    onPinch: undefined,
+    onPinchStop: undefined,
+  };
 };

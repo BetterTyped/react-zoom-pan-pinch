@@ -1,6 +1,8 @@
 .wrapper {
   position: relative;
+  width: -moz-fit-content;
   width: fit-content;
+  height: -moz-fit-content;
   height: fit-content;
   overflow: hidden;
   -webkit-touch-callout: none; /* iOS Safari */
@@ -15,7 +17,9 @@
 .content {
   display: flex;
   flex-wrap: wrap;
+  width: -moz-fit-content;
   width: fit-content;
+  height: -moz-fit-content;
   height: fit-content;
   margin: 0;
   padding: 0;

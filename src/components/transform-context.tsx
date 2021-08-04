@@ -407,6 +407,8 @@ class TransformContext extends Component<
     positionX: number,
     positionY: number,
   ): void => {
+    const { onTransformed } = this.props;
+
     if (!isNaN(scale) && !isNaN(positionX) && !isNaN(positionY)) {
       if (scale !== this.transformState.scale) {
         this.transformState.previousScale = this.transformState.scale;
@@ -415,6 +417,11 @@ class TransformContext extends Component<
       this.transformState.positionX = positionX;
       this.transformState.positionY = positionY;
 
+      handleCallback(
+        getContext(this),
+        { scale, positionX, positionY },
+        onTransformed,
+      );
       this.applyTransformation();
     } else {
       console.error("Detected NaN set state values");

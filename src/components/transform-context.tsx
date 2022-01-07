@@ -117,6 +117,7 @@ class TransformContext extends Component<
     window.removeEventListener("mousedown", this.onPanningStart, passive);
     window.removeEventListener("mousemove", this.onPanning, passive);
     window.removeEventListener("mouseup", this.onPanningStop, passive);
+    document.removeEventListener("mouseleave", this.clearPanning, passive);
     window.removeEventListener("keyup", this.setKeyUnPressed, passive);
     window.removeEventListener("keydown", this.setKeyPressed, passive);
 

@@ -10,8 +10,8 @@ import {
   handleTouchPanningSetup,
 } from "./panning.utils";
 import {
-  handleVelocityPanning,
   handleCalculateVelocity,
+  handleVelocityPanning,
 } from "./velocity.logic";
 
 export function handlePanningStart(

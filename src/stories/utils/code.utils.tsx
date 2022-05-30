@@ -1,6 +1,6 @@
-import React from "react";
 import Highlight, { defaultProps } from "prism-react-renderer";
 import vsLight from "prism-react-renderer/themes/vsLight";
+import React from "react";
 
 type Props = { code: string };
 

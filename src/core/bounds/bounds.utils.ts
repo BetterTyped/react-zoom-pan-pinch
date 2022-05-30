@@ -1,10 +1,9 @@
-import { roundNumber } from "../../utils";
-
 import {
   BoundsType,
   PositionType,
   ReactZoomPanPinchContext,
 } from "../../models";
+import { roundNumber } from "../../utils";
 import { ComponentsSizesType } from "./bounds.types";
 
 export function getComponentsSizes(

@@ -4,14 +4,14 @@ import { getContext } from "../../utils/context.utils";
 import { cancelTimeout } from "../../utils/helpers.utils";
 import { handleCancelAnimation } from "../animations/animations.utils";
 import { handleCalculateBounds } from "../bounds/bounds.utils";
-import {
-  getDelta,
-  handleCalculateWheelZoom,
-  handleWheelZoomStop,
-  getMousePosition,
-} from "./wheel.utils";
 import { handleAlignToScaleBounds } from "../zoom/zoom.logic";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
+import {
+  getDelta,
+  getMousePosition,
+  handleCalculateWheelZoom,
+  handleWheelZoomStop,
+} from "./wheel.utils";
 
 const wheelStopEventTime = 160;
 const wheelAnimationTime = 100;

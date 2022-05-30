@@ -1,9 +1,9 @@
+import { initialSetup, initialState } from "../constants/state.constants";
 import {
   LibrarySetup,
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
 } from "../models/context.model";
-import { initialSetup, initialState } from "../constants/state.constants";
 
 export const createState = (
   props: ReactZoomPanPinchProps,

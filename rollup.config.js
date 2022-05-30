@@ -1,9 +1,9 @@
 import babel from "@rollup/plugin-babel";
-import external from "rollup-plugin-peer-deps-external";
-import del from "rollup-plugin-delete";
 import typescript from "@rollup/plugin-typescript";
-import postcss from "rollup-plugin-postcss";
+import del from "rollup-plugin-delete";
 import dts from "rollup-plugin-dts";
+import external from "rollup-plugin-peer-deps-external";
+import postcss from "rollup-plugin-postcss";
 import pkg from "./package.json";
 
 export default [

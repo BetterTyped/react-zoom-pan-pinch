@@ -1,13 +1,13 @@
 import { ReactZoomPanPinchContext } from "../../models";
 import { handleCancelAnimation } from "../animations/animations.utils";
+import { handleCalculateBounds } from "../bounds/bounds.utils";
 import { handleAlignToScaleBounds } from "../zoom/zoom.logic";
+import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 import {
   calculatePinchZoom,
   calculateTouchMidPoint,
   getTouchDistance,
 } from "./pinch.utils";
-import { handleCalculateBounds } from "../bounds/bounds.utils";
-import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
 export const handlePinchStart = (
   contextInstance: ReactZoomPanPinchContext,

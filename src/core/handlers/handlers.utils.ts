@@ -1,16 +1,16 @@
-import { ReactZoomPanPinchContext } from "../../models";
-import { animations } from "../animations/animations.constants";
-import { handleZoomToPoint } from "../zoom/zoom.logic";
-import { animate } from "../animations/animations.utils";
-import { createState } from "../../utils/state.utils";
-import { checkZoomBounds } from "../zoom/zoom.utils";
-import { roundNumber } from "../../utils";
-import { initialState } from "../../constants/state.constants";
-import { PositionType } from "../../models/calculations.model";
 import {
   calculateBounds,
   getMouseBoundedPosition,
 } from "core/bounds/bounds.utils";
+import { initialState } from "../../constants/state.constants";
+import { ReactZoomPanPinchContext } from "../../models";
+import { PositionType } from "../../models/calculations.model";
+import { roundNumber } from "../../utils";
+import { createState } from "../../utils/state.utils";
+import { animations } from "../animations/animations.constants";
+import { animate } from "../animations/animations.utils";
+import { handleZoomToPoint } from "../zoom/zoom.logic";
+import { checkZoomBounds } from "../zoom/zoom.utils";
 
 export const handleCalculateButtonZoom = (
   contextInstance: ReactZoomPanPinchContext,

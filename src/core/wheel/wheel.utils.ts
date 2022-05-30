@@ -1,6 +1,4 @@
-import { ReactZoomPanPinchContext } from "../../models";
-import { PositionType } from "../../models";
-
+import { PositionType, ReactZoomPanPinchContext } from "../../models";
 import { checkIsNumber, isExcludedNode, roundNumber } from "../../utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
 

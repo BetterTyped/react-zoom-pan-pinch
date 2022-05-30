@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
-
-import { Context } from "./transform-context";
-
 import styles from "./transform-component.module.css";
+import { Context } from "./transform-context";
 
 type Props = {
   children: React.ReactNode;

@@ -1,13 +1,13 @@
 import { ReactZoomPanPinchContext } from "../../models";
+import { getCenterPosition } from "../../utils";
+import { animations } from "../animations/animations.constants";
+import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import {
   calculateZoomToNode,
   handleZoomToViewCenter,
   isValidZoomNode,
   resetTransformations,
 } from "./handlers.utils";
-import { animations } from "../animations/animations.constants";
-import { animate, handleCancelAnimation } from "../animations/animations.utils";
-import { getCenterPosition } from "../../utils";
 
 export const zoomIn =
   (contextInstance: ReactZoomPanPinchContext) =>

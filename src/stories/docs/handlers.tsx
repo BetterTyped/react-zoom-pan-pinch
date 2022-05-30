@@ -1,5 +1,4 @@
 import React from "react";
-
 import { ReactZoomPanPinchHandlers } from "../../models/context.model";
 
 export type ControlsFnOptionsType = {

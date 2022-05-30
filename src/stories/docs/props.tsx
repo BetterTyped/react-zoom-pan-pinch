@@ -1,6 +1,5 @@
-import React from "react";
-
 import { ReactZoomPanPinchProps } from "models";
+import React from "react";
 import { initialSetup, initialState } from "../../constants/state.constants";
 import { animations } from "../../core/animations/animations.constants";
 

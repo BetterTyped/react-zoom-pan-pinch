@@ -3,5 +3,6 @@
   "editor.formatOnSave": true,
   "search.exclude": {
     "yarn.lock": true
-  }
+  },
+  "jest.jestCommandLine": "yarn jest"
 }

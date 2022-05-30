@@ -10,8 +10,8 @@ import {
   handleTouchPanningSetup,
 } from "./panning.utils";
 import {
-  handleVelocityPanning,
   handleCalculateVelocity,
+  handleVelocityPanning,
 } from "./velocity.logic";
 
 export function handlePanningStart(
@@ -84,13 +84,8 @@ export function handleAlignToBounds(
 ): void {
   const { scale } = contextInstance.transformState;
   const { minScale, alignmentAnimation } = contextInstance.setup;
-  const {
-    disabled,
-    sizeX,
-    sizeY,
-    animationTime,
-    animationType,
-  } = alignmentAnimation;
+  const { disabled, sizeX, sizeY, animationTime, animationType } =
+    alignmentAnimation;
 
   const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
 

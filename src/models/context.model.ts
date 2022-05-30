@@ -1,16 +1,15 @@
 import React from "react";
-
 import { TransformContext } from "../components/transform-context";
 import { animations } from "../core/animations/animations.constants";
-import { DeepNonNullable } from "./helpers.model";
 import {
-  zoomIn,
-  zoomToElement,
   centerView,
   resetTransform,
   setTransform,
+  zoomIn,
   zoomOut,
+  zoomToElement,
 } from "../core/handlers/handlers.logic";
+import { DeepNonNullable } from "./helpers.model";
 
 export type ReactZoomPanPinchContext = typeof TransformContext.prototype;
 

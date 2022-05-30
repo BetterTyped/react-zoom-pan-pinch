@@ -4,8 +4,8 @@ import { animations } from "../animations/animations.constants";
 import { handleSetupAnimation } from "../animations/animations.utils";
 import { getPaddingValue } from "./panning.utils";
 import {
-  getVelocityPosition,
   getVelocityMoveTime,
+  getVelocityPosition,
   isVelocityAllowed,
   isVelocityCalculationAllowed,
 } from "./velocity.utils";

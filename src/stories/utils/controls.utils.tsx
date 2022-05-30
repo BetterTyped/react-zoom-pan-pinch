@@ -1,6 +1,5 @@
 import React from "react";
 import { ReactZoomPanPinchRef } from "../../models/context.model";
-
 import styles from "./styles.module.css";
 
 export const Controls: React.FC<ReactZoomPanPinchRef> = ({

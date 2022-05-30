@@ -1,15 +1,15 @@
 import {
+  centerView,
+  resetTransform,
+  setTransform,
+  zoomIn,
+  zoomOut,
+  zoomToElement,
+} from "../core/handlers/handlers.logic";
+import {
   ReactZoomPanPinchContext,
   ReactZoomPanPinchRef,
 } from "../models/context.model";
-import {
-  zoomIn,
-  zoomOut,
-  setTransform,
-  resetTransform,
-  zoomToElement,
-  centerView,
-} from "../core/handlers/handlers.logic";
 
 export const getContext = (
   contextInstance: ReactZoomPanPinchContext,

@@ -1,0 +1,12 @@
+{
+  "cSpell.words": ["pronestor"],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "jest.jestCommandLine": "yarn jest",
+  "search.exclude": {
+    "yarn.lock": true
+  }
+}

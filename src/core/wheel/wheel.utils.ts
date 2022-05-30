@@ -1,6 +1,4 @@
-import { ReactZoomPanPinchContext } from "../../models";
-import { PositionType } from "../../models";
-
+import { PositionType, ReactZoomPanPinchContext } from "../../models";
 import { checkIsNumber, isExcludedNode, roundNumber } from "../../utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
 
@@ -8,12 +6,8 @@ export const isWheelAllowed = (
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): boolean => {
-  const {
-    disabled,
-    wheelDisabled,
-    touchPadDisabled,
-    excluded,
-  } = contextInstance.setup.wheel;
+  const { disabled, wheelDisabled, touchPadDisabled, excluded } =
+    contextInstance.setup.wheel;
   const { isInitialized, isPanning } = contextInstance;
 
   const target = event.target as HTMLElement;

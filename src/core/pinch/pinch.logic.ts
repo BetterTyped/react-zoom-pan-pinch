@@ -1,13 +1,13 @@
 import { ReactZoomPanPinchContext } from "../../models";
 import { handleCancelAnimation } from "../animations/animations.utils";
+import { handleCalculateBounds } from "../bounds/bounds.utils";
 import { handleAlignToScaleBounds } from "../zoom/zoom.logic";
+import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 import {
   calculatePinchZoom,
   calculateTouchMidPoint,
   getTouchDistance,
 } from "./pinch.utils";
-import { handleCalculateBounds } from "../bounds/bounds.utils";
-import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
 export const handlePinchStart = (
   contextInstance: ReactZoomPanPinchContext,
@@ -29,11 +29,8 @@ export const handlePinchZoom = (
 ): void => {
   const { contentComponent, pinchStartDistance } = contextInstance;
   const { scale } = contextInstance.transformState;
-  const {
-    limitToBounds,
-    centerZoomedOut,
-    zoomAnimation,
-  } = contextInstance.setup;
+  const { limitToBounds, centerZoomedOut, zoomAnimation } =
+    contextInstance.setup;
   const { disabled, size } = zoomAnimation;
 
   // if one finger starts from outside of wrapper

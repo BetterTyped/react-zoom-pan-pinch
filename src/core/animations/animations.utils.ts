@@ -1,10 +1,9 @@
-import { animations } from "./animations.constants";
-
 import {
   AnimationType,
   ReactZoomPanPinchContext,
   StateType,
 } from "../../models";
+import { animations } from "./animations.constants";
 
 const handleCancelAnimationFrame = (animation: AnimationType | null) => {
   if (typeof animation === "number") {

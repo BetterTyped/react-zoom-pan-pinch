@@ -1,56 +1,51 @@
 import React, { Component } from "react";
-
-import {
-  BoundsType,
-  LibrarySetup,
-  PositionType,
-  VelocityType,
-  AnimationType,
-  ReactZoomPanPinchRef,
-  ReactZoomPanPinchProps,
-  ReactZoomPanPinchState,
-} from "../models";
-
-import {
-  getContext,
-  createSetup,
-  createState,
-  handleCallback,
-  getTransformStyles,
-  makePassiveEventOption,
-  getCenterPosition,
-} from "../utils";
-
 import { contextInitialState } from "../constants/state.constants";
-
 import { handleCancelAnimation } from "../core/animations/animations.utils";
-import { isWheelAllowed } from "../core/wheel/wheel.utils";
-import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
 import { handleCalculateBounds } from "../core/bounds/bounds.utils";
-
 import {
-  handleWheelStart,
-  handleWheelZoom,
-  handleWheelStop,
-} from "../core/wheel/wheel.logic";
-import {
-  isPanningAllowed,
-  isPanningStartAllowed,
-} from "../core/pan/panning.utils";
+  handleDoubleClick,
+  isDoubleClickAllowed,
+} from "../core/double-click/double-click.logic";
 import {
   handlePanning,
   handlePanningEnd,
   handlePanningStart,
 } from "../core/pan/panning.logic";
 import {
+  isPanningAllowed,
+  isPanningStartAllowed,
+} from "../core/pan/panning.utils";
+import {
   handlePinchStart,
   handlePinchStop,
   handlePinchZoom,
 } from "../core/pinch/pinch.logic";
+import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
 import {
-  handleDoubleClick,
-  isDoubleClickAllowed,
-} from "../core/double-click/double-click.logic";
+  handleWheelStart,
+  handleWheelStop,
+  handleWheelZoom,
+} from "../core/wheel/wheel.logic";
+import { isWheelAllowed } from "../core/wheel/wheel.utils";
+import {
+  AnimationType,
+  BoundsType,
+  LibrarySetup,
+  PositionType,
+  ReactZoomPanPinchProps,
+  ReactZoomPanPinchRef,
+  ReactZoomPanPinchState,
+  VelocityType,
+} from "../models";
+import {
+  createSetup,
+  createState,
+  getCenterPosition,
+  getContext,
+  getTransformStyles,
+  handleCallback,
+  makePassiveEventOption,
+} from "../utils";
 
 type StartCoordsType = { x: number; y: number } | null;
 

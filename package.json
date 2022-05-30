@@ -12,7 +12,7 @@
   "jsnext:main": "dist/index.esm.js",
   "engines": {
     "node": ">=8",
-    "npm": ">=5"
+    "yarn": ">=1.22"
   },
   "scripts": {
     "test": "react-scripts test --watchAll=false --passWithNoTests",

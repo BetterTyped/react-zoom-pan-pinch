@@ -12,7 +12,7 @@ elements in easy way.
 
 - :rocket: Fast and easy to use
 - :factory: Light, without external dependencies
-- :gem: Mobile gestures, touchpad gestures and desktop mouse events support
+- :gem: Mobile gestures, touch gestures and desktop mouse events support
 - :gift: Powerful context usage, which gives you a lot of freedom
 - :wrench: Highly customizable
 - :crown: Animations and Utils to create own tools

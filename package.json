@@ -18,16 +18,16 @@
     "yarn": ">=1.22"
   },
   "scripts": {
-    "test": "react-scripts test --watchAll=false --passWithNoTests",
-    "build": "rollup -c",
     "build:docs": "build-storybook",
-    "start": "start-storybook -p 6006 --no-manager-cache",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
-    "prepare": "install-peers && yarn build",
-    "predeploy": "yarn run build:docs",
+    "build": "rollup -c",
     "deploy": "gh-pages -d storybook-static",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
+    "predeploy": "yarn run build:docs",
+    "prepare": "install-peers && yarn build",
+    "start": "start-storybook -p 6006 --no-manager-cache",
     "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts",
-    "test:prettier": "prettier --check \"(.storybook|src)/**/*.+(js|json|ts|tsx)\" \"*.+(js|json|ts|tsx)\" "
+    "test:prettier": "prettier --check \"(.storybook|src)/**/*.+(js|json|ts|tsx)\" \"*.+(js|json|ts|tsx)\"",
+    "test": "react-scripts test --watchAll=false --passWithNoTests"
   },
   "peerDependencies": {
     "react": "^17.0.2",

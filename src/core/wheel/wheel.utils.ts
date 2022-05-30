@@ -8,12 +8,8 @@ export const isWheelAllowed = (
   contextInstance: ReactZoomPanPinchContext,
   event: WheelEvent,
 ): boolean => {
-  const {
-    disabled,
-    wheelDisabled,
-    touchPadDisabled,
-    excluded,
-  } = contextInstance.setup.wheel;
+  const { disabled, wheelDisabled, touchPadDisabled, excluded } =
+    contextInstance.setup.wheel;
   const { isInitialized, isPanning } = contextInstance;
 
   const target = event.target as HTMLElement;

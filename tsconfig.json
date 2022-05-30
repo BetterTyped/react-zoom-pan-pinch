@@ -18,11 +18,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
@@ -31,13 +27,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "rollup.config.js"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "build", "dist", "rollup.config.js"]
 }

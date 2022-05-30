@@ -29,11 +29,8 @@ export const handlePinchZoom = (
 ): void => {
   const { contentComponent, pinchStartDistance } = contextInstance;
   const { scale } = contextInstance.transformState;
-  const {
-    limitToBounds,
-    centerZoomedOut,
-    zoomAnimation,
-  } = contextInstance.setup;
+  const { limitToBounds, centerZoomedOut, zoomAnimation } =
+    contextInstance.setup;
   const { disabled, size } = zoomAnimation;
 
   // if one finger starts from outside of wrapper

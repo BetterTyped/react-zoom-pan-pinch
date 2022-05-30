@@ -5,19 +5,10 @@ This is a fork of
 order to fix
 [the issue with build errors because of missing source files](https://github.com/prc5/react-zoom-pan-pinch/issues/265).
 
-[![NPM](https://img.shields.io/npm/v/react-zoom-pan-pinch.svg)](https://www.npmjs.com/package/react-zoom-pan-pinch)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-zoom-pan-pinch)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-![NPM](https://img.shields.io/npm/l/react-zoom-pan-pinch)
-![npm](https://img.shields.io/npm/dm/react-zoom-pan-pinch)
-
-> Super fast and light react npm package for zooming, panning and pinching html
-> elements in easy way
-
-- [Demo](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
-- [Docs](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
-
 ## Features
+
+Super fast and light react npm package for zooming, panning and pinching html
+elements in easy way.
 
 - :rocket: Fast and easy to use
 - :factory: Light, without external dependencies

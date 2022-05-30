@@ -85,12 +85,6 @@
     "dist",
     "src"
   ],
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "keywords": [
     "animation",
     "bounds",

@@ -14,6 +14,7 @@
   margin: 0;
   padding: 0;
 }
+
 .content {
   display: flex;
   flex-wrap: wrap;
@@ -25,6 +26,7 @@
   padding: 0;
   transform-origin: 0% 0%;
 }
+
 .content img {
   pointer-events: none;
 }

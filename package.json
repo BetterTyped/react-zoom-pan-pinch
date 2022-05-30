@@ -92,23 +92,23 @@
     ]
   },
   "keywords": [
-    "react",
-    "zoom",
+    "animation",
+    "bounds",
+    "context",
+    "css",
+    "css3",
+    "drag",
+    "fast",
     "pan",
     "pinch",
-    "animation",
-    "velocity",
-    "css",
-    "fast",
-    "transformations",
-    "scale",
-    "drag",
-    "viewer",
+    "react",
     "reacts",
-    "touch",
-    "css3",
+    "scale",
     "svg",
-    "bounds",
-    "context"
+    "touch",
+    "transformations",
+    "velocity",
+    "viewer",
+    "zoom"
   ]
 }

@@ -1,19 +1,17 @@
-.controlPanel {
-  position: absolute;
-  z-index: 2;
-  transform: translate(10px, 10px);
-  max-width: calc(100% - 20px);
-}
 .controlBtn {
-  padding: 6px 12px;
   background: white;
-  border: 1px solid grey;
   border-radius: 5px;
-  margin-right: 10px;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
+  border: 1px solid grey;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
+  padding: 6px 12px;
+  text-transform: uppercase;
+}
+
+.controlBtn:active {
+  opacity: 0.9;
 }
 
 .controlBtn:focus {
@@ -24,6 +22,9 @@
   filter: brightness(120%);
 }
 
-.controlBtn:active {
-  opacity: 0.9;
+.controlPanel {
+  max-width: calc(100% - 20px);
+  position: absolute;
+  transform: translate(10px, 10px);
+  z-index: 2;
 }

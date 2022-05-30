@@ -20,73 +20,61 @@ elements in easy way.
 ## Install
 
 ```bash
-npm install --save @pronestor/react-zoom-pan-pinch
+yarn add @pronestor/react-zoom-pan-pinch
 ```
 
 or
 
 ```bash
-yarn add @pronestor/react-zoom-pan-pinch
+npm install --save @pronestor/react-zoom-pan-pinch
 ```
 
 ## Usage
 
 ```jsx
-import React, { Component } from "react";
-
 import {
   TransformWrapper,
   TransformComponent,
 } from "@pronestor/react-zoom-pan-pinch";
 
-class Example extends Component {
-  render() {
-    return (
-      <TransformWrapper>
-        <TransformComponent>
-          <img src="image.jpg" alt="test" />
-        </TransformComponent>
-      </TransformWrapper>
-    );
-  }
-}
+export const Example = () => (
+  <TransformWrapper>
+    <TransformComponent>
+      <img src="image.jpg" alt="test" />
+    </TransformComponent>
+  </TransformWrapper>
+);
 ```
 
 or
 
 ```jsx
-import React, { Component } from "react";
-
 import {
   TransformWrapper,
   TransformComponent,
 } from "@pronestor/react-zoom-pan-pinch";
 
-class Example extends Component {
-  render() {
-    return (
-      <TransformWrapper
-        initialScale={1}
-        initialPositionX={200}
-        initialPositionY={100}
-      >
-        {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-          <React.Fragment>
-            <div className="tools">
-              <button onClick={() => zoomIn()}>+</button>
-              <button onClick={() => zoomOut()}>-</button>
-              <button onClick={() => resetTransform()}>x</button>
-            </div>
-            <TransformComponent>
-              <img src="image.jpg" alt="test" />
-              <div>Example text</div>
-            </TransformComponent>
-          </React.Fragment>
-        )}
-      </TransformWrapper>
-    );
-  }
-}
+export const Example = () => (
+  <TransformWrapper
+    initialScale={1}
+    initialPositionX={200}
+    initialPositionY={100}
+  >
+    {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+      <>
+        <div className="tools">
+          <button onClick={() => zoomIn()}>+</button>
+          <button onClick={() => zoomOut()}>-</button>
+          <button onClick={() => resetTransform()}>x</button>
+        </div>
+        <TransformComponent>
+          <img src="image.jpg" alt="test" />
+          <div>Example text</div>
+        </TransformComponent>
+      </>
+    )}
+  </TransformWrapper>
+);
 ```
 
 ## License

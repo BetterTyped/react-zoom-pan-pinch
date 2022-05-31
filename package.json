@@ -71,7 +71,7 @@
     "postcss": "^8.2.13",
     "prettier": "^2.6.2",
     "prism-react-renderer": "^1.2.1",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "rollup": "^2.46.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^3.0.2",

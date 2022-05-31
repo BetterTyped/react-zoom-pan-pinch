@@ -25,42 +25,42 @@ describe("Example view", () => {
       environment.getTextElement = () => getAllByText(/Lorem ipsum/)[0];
     });
 
-    test("it renders entire example without errors", () => {
+    test("it renders entire example without errors.", () => {
       const { container } = environment.component;
       expect(container).toBeDefined();
     });
 
-    test("it renders toggle button without errors", () => {
+    test("it renders toggle button without errors.", () => {
       const { toggleBtn } = environment;
       expect(toggleBtn).toBeDefined();
     });
 
-    test("it renders zoom in button without errors", () => {
+    test("it renders zoom in button without errors.", () => {
       const { zoomInBtn } = environment;
       expect(zoomInBtn).toBeDefined();
     });
 
-    test("it renders zoom out button without errors", () => {
+    test("it renders zoom out button without errors.", () => {
       const { zoomOutBtn } = environment;
       expect(zoomOutBtn).toBeDefined();
     });
 
-    test("it renders reset button without errors", () => {
+    test("it renders reset button without errors.", () => {
       const { resetBtn } = environment;
       expect(resetBtn).toBeDefined();
     });
 
-    test("it renders transform component without errors", () => {
+    test("it renders transform component without errors.", () => {
       const { transformComponent } = environment;
       expect(transformComponent).toBeDefined();
     });
 
-    test("it renders image element without errors", () => {
+    test("it renders image element without errors.", () => {
       const { getImgElement } = environment;
       expect(getImgElement()).toBeDefined();
     });
 
-    test("it renders text element without errors when toggle button get clicked", () => {
+    test("it renders text element without errors when toggle button get clicked.", () => {
       const { getTextElement, toggleBtn } = environment;
       clickOnComponent(toggleBtn);
       expect(getTextElement()).toBeDefined();

@@ -28,7 +28,7 @@ describe("Library components", () => {
     });
 
     describe("When library components have been rendered", () => {
-      test("it renders transform component without errors", () => {
+      test("it renders transform component without errors.", () => {
         const { transformComponent } = environment;
         expect(transformComponent).toBeDefined();
       });

@@ -22,13 +22,13 @@
     "build": "rollup -c",
     "deploy": "gh-pages -d storybook-static",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
-    "postinstall": "install-peers",
     "predeploy": "yarn run build:docs",
     "start": "start-storybook -p 6006 --no-manager-cache",
     "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts",
     "test:prettier": "prettier --check \"(.storybook|src)/**/*.+(js|json|ts|tsx)\" \"*.+(js|json|ts|tsx)\"",
     "test": "react-scripts test --watchAll=false --passWithNoTests"
   },
+  "dependencies": {},
   "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -66,10 +66,11 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.23.1",
     "gh-pages": "^3.1.0",
-    "install-peers-cli": "^2.2.0",
     "postcss": "^8.2.13",
     "prettier": "^2.6.2",
     "prism-react-renderer": "^1.2.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-scripts": "5.0.1",
     "rollup": "^2.46.0",
     "rollup-plugin-delete": "^2.0.0",

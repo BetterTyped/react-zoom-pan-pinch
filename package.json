@@ -21,7 +21,6 @@
     "build:docs": "build-storybook",
     "build": "rollup -c",
     "deploy": "gh-pages -d storybook-static",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "predeploy": "yarn run build:docs",
     "start": "start-storybook -p 6006 --no-manager-cache",
     "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts --format unix",

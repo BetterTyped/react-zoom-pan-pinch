@@ -8,13 +8,7 @@ module.exports = {
     "@storybook/addon-storysource",
     "@storybook/addon-a11y",
   ],
-  webpackFinal: (webpackConfig) => {
-    const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-      ({ constructor }) =>
-        constructor && constructor.name === "ModuleScopePlugin",
-    );
-
-    webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
-    return webpackConfig;
+  core: {
+    builder: "webpack5",
   },
 };

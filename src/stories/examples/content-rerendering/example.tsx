@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-
-import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
+import { TransformWrapper } from "../../../components/transform-wrapper";
 import { normalizeArgs } from "../../utils";
 
 export const Example: React.FC<any> = (args: any) => {
@@ -19,7 +18,8 @@ export const Example: React.FC<any> = (args: any) => {
     const c = setInterval(() => {
       setThirdBlock((prev) => !prev);
     }, 12000);
-    () => {
+
+    return () => {
       clearInterval(a);
       clearInterval(b);
       clearInterval(c);

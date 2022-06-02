@@ -22,7 +22,7 @@
     "build": "rollup -c",
     "deploy": "gh-pages -d storybook-static",
     "predeploy": "yarn run build:docs",
-    "start": "start-storybook -p 6006 --no-manager-cache",
+    "start": "start-storybook -p 6006",
     "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts --format unix",
     "test:prettier": "prettier --check \"(.storybook|src)/**/*.+(js|json|ts|tsx)\" \"*.+(js|json|ts|tsx)\"",
     "test": "react-scripts test --watchAll=false --passWithNoTests"

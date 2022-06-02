@@ -19,10 +19,10 @@
   },
   "scripts": {
     "build:docs": "build-storybook",
-    "build": "rollup -c",
-    "deploy": "gh-pages -d storybook-static",
+    "build": "rollup --config",
+    "deploy": "gh-pages --dist storybook-static",
     "predeploy": "yarn run build:docs",
-    "start": "start-storybook -p 6006",
+    "start": "start-storybook --port 6006",
     "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts --format unix",
     "test:prettier": "prettier --check \"(.storybook|src)/**/*.+(js|json|ts|tsx)\" \"*.+(js|json|ts|tsx)\"",
     "test": "react-scripts test --watchAll=false --passWithNoTests"

@@ -1,10 +1,10 @@
-import React from "react";
 import { render } from "@testing-library/react";
-import {
-  TransformWrapper,
-  TransformComponent,
-} from "./node_modules/@pronestor/react-zoom-pan-pinch";
 import logoImg from "logo/logo.png";
+import React from "react";
+import {
+  TransformComponent,
+  TransformWrapper,
+} from "./node_modules/@pronestor/react-zoom-pan-pinch";
 
 const App = (
   <TransformWrapper>
@@ -26,8 +26,9 @@ describe("Library components", () => {
         ".react-transform-element",
       );
     });
+
     describe("When library components have been rendered", () => {
-      test("it renders transform component without errors", () => {
+      test("it renders transform component without errors.", () => {
         const { transformComponent } = environment;
         expect(transformComponent).toBeDefined();
       });

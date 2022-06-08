@@ -1,14 +1,7 @@
 # CHANGELOG
 
-## Version: 2.1.3
+## Version: 2.2.0
 
-##### Published: 24.07.2021
-
-1. Alignment animation size changes:
-
-- "padding" size is not longer calculated based on the wrapper size - it's now
-  represented by pixels
-- you can set separate "padding" values for X and Y
-
-2. Storybook docs fix - prevented to log every action callback since it was
-   killing performance
+- Fix build errors caused by missing source files
+  (<https://github.com/prc5/react-zoom-pan-pinch/issues/265>)
+- Merge Dependabot's pull requests fixing security issues.

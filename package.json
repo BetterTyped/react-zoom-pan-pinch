@@ -18,8 +18,8 @@
     "yarn": ">=1.22"
   },
   "scripts": {
-    "build:docs": "build-storybook",
     "build": "rollup --config",
+    "build-docs": "build-storybook --output-dir docs/",
     "deploy": "gh-pages --dist storybook-static",
     "predeploy": "yarn run build:docs",
     "start": "start-storybook --port 6006",

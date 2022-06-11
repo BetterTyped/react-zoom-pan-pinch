@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unpublished
+
+- Remove the unused tests.
+- Always use LF as end of line characters, even on Windows.
+- Intellisense in the Rollup configuration.
+
 ## Version: 2.2.0
 
 - Fix build errors caused by missing source files

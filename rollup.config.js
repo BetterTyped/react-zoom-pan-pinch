@@ -1,12 +1,13 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
 import dts from "rollup-plugin-dts";
 import external from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 import pkg from "./package.json";
 
-export default [
+export default defineConfig([
   {
     input: pkg.source,
     output: [
@@ -28,7 +29,9 @@ export default [
       babel({
         exclude: "node_modules/**",
       }),
-      del({ targets: ["dist/*"] }),
+      del({
+        targets: ["dist/*"],
+      }),
       typescript(),
       postcss({
         modules: true,
@@ -38,7 +41,12 @@ export default [
   },
   {
     input: pkg.source,
-    output: [{ file: pkg.types, format: "es" }],
+    output: [
+      {
+        file: pkg.types,
+        format: "es",
+      },
+    ],
     plugins: [
       external(),
       dts({
@@ -48,4 +56,4 @@ export default [
       }),
     ],
   },
-];
+]);

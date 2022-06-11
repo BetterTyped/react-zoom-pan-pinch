@@ -29,7 +29,9 @@ export default defineConfig([
       babel({
         exclude: "node_modules/**",
       }),
-      del({ targets: ["dist/*"] }),
+      del({
+        targets: ["dist/*"],
+      }),
       typescript(),
       postcss({
         modules: true,
@@ -39,7 +41,12 @@ export default defineConfig([
   },
   {
     input: pkg.source,
-    output: [{ file: pkg.types, format: "es" }],
+    output: [
+      {
+        file: pkg.types,
+        format: "es",
+      },
+    ],
     plugins: [
       external(),
       dts({

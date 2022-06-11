@@ -1,12 +1,13 @@
 import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
 import dts from "rollup-plugin-dts";
 import external from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 import pkg from "./package.json";
 
-export default [
+export default defineConfig([
   {
     input: pkg.source,
     output: [
@@ -48,4 +49,4 @@ export default [
       }),
     ],
   },
-];
+]);

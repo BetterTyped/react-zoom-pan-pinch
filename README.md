@@ -28,7 +28,7 @@ import {
   TransformComponent,
 } from "@pronestor/react-zoom-pan-pinch";
 
-export const Example = () => (
+export const SimpleExample = () => (
   <TransformWrapper>
     <TransformComponent>
       <img src="image.jpg" alt="test" />
@@ -45,7 +45,7 @@ import {
   TransformComponent,
 } from "@pronestor/react-zoom-pan-pinch";
 
-export const Example = () => (
+export const ExampleWithZoomControls = () => (
   <TransformWrapper
     initialScale={1}
     initialPositionX={200}

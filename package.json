@@ -20,7 +20,6 @@
   "scripts": {
     "build-docs": "build-storybook",
     "build": "rollup --config",
-    "deploy-docs": "yarn run build-docs && gh-pages --dist storybook-static",
     "start": "start-storybook --port 6006",
     "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts --format unix",
     "test:prettier": "prettier --check \"(.storybook|src)/**/*.+(js|json|ts|tsx)\" \"*.+(js|json|ts|tsx)\""

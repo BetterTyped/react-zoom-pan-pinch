@@ -1,9 +1,7 @@
 import React from "react";
-
-import { TransformWrapper } from "../../../components/transform-wrapper";
 import { TransformComponent } from "../../../components/transform-component";
+import { TransformWrapper } from "../../../components/transform-wrapper";
 import { normalizeArgs } from "../../utils";
-
 import styles from "../../utils/styles.module.css";
 
 export const Example: React.FC<any> = (args: any) => {

@@ -47,12 +47,11 @@ export const Example = () => (
     initialPositionX={200}
     initialPositionY={100}
   >
-    {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+    {({ zoomIn, zoomOut, ...rest }) => (
       <>
         <div className="tools">
           <button onClick={() => zoomIn()}>+</button>
           <button onClick={() => zoomOut()}>-</button>
-          <button onClick={() => resetTransform()}>x</button>
         </div>
         <TransformComponent>
           <img src="image.jpg" alt="test" />

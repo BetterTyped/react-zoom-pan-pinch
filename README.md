@@ -16,6 +16,10 @@ or
 npm install --save @pronestor/react-zoom-pan-pinch
 ```
 
+## Documentation
+
+[Storybook for `@pronestor/react-zoom-pan-pinch`](https://pronestoraps.github.io/react-zoom-pan-pinch/).
+
 ## Usage
 
 ```jsx

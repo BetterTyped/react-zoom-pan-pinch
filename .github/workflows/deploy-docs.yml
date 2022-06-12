@@ -1,0 +1,29 @@
+name: "Deploy Storybook Documentation"
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "yarn"
+
+      - name: Install Node.js dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Storybook
+        run: yarn build-docs
+
+      - name: Deploy Storybook
+        uses: JamesIves/github-pages-deploy-action@3.6.2
+          branch: gh-pages
+          folder: storybook-static

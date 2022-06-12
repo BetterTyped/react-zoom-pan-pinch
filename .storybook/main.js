@@ -11,4 +11,10 @@ module.exports = {
   core: {
     builder: "webpack5",
   },
+  webpackFinal: async (config) => {
+    // Remove crypto since we aren't using it.
+    config.resolve.fallback.crypto = false;
+
+    return config;
+  },
 };

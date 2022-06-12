@@ -2,11 +2,15 @@ name: "Deploy Storybook Documentation"
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+
+permissions:
+  contents: write
 
 jobs:
   build-and-deploy:
-    name: Build and Deploy
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,6 +28,6 @@ jobs:
         run: yarn build-docs
 
       - name: Deploy Storybook
-        uses: JamesIves/github-pages-deploy-action@3.6.2
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
           branch: gh-pages
           folder: storybook-static

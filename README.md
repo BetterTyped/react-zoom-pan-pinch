@@ -6,13 +6,13 @@ This is a fork of [react-zoom-pan-pinch](https://github.com/prc5/react-zoom-pan-
 
 ## Installation
 
-```bash
+```shell
 yarn add @pronestor/react-zoom-pan-pinch
 ```
 
 or
 
-```bash
+```shell
 npm install --save @pronestor/react-zoom-pan-pinch
 ```
 

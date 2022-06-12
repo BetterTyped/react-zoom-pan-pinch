@@ -1,19 +1,10 @@
 # @pronestor/react-zoom-pan-pinch
 
-This is a fork of [react-zoom-pan-pinch](https://github.com/prc5/react-zoom-pan-pinch) created in order to fix [the issue with build errors because of missing source files](https://github.com/prc5/react-zoom-pan-pinch/issues/265).
-
-## Features
-
 Super fast and light react npm package for zooming, panning and pinching html elements in easy way.
 
-- :rocket: Fast and easy to use
-- :factory: Light, without external dependencies
-- :gem: Mobile gestures, touch gestures and desktop mouse events support
-- :gift: Powerful context usage, which gives you a lot of freedom
-- :wrench: Highly customizable
-- :crown: Animations and Utils to create own tools
+This is a fork of [react-zoom-pan-pinch](https://github.com/prc5/react-zoom-pan-pinch) created in order to fix [the issue with build errors because of missing source files](https://github.com/prc5/react-zoom-pan-pinch/issues/265).
 
-## Install
+## Installation
 
 ```bash
 yarn add @pronestor/react-zoom-pan-pinch

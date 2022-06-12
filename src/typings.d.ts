@@ -1,7 +1,4 @@
-/**
- * Default CSS definition for typescript,
- * will be overridden with file-specific definitions by rollup
- */
+// Default CSS definition for TypeScript. Will be overridden with file-specific definitions by Rollup.
 declare module "*.css" {
   const content: { [className: string]: string };
   export default content;

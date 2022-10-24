@@ -99,28 +99,11 @@ class TransformContext extends Component<
   public pressedKeys: { [key: string]: boolean } = {};
 
   componentDidMount(): void {
-    const passive = makePassiveEventOption();
-    // Panning on window to allow panning when mouse is out of component wrapper
-    window.addEventListener("mousedown", this.onPanningStart, passive);
-    window.addEventListener("mousemove", this.onPanning, passive);
-    window.addEventListener("mouseup", this.onPanningStop, passive);
-    document.addEventListener("mouseleave", this.clearPanning, passive);
-    window.addEventListener("keyup", this.setKeyUnPressed, passive);
-    window.addEventListener("keydown", this.setKeyPressed, passive);
-
-    this.handleRef();
+    this.initializeWindowEvents();
   }
 
   componentWillUnmount(): void {
-    const passive = makePassiveEventOption();
-
-    window.removeEventListener("mousedown", this.onPanningStart, passive);
-    window.removeEventListener("mousemove", this.onPanning, passive);
-    window.removeEventListener("mouseup", this.onPanningStop, passive);
-    window.removeEventListener("keyup", this.setKeyUnPressed, passive);
-    window.removeEventListener("keydown", this.setKeyPressed, passive);
-
-    handleCancelAnimation(this);
+    this.cleanupWindowEvents();
   }
 
   componentDidUpdate(oldProps: ReactZoomPanPinchProps): void {
@@ -128,6 +111,35 @@ class TransformContext extends Component<
       handleCalculateBounds(this, this.transformState.scale);
       this.setup = createSetup(this.props);
     }
+  }
+
+  initializeWindowEvents = (): void => {
+    const passive = makePassiveEventOption();
+    const currentDocument = this.wrapperComponent?.ownerDocument;
+    const currentWindow = currentDocument?.defaultView;
+    // Panning on window to allow panning when mouse is out of component wrapper
+    currentWindow?.addEventListener("mousedown", this.onPanningStart, passive);
+    currentWindow?.addEventListener("mousemove", this.onPanning, passive);
+    currentWindow?.addEventListener("mouseup", this.onPanningStop, passive);
+    currentDocument?.addEventListener("mouseleave", this.clearPanning, passive);
+    currentWindow?.addEventListener("keyup", this.setKeyUnPressed, passive);
+    currentWindow?.addEventListener("keydown", this.setKeyPressed, passive);
+
+    this.handleRef();
+  }
+
+  cleanupWindowEvents = (): void => {
+    const passive = makePassiveEventOption();
+    const currentDocument = this.wrapperComponent?.ownerDocument;
+    const currentWindow = currentDocument?.defaultView;
+    currentWindow?.removeEventListener("mousedown", this.onPanningStart, passive);
+    currentWindow?.removeEventListener("mousemove", this.onPanning, passive);
+    currentWindow?.removeEventListener("mouseup", this.onPanningStop, passive);
+    currentDocument?.removeEventListener("mouseleave", this.clearPanning, passive);
+    currentWindow?.removeEventListener("keyup", this.setKeyUnPressed, passive);
+    currentWindow?.removeEventListener("keydown", this.setKeyPressed, passive);
+
+    handleCancelAnimation(this);
   }
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
@@ -392,10 +404,12 @@ class TransformContext extends Component<
     wrapperComponent: HTMLDivElement,
     contentComponent: HTMLDivElement,
   ): void => {
+    this.cleanupWindowEvents();
     this.wrapperComponent = wrapperComponent;
     this.contentComponent = contentComponent;
     handleCalculateBounds(this, this.transformState.scale);
     this.handleInitializeWrapperEvents(wrapperComponent);
+    this.initializeWindowEvents();
     this.handleInitialize();
     this.handleRef();
     this.isInitialized = true;

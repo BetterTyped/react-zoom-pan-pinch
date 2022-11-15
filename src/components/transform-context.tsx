@@ -101,10 +101,10 @@ class TransformContext extends Component<
   componentDidMount(): void {
     const passive = makePassiveEventOption();
     // Panning on window to allow panning when mouse is out of component wrapper
-    window.addEventListener("mousedown", this.onPanningStart, passive);
-    window.addEventListener("mousemove", this.onPanning, passive);
-    window.addEventListener("mouseup", this.onPanningStop, passive);
-    document.addEventListener("mouseleave", this.clearPanning, passive);
+    window.addEventListener("pointerdown", this.onPanningStart, passive);
+    window.addEventListener("pointermove", this.onPanning, passive);
+    window.addEventListener("pointerup", this.onPanningStop, passive);
+    document.addEventListener("pointerleave", this.clearPanning, passive);
     window.addEventListener("keyup", this.setKeyUnPressed, passive);
     window.addEventListener("keydown", this.setKeyPressed, passive);
 
@@ -114,9 +114,9 @@ class TransformContext extends Component<
   componentWillUnmount(): void {
     const passive = makePassiveEventOption();
 
-    window.removeEventListener("mousedown", this.onPanningStart, passive);
-    window.removeEventListener("mousemove", this.onPanning, passive);
-    window.removeEventListener("mouseup", this.onPanningStop, passive);
+    window.removeEventListener("pointerdown", this.onPanningStart, passive);
+    window.removeEventListener("pointermove", this.onPanning, passive);
+    window.removeEventListener("pointerup", this.onPanningStop, passive);
     window.removeEventListener("keyup", this.setKeyUnPressed, passive);
     window.removeEventListener("keydown", this.setKeyPressed, passive);
 

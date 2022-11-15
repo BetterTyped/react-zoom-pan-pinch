@@ -139,6 +139,8 @@ class TransformContext extends Component<
     wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
+    wrapper.addEventListener("pointerover", this.onPointerIn, passive);
+    wrapper.addEventListener("pointerout", this.onPointerOut, passive);
   };
 
   handleInitialize = (): void => {
@@ -168,6 +170,30 @@ class TransformContext extends Component<
     }
   };
 
+  ///////////////
+  // Cursor Style
+  //////////////
+
+  private onPointerIn = (event: PointerEvent): void => {
+    const element = event.target as HTMLElement;
+    element.style.cursor = "grab";
+  };
+
+  private handleCursorPanningStart = (event: PointerEvent): void => {
+    const element = event.target as HTMLElement;
+    element.style.cursor = "grabbing";
+  };
+
+  private handleCursorPanningStop = (event: PointerEvent | TouchEvent): void => {
+    const element = event.target as HTMLElement;
+    element.style.cursor = "grab";
+  };
+
+  private onPointerOut = (event: PointerEvent): void => {
+    const element = event.target as HTMLElement;
+    element.style.cursor = "default";
+  };
+
   //////////
   // Zoom
   //////////
@@ -191,7 +217,7 @@ class TransformContext extends Component<
   // Pan
   //////////
 
-  onPanningStart = (event: MouseEvent): void => {
+  onPanningStart = (event: PointerEvent): void => {
     const { disabled } = this.setup;
     const { onPanningStart } = this.props;
     if (disabled) return;
@@ -205,12 +231,13 @@ class TransformContext extends Component<
     event.preventDefault();
     event.stopPropagation();
 
+    this.handleCursorPanningStart(event);
     handleCancelAnimation(this);
     handlePanningStart(this, event);
     handleCallback(getContext(this), event, onPanningStart);
   };
 
-  onPanning = (event: MouseEvent): void => {
+  onPanning = (event: PointerEvent): void => {
     const { disabled } = this.setup;
     const { onPanning } = this.props;
 
@@ -229,10 +256,11 @@ class TransformContext extends Component<
     handleCallback(getContext(this), event, onPanning);
   };
 
-  onPanningStop = (event: MouseEvent | TouchEvent): void => {
+  onPanningStop = (event: PointerEvent | TouchEvent): void => {
     const { onPanningStop } = this.props;
 
     if (this.isPanning) {
+      this.handleCursorPanningStop(event);
       handlePanningEnd(this);
       handleCallback(getContext(this), event, onPanningStop);
     }
@@ -367,7 +395,7 @@ class TransformContext extends Component<
   // Helpers
   //////////
 
-  clearPanning = (event: MouseEvent): void => {
+  clearPanning = (event: PointerEvent): void => {
     if (this.isPanning) {
       this.onPanningStop(event);
     }

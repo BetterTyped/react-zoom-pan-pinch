@@ -466,6 +466,13 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "Callback fired when any of zoom events are finished (wheel/touchpad/pinch)",
   },
+  onTransformed: {
+    type: [
+      "(ref: ReactZoomPanPinchRef, scale: number, positionX: number, positionY: number ) => void",
+    ],
+    defaultValue: "undefined",
+    description: "Callback fired when on each transform",
+  },
   onInit: {
     type: ["(ref: ReactZoomPanPinchRef) => void"],
     defaultValue: "undefined",

@@ -128,6 +128,10 @@ export type ReactZoomPanPinchProps = {
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
   ) => void;
+  onTransformed?: (
+    ref: ReactZoomPanPinchRef,
+    state: { scale: number; positionX: number; positionY: number },
+  ) => void;
   onInit?: (ref: ReactZoomPanPinchRef) => void;
 };
 
@@ -168,6 +172,7 @@ export type LibrarySetup = Pick<
       | "onZoomStart"
       | "onZoom"
       | "onZoomStop"
+      | "onTransformed"
       | "onInit"
     >
   >;

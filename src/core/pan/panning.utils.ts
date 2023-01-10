@@ -143,9 +143,9 @@ export function handleNewPosition(
   const hasPositionXChanged = newPositionX !== positionX;
   const hasPositionYChanged = newPositionY !== positionY;
 
-  const hasNewPosition = !hasPositionXChanged || !hasPositionYChanged;
+  const hasNewPosition = hasPositionXChanged || hasPositionYChanged;
 
-  if (!wrapperComponent || hasNewPosition || !bounds) {
+  if (!wrapperComponent || !hasNewPosition || !bounds) {
     return;
   }
 

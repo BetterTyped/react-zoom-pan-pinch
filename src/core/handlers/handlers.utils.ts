@@ -180,8 +180,8 @@ function getOffset(element: HTMLElement): PositionType {
   }
 
   return {
-    x: offsetLeft,
-    y: offsetTop,
+    x: offsetLeft - window.scrollX,
+    y: offsetTop - window.scrollY,
   };
 }
 

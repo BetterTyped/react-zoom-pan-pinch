@@ -138,6 +138,7 @@ class TransformContext extends Component<
     currentDocument?.removeEventListener("mouseleave", this.clearPanning, passive);
     currentWindow?.removeEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.removeEventListener("keydown", this.setKeyPressed, passive);
+    document.removeEventListener("mouseleave", this.clearPanning, passive);
 
     handleCancelAnimation(this);
   }

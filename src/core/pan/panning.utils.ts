@@ -81,8 +81,12 @@ export function handlePanToBounds(
 
   if (disabled || !wrapperComponent || !contextInstance.bounds) return;
 
-  const { maxPositionX, minPositionX, maxPositionY, minPositionY } =
-    contextInstance.bounds;
+  const {
+    maxPositionX,
+    minPositionX,
+    maxPositionY,
+    minPositionY,
+  } = contextInstance.bounds;
 
   const xChanged = positionX > maxPositionX || positionX < minPositionX;
   const yChanged = positionY > maxPositionY || positionY < minPositionY;
@@ -185,9 +189,9 @@ export const getPaddingValue = (
 ): number => {
   const { setup, transformState } = contextInstance;
   const { scale } = transformState;
-  const { minScale } = setup;
+  const { minScale, disablePadding } = setup;
 
-  if (size > 0 && scale >= minScale) {
+  if (size > 0 && scale >= minScale && !disablePadding) {
     return size;
   }
 

@@ -73,12 +73,12 @@ export const handleCalculateWheelZoom = (
   contextInstance: ReactZoomPanPinchContext,
   delta: number,
   step: number,
-  disablePadding: boolean,
+  disable: boolean,
   getTarget?: boolean,
 ): number => {
   const { scale } = contextInstance.transformState;
   const { wrapperComponent, setup } = contextInstance;
-  const { maxScale, minScale, zoomAnimation } = setup;
+  const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
   const { size, disabled } = zoomAnimation;
 
   if (!wrapperComponent) {
@@ -88,13 +88,13 @@ export const handleCalculateWheelZoom = (
   const targetScale = scale + delta * (scale - scale * step) * step;
 
   if (getTarget) return targetScale;
-  const paddingEnabled = disablePadding ? false : !disabled;
+  const paddingEnabled = disable ? false : !disabled;
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 3),
     minScale,
     maxScale,
     size,
-    paddingEnabled,
+    paddingEnabled && !disablePadding,
   );
   return newScale;
 };

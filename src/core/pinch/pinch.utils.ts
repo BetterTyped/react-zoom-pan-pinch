@@ -64,7 +64,7 @@ export const calculatePinchZoom = (
   currentDistance: number,
 ): number => {
   const { pinchStartScale, pinchStartDistance, setup } = contextInstance;
-  const { maxScale, minScale, zoomAnimation } = setup;
+  const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
   const { size, disabled } = zoomAnimation;
 
   if (!pinchStartScale || pinchStartDistance === null || !currentDistance) {
@@ -83,6 +83,6 @@ export const calculatePinchZoom = (
     minScale,
     maxScale,
     size,
-    !disabled,
+    !disabled && !disablePadding,
   );
 };

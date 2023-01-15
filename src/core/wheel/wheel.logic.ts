@@ -37,7 +37,13 @@ export const handleWheelZoom = (
 
   const { contentComponent, setup, transformState } = contextInstance;
   const { scale } = transformState;
-  const { limitToBounds, centerZoomedOut, zoomAnimation, wheel } = setup;
+  const {
+    limitToBounds,
+    centerZoomedOut,
+    zoomAnimation,
+    wheel,
+    disablePadding,
+  } = setup;
   const { size, disabled } = zoomAnimation;
   const { step } = wheel;
 
@@ -63,7 +69,8 @@ export const handleWheelZoom = (
 
   const mousePosition = getMousePosition(event, contentComponent, scale);
 
-  const isPaddingDisabled = disabled || size === 0 || centerZoomedOut;
+  const isPaddingDisabled =
+    disabled || size === 0 || centerZoomedOut || disablePadding;
   const isLimitedToBounds = limitToBounds && isPaddingDisabled;
 
   const { x, y } = handleCalculateZoomPositions(

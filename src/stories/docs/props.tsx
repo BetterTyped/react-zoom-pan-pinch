@@ -153,6 +153,12 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "When the prop is set to truth the content component will get centered based on the size of it's wrapper.",
   },
+  disablePadding: {
+    type: ["boolean"],
+    defaultValue: String(initialSetup.disablePadding),
+    description:
+      "Used to disable panning, zooming boundary padding effect. By enabling this option, you will not be able to zoom outside the image area.",
+  },
   wheel: {
     wheel: {
       type: [""],

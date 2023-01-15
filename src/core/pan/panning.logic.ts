@@ -22,7 +22,7 @@ export function handlePanningStart(
 
   handleCancelAnimation(contextInstance);
   handleCalculateBounds(contextInstance, scale);
-  if ((event as TouchEvent).touches) {
+  if (window.TouchEvent !== undefined && event instanceof TouchEvent) {
     handleTouchPanningSetup(contextInstance, event as TouchEvent);
   } else {
     handlePanningSetup(contextInstance, event as MouseEvent);
@@ -84,13 +84,8 @@ export function handleAlignToBounds(
 ): void {
   const { scale } = contextInstance.transformState;
   const { minScale, alignmentAnimation } = contextInstance.setup;
-  const {
-    disabled,
-    sizeX,
-    sizeY,
-    animationTime,
-    animationType,
-  } = alignmentAnimation;
+  const { disabled, sizeX, sizeY, animationTime, animationType } =
+    alignmentAnimation;
 
   const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
 

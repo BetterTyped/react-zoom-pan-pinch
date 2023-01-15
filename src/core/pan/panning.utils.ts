@@ -81,12 +81,8 @@ export function handlePanToBounds(
 
   if (disabled || !wrapperComponent || !contextInstance.bounds) return;
 
-  const {
-    maxPositionX,
-    minPositionX,
-    maxPositionY,
-    minPositionY,
-  } = contextInstance.bounds;
+  const { maxPositionX, minPositionX, maxPositionY, minPositionY } =
+    contextInstance.bounds;
 
   const xChanged = positionX > maxPositionX || positionX < minPositionX;
   const yChanged = positionY > maxPositionY || positionY < minPositionY;
@@ -145,7 +141,7 @@ export function handleNewPosition(
 
   const hasNewPosition = hasPositionXChanged || hasPositionYChanged;
 
-  if (!wrapperComponent || !hasNewPosition || !bounds) {
+  if (!wrapperComponent || !bounds || !hasNewPosition) {
     return;
   }
 

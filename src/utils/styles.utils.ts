@@ -5,7 +5,15 @@ export const getTransformStyles = (
   y: number,
   scale: number,
 ): string => {
-  return `matrix(${scale}, 0,0, ${scale}, ${x}, ${y})`;
+  // The shorthand for matrix does not work for Safari hence the need to explicitly use matrix3d
+  // Refer to https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/matrix
+  const a = scale;
+  const b = 0;
+  const c = 0;
+  const d = scale;
+  const tx = x;
+  const ty = y;
+  return `matrix3d(${a}, ${b}, 0, 0, ${c}, ${d}, 0, 0, 0, 0, 1, 0, ${tx}, ${ty}, 0, 1)`;
 };
 
 export const getCenterPosition = (

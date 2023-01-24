@@ -19,7 +19,7 @@ export const Example: React.FC<any> = (args: any) => {
     const c = setInterval(() => {
       setThirdBlock((prev) => !prev);
     }, 12000);
-    () => {
+    return () => {
       clearInterval(a);
       clearInterval(b);
       clearInterval(c);

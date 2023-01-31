@@ -10,7 +10,8 @@ body {
 }
 
 body .sbdocs {
-  max-width: unset;
+  max-width: none;
+  max-width: initial;
 }
 
 .react-transform-wrapper {
@@ -48,13 +49,13 @@ body td > pre.prism-code {
   text-align: left;
 }
 
-.styles_controlPanel__Qc0xI {
+.styles_controlPanel__TPBuk {
   position: absolute;
   z-index: 2;
   transform: translate(10px, 10px);
   max-width: calc(100% - 20px);
 }
-.styles_controlBtn__3KyDO {
+.styles_controlBtn__0MzSB {
   padding: 6px 12px;
   background: white;
   border: 1px solid grey;
@@ -66,51 +67,51 @@ body td > pre.prism-code {
   cursor: pointer;
 }
 
-.styles_controlBtn__3KyDO:focus {
+.styles_controlBtn__0MzSB:focus {
   filter: brightness(90%);
 }
 
-.styles_controlBtn__3KyDO:hover {
+.styles_controlBtn__0MzSB:hover {
   filter: brightness(120%);
 }
 
-.styles_controlBtn__3KyDO:active {
+.styles_controlBtn__0MzSB:active {
   opacity: 0.9;
 }
 
-.transform-component_wrapper__2Hyo4 {
+.styles_grid__uFmRn {
+  display: grid;
+  grid-template-columns: repeat(100, 1fr);
+}
+
+.transform-component_wrapper__KpIt1 {
   position: relative;
   width: -moz-fit-content;
-  width: -webkit-fit-content;
   width: fit-content;
   height: -moz-fit-content;
-  height: -webkit-fit-content;
   height: fit-content;
   overflow: hidden;
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */ /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
+  -moz-user-select: none; /* Firefox */ /* Internet Explorer/Edge */
   user-select: none;
   margin: 0;
   padding: 0;
 }
-.transform-component_content__VbazE {
+.transform-component_content__qCWBw {
   display: flex;
   flex-wrap: wrap;
   width: -moz-fit-content;
-  width: -webkit-fit-content;
   width: fit-content;
   height: -moz-fit-content;
-  height: -webkit-fit-content;
   height: fit-content;
   margin: 0;
   padding: 0;
   transform-origin: 0% 0%;
 }
-.transform-component_content__VbazE img {
+.transform-component_content__qCWBw img {
   pointer-events: none;
 }
 
 
-/*# sourceMappingURL=main.b3b77696.chunk.css.map*/
+/*# sourceMappingURL=main.6028f502.css.map*/

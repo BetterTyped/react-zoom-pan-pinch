@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useMemo, useRef } from "react";
+import React, { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 
 import { ZoomPanPinch } from "../core/instance.core";
 import { ReactZoomPanPinchProps, ReactZoomPanPinchRef } from "../models";
@@ -32,6 +32,10 @@ export const TransformWrapper = React.forwardRef(
     }, [JSON.stringify(instance.transformState)]);
 
     useImperativeHandle(ref, () => getContext(instance), [instance]);
+
+    useEffect(() => {
+      instance.update(props);
+    }, [instance, props]);
 
     return <Context.Provider value={value}>{content}</Context.Provider>;
   },

@@ -44,6 +44,8 @@ import {
 type StartCoordsType = { x: number; y: number } | null;
 
 export class ZoomPanPinch {
+  public props: ReactZoomPanPinchProps;
+
   public mounted = true;
 
   public transformState: ReactZoomPanPinchState;
@@ -81,7 +83,8 @@ export class ZoomPanPinch {
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
-  constructor(public props: ReactZoomPanPinchProps) {
+  constructor(props: ReactZoomPanPinchProps) {
+    this.props = props;
     this.setup = createSetup(this.props);
     this.transformState = createState(this.props);
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   PositionType,
   ReactZoomPanPinchContext,
@@ -59,7 +60,7 @@ export const handleTouchPanningSetup = (
   contextInstance: ReactZoomPanPinchContext,
   event: TouchEvent,
 ): void => {
-  const touches = event.touches;
+  const { touches } = event;
   const { positionX, positionY } = contextInstance.transformState;
 
   contextInstance.isPanning = true;
@@ -81,12 +82,8 @@ export function handlePanToBounds(
 
   if (disabled || !wrapperComponent || !contextInstance.bounds) return;
 
-  const {
-    maxPositionX,
-    minPositionX,
-    maxPositionY,
-    minPositionY,
-  } = contextInstance.bounds;
+  const { maxPositionX, minPositionX, maxPositionY, minPositionY } =
+    contextInstance.bounds;
 
   const xChanged = positionX > maxPositionX || positionX < minPositionX;
   const yChanged = positionY > maxPositionY || positionY < minPositionY;

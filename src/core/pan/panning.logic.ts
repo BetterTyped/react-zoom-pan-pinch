@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { ReactZoomPanPinchContext } from "../../models/context.model";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import { handleCalculateBounds } from "../bounds/bounds.utils";
@@ -26,6 +27,25 @@ export function handlePanningStart(
     handleTouchPanningSetup(contextInstance, event as TouchEvent);
   } else {
     handlePanningSetup(contextInstance, event as MouseEvent);
+  }
+}
+
+export function handleAlignToBounds(
+  contextInstance: ReactZoomPanPinchContext,
+): void {
+  const { scale } = contextInstance.transformState;
+  const { minScale, alignmentAnimation } = contextInstance.setup;
+  const { disabled, sizeX, sizeY, animationTime, animationType } =
+    alignmentAnimation;
+
+  const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
+
+  if (isDisabled) return;
+
+  const targetState = handlePanToBounds(contextInstance);
+
+  if (targetState) {
+    animate(contextInstance, targetState, animationTime, animationType);
   }
 }
 
@@ -76,24 +96,5 @@ export function handlePanningEnd(
     } else {
       handleAlignToBounds(contextInstance);
     }
-  }
-}
-
-export function handleAlignToBounds(
-  contextInstance: ReactZoomPanPinchContext,
-): void {
-  const { scale } = contextInstance.transformState;
-  const { minScale, alignmentAnimation } = contextInstance.setup;
-  const { disabled, sizeX, sizeY, animationTime, animationType } =
-    alignmentAnimation;
-
-  const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
-
-  if (isDisabled) return;
-
-  const targetState = handlePanToBounds(contextInstance);
-
-  if (targetState) {
-    animate(contextInstance, targetState, animationTime, animationType);
   }
 }

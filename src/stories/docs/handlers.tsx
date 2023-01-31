@@ -16,36 +16,6 @@ export type ComponentProps = Record<
   | Record<string, Omit<ControlsFnOptionsType, "name" | "isObjectRow">>
 >;
 
-export const getHandlersTable = (): ControlsFnOptionsType[] => {
-  return Object.keys(handlersTable).reduce<ControlsFnOptionsType[]>(
-    (acc, key) => {
-      if (Array.isArray(handlersTable[key]?.type)) {
-        acc.push({
-          ...handlersTable[key],
-          name: key,
-        });
-      } else {
-        Object.keys(handlersTable[key]).forEach((prop) => {
-          acc.push({
-            ...handlersTable[key][prop],
-            isObjectRow: key === prop,
-            name:
-              key === prop ? (
-                <b>{prop}</b>
-              ) : (
-                <>
-                  {key}.<b>{prop}</b>
-                </>
-              ),
-          });
-        });
-      }
-      return acc;
-    },
-    [],
-  );
-};
-
 export const handlersTable: ComponentProps = {
   zoomIn: {
     type: ["function(step, animationTime, animationName)"],
@@ -104,4 +74,34 @@ export const handlersTable: ComponentProps = {
     description:
       "This function make a transition for certain node provided to the function(as node element or it's id string). It allows only to zoom elements with offsetWidth and offsetHeight properties - since SVG's doesn't have those, it is impossible to perform it on such elements.",
   },
+};
+
+export const getHandlersTable = (): ControlsFnOptionsType[] => {
+  return Object.keys(handlersTable).reduce<ControlsFnOptionsType[]>(
+    (acc, key) => {
+      if (Array.isArray(handlersTable[key]?.type)) {
+        acc.push({
+          ...handlersTable[key],
+          name: key,
+        });
+      } else {
+        Object.keys(handlersTable[key]).forEach((prop) => {
+          acc.push({
+            ...handlersTable[key][prop],
+            isObjectRow: key === prop,
+            name:
+              key === prop ? (
+                <b>{prop}</b>
+              ) : (
+                <>
+                  {key}.<b>{prop}</b>
+                </>
+              ),
+          });
+        });
+      }
+      return acc;
+    },
+    [],
+  );
 };

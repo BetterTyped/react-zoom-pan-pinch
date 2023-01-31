@@ -54,8 +54,8 @@ export const calculateTouchMidPoint = (
 
 export const getTouchDistance = (event: TouchEvent): number => {
   return Math.sqrt(
-    Math.pow(event.touches[0].pageX - event.touches[1].pageX, 2) +
-      Math.pow(event.touches[0].pageY - event.touches[1].pageY, 2),
+    (event.touches[0].pageX - event.touches[1].pageX) ** 2 +
+      (event.touches[0].pageY - event.touches[1].pageY) ** 2,
   );
 };
 

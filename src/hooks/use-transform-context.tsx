@@ -1,6 +1,7 @@
 import { useContext } from "react";
-import { getContext } from "utils";
-import { Context } from "../components/transform-context";
+
+import { getContext } from "../utils";
+import { Context } from "../components/transform-wrapper";
 import { ReactZoomPanPinchRef } from "../models";
 
 const useTransformContext = (): ReactZoomPanPinchRef => {

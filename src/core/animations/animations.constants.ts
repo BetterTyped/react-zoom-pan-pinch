@@ -1,52 +1,54 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
 /**
  * Functions should return denominator of the target value, which is the next animation step.
  * t is a value from 0 to 1, reflecting the percentage of animation status.
  */
-const easeOut = function (t: number): number {
+const easeOut = (t: number): number => {
   return -Math.cos(t * Math.PI) / 2 + 0.5;
 };
 // linear
-const linear = function (t: number): number {
+const linear = (t: number): number => {
   return t;
 };
 // accelerating from zero velocity
-const easeInQuad = function (t: number): number {
+const easeInQuad = (t: number): number => {
   return t * t;
 };
 // decelerating to zero velocity
-const easeOutQuad = function (t: number): number {
+const easeOutQuad = (t: number): number => {
   return t * (2 - t);
 };
 // acceleration until halfway, then deceleration
-const easeInOutQuad = function (t: number): number {
+const easeInOutQuad = (t: number): number => {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 };
 // accelerating from zero velocity
-const easeInCubic = function (t: number): number {
+const easeInCubic = (t: number): number => {
   return t * t * t;
 };
 // decelerating to zero velocity
-const easeOutCubic = function (t: number): number {
+const easeOutCubic = (t: number): number => {
   return --t * t * t + 1;
 };
 // acceleration until halfway, then deceleration
-const easeInOutCubic = function (t: number): number {
+const easeInOutCubic = (t: number): number => {
   return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 };
 // accelerating from zero velocity
-const easeInQuart = function (t: number): number {
+const easeInQuart = (t: number): number => {
   return t * t * t * t;
 };
 // decelerating to zero velocity
-const easeOutQuart = function (t: number): number {
+const easeOutQuart = (t: number): number => {
   return 1 - --t * t * t * t;
 };
 // acceleration until halfway, then deceleration
-const easeInOutQuart = function (t: number): number {
+const easeInOutQuart = (t: number): number => {
   return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t;
 };
 // accelerating from zero velocity
-const easeInQuint = function (t: number): number {
+const easeInQuint = (t: number): number => {
   return t * t * t * t * t;
 };
 // decelerating to zero velocity

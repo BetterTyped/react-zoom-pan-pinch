@@ -1,6 +1,7 @@
+/* eslint-disable react/require-default-props */
 import React, { useContext, useEffect, useRef } from "react";
 
-import { Context } from "./transform-context";
+import { Context } from "./transform-wrapper";
 
 import styles from "./transform-component.module.css";
 

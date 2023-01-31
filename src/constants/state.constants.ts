@@ -1,8 +1,6 @@
 import {
   LibrarySetup,
   ReactZoomPanPinchContext,
-} from "../models/context.model";
-import {
   ReactZoomPanPinchComponentHelpers,
   ReactZoomPanPinchState,
 } from "../models/context.model";

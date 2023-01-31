@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { ReactZoomPanPinchContext } from "../../models";
 import { handleCallback } from "../../utils/callback.utils";
 import { getContext } from "../../utils/context.utils";

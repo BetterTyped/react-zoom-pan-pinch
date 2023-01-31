@@ -10,7 +10,7 @@ import { PositionType } from "../../models/calculations.model";
 import {
   calculateBounds,
   getMouseBoundedPosition,
-} from "core/bounds/bounds.utils";
+} from "../bounds/bounds.utils";
 
 export const handleCalculateButtonZoom = (
   contextInstance: ReactZoomPanPinchContext,
@@ -117,6 +117,25 @@ export function resetTransformations(
   animate(contextInstance, newState, animationTime, animationType);
 }
 
+export function getOffset(element: HTMLElement): PositionType {
+  let el = element;
+
+  let offsetLeft = 0;
+  let offsetTop = 0;
+
+  while (el) {
+    offsetLeft += el.offsetLeft;
+    offsetTop += el.offsetTop;
+
+    el = el.offsetParent as HTMLElement;
+  }
+
+  return {
+    x: offsetLeft - window.scrollX,
+    y: offsetTop - window.scrollY,
+  };
+}
+
 export function calculateZoomToNode(
   contextInstance: ReactZoomPanPinchContext,
   node: HTMLElement,
@@ -166,33 +185,12 @@ export function calculateZoomToNode(
   return { positionX: x, positionY: y, scale: newScale };
 }
 
-function getOffset(element: HTMLElement): PositionType {
-  let el = element;
-
-  let offsetLeft = 0;
-  let offsetTop = 0;
-
-  while (el) {
-    offsetLeft += el.offsetLeft;
-    offsetTop += el.offsetTop;
-
-    el = el.offsetParent as HTMLElement;
-  }
-
-  return {
-    x: offsetLeft - window.scrollX,
-    y: offsetTop - window.scrollY,
-  };
-}
-
 export function isValidZoomNode(node: HTMLElement | null): boolean {
   if (!node) {
     console.error("Zoom node not found");
     return false;
-  } else if (
-    node?.offsetWidth === undefined ||
-    node?.offsetHeight === undefined
-  ) {
+  }
+  if (node?.offsetWidth === undefined || node?.offsetHeight === undefined) {
     console.error(
       "Zoom node is not valid - it must contain offsetWidth and offsetHeight",
     );

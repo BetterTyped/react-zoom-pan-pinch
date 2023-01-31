@@ -1,0 +1,28 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Stress test"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Stress test
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Stress test">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Stress test" />

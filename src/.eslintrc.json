@@ -1,0 +1,90 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules", "src/"]
+      }
+    },
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "plugins": ["react", "react-hooks"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "airbnb",
+    "airbnb-typescript",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/prop-types": "off",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/prefer-default-export": 0,
+    "import/no-cycle": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/lines-between-class-members": "off",
+    "prettier/prettier": ["error"],
+    "consistent-return": 0,
+    "@typescript-eslint/no-throw-literal": 0,
+    "no-underscore-dangle": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/function-component-definition": 0,
+    "testing-library/render-result-naming-convention": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          ["builtin", "external"],
+          ["internal", "parent", "sibling", "index"]
+        ],
+        "pathGroups": [
+          { "pattern": "assets/**", "group": "sibling", "position": "after" },
+          {
+            "pattern": "@external/**/*.css",
+            "group": "sibling",
+            "position": "after"
+          },
+          {
+            "pattern": "*.css",
+            "group": "index",
+            "patternOptions": { "matchBase": true },
+            "position": "after"
+          }
+        ],
+        "warnOnUnassignedImports": true,
+        "pathGroupsExcludedImportTypes": ["css"],
+        "newlines-between": "always"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "testing-library/render-result-naming-convention": "off"
+      }
+    }
+  ]
+}

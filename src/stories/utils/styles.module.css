@@ -27,3 +27,8 @@
 .controlBtn:active {
   opacity: 0.9;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(100, 1fr);
+}

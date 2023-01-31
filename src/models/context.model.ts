@@ -1,6 +1,5 @@
 import React from "react";
 
-import { TransformContext } from "../components/transform-context";
 import { animations } from "../core/animations/animations.constants";
 import { DeepNonNullable } from "./helpers.model";
 import {
@@ -11,8 +10,9 @@ import {
   setTransform,
   zoomOut,
 } from "../core/handlers/handlers.logic";
+import { ZoomPanPinch } from "../core/instance.core";
 
-export type ReactZoomPanPinchContext = typeof TransformContext.prototype;
+export type ReactZoomPanPinchContext = typeof ZoomPanPinch.prototype;
 
 export type ReactZoomPanPinchRef = {
   instance: ReactZoomPanPinchContext;
@@ -34,6 +34,10 @@ export type ReactZoomPanPinchHandlers = {
   centerView: ReturnType<typeof centerView>;
   zoomToElement: ReturnType<typeof zoomToElement>;
 };
+
+export type ReactZoomPanPinchRefProps = {
+  setRef: (context: ReactZoomPanPinchRef) => void;
+} & Omit<ReactZoomPanPinchProps, "ref">;
 
 export type ReactZoomPanPinchProps = {
   children?: React.ReactNode | ((ref: ReactZoomPanPinchRef) => React.ReactNode);

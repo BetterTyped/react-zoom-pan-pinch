@@ -1,16 +1,12 @@
-import React, { Component } from "react";
-
 import {
   BoundsType,
   LibrarySetup,
   PositionType,
   VelocityType,
   AnimationType,
-  ReactZoomPanPinchRef,
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
 } from "../models";
-
 import {
   getContext,
   createSetup,
@@ -20,52 +16,39 @@ import {
   makePassiveEventOption,
   getCenterPosition,
 } from "../utils";
-
-import { contextInitialState } from "../constants/state.constants";
-
-import { handleCancelAnimation } from "../core/animations/animations.utils";
-import { isWheelAllowed } from "../core/wheel/wheel.utils";
-import { isPinchAllowed, isPinchStartAllowed } from "../core/pinch/pinch.utils";
-import { handleCalculateBounds } from "../core/bounds/bounds.utils";
-
+import { handleCancelAnimation } from "./animations/animations.utils";
+import { isWheelAllowed } from "./wheel/wheel.utils";
+import { isPinchAllowed, isPinchStartAllowed } from "./pinch/pinch.utils";
+import { handleCalculateBounds } from "./bounds/bounds.utils";
 import {
   handleWheelStart,
   handleWheelZoom,
   handleWheelStop,
-} from "../core/wheel/wheel.logic";
-import {
-  isPanningAllowed,
-  isPanningStartAllowed,
-} from "../core/pan/panning.utils";
+} from "./wheel/wheel.logic";
+import { isPanningAllowed, isPanningStartAllowed } from "./pan/panning.utils";
 import {
   handlePanning,
   handlePanningEnd,
   handlePanningStart,
-} from "../core/pan/panning.logic";
+} from "./pan/panning.logic";
 import {
   handlePinchStart,
   handlePinchStop,
   handlePinchZoom,
-} from "../core/pinch/pinch.logic";
+} from "./pinch/pinch.logic";
 import {
   handleDoubleClick,
   isDoubleClickAllowed,
-} from "../core/double-click/double-click.logic";
+} from "./double-click/double-click.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 
-const Context = React.createContext(contextInitialState);
-
-class TransformContext extends Component<
-  Omit<ReactZoomPanPinchProps, "ref"> & {
-    setRef: (context: ReactZoomPanPinchRef) => void;
-  }
-> {
+export class ZoomPanPinch {
   public mounted = true;
 
-  public transformState: ReactZoomPanPinchState = createState(this.props);
-
-  public setup: LibrarySetup = createSetup(this.props);
+  public transformState: ReactZoomPanPinchState;
+  public setup: LibrarySetup;
+  public observer?: ResizeObserver;
 
   // Components
   public wrapperComponent: HTMLDivElement | null = null;
@@ -98,20 +81,23 @@ class TransformContext extends Component<
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
-  componentDidMount(): void {
+  constructor(public props: ReactZoomPanPinchProps) {
+    this.setup = createSetup(this.props);
+    this.transformState = createState(this.props);
+  }
+
+  mount = () => {
     this.initializeWindowEvents();
-  }
+  };
 
-  componentWillUnmount(): void {
+  unmount = () => {
     this.cleanupWindowEvents();
-  }
+  };
 
-  componentDidUpdate(oldProps: ReactZoomPanPinchProps): void {
-    if (oldProps !== this.props) {
-      handleCalculateBounds(this, this.transformState.scale);
-      this.setup = createSetup(this.props);
-    }
-  }
+  update = (newProps: ReactZoomPanPinchProps) => {
+    handleCalculateBounds(this, this.transformState.scale);
+    this.setup = createSetup(newProps);
+  };
 
   initializeWindowEvents = (): void => {
     const passive = makePassiveEventOption();
@@ -124,24 +110,31 @@ class TransformContext extends Component<
     currentDocument?.addEventListener("mouseleave", this.clearPanning, passive);
     currentWindow?.addEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.addEventListener("keydown", this.setKeyPressed, passive);
-
-    this.handleRef();
-  }
+  };
 
   cleanupWindowEvents = (): void => {
     const passive = makePassiveEventOption();
     const currentDocument = this.wrapperComponent?.ownerDocument;
     const currentWindow = currentDocument?.defaultView;
-    currentWindow?.removeEventListener("mousedown", this.onPanningStart, passive);
+    currentWindow?.removeEventListener(
+      "mousedown",
+      this.onPanningStart,
+      passive,
+    );
     currentWindow?.removeEventListener("mousemove", this.onPanning, passive);
     currentWindow?.removeEventListener("mouseup", this.onPanningStop, passive);
-    currentDocument?.removeEventListener("mouseleave", this.clearPanning, passive);
+    currentDocument?.removeEventListener(
+      "mouseleave",
+      this.clearPanning,
+      passive,
+    );
     currentWindow?.removeEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.removeEventListener("keydown", this.setKeyPressed, passive);
     document.removeEventListener("mouseleave", this.clearPanning, passive);
 
     handleCancelAnimation(this);
-  }
+    this.observer?.disconnect();
+  };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
     // Zooming events on wrapper
@@ -154,36 +147,25 @@ class TransformContext extends Component<
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitialize = (): void => {
+  handleInitialize = (contentComponent: HTMLDivElement): void => {
     const { centerOnInit } = this.setup;
-
     this.applyTransformation();
-    this.forceUpdate();
 
     if (centerOnInit) {
-      // this has to be redone once the right solution is found
-      // problem is - we need to execute it after mounted component specify it's height / width, images are fetched async so it's tricky
-      setTimeout(() => {
-        if (this.mounted) {
-          this.setCenter();
-        }
-      }, 50);
-      setTimeout(() => {
-        if (this.mounted) {
-          this.setCenter();
-        }
-      }, 100);
-      setTimeout(() => {
-        if (this.mounted) {
-          this.setCenter();
-        }
-      }, 200);
+      this.setCenter();
+      this.observer = new ResizeObserver(() => {
+        this.setCenter();
+        this.observer?.disconnect();
+      });
+
+      // Start observing the target node for configured mutations
+      this.observer.observe(contentComponent);
     }
   };
 
-  //////////
+  /// ///////
   // Zoom
-  //////////
+  /// ///////
 
   onWheelZoom = (event: WheelEvent): void => {
     const { disabled } = this.setup;
@@ -200,9 +182,9 @@ class TransformContext extends Component<
     handleWheelStop(this, event);
   };
 
-  //////////
+  /// ///////
   // Pan
-  //////////
+  /// ///////
 
   onPanningStart = (event: MouseEvent): void => {
     const { disabled } = this.setup;
@@ -251,9 +233,9 @@ class TransformContext extends Component<
     }
   };
 
-  //////////
+  /// ///////
   // Pinch
-  //////////
+  /// ///////
 
   onPinchStart = (event: TouchEvent): void => {
     const { disabled } = this.setup;
@@ -297,9 +279,9 @@ class TransformContext extends Component<
     }
   };
 
-  //////////
+  /// ///////
   // Touch
-  //////////
+  /// ///////
 
   onTouchPanningStart = (event: TouchEvent): void => {
     const { disabled } = this.setup;
@@ -362,9 +344,9 @@ class TransformContext extends Component<
     this.onPinchStop(event);
   };
 
-  //////////
+  /// ///////
   // Double Click
-  //////////
+  /// ///////
 
   onDoubleClick = (event: MouseEvent | TouchEvent): void => {
     const { disabled } = this.setup;
@@ -376,9 +358,9 @@ class TransformContext extends Component<
     handleDoubleClick(this, event);
   };
 
-  //////////
+  /// ///////
   // Helpers
-  //////////
+  /// ///////
 
   clearPanning = (event: MouseEvent): void => {
     if (this.isPanning) {
@@ -401,22 +383,6 @@ class TransformContext extends Component<
     return Boolean(keys.find((key) => this.pressedKeys[key]));
   };
 
-  setComponents = (
-    wrapperComponent: HTMLDivElement,
-    contentComponent: HTMLDivElement,
-  ): void => {
-    this.cleanupWindowEvents();
-    this.wrapperComponent = wrapperComponent;
-    this.contentComponent = contentComponent;
-    handleCalculateBounds(this, this.transformState.scale);
-    this.handleInitializeWrapperEvents(wrapperComponent);
-    this.initializeWindowEvents();
-    this.handleInitialize();
-    this.handleRef();
-    this.isInitialized = true;
-    handleCallback(getContext(this), undefined, this.props.onInit);
-  };
-
   setTransformState = (
     scale: number,
     positionX: number,
@@ -424,7 +390,11 @@ class TransformContext extends Component<
   ): void => {
     const { onTransformed } = this.props;
 
-    if (!isNaN(scale) && !isNaN(positionX) && !isNaN(positionY)) {
+    if (
+      !Number.isNaN(scale) &&
+      !Number.isNaN(positionX) &&
+      !Number.isNaN(positionY)
+    ) {
       if (scale !== this.transformState.scale) {
         this.transformState.previousScale = this.transformState.scale;
         this.transformState.scale = scale;
@@ -463,31 +433,28 @@ class TransformContext extends Component<
     const { scale, positionX, positionY } = this.transformState;
     const transform = getTransformStyles(positionX, positionY, scale);
     this.contentComponent.style.transform = transform;
-
-    this.handleRef();
   };
 
-  handleRef = (): void => {
-    this.props.setRef(getContext(this));
+  getContext = () => {
+    return getContext(this);
   };
 
-  render(): JSX.Element {
-    const value = getContext(this);
-    const { children } = this.props;
-    const content = typeof children === "function" ? children(value) : children;
+  /**
+   * Initialization
+   */
 
-    return (
-      <Context.Provider
-        value={{
-          ...this.transformState,
-          setComponents: this.setComponents,
-          contextInstance: this,
-        }}
-      >
-        {content}
-      </Context.Provider>
-    );
-  }
+  init = (
+    wrapperComponent: HTMLDivElement,
+    contentComponent: HTMLDivElement,
+  ): void => {
+    this.cleanupWindowEvents();
+    this.wrapperComponent = wrapperComponent;
+    this.contentComponent = contentComponent;
+    handleCalculateBounds(this, this.transformState.scale);
+    this.handleInitializeWrapperEvents(wrapperComponent);
+    this.handleInitialize(contentComponent);
+    this.initializeWindowEvents();
+    this.isInitialized = true;
+    handleCallback(getContext(this), undefined, this.props.onInit);
+  };
 }
-
-export { Context, TransformContext };

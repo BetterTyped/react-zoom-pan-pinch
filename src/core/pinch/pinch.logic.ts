@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { ReactZoomPanPinchContext } from "../../models";
 import { handleCancelAnimation } from "../animations/animations.utils";
 import { handleAlignToScaleBounds } from "../zoom/zoom.logic";
@@ -42,7 +43,7 @@ export const handlePinchZoom = (
   const midPoint = calculateTouchMidPoint(event, scale, contentComponent);
 
   // if touches goes off of the wrapper element
-  if (!isFinite(midPoint.x) || !isFinite(midPoint.y)) return;
+  if (!Number.isFinite(midPoint.x) || !Number.isFinite(midPoint.y)) return;
 
   const currentDistance = getTouchDistance(event);
   const newScale = calculatePinchZoom(contextInstance, currentDistance);

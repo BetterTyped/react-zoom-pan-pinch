@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PositionType } from "../../models";
 import { ReactZoomPanPinchContext } from "../../models/context.model";
 import { animations } from "../animations/animations.constants";

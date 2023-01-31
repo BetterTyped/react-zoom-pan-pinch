@@ -5,6 +5,35 @@ import { handleCalculateBounds } from "../bounds/bounds.utils";
 import { handleAlignToBounds } from "../pan/panning.logic";
 import { checkZoomBounds, handleCalculateZoomPositions } from "./zoom.utils";
 
+export function handleZoomToPoint(
+  contextInstance: ReactZoomPanPinchContext,
+  scale: number,
+  mouseX: number,
+  mouseY: number,
+): Omit<ReactZoomPanPinchState, "previousScale"> | undefined {
+  const { minScale, maxScale, limitToBounds } = contextInstance.setup;
+
+  const newScale = checkZoomBounds(
+    roundNumber(scale, 2),
+    minScale,
+    maxScale,
+    0,
+    false,
+  );
+  const bounds = handleCalculateBounds(contextInstance, newScale);
+
+  const { x, y } = handleCalculateZoomPositions(
+    contextInstance,
+    mouseX,
+    mouseY,
+    newScale,
+    bounds,
+    limitToBounds,
+  );
+
+  return { scale: newScale, positionX: x, positionY: y };
+}
+
 export function handleAlignToScaleBounds(
   contextInstance: ReactZoomPanPinchContext,
   mousePositionX?: number,
@@ -37,33 +66,4 @@ export function handleAlignToScaleBounds(
   if (targetState) {
     animate(contextInstance, targetState, animationTime, animationType);
   }
-}
-
-export function handleZoomToPoint(
-  contextInstance: ReactZoomPanPinchContext,
-  scale: number,
-  mouseX: number,
-  mouseY: number,
-): Omit<ReactZoomPanPinchState, "previousScale"> | undefined {
-  const { minScale, maxScale, limitToBounds } = contextInstance.setup;
-
-  const newScale = checkZoomBounds(
-    roundNumber(scale, 2),
-    minScale,
-    maxScale,
-    0,
-    false,
-  );
-  const bounds = handleCalculateBounds(contextInstance, newScale);
-
-  const { x, y } = handleCalculateZoomPositions(
-    contextInstance,
-    mouseX,
-    mouseY,
-    newScale,
-    bounds,
-    limitToBounds,
-  );
-
-  return { scale: newScale, positionX: x, positionY: y };
 }

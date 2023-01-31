@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   PositionType,
   ReactZoomPanPinchContext,
@@ -59,7 +60,7 @@ export const handleTouchPanningSetup = (
   contextInstance: ReactZoomPanPinchContext,
   event: TouchEvent,
 ): void => {
-  const touches = event.touches;
+  const { touches } = event;
   const { positionX, positionY } = contextInstance.transformState;
 
   contextInstance.isPanning = true;

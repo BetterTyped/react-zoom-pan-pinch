@@ -51,9 +51,9 @@ export const setTransform = (contextInstance: ReactZoomPanPinchContext) => (
   if (disabled || !wrapperComponent || !contentComponent) return;
 
   const targetState = {
-    positionX: isNaN(newPositionX) ? positionX : newPositionX,
-    positionY: isNaN(newPositionY) ? positionY : newPositionY,
-    scale: isNaN(newScale) ? scale : newScale,
+    positionX: Number.isNaN(newPositionX) ? positionX : newPositionX,
+    positionY: Number.isNaN(newPositionY) ? positionY : newPositionY,
+    scale: Number.isNaN(newScale) ? scale : newScale,
   };
 
   animate(contextInstance, targetState, animationTime, animationType);

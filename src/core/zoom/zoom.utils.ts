@@ -51,8 +51,8 @@ export function checkZoomBounds(
   const scalePadding = enablePadding ? zoomPadding : 0;
   const minScaleWithPadding = minScale - scalePadding;
 
-  if (!isNaN(maxScale) && zoom >= maxScale) return maxScale;
-  if (!isNaN(minScale) && zoom <= minScaleWithPadding)
+  if (!Number.isNaN(maxScale) && zoom >= maxScale) return maxScale;
+  if (!Number.isNaN(minScale) && zoom <= minScaleWithPadding)
     return minScaleWithPadding;
   return zoom;
 }

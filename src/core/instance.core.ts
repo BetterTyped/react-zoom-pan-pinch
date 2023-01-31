@@ -152,7 +152,11 @@ export class ZoomPanPinch {
     this.applyTransformation();
 
     if (centerOnInit) {
-      this.observer = new ResizeObserver(this.setCenter);
+      this.setCenter();
+      this.observer = new ResizeObserver(() => {
+        this.setCenter();
+        this.observer?.disconnect();
+      });
 
       // Start observing the target node for configured mutations
       this.observer.observe(contentComponent);
@@ -379,21 +383,6 @@ export class ZoomPanPinch {
     return Boolean(keys.find((key) => this.pressedKeys[key]));
   };
 
-  setComponents = (
-    wrapperComponent: HTMLDivElement,
-    contentComponent: HTMLDivElement,
-  ): void => {
-    this.cleanupWindowEvents();
-    this.wrapperComponent = wrapperComponent;
-    this.contentComponent = contentComponent;
-    handleCalculateBounds(this, this.transformState.scale);
-    this.handleInitializeWrapperEvents(wrapperComponent);
-    this.handleInitialize(contentComponent);
-    this.initializeWindowEvents();
-    this.isInitialized = true;
-    handleCallback(getContext(this), undefined, this.props.onInit);
-  };
-
   setTransformState = (
     scale: number,
     positionX: number,
@@ -448,5 +437,24 @@ export class ZoomPanPinch {
 
   getContext = () => {
     return getContext(this);
+  };
+
+  /**
+   * Initialization
+   */
+
+  init = (
+    wrapperComponent: HTMLDivElement,
+    contentComponent: HTMLDivElement,
+  ): void => {
+    this.cleanupWindowEvents();
+    this.wrapperComponent = wrapperComponent;
+    this.contentComponent = contentComponent;
+    handleCalculateBounds(this, this.transformState.scale);
+    this.handleInitializeWrapperEvents(wrapperComponent);
+    this.handleInitialize(contentComponent);
+    this.initializeWindowEvents();
+    this.isInitialized = true;
+    handleCallback(getContext(this), undefined, this.props.onInit);
   };
 }

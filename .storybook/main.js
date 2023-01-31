@@ -1,13 +1,16 @@
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
-    "@storybook/addon-docs",
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
     "@storybook/addon-storysource",
     "@storybook/addon-a11y",
   ],
+  core: {
+    builder: "webpack5",
+  },
+  framework: "@storybook/react",
   webpackFinal: (webpackConfig) => {
     const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
       ({ constructor }) =>

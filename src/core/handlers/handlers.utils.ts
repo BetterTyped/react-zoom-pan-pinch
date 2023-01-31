@@ -10,7 +10,7 @@ import { PositionType } from "../../models/calculations.model";
 import {
   calculateBounds,
   getMouseBoundedPosition,
-} from "core/bounds/bounds.utils";
+} from "../bounds/bounds.utils";
 
 export const handleCalculateButtonZoom = (
   contextInstance: ReactZoomPanPinchContext,

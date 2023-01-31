@@ -10,7 +10,7 @@ import {
   setTransform,
   zoomOut,
 } from "../core/handlers/handlers.logic";
-import { ZoomPanPinch } from "core/instance.core";
+import { ZoomPanPinch } from "../core/instance.core";
 
 export type ReactZoomPanPinchContext = typeof ZoomPanPinch.prototype;
 

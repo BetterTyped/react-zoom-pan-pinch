@@ -1,9 +1,9 @@
-import React, { useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { useImperativeHandle, useMemo, useRef } from "react";
 
-import { ZoomPanPinch } from "core/instance.core";
+import { ZoomPanPinch } from "../core/instance.core";
 import { ReactZoomPanPinchProps, ReactZoomPanPinchRef } from "../models";
-import { getContext } from "utils";
-import { contextInitialState } from "constants/state.constants";
+import { getContext } from "../utils";
+import { contextInitialState } from "../constants/state.constants";
 
 export const Context = React.createContext(contextInitialState);
 
@@ -15,12 +15,7 @@ export const TransformWrapper = React.forwardRef(
     const { children } = props;
     const instance = useRef(new ZoomPanPinch(props)).current;
 
-    const [innerRef, setRef] = useState<ReactZoomPanPinchRef | null>(null);
-
     const content = useMemo(() => {
-      const ctx = getContext(instance);
-      setRef(ctx);
-
       if (typeof children === "function") {
         return children(getContext(instance));
       }
@@ -30,13 +25,13 @@ export const TransformWrapper = React.forwardRef(
     const value = useMemo(() => {
       return {
         ...instance.transformState,
-        setComponents: instance.setComponents,
+        setComponents: instance.init,
         contextInstance: instance,
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(instance.transformState)]);
 
-    useImperativeHandle(ref, () => innerRef as any, [innerRef]);
+    useImperativeHandle(ref, () => getContext(instance), [instance]);
 
     return <Context.Provider value={value}>{content}</Context.Provider>;
   },

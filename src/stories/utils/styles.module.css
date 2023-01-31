@@ -30,5 +30,5 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(1000, 1fr);
+  grid-template-columns: repeat(100, 1fr);
 }

@@ -23,6 +23,7 @@ export const contextInitialState: ReactZoomPanPinchComponentHelpers &
 
 export const initialSetup: LibrarySetup = {
   disabled: false,
+  performance: false,
   minPositionX: null,
   maxPositionX: null,
   minPositionY: null,

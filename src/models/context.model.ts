@@ -42,6 +42,7 @@ export type ReactZoomPanPinchRefProps = {
 export type ReactZoomPanPinchProps = {
   children?: React.ReactNode | ((ref: ReactZoomPanPinchRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
+  performance?: boolean;
   initialScale?: number;
   initialPositionX?: number;
   initialPositionY?: number;

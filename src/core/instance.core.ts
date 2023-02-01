@@ -6,6 +6,7 @@ import {
   AnimationType,
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
+  ReactZoomPanPinchRef,
 } from "../models";
 import {
   getContext,
@@ -83,7 +84,10 @@ export class ZoomPanPinch {
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
-  constructor(props: ReactZoomPanPinchProps) {
+  constructor(
+    props: ReactZoomPanPinchProps,
+    private onChange?: (ctx: ReactZoomPanPinchRef) => void,
+  ) {
     this.props = props;
     this.setup = createSetup(this.props);
     this.transformState = createState(this.props);
@@ -405,11 +409,10 @@ export class ZoomPanPinch {
       this.transformState.positionX = positionX;
       this.transformState.positionY = positionY;
 
-      handleCallback(
-        getContext(this),
-        { scale, positionX, positionY },
-        onTransformed,
-      );
+      const ctx = getContext(this);
+      this.onChange?.(ctx);
+
+      handleCallback(ctx, { scale, positionX, positionY }, onTransformed);
       this.applyTransformation();
     } else {
       console.error("Detected NaN set state values");

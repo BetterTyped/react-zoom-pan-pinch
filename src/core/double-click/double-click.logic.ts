@@ -2,7 +2,12 @@ import { ReactZoomPanPinchContext } from "../../models";
 import { animate } from "../animations/animations.utils";
 import { getMousePosition } from "../wheel/wheel.utils";
 import { handleZoomToPoint } from "../zoom/zoom.logic";
-import { isExcludedNode } from "../../utils";
+import {
+  cancelTimeout,
+  getContext,
+  handleCallback,
+  isExcludedNode,
+} from "../../utils";
 import {
   handleCalculateButtonZoom,
   resetTransformations,
@@ -14,6 +19,7 @@ export function handleDoubleClick(
 ): void {
   const { disabled, mode, step, animationTime, animationType } =
     contextInstance.setup.doubleClick;
+  const { onZoomStart, onZoom, onZoomStop } = contextInstance.props;
 
   if (disabled) return;
 
@@ -29,6 +35,12 @@ export function handleDoubleClick(
   const delta = mode === "zoomOut" ? -1 : 1;
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
+
+  // stop execution when limit is reached
+  if (scale === newScale) return;
+
+  handleCallback(getContext(contextInstance), event, onZoomStart);
+
   const mousePosition = getMousePosition(event, contentComponent, scale);
   const targetState = handleZoomToPoint(
     contextInstance,
@@ -43,7 +55,15 @@ export function handleDoubleClick(
     );
   }
 
+  handleCallback(getContext(contextInstance), event, onZoom);
+
   animate(contextInstance, targetState, animationTime, animationType);
+
+  cancelTimeout(contextInstance.doubleClickStopEventTimer);
+  contextInstance.doubleClickStopEventTimer = setTimeout(() => {
+    contextInstance.doubleClickStopEventTimer = null;
+    handleCallback(getContext(contextInstance), event, onZoomStop);
+  }, animationTime);
 }
 
 export const isDoubleClickAllowed = (
@@ -62,8 +82,6 @@ export const isDoubleClickAllowed = (
   const isExcluded = isExcludedNode(target, excluded);
 
   if (isExcluded) return false;
-
-  if (!isAllowed) return false;
 
   return true;
 };

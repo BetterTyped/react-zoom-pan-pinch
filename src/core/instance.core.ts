@@ -73,6 +73,8 @@ export class ZoomPanPinch {
   public pinchStartDistance: null | number = null;
   public pinchStartScale: null | number = null;
   public pinchMidpoint: null | PositionType = null;
+  // double click helpers
+  public doubleClickStopEventTimer: ReturnType<typeof setTimeout> | null = null;
   // velocity helpers
   public velocity: VelocityType | null = null;
   public velocityTime: number | null = null;

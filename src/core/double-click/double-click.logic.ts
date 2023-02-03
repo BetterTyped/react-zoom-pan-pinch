@@ -27,15 +27,14 @@ export function handleDoubleClick(
     return resetTransformations(contextInstance, animationTime, animationType);
   }
 
-  const { scale } = contextInstance.transformState;
   const { contentComponent } = contextInstance;
-
   if (!contentComponent) return console.error("No ContentComponent found");
 
   const delta = mode === "zoomOut" ? -1 : 1;
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 
+  const { scale } = contextInstance.transformState;
   // stop execution when limit is reached
   if (scale === newScale) return;
 

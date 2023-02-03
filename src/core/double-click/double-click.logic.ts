@@ -17,25 +17,28 @@ export function handleDoubleClick(
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent | TouchEvent,
 ): void {
-  const { disabled, mode, step, animationTime, animationType } =
-    contextInstance.setup.doubleClick;
+  const { setup, doubleClickStopEventTimer, transformState, contentComponent } =
+    contextInstance;
+
+  const { scale } = transformState;
   const { onZoomStart, onZoom, onZoomStop } = contextInstance.props;
+  const { disabled, mode, step, animationTime, animationType } =
+    setup.doubleClick;
 
   if (disabled) return;
+  if (doubleClickStopEventTimer) return;
 
   if (mode === "reset") {
     return resetTransformations(contextInstance, animationTime, animationType);
   }
 
-  const { contentComponent } = contextInstance;
   if (!contentComponent) return console.error("No ContentComponent found");
 
   const delta = mode === "zoomOut" ? -1 : 1;
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 
-  const { scale } = contextInstance.transformState;
-  // stop execution when limit is reached
+  // stop execution when scale didn't change
   if (scale === newScale) return;
 
   handleCallback(getContext(contextInstance), event, onZoomStart);

@@ -77,6 +77,7 @@ export function resetTransformations(
   contextInstance: ReactZoomPanPinchContext,
   animationTime: number,
   animationType: keyof typeof animations,
+  onResetTransformation?: () => void,
 ): void {
   const { setup, wrapperComponent } = contextInstance;
   const { limitToBounds } = setup;
@@ -114,6 +115,7 @@ export function resetTransformations(
     return;
   }
 
+  onResetTransformation?.();
   animate(contextInstance, newState, animationTime, animationType);
 }
 

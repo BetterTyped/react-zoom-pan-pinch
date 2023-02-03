@@ -13,6 +13,36 @@ import {
   resetTransformations,
 } from "../handlers/handlers.utils";
 
+export const handleDoubleClickStop = (
+  contextInstance: ReactZoomPanPinchContext,
+  event: MouseEvent | TouchEvent,
+): void => {
+  const { onZoomStop } = contextInstance.props;
+  const { animationTime } = contextInstance.setup.doubleClick;
+
+  cancelTimeout(contextInstance.doubleClickStopEventTimer);
+  contextInstance.doubleClickStopEventTimer = setTimeout(() => {
+    contextInstance.doubleClickStopEventTimer = null;
+    handleCallback(getContext(contextInstance), event, onZoomStop);
+  }, animationTime);
+};
+
+export const handleDoubleClickResetMode = (
+  contextInstance: ReactZoomPanPinchContext,
+  event: MouseEvent | TouchEvent,
+) => {
+  const { onZoomStart, onZoom } = contextInstance.props;
+  const { animationTime, animationType } = contextInstance.setup.doubleClick;
+
+  handleCallback(getContext(contextInstance), event, onZoomStart);
+
+  resetTransformations(contextInstance, animationTime, animationType, () =>
+    handleCallback(getContext(contextInstance), event, onZoom),
+  );
+
+  handleDoubleClickStop(contextInstance, event);
+};
+
 export function handleDoubleClick(
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent | TouchEvent,
@@ -21,7 +51,7 @@ export function handleDoubleClick(
     contextInstance;
 
   const { scale } = transformState;
-  const { onZoomStart, onZoom, onZoomStop } = contextInstance.props;
+  const { onZoomStart, onZoom } = contextInstance.props;
   const { disabled, mode, step, animationTime, animationType } =
     setup.doubleClick;
 
@@ -29,7 +59,7 @@ export function handleDoubleClick(
   if (doubleClickStopEventTimer) return;
 
   if (mode === "reset") {
-    return resetTransformations(contextInstance, animationTime, animationType);
+    return handleDoubleClickResetMode(contextInstance, event);
   }
 
   if (!contentComponent) return console.error("No ContentComponent found");
@@ -61,11 +91,7 @@ export function handleDoubleClick(
 
   animate(contextInstance, targetState, animationTime, animationType);
 
-  cancelTimeout(contextInstance.doubleClickStopEventTimer);
-  contextInstance.doubleClickStopEventTimer = setTimeout(() => {
-    contextInstance.doubleClickStopEventTimer = null;
-    handleCallback(getContext(contextInstance), event, onZoomStop);
-  }, animationTime);
+  handleDoubleClickStop(contextInstance, event);
 }
 
 export const isDoubleClickAllowed = (

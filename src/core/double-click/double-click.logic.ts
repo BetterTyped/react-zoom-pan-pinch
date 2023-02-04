@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { ReactZoomPanPinchContext } from "../../models";
 import { animate } from "../animations/animations.utils";
 import { getMousePosition } from "../wheel/wheel.utils";

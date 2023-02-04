@@ -2,7 +2,6 @@ import { ReactZoomPanPinchContext } from "../../models";
 import {
   calculateZoomToNode,
   handleZoomToViewCenter,
-  isValidZoomNode,
   resetTransformations,
 } from "./handlers.utils";
 import { animations } from "../animations/animations.constants";
@@ -109,12 +108,7 @@ export const zoomToElement =
     const target: HTMLElement | null =
       typeof node === "string" ? document.getElementById(node) : node;
 
-    if (
-      wrapperComponent &&
-      isValidZoomNode(target) &&
-      target &&
-      wrapperComponent.contains(target)
-    ) {
+    if (wrapperComponent && target && wrapperComponent.contains(target)) {
       const targetState = calculateZoomToNode(contextInstance, target, scale);
       animate(contextInstance, targetState, animationTime, animationType);
     }

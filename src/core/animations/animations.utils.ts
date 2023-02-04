@@ -82,6 +82,7 @@ export function animate(
 ): void {
   const isValid = isValidTargetState(targetState);
   if (!contextInstance.mounted || !isValid) return;
+
   const { setTransformState } = contextInstance;
   const { scale, positionX, positionY } = contextInstance.transformState;
 

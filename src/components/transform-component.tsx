@@ -24,7 +24,7 @@ export const TransformComponent: React.FC<Props> = ({
   wrapperProps = {},
   contentProps = {},
 }: Props) => {
-  const { setComponents } = useContext(Context);
+  const { init } = useContext(Context);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -32,8 +32,8 @@ export const TransformComponent: React.FC<Props> = ({
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const content = contentRef.current;
-    if (wrapper !== null && content !== null && setComponents) {
-      setComponents(wrapper, content);
+    if (wrapper !== null && content !== null && init) {
+      init(wrapper, content);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

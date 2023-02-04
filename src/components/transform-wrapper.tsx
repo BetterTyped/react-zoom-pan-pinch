@@ -1,7 +1,7 @@
 import React, {
+  useCallback,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -9,9 +9,18 @@ import React, {
 import { ZoomPanPinch } from "../core/instance.core";
 import { ReactZoomPanPinchProps, ReactZoomPanPinchRef } from "../models";
 import { getContext } from "../utils";
-import { contextInitialState } from "../constants/state.constants";
 
-export const Context = React.createContext(contextInitialState);
+export const Context = React.createContext<ZoomPanPinch>(null as any);
+
+const getContent = (
+  children: ReactZoomPanPinchProps["children"],
+  ctx: ReactZoomPanPinchRef,
+) => {
+  if (typeof children === "function") {
+    return children(ctx);
+  }
+  return children;
+};
 
 export const TransformWrapper = React.forwardRef(
   (
@@ -19,30 +28,16 @@ export const TransformWrapper = React.forwardRef(
     ref: React.Ref<ReactZoomPanPinchRef>,
   ) => {
     const [, forceUpdate] = useState(0);
-    const { children, performance } = props;
-    const instance = useRef(
-      new ZoomPanPinch(props, () => {
-        if (!performance) {
-          forceUpdate((prev) => prev + 1);
-        }
-      }),
-    ).current;
+    const { children } = props;
+    const instance = useRef(new ZoomPanPinch(props)).current;
 
-    const content = useMemo(() => {
+    const content = getContent(props.children, getContext(instance));
+
+    const handleOnChange = useCallback(() => {
       if (typeof children === "function") {
-        return children(getContext(instance));
+        forceUpdate((prev) => prev + 1);
       }
-      return children;
-    }, [children, instance]);
-
-    const value = useMemo(() => {
-      return {
-        ...instance.transformState,
-        setComponents: instance.init,
-        contextInstance: instance,
-      };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(instance.transformState)]);
+    }, [children]);
 
     useImperativeHandle(ref, () => getContext(instance), [instance]);
 
@@ -50,7 +45,11 @@ export const TransformWrapper = React.forwardRef(
       instance.update(props);
     }, [instance, props]);
 
-    return <Context.Provider value={value}>{content}</Context.Provider>;
+    useEffect(() => {
+      return instance.onChange(handleOnChange);
+    }, [instance, props, handleOnChange]);
+
+    return <Context.Provider value={instance}>{content}</Context.Provider>;
   },
 );
 

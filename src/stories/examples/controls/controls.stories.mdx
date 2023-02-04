@@ -17,6 +17,7 @@ export const Template = (args) => (
           wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
         >
           <div style={{ background: "#444", color: "white", padding: "50px" }}>
+            {JSON.stringify(utils.state, null, 4)}
             <h1>No scrollbars needed</h1>
             <h2>Use mouse or gestures to move around</h2>
             <button

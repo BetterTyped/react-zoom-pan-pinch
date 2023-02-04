@@ -101,12 +101,6 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "This is 'global' disable props. Setting it as a 'true' value blocks all functionalities of library. For disabling parts of it like panning, zooming, pinch - checkout the dedicated sections below.",
   },
-  performance: {
-    type: ["boolean"],
-    defaultValue: String(initialSetup.performance),
-    description:
-      "Enable this prop to switch to limited rendering performance mode",
-  },
   minPositionX: {
     type: ["number"],
     defaultValue: String(initialSetup.minPositionX),

@@ -52,6 +52,8 @@ export class ZoomPanPinch {
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
   public observer?: ResizeObserver;
+  public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
+    new Set();
 
   // Components
   public wrapperComponent: HTMLDivElement | null = null;
@@ -84,10 +86,7 @@ export class ZoomPanPinch {
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
-  constructor(
-    props: ReactZoomPanPinchProps,
-    private onChange?: (ctx: ReactZoomPanPinchRef) => void,
-  ) {
+  constructor(props: ReactZoomPanPinchProps) {
     this.props = props;
     this.setup = createSetup(this.props);
     this.transformState = createState(this.props);
@@ -410,7 +409,7 @@ export class ZoomPanPinch {
       this.transformState.positionY = positionY;
 
       const ctx = getContext(this);
-      this.onChange?.(ctx);
+      this.onChangeCallbacks.forEach((callback) => callback(ctx));
 
       handleCallback(ctx, { scale, positionX, positionY }, onTransformed);
       this.applyTransformation();
@@ -443,6 +442,15 @@ export class ZoomPanPinch {
 
   getContext = () => {
     return getContext(this);
+  };
+
+  onChange = (callback: (ref: ReactZoomPanPinchRef) => void) => {
+    if (!this.onChangeCallbacks.has(callback)) {
+      this.onChangeCallbacks.add(callback);
+    }
+    return () => {
+      this.onChangeCallbacks.delete(callback);
+    };
   };
 
   /**

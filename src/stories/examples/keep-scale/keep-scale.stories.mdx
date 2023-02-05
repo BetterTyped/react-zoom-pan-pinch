@@ -1,0 +1,45 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Keep scale"
+  component={TransformWrapper}
+  argTypes={{
+    ...argsTypes,
+    "wheel.excluded": {
+      ...argsTypes["wheel.excluded"],
+      defaultValue: ["wheelDisabled"],
+    },
+    "panning.excluded": {
+      ...argsTypes["panning.excluded"],
+      defaultValue: ["panningDisabled"],
+    },
+    "pinch.excluded": {
+      ...argsTypes["pinch.excluded"],
+      defaultValue: ["pinchDisabled"],
+    },
+    centerOnInit: {
+      defaultValue: true,
+    },
+  }}
+/>
+
+# Keep scale
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Keep scale">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Keep scale" />

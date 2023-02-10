@@ -9,10 +9,10 @@ import { ReactComponent as Pin } from "../../assets/pin.svg";
 
 export const Example: React.FC<any> = (args: any) => {
   return (
-    <TransformWrapper {...normalizeArgs(args)}>
+    <TransformWrapper {...normalizeArgs(args)} maxScale={100}>
       <TransformComponent
         wrapperStyle={{
-          width: "500px",
+          width: "700px",
           height: "500px",
           maxWidth: "100%",
           maxHeight: "calc(100vh - 50px)",
@@ -24,7 +24,7 @@ export const Example: React.FC<any> = (args: any) => {
             background: "#999",
           }}
         >
-          <h2>Pins will keep the initial scale</h2>
+          <h2>Pins will keep the initial scale with KeepScale component</h2>
 
           <img
             style={{ width: "600px", height: "300px" }}

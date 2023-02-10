@@ -180,5 +180,6 @@ export type LibrarySetup = Pick<
       | "onZoomStop"
       | "onTransformed"
       | "onInit"
+      | "customTransform"
     >
   >;

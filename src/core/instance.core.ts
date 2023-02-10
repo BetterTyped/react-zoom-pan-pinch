@@ -435,10 +435,17 @@ export class ZoomPanPinch {
     }
   };
 
+  handleTransformStyles = (x: number, y: number, scale: number) => {
+    if (this.props.customTransform) {
+      return this.props.customTransform(x, y, scale);
+    }
+    return getTransformStyles(x, y, scale);
+  };
+
   applyTransformation = (): void => {
     if (!this.mounted || !this.contentComponent) return;
     const { scale, positionX, positionY } = this.transformState;
-    const transform = getTransformStyles(positionX, positionY, scale);
+    const transform = this.handleTransformStyles(positionX, positionY, scale);
     this.contentComponent.style.transform = transform;
   };
 

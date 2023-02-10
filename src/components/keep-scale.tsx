@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
 
-import { getTransformStyles } from "utils";
 import { mergeRefs } from "utils/ref.utils";
 import { Context } from "./transform-wrapper";
 
@@ -16,7 +15,7 @@ export const KeepScale = React.forwardRef<
       if (localRef.current) {
         const positionX = 0;
         const positionY = 0;
-        localRef.current.style.transform = getTransformStyles(
+        localRef.current.style.transform = instance.handleTransformStyles(
           positionX,
           positionY,
           1 / ctx.state.scale,

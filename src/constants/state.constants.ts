@@ -7,7 +7,7 @@ export const initialState: ReactZoomPanPinchState = {
   positionY: 0,
 };
 
-export const initialSetup: LibrarySetup = {
+export const initialSetup: Omit<LibrarySetup, "customTransform"> = {
   disabled: false,
   minPositionX: null,
   maxPositionX: null,

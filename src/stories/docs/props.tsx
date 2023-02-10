@@ -159,6 +159,12 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "Used to disable panning, zooming boundary padding effect. By enabling this option, you will not be able to zoom outside the image area.",
   },
+  customTransform: {
+    type: ["function"],
+    defaultValue: "undefined",
+    description:
+      "We can provide custom transform function to provide different way of handling our transform logic. If we need performance we can import getMatrixTransformStyles functions and replace default one. WARNING: default transform prevents svg blur on the safari.",
+  },
   wheel: {
     wheel: {
       type: [""],

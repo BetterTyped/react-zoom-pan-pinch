@@ -6,7 +6,7 @@ export const getTransformStyles = (
   scale: number,
 ): string => {
   // Standard translate prevents blurry svg on the safari
-  return `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+  return `translate(${x}px, ${y}px) scale(${scale})`;
 };
 
 export const getMatrixTransformStyles = (

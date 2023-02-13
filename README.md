@@ -118,7 +118,7 @@ const Control = ({zoomIn, zoomOut, resetTransform}:any)=>(
         ref={transformComponentRef}
       >
         {(utils) => (
-          <>
+          </React.Fragment>
             <Control {...utils}/>
             <TransformComponent>
               <img src="image.jpg" alt="test" id="imgExample" />

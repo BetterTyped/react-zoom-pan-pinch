@@ -4,7 +4,7 @@
   "description": "Zoom and pan html elements in easy way",
   "author": "prc5",
   "license": "MIT",
-  "repository": "prc5/react-zoom-pan-pinch",
+  "repository": "codemayonnaise/react-zoom-pan-pinch",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

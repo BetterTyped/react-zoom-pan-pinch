@@ -15,16 +15,17 @@
     "npm": ">=5"
   },
   "scripts": {
-    "test": "react-scripts test --watchAll=false --passWithNoTests",
     "build": "rollup -c",
     "build:docs": "build-storybook",
     "start": "start-storybook -p 6006 --no-manager-cache",
-    "lint": "eslint 'src/**/*.{js,ts,tsx}' --fix",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.tsx,.ts --fix",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "prepare": "install-peers && yarn build",
     "predeploy": "yarn run build:docs",
     "deploy": "gh-pages -d storybook-static",
-    "test:lint": "eslint src/ --ext .js,.tsx,.ts",
-    "test:prettier": "npm run prettier -check \"**/*.+(js|json|ts|tsx)\""
+    "release": "yarn semantic-release"
   },
   "peerDependencies": {
     "react": "*",
@@ -81,7 +82,17 @@
     "ts-loader": "^9.4.2",
     "typescript": "^4.2.3",
     "webpack": "5",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.0.1",
+    "commitlint": "^17.0.2",
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.2",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^8.0.6",
+    "@semantic-release/npm": "^9.0.1",
+    "@semantic-release/release-notes-generator": "^10.0.3",
+    "semantic-release": "^19.0.5"
   },
   "files": [
     "dist",

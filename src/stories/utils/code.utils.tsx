@@ -6,6 +6,8 @@ import vsLight from "prism-react-renderer/themes/vsLight";
 type Props = { code: string };
 
 export const Code: React.FC<Props> = ({ code }: Props) => (
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   <Highlight {...defaultProps} code={code} theme={vsLight} language="tsx">
     {({ className, style, tokens, getLineProps, getTokenProps }) => (
       <pre className={className} style={style}>

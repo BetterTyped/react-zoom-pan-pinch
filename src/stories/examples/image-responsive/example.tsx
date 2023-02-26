@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
-import { TransformWrapper } from "../../../components/transform-wrapper";
-import { TransformComponent } from "../../../components/transform-component";
+import { TransformComponent, TransformWrapper } from "components";
 import { normalizeArgs } from "stories/utils";
 import exampleImg from "../../assets/medium-image.jpg";
 

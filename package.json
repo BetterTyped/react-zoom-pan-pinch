@@ -1,19 +1,13 @@
 {
   "name": "react-zoom-pan-pinch",
-  "version": "2.6.1",
+  "version": "0.0.0",
   "description": "Zoom and pan html elements in easy way",
   "author": "prc5",
   "license": "MIT",
-  "repository": "prc5/react-zoom-pan-pinch",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "jsnext:main": "dist/index.esm.js",
-  "engines": {
-    "node": ">=8",
-    "npm": ">=5"
-  },
   "scripts": {
     "build": "rollup -c",
     "build:docs": "build-storybook",
@@ -100,10 +94,19 @@
     "webpack": "5",
     "webpack-cli": "^5.0.1"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prc5/react-zoom-pan-pinch.git"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

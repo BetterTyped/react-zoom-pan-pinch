@@ -1,9 +1,7 @@
 import React from "react";
 
-import { TransformWrapper } from "../../../components/transform-wrapper";
-import { TransformComponent } from "../../../components/transform-component";
+import { TransformComponent, TransformWrapper, KeepScale } from "components";
 import { normalizeArgs } from "../../utils";
-import { KeepScale } from "components/keep-scale";
 import exampleImg from "../../assets/map.jpg";
 import { ReactComponent as Pin } from "../../assets/pin.svg";
 

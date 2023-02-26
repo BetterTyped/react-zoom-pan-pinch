@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 
 import { mergeRefs } from "utils/ref.utils";
-import { Context } from "./transform-wrapper";
+import { Context } from "../transform-wrapper/transform-wrapper";
 
 export const KeepScale = React.forwardRef<
   HTMLDivElement,
@@ -18,7 +18,7 @@ export const KeepScale = React.forwardRef<
         localRef.current.style.transform = instance.handleTransformStyles(
           positionX,
           positionY,
-          1 / ctx.state.scale,
+          1 / ctx.instance.transformState.scale,
         );
       }
     });

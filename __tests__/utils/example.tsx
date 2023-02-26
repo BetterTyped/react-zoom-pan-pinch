@@ -4,14 +4,14 @@ import {
   TransformWrapper,
   TransformComponent,
   ReactZoomPanPinchProps,
-  ReactZoomPanPinchRef,
+  ReactZoomPanPinchContentRef,
 } from "../../src";
 import { Controls } from "./controls.utils";
 
 export const Example = (options: {
   props?: ReactZoomPanPinchProps;
   onRender: () => void;
-  onRenderProps: (ref: ReactZoomPanPinchRef) => void;
+  onRenderProps: (ref: ReactZoomPanPinchContentRef) => void;
 }) => {
   const { props = {}, onRender, onRenderProps } = options;
 
@@ -47,6 +47,7 @@ export const Example = (options: {
               <h1>Title</h1>
               <h2>Subtitle</h2>
               <button
+                type="button"
                 onClick={() =>
                   alert("You can still interact with click events!")
                 }

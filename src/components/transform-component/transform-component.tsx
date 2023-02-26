@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 import React, { useContext, useEffect, useRef } from "react";
 
-import { Context } from "./transform-wrapper";
+import { Context } from "../transform-wrapper/transform-wrapper";
 
 import styles from "./transform-component.module.css";
 
@@ -56,5 +56,3 @@ export const TransformComponent: React.FC<Props> = ({
     </div>
   );
 };
-
-export default TransformComponent;

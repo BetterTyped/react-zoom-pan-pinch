@@ -2,8 +2,6 @@ import { renderExample } from "../shared/render.shared";
 
 describe("Example view", () => {
   describe("When example view has been rendered", () => {
-    const environment = {};
-
     test("it renders entire example without errors", () => {
       const { wrapper } = renderExample();
 

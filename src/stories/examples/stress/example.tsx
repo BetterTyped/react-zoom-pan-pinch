@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 
-import { TransformWrapper } from "../../../components/transform-wrapper";
-import { TransformComponent } from "../../../components/transform-component";
+import { TransformComponent, TransformWrapper } from "components";
 import { normalizeArgs } from "../../utils";
 import exampleImg from "../../assets/small-image.jpg";
 

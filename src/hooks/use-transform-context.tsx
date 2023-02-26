@@ -1,24 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
-import { getContext } from "../utils";
-import { Context } from "../components/transform-wrapper";
-import { ReactZoomPanPinchRef } from "../models";
+import { Context } from "components";
 
-const useTransformContext = (): ReactZoomPanPinchRef => {
+export const useTransformContext = () => {
   const libraryContext = useContext(Context);
-  const [values, setValues] = useState(getContext(libraryContext || {}));
 
   if (!libraryContext) {
     throw new Error("Transform context mus be placed inside TransformWrapper");
   }
 
-  useEffect(() => {
-    libraryContext.onChange((ref) => {
-      setValues(ref);
-    });
-  }, [libraryContext]);
-
-  return values;
+  return libraryContext;
 };
-
-export default useTransformContext;

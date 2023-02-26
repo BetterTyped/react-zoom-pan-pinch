@@ -1,30 +1,25 @@
 {
   "name": "react-zoom-pan-pinch",
-  "version": "2.6.1",
+  "version": "0.0.0",
   "description": "Zoom and pan html elements in easy way",
   "author": "prc5",
   "license": "MIT",
-  "repository": "prc5/react-zoom-pan-pinch",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "jsnext:main": "dist/index.esm.js",
-  "engines": {
-    "node": ">=8",
-    "npm": ">=5"
-  },
   "scripts": {
-    "test": "react-scripts test --watchAll=false --passWithNoTests",
     "build": "rollup -c",
     "build:docs": "build-storybook",
     "start": "start-storybook -p 6006 --no-manager-cache",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.tsx,.ts --fix",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "prepare": "install-peers && yarn build",
     "predeploy": "yarn run build:docs",
     "deploy": "gh-pages -d storybook-static",
-    "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts",
-    "test:prettier": "npm run prettier -check \"**/*.+(js|json|ts|tsx)\""
+    "release": "yarn semantic-release"
   },
   "peerDependencies": {
     "react": "*",
@@ -33,8 +28,16 @@
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/runtime": "^7.20.13",
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.2",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-typescript": "^8.2.1",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^8.0.6",
+    "@semantic-release/npm": "^9.0.1",
+    "@semantic-release/release-notes-generator": "^10.0.3",
     "@storybook/addon-a11y": "^6.5.16",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-docs": "^6.5.16",
@@ -55,6 +58,7 @@
     "@typescript-eslint/parser": "^5.28.0",
     "babel-eslint": "9.0.0",
     "babel-loader": "^8.2.2",
+    "commitlint": "^17.0.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.17.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -69,24 +73,40 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "gh-pages": "^3.1.0",
     "install-peers-cli": "^2.2.0",
+    "jest-css-modules": "^2.1.0",
+    "jest-extended": "^3.2.0",
     "postcss": "^8.2.13",
     "prism-react-renderer": "^1.2.1",
+    "react": "*",
+    "react-dom": "*",
     "react-scripts": "5.0.1",
     "rollup": "^2.46.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^3.0.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.0",
+    "semantic-release": "^19.0.5",
     "source-map-loader": "^2.0.1",
+    "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.2",
+    "ts-node": "~10.9.1",
     "typescript": "^4.2.3",
     "webpack": "5",
     "webpack-cli": "^5.0.1"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prc5/react-zoom-pan-pinch.git"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

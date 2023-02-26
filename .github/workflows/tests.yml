@@ -32,12 +32,10 @@ jobs:
         run: yarn jest --clearCache
 
       - name: Test
-        run: yarn test --coverage
-
-      - name: Send Report
         uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: 7d1e3713df373ab2c9efce24b85c16efa2bd953aae32bd9d278004784d71291e
         with:
+          coverageCommand: yarn test --coverage
           coverageLocations: |
             ${{github.workspace}}/coverage/lcov.info:lcov

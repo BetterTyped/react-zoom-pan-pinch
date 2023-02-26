@@ -35,7 +35,7 @@ jobs:
         run: yarn test --coverage
 
       - name: Send Report
-        uses: paambaati/codeclimate-action@v3.0.0
+        uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: 7d1e3713df373ab2c9efce24b85c16efa2bd953aae32bd9d278004784d71291e
         with:

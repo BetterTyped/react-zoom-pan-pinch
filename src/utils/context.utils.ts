@@ -1,5 +1,7 @@
 import {
+  ReactZoomPanPinchContentRef,
   ReactZoomPanPinchContext,
+  ReactZoomPanPinchContextState,
   ReactZoomPanPinchRef,
 } from "../models/context.model";
 import {
@@ -11,12 +13,11 @@ import {
   centerView,
 } from "../core/handlers/handlers.logic";
 
-export const getContext = (
+export const getControls = (
   contextInstance: ReactZoomPanPinchContext,
-): ReactZoomPanPinchRef => {
+): ReactZoomPanPinchContentRef => {
   return {
     instance: contextInstance,
-    state: contextInstance.transformState,
     zoomIn: zoomIn(contextInstance),
     zoomOut: zoomOut(contextInstance),
     setTransform: setTransform(contextInstance),
@@ -24,4 +25,24 @@ export const getContext = (
     centerView: centerView(contextInstance),
     zoomToElement: zoomToElement(contextInstance),
   };
+};
+
+export const getState = (
+  contextInstance: ReactZoomPanPinchContext,
+): ReactZoomPanPinchContextState => {
+  return {
+    instance: contextInstance,
+    state: contextInstance.transformState,
+  };
+};
+
+export const getContext = (
+  contextInstance: ReactZoomPanPinchContext,
+): ReactZoomPanPinchRef => {
+  const ref = {} as ReactZoomPanPinchRef;
+
+  Object.assign(ref, getState(contextInstance));
+  Object.assign(ref, getControls(contextInstance));
+
+  return ref;
 };

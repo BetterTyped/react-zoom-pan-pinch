@@ -19,11 +19,11 @@
     "build": "rollup -c",
     "build:docs": "build-storybook",
     "start": "start-storybook -p 6006 --no-manager-cache",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
+    "lint": "eslint 'src/**/*.{js,ts,tsx}' --fix",
     "prepare": "install-peers && yarn build",
     "predeploy": "yarn run build:docs",
     "deploy": "gh-pages -d storybook-static",
-    "test:lint": "eslint src/ --ext .js,.jsx,.tsx,.ts",
+    "test:lint": "eslint src/ --ext .js,.tsx,.ts",
     "test:prettier": "npm run prettier -check \"**/*.+(js|json|ts|tsx)\""
   },
   "peerDependencies": {

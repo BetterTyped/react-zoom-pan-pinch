@@ -1,0 +1,25 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Hooks/useTransformInit" />
+
+# useTransformInit
+
+Triggered when components are initialized.
+
+### Example
+
+```tsx
+const App = () => {
+  // It will trigger every time you interact with transform-component
+  // At the same time it will not cause rerendering so you can control it on your own
+  useTransformInit(({ state, instance }) => {
+    console.log(state); // { previousScale: 1, scale: 1, positionX: 0, positionY: 0 }
+
+    return () => {
+      // unmount
+    };
+  });
+
+  return (...)
+};
+```

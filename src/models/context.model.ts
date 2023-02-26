@@ -14,10 +14,17 @@ import { ZoomPanPinch } from "../core/instance.core";
 
 export type ReactZoomPanPinchContext = typeof ZoomPanPinch.prototype;
 
-export type ReactZoomPanPinchRef = {
+export type ReactZoomPanPinchContextState = {
   instance: ReactZoomPanPinchContext;
   state: ReactZoomPanPinchState;
+};
+
+export type ReactZoomPanPinchContentRef = {
+  instance: ReactZoomPanPinchContext;
 } & ReactZoomPanPinchHandlers;
+
+export type ReactZoomPanPinchRef = ReactZoomPanPinchContextState &
+  ReactZoomPanPinchHandlers;
 
 export type ReactZoomPanPinchState = {
   previousScale: number;
@@ -40,7 +47,9 @@ export type ReactZoomPanPinchRefProps = {
 } & Omit<ReactZoomPanPinchProps, "ref">;
 
 export type ReactZoomPanPinchProps = {
-  children?: React.ReactNode | ((ref: ReactZoomPanPinchRef) => React.ReactNode);
+  children?:
+    | React.ReactNode
+    | ((ref: ReactZoomPanPinchContentRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
   initialScale?: number;
   initialPositionX?: number;

@@ -1,15 +1,15 @@
 import React from "react";
 
-import { ReactZoomPanPinchRef } from "../../models/context.model";
+import { ReactZoomPanPinchContentRef } from "../../models/context.model";
 
 import styles from "./styles.module.css";
 
-export const Controls: React.FC<ReactZoomPanPinchRef> = ({
+export const Controls: React.FC<ReactZoomPanPinchContentRef> = ({
   zoomIn,
   zoomOut,
   resetTransform,
   centerView,
-}: ReactZoomPanPinchRef) => (
+}: ReactZoomPanPinchContentRef) => (
   <div className={styles.controlPanel}>
     <button
       type="button"

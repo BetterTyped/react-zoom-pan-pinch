@@ -1,0 +1,33 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import {
+  TransformWrapper,
+  TransformComponent,
+  MiniMap,
+} from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs, Controls } from "../../utils";
+import { Template } from "./example";
+
+import exampleImg from "../../assets/small-image.jpg";
+
+<Meta
+  title="Examples/Mini Map"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Mini Map
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Mini Map">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Mini Map" />

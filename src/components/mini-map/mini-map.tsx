@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import {
   useTransformContext,
@@ -15,6 +15,17 @@ export type MiniMapProps = {
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >;
+
+const previewStyles = {
+  position: "absolute",
+  zIndex: 2,
+  top: "0px",
+  left: "0px",
+  boxSizing: "border-box",
+  border: "3px solid red",
+  transformOrigin: "0% 0%",
+  boxShadow: "rgba(0,0,0,0.2) 0 0 0 10000000px",
+} as const;
 
 export const MiniMap: React.FC<MiniMapProps> = ({
   width = 200,
@@ -120,32 +131,25 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     initialize();
   });
 
+  const wrapperStyle = useMemo(() => {
+    return {
+      ...size,
+      position: "relative",
+      zIndex: 2,
+      overflow: "hidden",
+    } as const;
+  }, [size]);
+
   return (
     <div
       {...rest}
-      style={{
-        ...size,
-        position: "relative",
-        zIndex: 2,
-        overflow: "hidden",
-      }}
+      style={wrapperStyle}
+      className={`rzpp-mini-map ${rest.className || ""}`}
     >
-      <div {...rest} ref={wrapperRef}>
+      <div {...rest} ref={wrapperRef} className="rzpp-wrapper">
         {children}
       </div>
-      <div
-        ref={previewRef}
-        style={{
-          position: "absolute",
-          zIndex: 2,
-          top: "0px",
-          left: "0px",
-          boxSizing: "border-box",
-          border: "3px solid green",
-          transformOrigin: "0% 0%",
-          boxShadow: "rgba(0,0,0,0.2) 0 0 0 10000000px",
-        }}
-      />
+      <div className="rzpp-preview" ref={previewRef} style={previewStyles} />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 
-import { TransformWrapper } from "components/transform-wrapper/transform-wrapper";
-import { TransformComponent } from "components/transform-component/transform-component";
+import { TransformWrapper } from "../../../components/transform-wrapper/transform-wrapper";
+import { TransformComponent } from "../../../components/transform-component/transform-component";
 import { normalizeArgs } from "../../utils";
 
 import styles from "../../utils/styles.module.css";

@@ -37,7 +37,7 @@ jobs:
       - name: Send Report
         uses: paambaati/codeclimate-action@v3.0.0
         env:
-          CC_TEST_REPORTER_ID: c206a2ed5aa86c7480a13634e91e440a27a98a5d134653f8ea9a7d5f987e68c3
+          CC_TEST_REPORTER_ID: 7d1e3713df373ab2c9efce24b85c16efa2bd953aae32bd9d278004784d71291e
         with:
           coverageLocations: |
             ${{github.workspace}}/packages/core/coverage/lcov.info:lcov

@@ -21,6 +21,7 @@ const config: Config.InitialOptions = {
     "types",
     "constants",
     "index.ts",
+    ".d.ts",
   ],
   moduleDirectories: ["node_modules", "src"],
   transform: {

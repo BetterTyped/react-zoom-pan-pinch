@@ -84,7 +84,7 @@ body td > pre.prism-code {
   grid-template-columns: repeat(100, 1fr);
 }
 
-.transform-component_wrapper__KpIt1 {
+.transform-component_wrapper__amVpr {
   position: relative;
   width: -moz-fit-content;
   width: fit-content;
@@ -98,7 +98,7 @@ body td > pre.prism-code {
   margin: 0;
   padding: 0;
 }
-.transform-component_content__qCWBw {
+.transform-component_content__FdhWn {
   display: flex;
   flex-wrap: wrap;
   width: -moz-fit-content;
@@ -109,9 +109,9 @@ body td > pre.prism-code {
   padding: 0;
   transform-origin: 0% 0%;
 }
-.transform-component_content__qCWBw img {
+.transform-component_content__FdhWn img {
   pointer-events: none;
 }
 
 
-/*# sourceMappingURL=main.6028f502.css.map*/
+/*# sourceMappingURL=main.fea750bd.css.map*/

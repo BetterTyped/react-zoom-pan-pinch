@@ -5,7 +5,7 @@ const config: Config.InitialOptions = {
   testEnvironment: "jsdom",
   preset: "ts-jest",
   testRegex: [".spec.ts"],
-  roots: ["<rootDir>/node_modules", "<rootDir>/src"],
+  roots: ["<rootDir>/node_modules", "<rootDir>/src", "<rootDir>/__tests__"],
   coverageProvider: "v8",
   coverageReporters: [
     ["lcov", { projectRoot: "../.." }],

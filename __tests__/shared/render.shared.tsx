@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 
-import { ReactZoomPanPinchProps } from "../..";
+import { ReactZoomPanPinchProps } from "../../src";
 import { Example } from "../utils/example";
 
 export const renderExample = (props?: ReactZoomPanPinchProps) => {

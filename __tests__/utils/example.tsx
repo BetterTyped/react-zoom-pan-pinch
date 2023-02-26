@@ -5,7 +5,7 @@ import {
   TransformComponent,
   ReactZoomPanPinchProps,
   ReactZoomPanPinchContentRef,
-} from "../..";
+} from "../../src";
 import { Controls } from "./controls.utils";
 
 export const Example = (options: {

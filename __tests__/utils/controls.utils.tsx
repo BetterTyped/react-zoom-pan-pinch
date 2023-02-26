@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ReactZoomPanPinchContentRef } from "../..";
+import { ReactZoomPanPinchContentRef } from "../../src";
 
 export const Controls: React.FC<ReactZoomPanPinchContentRef> = ({
   zoomIn,

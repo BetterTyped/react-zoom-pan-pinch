@@ -1,0 +1,32 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper } from "../../../components/transform-wrapper";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => (
+  <div style={{ width: "80vw", height: "80vh" }}>
+    <Example {...args} />
+  </div>
+);
+
+<Meta
+  title="Examples/Responsive Image"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Responsive Image
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Responsive Image">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Responsive Image" />

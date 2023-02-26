@@ -40,5 +40,4 @@ jobs:
           CC_TEST_REPORTER_ID: 7d1e3713df373ab2c9efce24b85c16efa2bd953aae32bd9d278004784d71291e
         with:
           coverageLocations: |
-            ${{github.workspace}}/packages/core/coverage/lcov.info:lcov
-            ${{github.workspace}}/packages/react/coverage/lcov.info:lcov
+            ${{github.workspace}}/coverage/lcov.info:lcov

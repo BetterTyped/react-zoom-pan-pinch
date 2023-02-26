@@ -159,10 +159,12 @@ export class ZoomPanPinch {
   handleInitialize = (contentComponent: HTMLDivElement): void => {
     const { centerOnInit } = this.setup;
     this.applyTransformation();
+    this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
 
     if (centerOnInit) {
       this.setCenter();
       this.observer = new ResizeObserver(() => {
+        this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
         this.setCenter();
         this.observer?.disconnect();
       });
@@ -494,6 +496,5 @@ export class ZoomPanPinch {
     this.isInitialized = true;
     const ctx = getContext(this);
     handleCallback(ctx, undefined, this.props.onInit);
-    this.onChangeCallbacks.forEach((callback) => callback(ctx));
   };
 }

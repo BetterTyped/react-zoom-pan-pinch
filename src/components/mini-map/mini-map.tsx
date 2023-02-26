@@ -1,12 +1,11 @@
 /* eslint-disable react/require-default-props */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import {
   useTransformContext,
   useTransformEffect,
   useTransformInit,
 } from "hooks";
-import { ReactZoomPanPinchContextState } from "models";
 
 export type MiniMapProps = {
   width?: number;
@@ -61,10 +60,10 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     return { width: contentSize.width * scaleY, height };
   };
 
-  const computeWrapperStyle = (ref: ReactZoomPanPinchContextState) => {
+  const computeWrapperStyle = () => {
     return {
-      width: ref.instance.contentComponent?.offsetWidth || 0,
-      height: ref.instance.contentComponent?.offsetHeight || 0,
+      width: instance.contentComponent?.offsetWidth || 0,
+      height: instance.contentComponent?.offsetHeight || 0,
     };
   };
 
@@ -80,6 +79,27 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     } as const;
   };
 
+  const transformMiniMap = () => {
+    const style = computeWrapperStyle();
+    if (wrapperRef.current) {
+      wrapperRef.current.style.width = `${style.width}px`;
+      wrapperRef.current.style.width = `${style.width}px`;
+      wrapperRef.current.style.height = `${style.height}px`;
+    }
+    if (previewRef.current) {
+      const scale = computeMiniMapScale();
+      const previewScale = scale * (1 / instance.transformState.scale);
+      const transform = instance.handleTransformStyles(
+        -instance.transformState.positionX * previewScale,
+        -instance.transformState.positionY * previewScale,
+        1,
+      );
+      previewRef.current.style.transform = transform;
+      previewRef.current.style.width = `${style.width * previewScale}px`;
+      previewRef.current.style.height = `${style.height * previewScale}px`;
+    }
+  };
+
   const initialize = () => {
     const style = computeMiniMapStyle();
     const initSize = computeMiniMapSize();
@@ -89,34 +109,12 @@ export const MiniMap: React.FC<MiniMapProps> = ({
         wrapperRef.current.style[key] = style[key];
       }
     });
+    transformMiniMap();
   };
 
-  useTransformEffect((ref) => {
-    const style = computeWrapperStyle(ref);
-    if (wrapperRef.current) {
-      wrapperRef.current.style.width = `${style.width}px`;
-      wrapperRef.current.style.width = `${style.width}px`;
-      wrapperRef.current.style.height = `${style.height}px`;
-    }
-    if (previewRef.current) {
-      const scale = computeMiniMapScale();
-      const previewScale = scale * (1 / ref.state.scale);
-
-      const transform = ref.instance.handleTransformStyles(
-        -ref.state.positionX * previewScale,
-        -ref.state.positionY * previewScale,
-        1,
-      );
-
-      previewRef.current.style.transform = transform;
-      previewRef.current.style.width = `${style.width * previewScale}px`;
-      previewRef.current.style.height = `${style.height * previewScale}px`;
-    }
+  useTransformEffect(() => {
+    transformMiniMap();
   });
-
-  useEffect(() => {
-    initialize();
-  }, []);
 
   useTransformInit(() => {
     initialize();

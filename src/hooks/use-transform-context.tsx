@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { Context } from "../components/transform-wrapper/transform-wrapper";
+import { Context } from "components";
 
 export const useTransformContext = () => {
   const libraryContext = useContext(Context);

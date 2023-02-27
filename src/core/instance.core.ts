@@ -413,10 +413,9 @@ export class ZoomPanPinch {
       this.transformState.positionX = positionX;
       this.transformState.positionY = positionY;
 
+      this.applyTransformation();
       const ctx = getContext(this);
       this.onChangeCallbacks.forEach((callback) => callback(ctx));
-
-      this.applyTransformation();
       handleCallback(ctx, { scale, positionX, positionY }, onTransformed);
     } else {
       console.error("Detected NaN set state values");

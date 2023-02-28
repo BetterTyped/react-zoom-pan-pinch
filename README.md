@@ -1,5 +1,8 @@
 # 🖼 React Zoom Pan Pinch
 
+> Super fast and light react npm package for zooming, panning and pinching html
+> elements in easy way
+
 <p>
   <a href="https://bettertyped.com/">
     <img src="https://custom-icon-badges.demolab.com/static/v1?label=&message=BetterTyped&color=333&logo=BT" />
@@ -33,8 +36,10 @@
   </a>
 </p>
 
-> Super fast and light react npm package for zooming, panning and pinching html
-> elements in easy way
+Do you like this library? Try out other projects
+**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)**
+
+#### Sources
 
 - [Demo](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
 - [Docs](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)

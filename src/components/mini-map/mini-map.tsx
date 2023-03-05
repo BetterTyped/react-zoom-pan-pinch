@@ -6,6 +6,7 @@ import {
   useTransformEffect,
   useTransformInit,
 } from "hooks";
+import { useResize } from "./use-resize.hook";
 
 export type MiniMapProps = {
   width?: number;
@@ -128,6 +129,10 @@ export const MiniMap: React.FC<MiniMapProps> = ({
   });
 
   useTransformInit(() => {
+    initialize();
+  });
+
+  useResize(instance.contentComponent, () => {
     initialize();
   });
 

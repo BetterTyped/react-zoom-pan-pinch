@@ -13,10 +13,8 @@ export const useTransformInit = (
     let unmountCallback: void | (() => void);
     let unmount: void | (() => void);
     if (libraryContext.contentComponent && libraryContext.wrapperComponent) {
-      console.warn(333);
       unmountCallback = callback(getState(libraryContext));
     } else {
-      console.warn(444);
       unmount = libraryContext.onInit((ref) => {
         unmountCallback = callback(getState(ref.instance));
       });

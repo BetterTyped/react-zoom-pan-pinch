@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 export type NonNullableKeys<T> = {
   [P in keyof T]-?: NonNullable<T[P]>;
@@ -27,6 +27,7 @@ type ResizeHandler<T extends HTMLElement> = (
 export const useResize = <T extends HTMLElement>(
   ref: Nullable<T>,
   onResize: ResizeHandler<T>,
+  dependencies: any[],
 ) => {
   const resizeObserverRef = useRef<ResizeObserver>();
 
@@ -34,7 +35,7 @@ export const useResize = <T extends HTMLElement>(
 
   const didUnmount = useRef(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     didUnmount.current = false;
     if (ref) {
       resizeObserverRef.current = new ResizeObserver(
@@ -44,8 +45,8 @@ export const useResize = <T extends HTMLElement>(
             !Array.isArray(entries) ||
             !entries.length ||
             didUnmount.current ||
-            newSize.width === rectRef.current.width ||
-            newSize.height === rectRef.current.height
+            (newSize.width === rectRef.current.width &&
+              newSize.height === rectRef.current.height)
           )
             return;
 
@@ -63,5 +64,6 @@ export const useResize = <T extends HTMLElement>(
         resizeObserverRef.current?.unobserve(ref);
       }
     };
-  }, [onResize, ref]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onResize, ref, ...dependencies]);
 };

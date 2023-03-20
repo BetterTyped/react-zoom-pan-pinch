@@ -1,7 +1,4 @@
 node_modules
-__tests__
+dist
 coverage
-jest.config.ts
 storybook-static
-.storybook
-stories

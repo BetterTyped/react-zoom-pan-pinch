@@ -11,7 +11,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:docs": "build-storybook",
-    "start": "start-storybook -p 6006 --no-manager-cache",
+    "start": "DISABLE_ESLINT_PLUGIN=true start-storybook -p 6006 --no-manager-cache",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.tsx,.ts --fix",
     "format": "prettier --write .",
@@ -94,6 +94,10 @@
     "webpack": "5",
     "webpack-cli": "^5.0.1"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "engines": {
     "node": ">=8",
     "npm": ">=5"

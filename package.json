@@ -95,8 +95,7 @@
     "webpack-cli": "^5.0.1"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=8",

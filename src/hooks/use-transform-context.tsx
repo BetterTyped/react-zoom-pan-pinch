@@ -6,7 +6,7 @@ export const useTransformContext = () => {
   const libraryContext = useContext(Context);
 
   if (!libraryContext) {
-    throw new Error("Transform context mus be placed inside TransformWrapper");
+    throw new Error("Transform context must be placed inside TransformWrapper");
   }
 
   return libraryContext;

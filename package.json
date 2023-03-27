@@ -94,9 +94,6 @@
     "webpack": "5",
     "webpack-cli": "^5.0.1"
   },
-  "files": [
-    "dist"
-  ],
   "engines": {
     "node": ">=8",
     "npm": ">=5"

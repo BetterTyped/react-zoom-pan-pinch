@@ -24,7 +24,7 @@ export const handleCalculateButtonZoom = (
     throw new Error("Wrapper is not mounted");
   }
 
-  const targetScale = scale * Math.exp(delta * step);
+  const targetScale = scale + delta * step;
 
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 3),

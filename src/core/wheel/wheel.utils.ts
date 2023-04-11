@@ -86,7 +86,7 @@ export const handleCalculateWheelZoom = (
     throw new Error("Wrapper is not mounted");
   }
 
-  const targetScale = scale + delta * (scale - scale * step) * step;
+  const targetScale = scale + delta * step;
 
   if (getTarget) return targetScale;
   const paddingEnabled = disable ? false : !disabled;

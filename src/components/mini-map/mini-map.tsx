@@ -19,6 +19,7 @@ export type MiniMapProps = {
   children: React.ReactNode;
   width?: number;
   height?: number;
+  borderColor?: string;
 } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
@@ -38,6 +39,7 @@ const previewStyles = {
 export const MiniMap: React.FC<MiniMapProps> = ({
   width = 200,
   height = 200,
+  borderColor = "red",
   children,
   ...rest
 }) => {
@@ -176,7 +178,11 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       <div {...rest} ref={wrapperRef} className="rzpp-wrapper">
         {children}
       </div>
-      <div className="rzpp-preview" ref={previewRef} style={previewStyles} />
+      <div
+        className="rzpp-preview"
+        ref={previewRef}
+        style={{ ...previewStyles, borderColor }}
+      />
     </div>
   );
 };

@@ -21,6 +21,8 @@ export const initialSetup: LibrarySetup = {
   disablePadding: false,
   wheel: {
     step: 0.2,
+    smooth: false,
+    smoothStep: 0.001,
     disabled: false,
     wheelDisabled: false,
     touchPadDisabled: false,

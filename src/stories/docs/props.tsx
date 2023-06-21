@@ -176,6 +176,18 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.wheel.step),
       description: "The sensitivity of zooming with the wheel/touchpad.",
     },
+    smoothStep: {
+      type: ["number"],
+      defaultValue: String(initialSetup.wheel.smoothStep),
+      description:
+        "The sensitivity multiplier of zooming with the wheel/touchpad used, instead of the step value, when smooth scrolling is enabled.",
+    },
+    smooth: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.wheel.smooth),
+      description:
+        "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
+    },
     disabled: {
       type: ["boolean"],
       defaultValue: String(initialSetup.wheel.disabled),

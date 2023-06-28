@@ -225,16 +225,16 @@ export const wrapperPropsTable: ComponentProps = {
         "Disable the panning velocity feature. It's triggered when you release the mouse button so the content is still moving after it and slowing down with calculated time.",
     },
     lockAxisX: {
-      type: ["string[]"],
-      defaultValue: String(initialSetup.panning.activationKeys),
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.lockAxisX),
       description:
-        "List of keys which, when held down, should activate this feature.",
+        "Disable the panning feature for the X axis (prevents horizontal panning).",
     },
     lockAxisY: {
-      type: ["string[]"],
-      defaultValue: String(initialSetup.panning.activationKeys),
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.lockAxisY),
       description:
-        "List of keys which, when held down, should activate this feature.",
+        "Disable the panning feature for the Y axis (prevents vertical panning).",
     },
     activationKeys: {
       type: ["string[]"],
@@ -326,7 +326,7 @@ export const wrapperPropsTable: ComponentProps = {
     },
     size: {
       type: ["number"],
-      defaultValue: String(initialSetup.zoomAnimation.disabled),
+      defaultValue: String(initialSetup.zoomAnimation.size),
       description:
         "Thanks to size, we can control the zoom out values larger than that controlled by the value of another 'minScale' prop. This results in an animated return of the value to the minimum scale when the zooming has finished. This works for both touchpad zooming and pinching.",
     },

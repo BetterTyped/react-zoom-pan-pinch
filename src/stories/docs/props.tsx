@@ -165,6 +165,12 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "We can provide custom transform function to provide different way of handling our transform logic. If we need performance we can import getMatrixTransformStyles functions and replace default one. WARNING: default transform prevents svg blur on the safari.",
   },
+  smooth: {
+    type: ["boolean"],
+    defaultValue: String(initialSetup.smooth),
+    description:
+      "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
+  },
   wheel: {
     wheel: {
       type: [""],
@@ -181,12 +187,6 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.wheel.smoothStep),
       description:
         "The sensitivity multiplier of zooming with the wheel/touchpad used, instead of the step value, when smooth scrolling is enabled.",
-    },
-    smooth: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.wheel.smooth),
-      description:
-        "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
     },
     disabled: {
       type: ["boolean"],

@@ -44,9 +44,10 @@ export const handleWheelZoom = (
     zoomAnimation,
     wheel,
     disablePadding,
+    smooth,
   } = setup;
   const { size, disabled } = zoomAnimation;
-  const { step, smooth, smoothStep } = wheel;
+  const { step, smoothStep } = wheel;
 
   if (!contentComponent) {
     throw new Error("Component not mounted");

@@ -17,14 +17,16 @@ export const handleCalculateButtonZoom = (
 ): number => {
   const { scale } = contextInstance.transformState;
   const { wrapperComponent, setup } = contextInstance;
-  const { maxScale, minScale, zoomAnimation } = setup;
+  const { maxScale, minScale, zoomAnimation, smooth } = setup;
   const { size } = zoomAnimation;
 
   if (!wrapperComponent) {
     throw new Error("Wrapper is not mounted");
   }
 
-  const targetScale = scale + delta * step;
+  const targetScale = smooth
+    ? scale * Math.exp(delta * step)
+    : scale + delta * step;
 
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 3),

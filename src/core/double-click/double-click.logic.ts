@@ -65,7 +65,14 @@ export function handleDoubleClick(
 
   if (!contentComponent) return console.error("No ContentComponent found");
 
-  const delta = mode === "zoomOut" ? -1 : 1;
+  const delta =
+    mode === "toggle"
+      ? contextInstance.transformState.scale === 1
+        ? 1
+        : -1
+      : mode === "zoomOut"
+      ? -1
+      : 1;
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 

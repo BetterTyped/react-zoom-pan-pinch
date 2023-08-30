@@ -92,7 +92,7 @@ export type ReactZoomPanPinchProps = {
   doubleClick?: {
     disabled?: boolean;
     step?: number;
-    mode?: "zoomIn" | "zoomOut" | "reset";
+    mode?: "zoomIn" | "zoomOut" | "toggle" | "reset";
     animationTime?: number;
     animationType?: keyof typeof animations;
     excluded?: string[];

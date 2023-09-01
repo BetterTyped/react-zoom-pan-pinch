@@ -91,6 +91,36 @@ export const calculateBounds = (
   return bounds;
 };
 
+export function clamp(v: number, min: number, max: number) {
+  return Math.max(min, Math.min(v, max));
+}
+
+// Based on @aholachek ;)
+// https://twitter.com/chpwn/status/285540192096497664
+// iOS constant = 0.55
+
+// https://medium.com/@nathangitter/building-fluid-interfaces-ios-swift-9732bb934bf5
+
+function rubberband(distance: number, dimension: number, constant: number) {
+  if (dimension === 0 || Math.abs(dimension) === Infinity)
+    return distance ** (constant * 5);
+  return (distance * dimension * constant) / (dimension + constant * distance);
+}
+
+export function rubberbandIfOutOfBounds(
+  position: number,
+  min: number,
+  max: number,
+  constant = 0.15,
+) {
+  if (constant === 0) return clamp(position, min, max);
+  if (position < min)
+    return -rubberband(min - position, max - min, constant) + min;
+  if (position > max)
+    return +rubberband(position - max, max - min, constant) + max;
+  return position;
+}
+
 /**
  * Keeps value between given bounds, used for limiting view to given boundaries
  * 1# eg. boundLimiter(2, 0, 3, true) => 2
@@ -140,15 +170,26 @@ export function getMouseBoundedPosition(
     paddingY = paddingValueY;
   }
 
-  const x = boundLimiter(
+  const rubberbandX = rubberbandIfOutOfBounds(
     positionX,
+    minPositionX,
+    maxPositionX,
+  );
+  const rubberbandY = rubberbandIfOutOfBounds(
+    positionY,
+    minPositionY,
+    maxPositionY,
+  );
+
+  const x = boundLimiter(
+    rubberbandX,
     minPositionX - paddingX,
     maxPositionX + paddingX,
     limitToBounds,
   );
 
   const y = boundLimiter(
-    positionY,
+    rubberbandY,
     minPositionY - paddingY,
     maxPositionY + paddingY,
     limitToBounds,

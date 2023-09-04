@@ -41,8 +41,8 @@ Do you like this library? Try out other projects
 
 #### Sources
 
-- [Demo](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
-- [Docs](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
+- [Demo](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
+- [Docs](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
 
 ## Key Features
 

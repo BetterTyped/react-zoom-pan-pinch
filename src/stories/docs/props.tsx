@@ -492,7 +492,7 @@ export const wrapperPropsTable: ComponentProps = {
   },
   onTransformed: {
     type: [
-      "(ref: ReactZoomPanPinchRef, scale: number, positionX: number, positionY: number ) => void",
+      "(ref: ReactZoomPanPinchRef, state: { scale: number; positionX: number; positionY: number } ) => void",
     ],
     defaultValue: "undefined",
     description: "Callback fired when on each transform",

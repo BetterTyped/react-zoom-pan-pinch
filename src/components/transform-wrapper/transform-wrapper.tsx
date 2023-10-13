@@ -32,6 +32,9 @@ export const TransformWrapper = React.forwardRef(
 
     useEffect(() => {
       instance.update(props);
+      return () => {
+        instance.cleanupWindowEvents();
+      };
     }, [instance, props]);
 
     return <Context.Provider value={instance}>{content}</Context.Provider>;

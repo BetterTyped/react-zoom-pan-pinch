@@ -248,6 +248,24 @@ export const wrapperPropsTable: ComponentProps = {
       description:
         "Disable the panning feature for the Y axis (prevents vertical panning).",
     },
+    allowLeftClickPan: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.allowLeftClickPan),
+      description:
+        "Allow left click to initiate panning",
+    },
+    allowMiddleClickPan: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.allowMiddleClickPan),
+      description:
+        "Allow middle click to initiate panning",
+    },
+    allowRightClickPan: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.allowRightClickPan),
+      description:
+        "Allow right click to initiate panning",
+    },
     activationKeys: {
       type: ["string[]"],
       defaultValue: String(initialSetup.panning.activationKeys),

@@ -81,6 +81,9 @@ export type ReactZoomPanPinchProps = {
     velocityDisabled?: boolean;
     lockAxisX?: boolean;
     lockAxisY?: boolean;
+    allowLeftClickPan?: boolean;
+    allowMiddleClickPan?: boolean;
+    allowRightClickPan?: boolean;
     activationKeys?: string[];
     excluded?: string[];
   };

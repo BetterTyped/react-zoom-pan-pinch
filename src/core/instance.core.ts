@@ -208,6 +208,10 @@ export class ZoomPanPinch {
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
 
+    if(event.button == 0 && !this.setup.panning.allowLeftClickPan) return;
+    if(event.button == 1 && !this.setup.panning.allowMiddleClickPan) return;
+    if(event.button == 2 && !this.setup.panning.allowRightClickPan) return;
+
     event.preventDefault();
     event.stopPropagation();
 

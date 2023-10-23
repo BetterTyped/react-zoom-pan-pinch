@@ -170,26 +170,15 @@ export function getMouseBoundedPosition(
     paddingY = paddingValueY;
   }
 
-  const rubberbandX = rubberbandIfOutOfBounds(
-    positionX,
-    minPositionX,
-    maxPositionX,
-  );
-  const rubberbandY = rubberbandIfOutOfBounds(
-    positionY,
-    minPositionY,
-    maxPositionY,
-  );
-
   const x = boundLimiter(
-    rubberbandX,
+    positionX,
     minPositionX - paddingX,
     maxPositionX + paddingX,
     limitToBounds,
   );
 
   const y = boundLimiter(
-    rubberbandY,
+    positionY,
     minPositionY - paddingY,
     maxPositionY + paddingY,
     limitToBounds,

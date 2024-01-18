@@ -1,34 +1,34 @@
-import { renderExample } from "../shared/render.shared";
+import { renderApp } from "../../utils/render-app";
 
 describe("Example view", () => {
   describe("When example view has been rendered", () => {
     test("it renders entire example without errors", () => {
-      const { wrapper } = renderExample();
+      const { wrapper } = renderApp();
 
       expect(wrapper).toBeDefined();
     });
     test("it renders center in button without errors", () => {
-      const { center } = renderExample();
+      const { center } = renderApp();
 
       expect(center).toBeDefined();
     });
     test("it renders zoom in button without errors", () => {
-      const { zoomInBtn } = renderExample();
+      const { zoomInBtn } = renderApp();
 
       expect(zoomInBtn).toBeDefined();
     });
     test("it renders zoom out button without errors", () => {
-      const { zoomOutBtn } = renderExample();
+      const { zoomOutBtn } = renderApp();
 
       expect(zoomOutBtn).toBeDefined();
     });
     test("it renders reset button without errors", () => {
-      const { resetBtn } = renderExample();
+      const { resetBtn } = renderApp();
 
       expect(resetBtn).toBeDefined();
     });
     test("it renders transform component without errors", () => {
-      const { content } = renderExample();
+      const { content } = renderApp();
 
       expect(content).toBeDefined();
     });

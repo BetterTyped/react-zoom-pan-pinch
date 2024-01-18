@@ -1,5 +1,5 @@
 import { ReactZoomPanPinchContext, PositionType } from "../../models";
-import { checkIsNumber, isExcludedNode, roundNumber } from "../../utils";
+import { checkIsNumber, isExcludedNode } from "../../utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
 
 export const isWheelAllowed = (
@@ -91,7 +91,7 @@ export const handleCalculateWheelZoom = (
   if (getTarget) return targetScale;
   const paddingEnabled = disable ? false : !disabled;
   const newScale = checkZoomBounds(
-    roundNumber(targetScale, 3),
+    targetScale,
     minScale,
     maxScale,
     size,

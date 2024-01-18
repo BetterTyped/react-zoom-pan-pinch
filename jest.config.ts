@@ -8,7 +8,7 @@ const config: Config.InitialOptions = {
   roots: ["<rootDir>/node_modules", "<rootDir>/src", "<rootDir>/__tests__"],
   coverageProvider: "v8",
   coverageReporters: [
-    ["lcov", { projectRoot: "../.." }],
+    ["lcov", { projectRoot: "./" }],
     "clover",
     "json",
     "text",
@@ -25,13 +25,9 @@ const config: Config.InitialOptions = {
   ],
   moduleDirectories: ["node_modules", "src"],
   transform: {
-    "^.+\\.tsx?$": [
-      "ts-jest",
-      {
-        tsconfig: "./tsconfig.json",
-        isolatedModules: true,
-      },
-    ],
+    "^.+\\.(css|scss|sass|less)$": "jest-preview/transforms/css",
+    "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)":
+      "jest-preview/transforms/file",
   },
   moduleNameMapper: {
     "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules",

@@ -1,5 +1,5 @@
 import { PositionType, ReactZoomPanPinchContext } from "../../models";
-import { isExcludedNode, roundNumber } from "../../utils";
+import { isExcludedNode } from "../../utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
 
 export const isPinchStartAllowed = (
@@ -27,7 +27,7 @@ export const isPinchAllowed = (
   const { disabled } = contextInstance.setup.pinch;
   const { isInitialized, pinchStartDistance } = contextInstance;
 
-  const isAllowed = isInitialized && !disabled && pinchStartDistance;
+  const isAllowed = isInitialized && !disabled && pinchStartDistance !== null;
 
   if (!isAllowed) return false;
 
@@ -41,10 +41,10 @@ export const calculateTouchMidPoint = (
 ): PositionType => {
   const contentRect = contentComponent.getBoundingClientRect();
   const { touches } = event;
-  const firstPointX = roundNumber(touches[0].clientX - contentRect.left, 5);
-  const firstPointY = roundNumber(touches[0].clientY - contentRect.top, 5);
-  const secondPointX = roundNumber(touches[1].clientX - contentRect.left, 5);
-  const secondPointY = roundNumber(touches[1].clientY - contentRect.top, 5);
+  const firstPointX = touches[0].clientX - contentRect.left;
+  const firstPointY = touches[0].clientY - contentRect.top;
+  const secondPointX = touches[1].clientX - contentRect.left;
+  const secondPointY = touches[1].clientY - contentRect.top;
 
   return {
     x: (firstPointX + secondPointX) / 2 / scale,
@@ -67,7 +67,7 @@ export const calculatePinchZoom = (
   const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
   const { size, disabled } = zoomAnimation;
 
-  if (!pinchStartScale || pinchStartDistance === null || !currentDistance) {
+  if (!pinchStartScale || pinchStartDistance === null) {
     throw new Error("Pinch touches distance was not provided");
   }
 
@@ -78,8 +78,10 @@ export const calculatePinchZoom = (
   const touchProportion = currentDistance / pinchStartDistance;
   const scaleDifference = touchProportion * pinchStartScale;
 
+  const scale = scaleDifference === Infinity ? 0 : scaleDifference;
+
   return checkZoomBounds(
-    roundNumber(scaleDifference, 2),
+    scale,
     minScale,
     maxScale,
     size,

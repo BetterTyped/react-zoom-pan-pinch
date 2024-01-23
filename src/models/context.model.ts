@@ -86,6 +86,7 @@ export type ReactZoomPanPinchProps = {
     allowRightClickPan?: boolean;
     activationKeys?: string[];
     excluded?: string[];
+    wheelPanning?: boolean;
   };
   pinch?: {
     step?: number;

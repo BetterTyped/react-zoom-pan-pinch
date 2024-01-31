@@ -3,12 +3,12 @@ import React from "react";
 import { animations } from "../core/animations/animations.constants";
 import { DeepNonNullable } from "./helpers.model";
 import {
-  zoomIn,
-  zoomToElement,
   centerView,
   resetTransform,
   setTransform,
+  zoomIn,
   zoomOut,
+  zoomToElement,
 } from "../core/handlers/handlers.logic";
 import { ZoomPanPinch } from "../core/instance.core";
 
@@ -96,7 +96,7 @@ export type ReactZoomPanPinchProps = {
   doubleClick?: {
     disabled?: boolean;
     step?: number;
-    mode?: "zoomIn" | "zoomOut" | "reset";
+    mode?: "zoomIn" | "zoomOut" | "reset" | "toggle";
     animationTime?: number;
     animationType?: keyof typeof animations;
     excluded?: string[];

@@ -29,7 +29,7 @@ export default [
         exclude: "node_modules/**",
       }),
       del({ targets: ["dist/*"] }),
-      typescript({ sourceMap: false }),
+      typescript({ sourceMap: false, declaration: false }),
       postcss({
         modules: true,
       }),

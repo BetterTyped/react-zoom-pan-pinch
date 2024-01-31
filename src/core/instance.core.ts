@@ -26,7 +26,12 @@ import {
   handleWheelZoom,
   handleWheelStop,
 } from "./wheel/wheel.logic";
-import { isPanningAllowed, isPanningStartAllowed } from "./pan/panning.utils";
+import {
+  getPaddingValue,
+  handleNewPosition,
+  isPanningAllowed,
+  isPanningStartAllowed,
+} from "./pan/panning.utils";
 import {
   handlePanning,
   handlePanningEnd,
@@ -68,6 +73,7 @@ export class ZoomPanPinch {
   public wheelAnimationTimer: ReturnType<typeof setTimeout> | null = null;
   // panning helpers
   public isPanning = false;
+  public isWheelPanning = false;
   public startCoords: StartCoordsType = null;
   public lastTouch: number | null = null;
   // pinch helpers
@@ -112,6 +118,11 @@ export class ZoomPanPinch {
     const passive = makePassiveEventOption();
     const currentDocument = this.wrapperComponent?.ownerDocument;
     const currentWindow = currentDocument?.defaultView;
+    this.wrapperComponent?.addEventListener(
+      "wheel",
+      this.onWheelPanning,
+      passive,
+    );
     // Panning on window to allow panning when mouse is out of component wrapper
     currentWindow?.addEventListener("mousedown", this.onPanningStart, passive);
     currentWindow?.addEventListener("mousemove", this.onPanning, passive);
@@ -196,6 +207,44 @@ export class ZoomPanPinch {
   /// ///////
   // Pan
   /// ///////
+
+  onWheelPanning = (event: WheelEvent): void => {
+    const { disabled, wheel, panning } = this.setup;
+    if (
+      !this.wrapperComponent ||
+      !this.contentComponent ||
+      disabled ||
+      !wheel.wheelDisabled ||
+      panning.disabled ||
+      !panning.wheelPanning ||
+      event.ctrlKey
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { positionX, positionY } = this.transformState;
+    const mouseX = positionX - event.deltaX;
+    const mouseY = positionY - event.deltaY;
+    const newPositionX = panning.lockAxisX ? positionX : mouseX;
+    const newPositionY = panning.lockAxisY ? positionY : mouseY;
+
+    const { sizeX, sizeY } = this.setup.alignmentAnimation;
+    const paddingValueX = getPaddingValue(this, sizeX);
+    const paddingValueY = getPaddingValue(this, sizeY);
+
+    if (newPositionX === positionX && newPositionY === positionY) return;
+
+    handleNewPosition(
+      this,
+      newPositionX,
+      newPositionY,
+      paddingValueX,
+      paddingValueY,
+    );
+  };
 
   onPanningStart = (event: MouseEvent): void => {
     const { disabled } = this.setup;

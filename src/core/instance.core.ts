@@ -110,6 +110,7 @@ export class ZoomPanPinch {
   };
 
   update = (newProps: ReactZoomPanPinchProps) => {
+    this.props = newProps;
     handleCalculateBounds(this, this.transformState.scale);
     this.setup = createSetup(newProps);
   };

@@ -37,6 +37,11 @@ export const useResize = <T extends HTMLElement>(
 
   useLayoutEffect(() => {
     didUnmount.current = false;
+
+    if (!("ResizeObserver" in window)) {
+      return;
+    }
+
     if (ref) {
       resizeObserverRef.current = new ResizeObserver(
         (entries: ResizeObserverEntry[]) => {

@@ -67,9 +67,15 @@
 - 👑 Animations and Utils to create own tools
 - 🔮 Advanced hooks and components
 
-## Help me keep working on this project ❤️
+## Try other BetterTyped projects
 
-- [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
+Do you like this library? Try out other projects
+**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and
+realtime data exchange framework.
+
+<a href="https://github.com/BetterTyped/hyper-fetch">
+  <img width="500px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
+</a>
 
 <p align="center">
 	<a href="https://github.com/sponsors/prc5?tier=Gold">
@@ -185,15 +191,9 @@ const Example = () => {
 
 MIT © [prc5](https://github.com/prc5)
 
-## Try other BetterTyped projects
+## Help me keep working on this project ❤️
 
-Do you like this library? Try out other projects
-**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and
-realtime data exchange framework.
-
-<a href="https://github.com/BetterTyped/hyper-fetch">
-  <img width="500px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
-</a>
+- [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
 
 ## 💖 Our sponsors
 

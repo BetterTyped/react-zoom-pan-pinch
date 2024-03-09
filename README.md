@@ -70,12 +70,23 @@
 ## Try other BetterTyped projects
 
 Do you like this library? Try out other projects
+
+<a href="https://github.com/BetterTyped/hyper-fetch">
+  <img width="200px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
+</a>
+
 **[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and
 realtime data exchange framework.
 
-<a href="https://github.com/BetterTyped/hyper-fetch">
-  <img width="500px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
-</a>
+---
+
+## Installation
+
+```bash
+npm install --save react-zoom-pan-pinch
+or
+yarn add react-zoom-pan-pinch
+```
 
 <p align="center">
 	<a href="https://github.com/sponsors/prc5?tier=Gold">
@@ -92,16 +103,6 @@ realtime data exchange framework.
 		</picture>
 	</a>
 </p>
-
----
-
-## Installation
-
-```bash
-npm install --save react-zoom-pan-pinch
-or
-yarn add react-zoom-pan-pinch
-```
 
 ## Examples
 
@@ -179,12 +180,6 @@ const Example = () => {
 			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/silver/sponsorkit/sponsors.svg" alt="Premium sponsor banner" />
 		</picture>
 	</a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/sponsors/prc5">
-    <img src="https://github.com/prc5/sponsors/blob/main/sponsorkit/sponsors.png?raw=true" alt="My Sponsors" />
-  </a>
 </p>
 
 ## License

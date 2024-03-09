@@ -36,13 +36,26 @@
   </a>
 </p>
 
-Do you like this library? Try out other projects
-**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)**
-
 #### Sources
 
 - [Demo](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
 - [Docs](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=platinum">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Platinum.png" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Platinum">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/platinum/sponsorkit/sponsors.svg" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
 
 ## Key Features
 
@@ -57,6 +70,22 @@ Do you like this library? Try out other projects
 ## Help me keep working on this project ❤️
 
 - [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Gold">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Gold.png" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=gold">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/gold/sponsorkit/sponsors.svg" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
 
 ---
 
@@ -91,7 +120,23 @@ or
 ```jsx
 import React, { Component } from "react";
 
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import {
+  TransformWrapper,
+  TransformComponent,
+  useControls,
+} from "react-zoom-pan-pinch";
+
+const Controls = () => {
+  const { zoomIn, zoomOut, resetTransform } = useControls();
+
+  return (
+    <div className="tools">
+      <button onClick={() => zoomIn()}>+</button>
+      <button onClick={() => zoomOut()}>-</button>
+      <button onClick={() => resetTransform()}>x</button>
+    </div>
+  );
+};
 
 const Example = () => {
   return (
@@ -101,72 +146,59 @@ const Example = () => {
       initialPositionY={100}
     >
       {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-        <React.Fragment>
-          <div className="tools">
-            <button onClick={() => zoomIn()}>+</button>
-            <button onClick={() => zoomOut()}>-</button>
-            <button onClick={() => resetTransform()}>x</button>
-          </div>
+        <>
+          <Controls />
           <TransformComponent>
             <img src="image.jpg" alt="test" />
             <div>Example text</div>
           </TransformComponent>
-        </React.Fragment>
+        </>
       )}
     </TransformWrapper>
   );
 };
 ```
 
-or
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Silver">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Silver.png" alt="Premium sponsor banner" />
+		</picture>
+	</a>
+</p>
 
-```tsx
-import React, { useRef } from "react";
-import {
-  TransformWrapper,
-  TransformComponent,
-  ReactZoomPanPinchRef,
-} from "react-zoom-pan-pinch";
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Silver">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/silver/sponsorkit/sponsors.svg" alt="Premium sponsor banner" />
+		</picture>
+	</a>
+</p>
 
-const Controls = ({ zoomIn, zoomOut, resetTransform }) => (
-  <>
-    <button onClick={() => zoomIn()}>+</button>
-    <button onClick={() => zoomOut()}>-</button>
-    <button onClick={() => resetTransform()}>x</button>
-  </>
-);
-
-const Component = () => {
-  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
-
-  const zoomToImage = () => {
-    if (transformComponentRef.current) {
-      const { zoomToElement } = transformComponentRef.current;
-      zoomToElement("imgExample");
-    }
-  };
-
-  return (
-    <TransformWrapper
-      initialScale={1}
-      initialPositionX={200}
-      initialPositionY={100}
-      ref={transformComponentRef}
-    >
-      {(utils) => (
-        <React.Fragment>
-          <Controls {...utils} />
-          <TransformComponent>
-            <img src="image.jpg" alt="test" id="imgExample" />
-            <div onClick={zoomToImage}>Example text</div>
-          </TransformComponent>
-        </React.Fragment>
-      )}
-    </TransformWrapper>
-  );
-};
-```
+<p align="center">
+  <a href="https://github.com/sponsors/prc5">
+    <img src="https://github.com/prc5/sponsors/blob/main/sponsorkit/sponsors.png?raw=true" alt="My Sponsors" />
+  </a>
+</p>
 
 ## License
 
 MIT © [prc5](https://github.com/prc5)
+
+## Try other BetterTyped projects
+
+Do you like this library? Try out other projects
+**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and
+realtime data exchange framework.
+
+<a href="https://github.com/BetterTyped/hyper-fetch">
+  <img width="500px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
+</a>
+
+## 💖 Our sponsors
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5">
+		<img src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/other/sponsorkit/sponsors.svg?raw=true" alt="My Sponsors" />
+	</a>
+</p>

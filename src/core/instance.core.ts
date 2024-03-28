@@ -176,10 +176,21 @@ export class ZoomPanPinch {
     if (centerOnInit) {
       this.setCenter();
       this.observer = new ResizeObserver(() => {
-        this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
-        this.setCenter();
-        this.observer?.disconnect();
+        const currentWidth = contentComponent.offsetWidth;
+        const currentHeight = contentComponent.offsetHeight;
+
+        if (currentWidth > 0 || currentHeight > 0) {
+          this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
+          this.setCenter();
+
+          this.observer?.disconnect();
+        }
       });
+
+      // if nothing about the contentComponent has changed after 5 seconds, disconnect the observer
+      setTimeout(() => {
+        this.observer?.disconnect();
+      }, 5000);
 
       // Start observing the target node for configured mutations
       this.observer.observe(contentComponent);

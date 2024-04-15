@@ -54,6 +54,9 @@ export class ZoomPanPinch {
 
   public mounted = true;
 
+  public pinchLastCenterX: number | null = null;
+  public pinchLastCenterY: number | null = null;
+
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
   public observer?: ResizeObserver;
@@ -180,7 +183,9 @@ export class ZoomPanPinch {
         const currentHeight = contentComponent.offsetHeight;
 
         if (currentWidth > 0 || currentHeight > 0) {
-          this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
+          this.onInitCallbacks.forEach((callback) =>
+            callback(getContext(this)),
+          );
           this.setCenter();
 
           this.observer?.disconnect();

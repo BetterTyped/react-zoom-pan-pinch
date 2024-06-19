@@ -20,7 +20,7 @@ export const initialSetup: LibrarySetup = {
   centerOnInit: false,
   disablePadding: false,
   wheel: {
-    step: 0.05,
+    step: 0.03,
     smooth: true,
     disabled: false,
     wheelDisabled: false,

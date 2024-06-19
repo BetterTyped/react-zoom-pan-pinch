@@ -1,6 +1,7 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { mergeConfig } from "vite";
+import svgr from "vite-plugin-svgr";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -20,7 +21,18 @@ const config: StorybookConfig = {
   async viteFinal(config, { configType }) {
     // return the customized config
     return mergeConfig(config, {
-      plugins: [tsconfigPaths()],
+      plugins: [
+        tsconfigPaths(),
+        svgr({
+          svgrOptions: {
+            exportType: "named",
+            ref: true,
+            svgo: false,
+            titleProp: true,
+          },
+          include: "**/*.svg",
+        }),
+      ],
     });
   },
 };

@@ -37,9 +37,12 @@ export const Template = (args: any) => {
               zIndex: 5,
               top: "50px",
               right: "50px",
+              border: "1px solid blue",
             }}
           >
-            <MiniMap width={200}>{element}</MiniMap>
+            <MiniMap width={400} height={800}>
+              {element}
+            </MiniMap>
           </div>
           <Controls {...utils} />
           <TransformComponent

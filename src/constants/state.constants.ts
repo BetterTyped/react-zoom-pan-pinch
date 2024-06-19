@@ -19,9 +19,10 @@ export const initialSetup: LibrarySetup = {
   centerZoomedOut: false,
   centerOnInit: false,
   disablePadding: false,
+  smooth: true,
+  detached: false,
   wheel: {
     step: 0.03,
-    smooth: true,
     disabled: false,
     wheelDisabled: false,
     touchPadDisabled: false,

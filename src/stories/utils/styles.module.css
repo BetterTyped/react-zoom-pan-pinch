@@ -2,7 +2,7 @@
   position: absolute;
   z-index: 2;
   transform: translate(10px, 10px);
-  max-width: calc(100% - 20px);
+  max-width: calc(100vw - 20px);
 }
 .controlBtn {
   padding: 6px 12px;
@@ -31,4 +31,6 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(100, 1fr);
+  width: calc(100vw - 200px);
+  height: calc(100vh - 200px);
 }

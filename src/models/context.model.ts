@@ -51,6 +51,7 @@ export type ReactZoomPanPinchProps = {
     | React.ReactNode
     | ((ref: ReactZoomPanPinchContentRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
+  detached: boolean;
   initialScale?: number;
   initialPositionX?: number;
   initialPositionY?: number;
@@ -66,9 +67,9 @@ export type ReactZoomPanPinchProps = {
   centerOnInit?: boolean;
   disablePadding?: boolean;
   customTransform?: (x: number, y: number, scale: number) => string;
+  smooth?: boolean;
   wheel?: {
     step?: number;
-    smooth?: boolean;
     disabled?: boolean;
     wheelDisabled?: boolean;
     touchPadDisabled?: boolean;

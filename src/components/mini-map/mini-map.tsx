@@ -14,12 +14,14 @@ import {
 } from "hooks";
 import { useResize } from "./use-resize.hook";
 import { ReactZoomPanPinchRef } from "models";
+import { boundLimiter } from "core/bounds/bounds.utils";
 
 export type MiniMapProps = {
   children: React.ReactNode;
   width?: number;
   height?: number;
   borderColor?: string;
+  panning?: boolean;
 } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
@@ -34,6 +36,7 @@ const previewStyles = {
   border: "3px solid red",
   transformOrigin: "0% 0%",
   boxShadow: "rgba(0,0,0,0.2) 0 0 0 10000000px",
+  pointerEvents: "none",
 } as const;
 
 export const MiniMap: React.FC<MiniMapProps> = ({
@@ -41,15 +44,23 @@ export const MiniMap: React.FC<MiniMapProps> = ({
   height = 200,
   borderColor = "red",
   children,
+  panning = true,
   ...rest
 }) => {
   const [initialized, setInitialized] = useState(false);
   const instance = useTransformContext();
+  const [isDown, setIsDown] = useState(false);
   const miniMapInstance = useRef<ReactZoomPanPinchRef>(null);
 
   const mainRef = useRef<HTMLDivElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
+
+  const computationCache = useRef({
+    scale: 1,
+    width: 0,
+    height: 0,
+  });
 
   const getContentSize = useCallback(() => {
     if (instance.contentComponent) {
@@ -93,7 +104,7 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       position: "absolute",
       boxSizing: "border-box",
       zIndex: 1,
-      overflow: "hidden",
+      // overflow: "hidden",
     } as const;
 
     Object.keys(style).forEach((key) => {
@@ -160,11 +171,81 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     });
   }, [computeMiniMapScale, instance, miniMapInstance]);
 
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      if (panning && isDown && instance.contentComponent) {
+        const scale = computeMiniMapScale();
+        const previewRect = previewRef.current?.getBoundingClientRect()!;
+        const mainRect = mainRef.current?.getBoundingClientRect()!;
+
+        const relativeX = (e.clientX - mainRect.left) / scale;
+        const relativeY = (e.clientY - mainRect.top) / scale;
+
+        const x = relativeX - previewRect.width / 2;
+        const y = relativeY - previewRect.height / 2;
+
+        const instanceWidth =
+          (instance.wrapperComponent?.offsetWidth || 0) *
+          instance.transformState.scale;
+        const instanceHeight =
+          (instance.wrapperComponent?.offsetHeight || 0) *
+          instance.transformState.scale;
+
+        const limitWidth =
+          instanceWidth - previewRect.width * 2 * instance.transformState.scale;
+        const limitHeight =
+          instanceHeight -
+          previewRect.height * 2 * instance.transformState.scale;
+
+        const boundedX = boundLimiter(
+          x * instance.transformState.scale,
+          0,
+          limitWidth,
+          true,
+        );
+
+        const boundedY = boundLimiter(
+          y * instance.transformState.scale,
+          0,
+          limitHeight,
+          true,
+        );
+
+        instance.setTransformState(
+          instance.transformState.scale,
+          -boundedX,
+          -boundedY,
+        );
+      }
+    };
+
+    const setDown = (e: MouseEvent) => {
+      if (
+        mainRef.current?.contains(e.target as Node) ||
+        e.target === mainRef.current
+      ) {
+        move(e);
+        setIsDown(true);
+      }
+    };
+    const setUp = () => {
+      setIsDown(false);
+    };
+    document.addEventListener("mousedown", setDown);
+    document.addEventListener("mouseup", setUp);
+    document.addEventListener("mousemove", move);
+    return () => {
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", setUp);
+    };
+  });
+
   const wrapperStyle = useMemo(() => {
     return {
       position: "relative",
       zIndex: 2,
-      overflow: "hidden",
+      // overflow: "hidden",
+      userSelect: "none",
     } as const;
   }, []);
 
@@ -175,11 +256,16 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       style={wrapperStyle}
       className={`rzpp-mini-map ${rest.className || ""}`}
     >
-      <div {...rest} ref={wrapperRef} className="rzpp-wrapper">
+      <div
+        {...rest}
+        style={{ pointerEvents: "none" }}
+        ref={wrapperRef}
+        className="rzpp-minimap-wrapper"
+      >
         {children}
       </div>
       <div
-        className="rzpp-preview"
+        className="rzpp-minimap-preview"
         ref={previewRef}
         style={{ ...previewStyles, borderColor }}
       />

@@ -85,6 +85,16 @@
       "rules": {
         "testing-library/render-result-naming-convention": "off"
       }
+    },
+    {
+      "files": ["*.mdx"],
+      "rules": {
+        "react/jsx-filename-extension": "off"
+      }
+    },
+    {
+      "files": ["*.md", "*.mdx"],
+      "extends": "plugin:mdx/recommended"
     }
   ]
 }

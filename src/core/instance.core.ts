@@ -55,6 +55,15 @@ export class ZoomPanPinch {
   public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
     new Set();
   public onInitCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> = new Set();
+  public onTransformCallbacks: Set<
+    (data: {
+      scale: number;
+      positionX: number;
+      positionY: number;
+      previousScale: number;
+      ref: ReactZoomPanPinchRef;
+    }) => void
+  > = new Set();
 
   // Components
   public wrapperComponent: HTMLDivElement | null = null;
@@ -452,7 +461,21 @@ export class ZoomPanPinch {
     if (!this.mounted || !this.contentComponent) return;
     const { scale, positionX, positionY } = this.transformState;
     const transform = this.handleTransformStyles(positionX, positionY, scale);
-    this.contentComponent.style.transform = transform;
+
+    // Detached mode do not apply transformation directly to content component
+    if (!this.props.detached) {
+      this.contentComponent.style.transform = transform;
+    }
+
+    this.onTransformCallbacks.forEach((callback) =>
+      callback({
+        scale,
+        positionX,
+        positionY,
+        previousScale: this.transformState.previousScale,
+        ref: getContext(this),
+      }),
+    );
   };
 
   getContext = () => {
@@ -462,6 +485,23 @@ export class ZoomPanPinch {
   /**
    * Hooks
    */
+
+  onTransform = (
+    callback: (data: {
+      scale: number;
+      positionX: number;
+      positionY: number;
+      previousScale: number;
+      ref: ReactZoomPanPinchRef;
+    }) => void,
+  ) => {
+    if (!this.onTransformCallbacks.has(callback)) {
+      this.onTransformCallbacks.add(callback);
+    }
+    return () => {
+      this.onTransformCallbacks.delete(callback);
+    };
+  };
 
   onChange = (callback: (ref: ReactZoomPanPinchRef) => void) => {
     if (!this.onChangeCallbacks.has(callback)) {

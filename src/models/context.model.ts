@@ -66,10 +66,9 @@ export type ReactZoomPanPinchProps = {
   centerOnInit?: boolean;
   disablePadding?: boolean;
   customTransform?: (x: number, y: number, scale: number) => string;
-  smooth?: boolean;
   wheel?: {
     step?: number;
-    smoothStep?: number;
+    smooth?: boolean;
     disabled?: boolean;
     wheelDisabled?: boolean;
     touchPadDisabled?: boolean;

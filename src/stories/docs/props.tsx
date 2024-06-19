@@ -165,12 +165,6 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "We can provide custom transform function to provide different way of handling our transform logic. If we need performance we can import getMatrixTransformStyles functions and replace default one. WARNING: default transform prevents svg blur on the safari.",
   },
-  smooth: {
-    type: ["boolean"],
-    defaultValue: String(initialSetup.smooth),
-    description:
-      "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
-  },
   wheel: {
     wheel: {
       type: [""],
@@ -182,11 +176,11 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.wheel.step),
       description: "The sensitivity of zooming with the wheel/touchpad.",
     },
-    smoothStep: {
-      type: ["number"],
-      defaultValue: String(initialSetup.wheel.smoothStep),
+    smooth: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.wheel.smooth),
       description:
-        "The sensitivity multiplier of zooming with the wheel/touchpad used, instead of the step value, when smooth scrolling is enabled.",
+        "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
     },
     disabled: {
       type: ["boolean"],
@@ -251,20 +245,17 @@ export const wrapperPropsTable: ComponentProps = {
     allowLeftClickPan: {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.allowLeftClickPan),
-      description:
-        "Allow left click to initiate panning",
+      description: "Allow left click to initiate panning",
     },
     allowMiddleClickPan: {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.allowMiddleClickPan),
-      description:
-        "Allow middle click to initiate panning",
+      description: "Allow middle click to initiate panning",
     },
     allowRightClickPan: {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.allowRightClickPan),
-      description:
-        "Allow right click to initiate panning",
+      description: "Allow right click to initiate panning",
     },
     activationKeys: {
       type: ["string[]"],

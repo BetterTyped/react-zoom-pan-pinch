@@ -16,14 +16,13 @@ export const argsTypes = {
       defaultValue: { summary: "0" },
     },
   },
-  "wheel.smoothStep": {
-    defaultValue: initialSetup.wheel.smoothStep,
+  "wheel.smooth": {
+    defaultValue: initialSetup.wheel.smooth,
     control: {
-      type: "number",
-      min: 0,
+      type: "boolean",
     },
     table: {
-      defaultValue: { summary: "0" },
+      defaultValue: { summary: "true" },
     },
   },
   "wheel.disabled": {

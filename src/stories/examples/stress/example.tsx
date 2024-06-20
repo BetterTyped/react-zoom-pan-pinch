@@ -11,7 +11,7 @@ export const Example: React.FC<any> = (args: any) => {
 
   return (
     <TransformWrapper {...normalizeArgs(args)} ref={ref}>
-      <TransformComponent>
+      <TransformComponent contentClass={styles.content}>
         <div className={styles.grid}>
           {Array.from(Array(1000).keys()).map((key) => (
             <img key={key} src={exampleImg} alt="" />

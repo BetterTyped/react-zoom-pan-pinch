@@ -89,18 +89,26 @@ export const renderApp = (
       fireEvent.mouseMove(content, { clientX: center[0], clientY: center[1] });
     }
 
+    const step = 1;
+
     const isZoomIn = ref.current.instance.transformState.scale < value;
     while (true) {
       if (
-        isZoomIn
-          ? ref.current.instance.transformState.scale <= value
-          : ref.current.instance.transformState.scale >= value
+        (isZoomIn
+          ? ref.current.instance.transformState.scale < value
+          : ref.current.instance.transformState.scale > value) &&
+        ref.current.instance.transformState.scale !== value
       ) {
+        const isNearScale =
+          Math.abs(ref.current.instance.transformState.scale - value) < 0.01;
+
+        const newStep = isNearScale ? 0.35 : step;
+
         fireEvent(
           content,
           new WheelEvent("wheel", {
             bubbles: true,
-            deltaY: isZoomIn ? -1 : 1,
+            deltaY: isZoomIn ? -newStep : newStep,
           }),
         );
       } else {
@@ -127,12 +135,19 @@ export const renderApp = (
 
     while (true) {
       if (
-        isZoomIn
-          ? ref.current.instance.transformState.scale <= value
-          : ref.current.instance.transformState.scale >= value
+        (isZoomIn
+          ? ref.current.instance.transformState.scale < value
+          : ref.current.instance.transformState.scale > value) &&
+        ref.current.instance.transformState.scale !== value
       ) {
-        pinchValue[0] = pinchValue[0] + stepX;
-        pinchValue[1] = pinchValue[1] + stepY;
+        const isNearScale =
+          Math.abs(ref.current.instance.transformState.scale - value) < 0.5;
+
+        const newStepX = isNearScale ? stepX / 10 : stepX;
+        const newStepY = isNearScale ? stepY / 10 : stepY;
+
+        pinchValue[0] = pinchValue[0] + newStepX;
+        pinchValue[1] = pinchValue[1] + newStepY;
         touches = getPinchTouches(
           content,
           center,
@@ -155,6 +170,7 @@ export const renderApp = (
     fireEvent.mouseDown(content);
     fireEvent.mouseMove(content, { clientX: x, clientY: y });
     fireEvent.mouseUp(content);
+    fireEvent.blur(content);
   };
 
   const touchPan: RenderApp["touchPan"] = ({ x, y }) => {

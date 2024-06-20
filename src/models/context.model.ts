@@ -51,7 +51,7 @@ export type ReactZoomPanPinchProps = {
     | React.ReactNode
     | ((ref: ReactZoomPanPinchContentRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
-  detached: boolean;
+  detached?: boolean;
   initialScale?: number;
   initialPositionX?: number;
   initialPositionY?: number;
@@ -117,6 +117,7 @@ export type ReactZoomPanPinchProps = {
   };
   velocityAnimation?: {
     disabled?: boolean;
+    maxStrength?: number;
     sensitivity?: number;
     animationTime?: number;
     animationType?: keyof typeof animations;

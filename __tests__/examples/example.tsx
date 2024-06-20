@@ -38,6 +38,10 @@ export const Example = (options: {
             maxWidth: "100%",
             maxHeight: "calc(100vh - 50px)",
           }}
+          contentStyle={{
+            width: "100%",
+            height: "100%",
+          }}
         >
           <div style={{ background: "#444", color: "white", padding: "50px" }}>
             <h1>Title</h1>

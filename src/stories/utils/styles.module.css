@@ -1,3 +1,8 @@
+.content {
+  width: calc(100vw - 200px);
+  height: calc(100vh - 200px);
+}
+
 .controlPanel {
   position: absolute;
   z-index: 2;
@@ -31,6 +36,4 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(100, 1fr);
-  width: calc(100vw - 200px);
-  height: calc(100vh - 200px);
 }

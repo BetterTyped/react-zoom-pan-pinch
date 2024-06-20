@@ -37,10 +37,12 @@ export function getVelocityMoveTime(
   velocity: number,
 ): number {
   const { velocityAnimation } = contextInstance.setup;
-  const { equalToMove, animationTime, sensitivity } = velocityAnimation;
+  const { equalToMove, animationTime, sensitivity, maxStrength } =
+    velocityAnimation;
 
   if (equalToMove) {
-    return animationTime * velocity * sensitivity;
+    const velocityValue = Math.min(velocity, maxStrength);
+    return animationTime * velocityValue * sensitivity;
   }
   return animationTime;
 }

@@ -36,6 +36,6 @@ const config: Config.InitialOptions = {
     "jest-watch-typeahead/filename",
     "jest-watch-typeahead/testname",
   ],
-  setupFilesAfterEnv: ["jest-extended/all"],
+  setupFilesAfterEnv: ["jest-extended/all", "./jest.setup.ts"],
 };
 export default config;

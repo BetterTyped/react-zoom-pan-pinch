@@ -40,7 +40,7 @@ export const Example: React.FC<any> = (args: any) => {
             background: "#444",
             color: "white",
             padding: "50px",
-            minHeight: "300px",
+            minHeight: "100%",
             width: "100%",
           }}
         >

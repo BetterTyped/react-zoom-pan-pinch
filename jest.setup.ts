@@ -16,3 +16,37 @@ jestPreviewConfigure({
   autoPreview: true,
   // publicFolder: "static", // No need to configure if `publicFolder` is `public`
 });
+
+const getWidth = (element: HTMLElement) => {
+  const isPercentageWidth = element.style.width.includes("%");
+  const isPercentageHeight = element.style.height.includes("%");
+
+  let width = 0;
+  let height = 0;
+
+  const top = parseFloat(element.style.marginTop) || 0;
+  const left = parseFloat(element.style.marginLeft) || 0;
+
+  if (isPercentageWidth || isPercentageHeight) {
+    const parent = getWidth(element.parentNode as HTMLElement);
+    width = (parseFloat(element.style.width) * parent.width) / 100;
+    height = (parseFloat(element.style.height) * parent.height) / 100;
+  } else {
+    width = parseFloat(element.style.width);
+    height = parseFloat(element.style.height);
+  }
+
+  return {
+    width,
+    height,
+    top,
+    left,
+  };
+};
+
+// @ts-ignore
+window.HTMLElement.prototype.getBoundingClientRect = function () {
+  const size = getWidth(this);
+
+  return size;
+};

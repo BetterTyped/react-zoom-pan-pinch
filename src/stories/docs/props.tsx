@@ -165,6 +165,18 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "We can provide custom transform function to provide different way of handling our transform logic. If we need performance we can import getMatrixTransformStyles functions and replace default one. WARNING: default transform prevents svg blur on the safari.",
   },
+  smooth: {
+    type: ["boolean"],
+    defaultValue: String(initialSetup.smooth),
+    description:
+      "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
+  },
+  detached: {
+    type: ["boolean"],
+    defaultValue: String(initialSetup.smooth),
+    description:
+      "Allows to prevent CSS being applied to content element. It allows to add the functionality to canvas with some custom transforming logic.",
+  },
   wheel: {
     wheel: {
       type: [""],
@@ -175,12 +187,6 @@ export const wrapperPropsTable: ComponentProps = {
       type: ["number"],
       defaultValue: String(initialSetup.wheel.step),
       description: "The sensitivity of zooming with the wheel/touchpad.",
-    },
-    smooth: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.wheel.smooth),
-      description:
-        "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
     },
     disabled: {
       type: ["boolean"],
@@ -417,6 +423,12 @@ export const wrapperPropsTable: ComponentProps = {
       type: ["boolean"],
       defaultValue: String(initialSetup.velocityAnimation.disabled),
       description: "Disable the double click feature.",
+    },
+    maxStrength: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxStrength),
+      description:
+        "The maximum strength of the velocity animation. The higher the value, the faster the animation will be allowed.",
     },
     sensitivity: {
       type: ["number"],

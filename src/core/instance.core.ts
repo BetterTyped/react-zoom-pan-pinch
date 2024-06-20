@@ -487,10 +487,10 @@ export class ZoomPanPinch {
     ) {
       if (scale !== this.transformState.scale) {
         this.transformState.previousScale = this.transformState.scale;
-        this.transformState.scale = scale;
+        this.transformState.scale = parseFloat(scale.toFixed(2));
       }
-      this.transformState.positionX = positionX;
-      this.transformState.positionY = positionY;
+      this.transformState.positionX = parseFloat(positionX.toFixed(2));
+      this.transformState.positionY = parseFloat(positionY.toFixed(2));
 
       this.applyTransformation();
       const ctx = getContext(this);

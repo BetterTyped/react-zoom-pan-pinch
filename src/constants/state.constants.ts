@@ -22,7 +22,7 @@ export const initialSetup: LibrarySetup = {
   smooth: true,
   detached: false,
   wheel: {
-    step: 0.03,
+    step: 0.015,
     disabled: false,
     wheelDisabled: false,
     touchPadDisabled: false,
@@ -71,7 +71,8 @@ export const initialSetup: LibrarySetup = {
   velocityAnimation: {
     disabled: false,
     sensitivity: 1,
-    animationTime: 400,
+    maxStrength: 2.5,
+    animationTime: 300,
     animationType: "easeOut",
     equalToMove: true,
   },

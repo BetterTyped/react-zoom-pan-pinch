@@ -9,13 +9,11 @@ describe("Pan Touch [Base]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       pinch({ value: 1.5 });
       await waitFor(() => {
-        expect(content.style.transform).toBe(
-          "translate(0px, 0px) scale(1.5012468827930179)",
-        );
+        expect(content.style.transform).toBe("translate(0px, 0px) scale(1.5)");
       });
       touchPan({ x: 100, y: 100 });
       expect(content.style.transform).toBe(
-        "translate(100px, 100px) scale(1.5012468827930179)",
+        "translate(100px, 100px) scale(1.5)",
       );
     });
   });

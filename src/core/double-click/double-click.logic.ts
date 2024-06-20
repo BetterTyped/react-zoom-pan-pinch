@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { ReactZoomPanPinchContext } from "../../models";
+import { LibrarySetup, ReactZoomPanPinchContext } from "../../models";
 import { animate } from "../animations/animations.utils";
 import { getMousePosition } from "../wheel/wheel.utils";
 import { handleZoomToPoint } from "../zoom/zoom.logic";
@@ -44,6 +44,17 @@ export const handleDoubleClickResetMode = (
   handleDoubleClickStop(contextInstance, event);
 };
 
+function getDoubleClickScale(
+  mode: LibrarySetup["doubleClick"]["mode"],
+  scale: number,
+) {
+  if (mode === "toggle") {
+    return scale === 1 ? 1 : -1;
+  }
+
+  return mode === "zoomOut" ? -1 : 1;
+}
+
 export function handleDoubleClick(
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent | TouchEvent,
@@ -65,7 +76,7 @@ export function handleDoubleClick(
 
   if (!contentComponent) return console.error("No ContentComponent found");
 
-  const delta = mode === "zoomOut" ? -1 : 1;
+  const delta = getDoubleClickScale(mode, contextInstance.transformState.scale);
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 

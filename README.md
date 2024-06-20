@@ -36,13 +36,26 @@
   </a>
 </p>
 
-Do you like this library? Try out other projects
-**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)**
-
 #### Sources
 
 - [Demo](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
 - [Docs](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=platinum">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Platinum.png" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Platinum">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/platinum/sponsorkit/sponsors.svg" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
 
 ## Key Features
 
@@ -54,9 +67,16 @@ Do you like this library? Try out other projects
 - 👑 Animations and Utils to create own tools
 - 🔮 Advanced hooks and components
 
-## Help me keep working on this project ❤️
+## Try other BetterTyped projects
 
-- [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
+Do you like this library? Try out other projects
+
+<a href="https://github.com/BetterTyped/hyper-fetch">
+  <img width="200px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
+</a>
+
+**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and
+realtime data exchange framework.
 
 ---
 
@@ -67,6 +87,22 @@ npm install --save react-zoom-pan-pinch
 or
 yarn add react-zoom-pan-pinch
 ```
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Gold">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Gold.png" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=gold">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/gold/sponsorkit/sponsors.svg" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
 
 ## Examples
 
@@ -130,14 +166,34 @@ const Example = () => {
 };
 ```
 
-## 💖 Our sponsors
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Silver">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Silver.png" alt="Premium sponsor banner" />
+		</picture>
+	</a>
+</p>
 
 <p align="center">
-  <a href="https://github.com/sponsors/prc5">
-    <img src="https://github.com/prc5/sponsors/blob/main/sponsorkit/sponsors.png?raw=true" alt="My Sponsors" />
-  </a>
+	<a href="https://github.com/sponsors/prc5?tier=Silver">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/silver/sponsorkit/sponsors.svg" alt="Premium sponsor banner" />
+		</picture>
+	</a>
 </p>
 
 ## License
 
 MIT © [prc5](https://github.com/prc5)
+
+## Help me keep working on this project ❤️
+
+- [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
+
+## 💖 Our sponsors
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5">
+		<img src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/other/sponsorkit/sponsors.svg?raw=true" alt="My Sponsors" />
+	</a>
+</p>

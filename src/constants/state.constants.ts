@@ -37,6 +37,7 @@ export const initialSetup: LibrarySetup = {
     allowLeftClickPan: true,
     allowMiddleClickPan: true,
     allowRightClickPan: true,
+    wheelPanning: false,
     activationKeys: [],
     excluded: [],
   },

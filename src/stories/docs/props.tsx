@@ -224,6 +224,11 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.panning.disabled),
       description: "Disable the panning feature.",
     },
+    wheelPanning: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.wheelPanning),
+      description: "Enable wheel/trackpad panning.",
+    },
     velocityDisabled: {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.velocityDisabled),
@@ -312,10 +317,10 @@ export const wrapperPropsTable: ComponentProps = {
         "The sensitivity of zooming in or out when the double click mode is set to 'zoomIn' or 'zoomOut'.",
     },
     mode: {
-      type: ["zoomIn", "zoomOut", "reset"],
+      type: ["zoomIn", "zoomOut", "reset", "toggle"],
       defaultValue: String(initialSetup.doubleClick.mode),
       description:
-        "The mode of the double click feature. Zoom in/Zoom out will change the scale with the given step settings. The reset functionality will take change transform to the initial values.",
+        "The mode of the double click feature. Zoom in/Zoom out will change the scale with the given step settings. The reset functionality will take change transform to the initial values. The toggle functionality will toggle between zooming in and out.",
     },
     animationTime: {
       type: ["number"],

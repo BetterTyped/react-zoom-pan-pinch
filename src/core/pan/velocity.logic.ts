@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { PositionType } from "../../models";
+import { DeviceType, PositionType } from "../../models";
 import { ReactZoomPanPinchContext } from "../../models/context.model";
 import { animations } from "../animations/animations.constants";
 import { handleSetupAnimation } from "../animations/animations.utils";
@@ -11,25 +11,30 @@ import {
   isVelocityCalculationAllowed,
 } from "./velocity.utils";
 
-export function getSizeMultiplier(
-  wrapperComponent: HTMLDivElement,
-  equalToMove: boolean,
-): number {
+export function getSizeMultiplier(wrapperComponent: HTMLDivElement): number {
   const defaultMultiplier = 1;
 
-  if (equalToMove) {
-    return Math.min(
-      defaultMultiplier,
-      wrapperComponent.offsetWidth / window.innerWidth,
-    );
-  }
-
-  return defaultMultiplier;
+  return Math.min(
+    defaultMultiplier,
+    wrapperComponent.offsetWidth / window.innerWidth,
+  );
 }
+
+const getMinMaxVelocity = (
+  velocity: number,
+  maxStrength: number,
+  sensitivity: number,
+) => {
+  if (velocity < 0) {
+    return Math.max(velocity * sensitivity, -maxStrength);
+  }
+  return Math.min(velocity * sensitivity, maxStrength);
+};
 
 export function handleCalculateVelocity(
   contextInstance: ReactZoomPanPinchContext,
   position: PositionType,
+  device: DeviceType.MOUSE | DeviceType.TOUCH,
 ): void {
   const isAllowed = isVelocityCalculationAllowed(contextInstance);
 
@@ -39,21 +44,46 @@ export function handleCalculateVelocity(
 
   const { lastMousePosition, velocityTime, setup } = contextInstance;
   const { wrapperComponent } = contextInstance;
-  const { equalToMove } = setup.velocityAnimation;
+  const {
+    maxStrengthMouse,
+    maxStrengthTouch,
+    sensitivityTouch,
+    sensitivityMouse,
+  } = setup.velocityAnimation;
 
   const now = Date.now();
   if (lastMousePosition && velocityTime && wrapperComponent) {
-    const sizeMultiplier = getSizeMultiplier(wrapperComponent, equalToMove);
+    const sizeMultiplier = getSizeMultiplier(wrapperComponent);
+    const sensitivity = {
+      [DeviceType.TOUCH]: sensitivityTouch,
+      [DeviceType.MOUSE]: sensitivityMouse,
+    }[device];
+    const maxStrength = {
+      [DeviceType.TOUCH]: maxStrengthTouch,
+      [DeviceType.MOUSE]: maxStrengthMouse,
+    }[device];
 
     const distanceX = position.x - lastMousePosition.x;
     const distanceY = position.y - lastMousePosition.y;
 
-    const velocityX = distanceX / sizeMultiplier;
-    const velocityY = distanceY / sizeMultiplier;
+    const velocityX = getMinMaxVelocity(
+      distanceX / sizeMultiplier,
+      maxStrength,
+      sensitivity,
+    );
+    const velocityY = getMinMaxVelocity(
+      distanceY / sizeMultiplier,
+      maxStrength,
+      sensitivity,
+    );
 
     const interval = now - velocityTime;
     const speed = distanceX * distanceX + distanceY * distanceY;
-    const velocity = Math.sqrt(speed) / interval;
+    const velocity = getMinMaxVelocity(
+      Math.sqrt(speed) / interval,
+      maxStrength,
+      sensitivity,
+    );
 
     contextInstance.velocity = { velocityX, velocityY, total: velocity };
   }

@@ -424,33 +424,45 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.velocityAnimation.disabled),
       description: "Disable the double click feature.",
     },
-    maxStrength: {
-      type: ["number"],
-      defaultValue: String(initialSetup.velocityAnimation.maxStrength),
-      description:
-        "The maximum strength of the velocity animation. The higher the value, the faster the animation will be allowed.",
-    },
     sensitivity: {
       type: ["number"],
       defaultValue: String(initialSetup.velocityAnimation.animationTime),
       description:
         "Additional variable that allows you to control the sensitivity of panning velocity",
     },
+    maxStrengthMouse: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxStrengthMouse),
+      description:
+        "The maximum strength of the velocity animation. The higher the value, the faster the animation will be allowed. Affecting only mouse/trackpad interactions.",
+    },
+    maxStrengthTouch: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxStrengthTouch),
+      description:
+        "The maximum strength of the velocity animation. The higher the value, the faster the animation will be allowed. Affecting only touch interactions.",
+    },
+    inertia: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.inertia),
+      description:
+        "Allows for defining longer animation time which is equal to the panning move we made. Setting it to '0' disables the inertia effect.",
+    },
     animationTime: {
       type: ["number"],
       defaultValue: String(initialSetup.velocityAnimation.animationTime),
-      description: "Time of the triggered double click animation.",
+      description:
+        "Time of the animation when the velocity is triggered. It could be longer depending on the enabled inertia effect.",
+    },
+    maxAnimationTime: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxAnimationTime),
+      description: "Maximum animation time including inertia effect.",
     },
     animationType: {
       type: Object.keys(animations),
       defaultValue: String(initialSetup.velocityAnimation.animationType),
       description: "Animations types to choose from.",
-    },
-    equalToMove: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.velocityAnimation.equalToMove),
-      description:
-        "The calculation of the velocity animation duration is adjusted to the length of the mouse movement",
     },
   },
   onWheelStart: {
@@ -516,7 +528,7 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "Callback fired when any of zoom events are finished (wheel/touchpad/pinch)",
   },
-  onTransformed: {
+  onTransform: {
     type: [
       "(ref: ReactZoomPanPinchRef, state: { scale: number; positionX: number; positionY: number } ) => void",
     ],

@@ -56,7 +56,14 @@ export const getBounds = (
   const minPositionY = wrapperHeight - newContentHeight - scaleHeightFactor;
   const maxPositionY = scaleHeightFactor;
 
-  return { minPositionX, maxPositionX, minPositionY, maxPositionY };
+  return {
+    minPositionX,
+    maxPositionX,
+    minPositionY,
+    maxPositionY,
+    scaleWidthFactor,
+    scaleHeightFactor,
+  };
 };
 
 export const calculateBounds = (

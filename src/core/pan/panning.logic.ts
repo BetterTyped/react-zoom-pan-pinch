@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import { DeviceType } from "models";
 import { ReactZoomPanPinchContext } from "../../models/context.model";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import { handleCalculateBounds } from "../bounds/bounds.utils";
@@ -53,6 +54,7 @@ export function handlePanning(
   contextInstance: ReactZoomPanPinchContext,
   clientX: number,
   clientY: number,
+  device: DeviceType.MOUSE | DeviceType.TOUCH,
 ): void {
   const { startCoords, setup } = contextInstance;
   const { sizeX, sizeY } = setup.alignmentAnimation;
@@ -63,7 +65,7 @@ export function handlePanning(
   const paddingValueX = getPaddingValue(contextInstance, sizeX);
   const paddingValueY = getPaddingValue(contextInstance, sizeY);
 
-  handleCalculateVelocity(contextInstance, { x, y });
+  handleCalculateVelocity(contextInstance, { x, y }, device);
   handleNewPosition(contextInstance, x, y, paddingValueX, paddingValueY);
 }
 
@@ -75,7 +77,7 @@ export function handlePanningEnd(
     const { velocity, wrapperComponent, contentComponent } = contextInstance;
 
     contextInstance.isPanning = false;
-    contextInstance.animate = false;
+    contextInstance.isAnimating = false;
     contextInstance.animation = null;
 
     const wrapperRect = wrapperComponent?.getBoundingClientRect();

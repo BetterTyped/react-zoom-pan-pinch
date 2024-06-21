@@ -7,6 +7,7 @@ import {
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
   ReactZoomPanPinchRef,
+  DeviceType,
 } from "../models";
 import {
   getContext,
@@ -54,9 +55,6 @@ export class ZoomPanPinch {
 
   public mounted = true;
 
-  public pinchLastCenterX: number | null = null;
-  public pinchLastCenterY: number | null = null;
-
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
   public observer?: ResizeObserver;
@@ -101,9 +99,8 @@ export class ZoomPanPinch {
   public velocityTime: number | null = null;
   public lastMousePosition: PositionType | null = null;
   // animations helpers
-  public animate = false;
+  public isAnimating = false;
   public animation: AnimationType | null = null;
-  public maxBounds: BoundsType | null = null;
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
@@ -310,7 +307,7 @@ export class ZoomPanPinch {
     event.preventDefault();
     event.stopPropagation();
 
-    handlePanning(this, event.clientX, event.clientY);
+    handlePanning(this, event.clientX, event.clientY, DeviceType.MOUSE);
     handleCallback(getContext(this), event, onPanning);
   };
 
@@ -422,7 +419,7 @@ export class ZoomPanPinch {
       event.stopPropagation();
 
       const touch = event.touches[0];
-      handlePanning(this, touch.clientX, touch.clientY);
+      handlePanning(this, touch.clientX, touch.clientY, DeviceType.TOUCH);
       handleCallback(getContext(this), event, onPanning);
     } else if (event.touches.length > 1) {
       this.onPinch(event);
@@ -478,7 +475,7 @@ export class ZoomPanPinch {
     positionX: number,
     positionY: number,
   ): void => {
-    const { onTransformed } = this.props;
+    const { onTransform } = this.props;
 
     if (
       !Number.isNaN(scale) &&
@@ -489,13 +486,14 @@ export class ZoomPanPinch {
         this.transformState.previousScale = this.transformState.scale;
         this.transformState.scale = parseFloat(scale.toFixed(2));
       }
+
       this.transformState.positionX = parseFloat(positionX.toFixed(2));
       this.transformState.positionY = parseFloat(positionY.toFixed(2));
 
       this.applyTransformation();
       const ctx = getContext(this);
       this.onChangeCallbacks.forEach((callback) => callback(ctx));
-      handleCallback(ctx, { scale, positionX, positionY }, onTransformed);
+      handleCallback(ctx, { scale, positionX, positionY }, onTransform);
     } else {
       console.error("Detected NaN set state values");
     }

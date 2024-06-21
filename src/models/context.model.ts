@@ -117,11 +117,14 @@ export type ReactZoomPanPinchProps = {
   };
   velocityAnimation?: {
     disabled?: boolean;
-    maxStrength?: number;
-    sensitivity?: number;
+    sensitivityTouch?: number;
+    sensitivityMouse?: number;
+    maxStrengthMouse?: number;
+    maxStrengthTouch?: number;
+    inertia?: number;
     animationTime?: number;
+    maxAnimationTime?: number;
     animationType?: keyof typeof animations;
-    equalToMove?: boolean;
   };
   onWheelStart?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
   onWheel?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
@@ -150,7 +153,7 @@ export type ReactZoomPanPinchProps = {
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
   ) => void;
-  onTransformed?: (
+  onTransform?: (
     ref: ReactZoomPanPinchRef,
     state: { scale: number; positionX: number; positionY: number },
   ) => void;
@@ -194,7 +197,7 @@ export type LibrarySetup = Pick<
       | "onZoomStart"
       | "onZoom"
       | "onZoomStop"
-      | "onTransformed"
+      | "onTransform"
       | "onInit"
       | "customTransform"
     >

@@ -70,10 +70,13 @@ export const initialSetup: LibrarySetup = {
   },
   velocityAnimation: {
     disabled: false,
-    sensitivity: 1,
-    maxStrength: 2.5,
+    sensitivityMouse: 1,
+    sensitivityTouch: 1.2,
+    maxStrengthMouse: 20,
+    maxStrengthTouch: 40,
+    inertia: 1,
     animationTime: 300,
+    maxAnimationTime: 800,
     animationType: "easeOut",
-    equalToMove: true,
   },
 };

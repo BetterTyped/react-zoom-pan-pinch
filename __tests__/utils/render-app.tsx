@@ -53,9 +53,18 @@ function getPinchTouches(
   return touches;
 }
 
-export const renderApp = (
-  props?: ReactZoomPanPinchProps,
-): RenderResult & RenderApp => {
+export const renderApp = ({
+  contentHeight,
+  contentWidth,
+  wrapperHeight,
+  wrapperWidth,
+  ...props
+}: ReactZoomPanPinchProps & {
+  contentWidth?: string;
+  contentHeight?: string;
+  wrapperWidth?: string;
+  wrapperHeight?: string;
+} = {}): RenderResult & RenderApp => {
   let renders = 0;
   let ref: { current: ReactZoomPanPinchRef | null } = { current: null };
 
@@ -64,13 +73,25 @@ export const renderApp = (
   };
 
   const exampleProps: ReactZoomPanPinchProps = {
+    doubleClick: {
+      disabled: true,
+    },
+    alignmentAnimation: {
+      disabled: true,
+    },
     ...props,
     ref: (r) => {
       ref.current = r;
     },
   };
 
-  const view = render(<Example props={exampleProps} onRender={onRender} />);
+  const view = render(
+    <Example
+      props={exampleProps}
+      onRender={onRender}
+      {...{ contentHeight, contentWidth, wrapperHeight, wrapperWidth }}
+    />,
+  );
   // // controls buttons
   const zoomInBtn = screen.getByTestId("zoom-in");
   const zoomOutBtn = screen.getByTestId("zoom-out");

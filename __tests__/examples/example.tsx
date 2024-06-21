@@ -11,8 +11,20 @@ export const Example = (options: {
   props?: ReactZoomPanPinchProps;
   onRender: () => void;
   children?: React.ReactNode;
+  contentWidth?: string;
+  contentHeight?: string;
+  wrapperWidth?: string;
+  wrapperHeight?: string;
 }) => {
-  const { props = {}, onRender, children } = options;
+  const {
+    props = {},
+    onRender,
+    children,
+    contentHeight,
+    contentWidth,
+    wrapperHeight,
+    wrapperWidth,
+  } = options;
 
   onRender();
 
@@ -33,14 +45,12 @@ export const Example = (options: {
             } as React.HTMLAttributes<HTMLDivElement>
           }
           wrapperStyle={{
-            width: "500px",
-            height: "500px",
-            maxWidth: "100%",
-            maxHeight: "calc(100vh - 50px)",
+            width: wrapperWidth || "500px",
+            height: wrapperHeight || "500px",
           }}
           contentStyle={{
-            width: "100%",
-            height: "100%",
+            width: contentWidth || "100%",
+            height: contentHeight || "100%",
           }}
         >
           <div style={{ background: "#444", color: "white", padding: "50px" }}>
@@ -52,6 +62,48 @@ export const Example = (options: {
             >
               Click me!
             </button>
+            <div
+              style={{
+                display: "flex",
+                overflow: "auto",
+                maxWidth: "100%",
+                padding: "10px",
+              }}
+            >
+              <div
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  padding: "10px",
+                  background: "red",
+                }}
+                className="panningDisabled"
+              >
+                Panning is DISABLED on this element
+              </div>
+              <div
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  padding: "10px",
+                  background: "blue",
+                }}
+                className="wheelDisabled"
+              >
+                Wheel is DISABLED on this element
+              </div>
+              <div
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  padding: "10px",
+                  background: "green",
+                }}
+                className="pinchDisabled"
+              >
+                Pinch is DISABLED on this element
+              </div>
+            </div>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut

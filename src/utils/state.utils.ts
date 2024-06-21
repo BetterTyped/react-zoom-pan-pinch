@@ -4,6 +4,7 @@ import {
   ReactZoomPanPinchState,
 } from "../models/context.model";
 import { initialSetup, initialState } from "../constants/state.constants";
+import { boundLimiter } from "core/bounds/bounds.utils";
 
 export const createState = (
   props: ReactZoomPanPinchProps,
@@ -11,8 +12,22 @@ export const createState = (
   return {
     previousScale: props.initialScale ?? initialState.scale,
     scale: props.initialScale ?? initialState.scale,
-    positionX: props.initialPositionX ?? initialState.positionX,
-    positionY: props.initialPositionY ?? initialState.positionY,
+    positionX:
+      props.initialPositionX ??
+      boundLimiter(
+        initialState.positionX,
+        props.minPositionX ?? initialState.positionX,
+        props.maxPositionX ?? initialState.positionX,
+        true,
+      ),
+    positionY:
+      props.initialPositionY ??
+      boundLimiter(
+        initialState.positionY,
+        props.minPositionY ?? initialState.positionY,
+        props.maxPositionY ?? initialState.positionY,
+        true,
+      ),
   };
 };
 

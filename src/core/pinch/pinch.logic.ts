@@ -7,28 +7,8 @@ import {
   calculateTouchMidPoint,
   getTouchDistance,
 } from "./pinch.utils";
-import {
-  getMouseBoundedPosition,
-  handleCalculateBounds,
-} from "../bounds/bounds.utils";
+import { handleCalculateBounds } from "../bounds/bounds.utils";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
-import { getPaddingValue } from "../pan/panning.utils";
-
-const getTouchCenter = (event: TouchEvent) => {
-  let totalX = 0;
-  let totalY = 0;
-  // Sum up the positions of all touches
-  for (let i = 0; i < 2; i++) {
-    totalX += event.touches[i].clientX;
-    totalY += event.touches[i].clientY;
-  }
-
-  // Calculate the average position
-  const x = totalX / 2;
-  const y = totalY / 2;
-
-  return { x, y };
-};
 
 export const handlePinchStart = (
   contextInstance: ReactZoomPanPinchContext,
@@ -41,9 +21,7 @@ export const handlePinchStart = (
   contextInstance.pinchStartScale = contextInstance.transformState.scale;
   contextInstance.isPanning = false;
 
-  const center = getTouchCenter(event);
-  contextInstance.pinchLastCenterX = center.x;
-  contextInstance.pinchLastCenterY = center.y;
+  if (!contextInstance.contentComponent) return;
 
   handleCancelAnimation(contextInstance);
 };
@@ -52,10 +30,9 @@ export const handlePinchZoom = (
   contextInstance: ReactZoomPanPinchContext,
   event: TouchEvent,
 ): void => {
-  const { contentComponent, pinchStartDistance, wrapperComponent } =
-    contextInstance;
+  const { contentComponent, pinchStartDistance } = contextInstance;
   const { scale } = contextInstance.transformState;
-  const { limitToBounds, centerZoomedOut, zoomAnimation, alignmentAnimation } =
+  const { limitToBounds, centerZoomedOut, zoomAnimation } =
     contextInstance.setup;
   const { disabled, size } = zoomAnimation;
 
@@ -70,15 +47,7 @@ export const handlePinchZoom = (
   const currentDistance = getTouchDistance(event);
   const newScale = calculatePinchZoom(contextInstance, currentDistance);
 
-  const center = getTouchCenter(event);
-  // pan should be scale invariant.
-  const panX = center.x - (contextInstance.pinchLastCenterX || 0);
-  const panY = center.y - (contextInstance.pinchLastCenterY || 0);
-
-  if (newScale === scale && 0 == panX && 0 == panY) return;
-
-  contextInstance.pinchLastCenterX = center.x;
-  contextInstance.pinchLastCenterY = center.y;
+  if (newScale === scale) return;
 
   const bounds = handleCalculateBounds(contextInstance, newScale);
 
@@ -97,23 +66,7 @@ export const handlePinchZoom = (
   contextInstance.pinchMidpoint = midPoint;
   contextInstance.lastDistance = currentDistance;
 
-  const { sizeX, sizeY } = alignmentAnimation;
-  const paddingValueX = getPaddingValue(contextInstance, sizeX);
-  const paddingValueY = getPaddingValue(contextInstance, sizeY);
-
-  const newPositionX = x + panX;
-  const newPositionY = y + panY;
-  const { x: finalX, y: finalY } = getMouseBoundedPosition(
-    newPositionX,
-    newPositionY,
-    bounds,
-    limitToBounds,
-    paddingValueX,
-    paddingValueY,
-    wrapperComponent,
-  );
-
-  contextInstance.setTransformState(newScale, finalX, finalY);
+  contextInstance.setTransformState(newScale, x, y);
 };
 
 export const handlePinchStop = (

@@ -18,7 +18,7 @@ export const handleCancelAnimation = (
   if (!contextInstance.mounted) return;
   handleCancelAnimationFrame(contextInstance.animation);
   // Clear animation state
-  contextInstance.animate = false;
+  contextInstance.isAnimating = false;
   contextInstance.animation = null;
   contextInstance.velocity = null;
 };
@@ -103,6 +103,11 @@ export function animate(
       animationName,
       animationTime,
       (step: number) => {
+        if (step !== 1) {
+          contextInstance.isAnimating = true;
+        } else {
+          contextInstance.isAnimating = false;
+        }
         const newScale = scale + scaleDiff * step;
         const newPositionX = positionX + positionXDiff * step;
         const newPositionY = positionY + positionYDiff * step;

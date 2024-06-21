@@ -205,5 +205,4 @@ export const argsTypes = {
 //   sensitivity: 1,
 //   animationTime: 600,
 //   animationType: "easeOut",
-//   equalToMove: true,
 // },

@@ -18,7 +18,7 @@ const getTouchCenter = (event: TouchEvent) => {
   let totalX = 0;
   let totalY = 0;
   // Sum up the positions of all touches
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 2; i += 1) {
     totalX += event.touches[i].clientX;
     totalY += event.touches[i].clientY;
   }
@@ -75,7 +75,7 @@ export const handlePinchZoom = (
   const panX = center.x - (contextInstance.pinchLastCenterX || 0);
   const panY = center.y - (contextInstance.pinchLastCenterY || 0);
 
-  if (newScale === scale && 0 == panX && 0 == panY) return;
+  if (newScale === scale && panX === 0 && panY === 0) return;
 
   contextInstance.pinchLastCenterX = center.x;
   contextInstance.pinchLastCenterY = center.y;

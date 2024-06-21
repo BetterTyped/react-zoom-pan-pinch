@@ -17,6 +17,7 @@ export const normalizeArgs = (args: { [key: string]: any }): any => {
 
   return {
     ...newArgs,
+    // DO NOT REMOVE - it will lag out the storybook!!
     onTransform: undefined,
     onWheelStart: undefined,
     onWheel: undefined,

@@ -27,28 +27,31 @@ interface RenderApp {
 function getPinchTouches(
   content: HTMLElement,
   center: [number, number],
-  value: [number, number],
-  from = 0.001,
+  step: number,
+  from: number,
 ) {
   const cx = center[0];
   const cy = center[1];
 
-  const touches = [
-    {
-      pageX: 0,
-      pageY: 0,
-      clientX: 0,
-      clientY: 0,
-      target: content,
-    },
-    {
-      pageX: cx + from + value[0],
-      pageY: cy + from + value[1],
-      clientX: cx + from + value[0],
-      clientY: cy + from + value[1],
-      target: content,
-    },
-  ];
+  const dx = (step + from) / 2;
+
+  const leftTouch = {
+    pageX: 0 - dx,
+    pageY: 0 - dx,
+    clientX: 0 - dx,
+    clientY: 0 - dx,
+    target: content,
+  };
+
+  const rightTouch = {
+    pageX: cx + dx,
+    pageY: cy + dx,
+    clientX: cx + dx,
+    clientY: cy + dx,
+    target: content,
+  };
+
+  const touches = [leftTouch, rightTouch];
 
   return touches;
 }
@@ -113,7 +116,9 @@ export const renderApp = ({
     const step = 1;
 
     const isZoomIn = ref.current.instance.state.scale < value;
-    while (true) {
+
+    const startTime = Date.now();
+    while (Date.now() - startTime < 200) {
       if (
         (isZoomIn
           ? ref.current.instance.state.scale < value
@@ -121,9 +126,9 @@ export const renderApp = ({
         ref.current.instance.state.scale !== value
       ) {
         const isNearScale =
-          Math.abs(ref.current.instance.state.scale - value) < 0.01;
+          Math.abs(ref.current.instance.state.scale - value) < 0.05;
 
-        const newStep = isNearScale ? 0.35 : step;
+        const newStep = isNearScale ? 0.4 : step;
 
         fireEvent(
           content,
@@ -143,38 +148,34 @@ export const renderApp = ({
     if (!ref.current) throw new Error("ref.current is null");
 
     const isZoomIn = ref.current.instance.state.scale < value;
-    const from = isZoomIn ? 40 : 200;
-    const stepY = 0.1;
-    const stepX = 0.1;
+    const from = isZoomIn ? 1 : 2;
+    const step = 0.1;
 
-    let pinchValue = [0, 0];
-    let touches = getPinchTouches(content, center, [stepX, stepY], from);
+    let pinchValue = 0;
+    let touches = getPinchTouches(content, center, step, from);
 
     fireEvent.touchStart(content, {
       touches,
     });
 
-    while (true) {
+    const startTime = Date.now();
+    while (Date.now() - startTime < 200) {
       if (
         (isZoomIn
           ? ref.current.instance.state.scale < value
           : ref.current.instance.state.scale > value) &&
         ref.current.instance.state.scale !== value
       ) {
-        const isNearScale =
-          Math.abs(ref.current.instance.state.scale - value) < 0.5;
-
-        const newStepX = isNearScale ? stepX / 10 : stepX;
-        const newStepY = isNearScale ? stepY / 10 : stepY;
-
-        pinchValue[0] = pinchValue[0] + newStepX;
-        pinchValue[1] = pinchValue[1] + newStepY;
-        touches = getPinchTouches(
-          content,
-          center,
-          [pinchValue[0], pinchValue[1]],
-          from,
+        const scaleDifference = Math.abs(
+          ref.current.instance.state.scale - value,
         );
+        const isNearScale = scaleDifference < 0.5;
+
+        const newStep = isNearScale ? step / 2 : step;
+
+        pinchValue = pinchValue + newStep;
+        touches = getPinchTouches(content, center, pinchValue, from);
+
         fireEvent.touchMove(content, {
           touches,
         });

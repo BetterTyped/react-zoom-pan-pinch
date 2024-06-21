@@ -475,7 +475,7 @@ export class ZoomPanPinch {
     if (!keys.length) {
       return true;
     }
-    return Boolean(keys.find((key) => this.pressedKeys[key]));
+    return Boolean(keys.every((key) => this.pressedKeys[key]));
   };
 
   setCenter = (): void => {

@@ -77,7 +77,7 @@ export const handleCalculateWheelZoom = (
   disable: boolean,
   getTarget?: boolean,
 ): number => {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { wrapperComponent, setup } = contextInstance;
   const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
   const { size, disabled } = zoomAnimation;
@@ -105,7 +105,7 @@ export const handleWheelZoomStop = (
   event: WheelEvent,
 ): boolean => {
   const { previousWheelEvent } = contextInstance;
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { maxScale, minScale } = contextInstance.setup;
 
   if (!previousWheelEvent) return false;

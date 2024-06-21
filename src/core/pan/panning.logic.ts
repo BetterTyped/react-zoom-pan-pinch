@@ -20,7 +20,7 @@ export function handlePanningStart(
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent | TouchEvent,
 ): void {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
 
   handleCancelAnimation(contextInstance);
   handleCalculateBounds(contextInstance, scale);
@@ -34,7 +34,7 @@ export function handlePanningStart(
 export function handleAlignToBounds(
   contextInstance: ReactZoomPanPinchContext,
 ): void {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { minScale, alignmentAnimation } = contextInstance.setup;
   const { disabled, sizeX, sizeY, animationTime, animationType } =
     alignmentAnimation;

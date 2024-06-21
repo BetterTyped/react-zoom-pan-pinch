@@ -55,7 +55,7 @@ export class ZoomPanPinch {
 
   public mounted = true;
 
-  public transformState: ReactZoomPanPinchState;
+  public state: ReactZoomPanPinchState;
   public setup: LibrarySetup;
   public observer?: ResizeObserver;
   public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
@@ -92,6 +92,7 @@ export class ZoomPanPinch {
   public pinchStartDistance: null | number = null;
   public pinchStartScale: null | number = null;
   public pinchMidpoint: null | PositionType = null;
+  public pinchPreviousCenter: null | PositionType = null;
   // double click helpers
   public doubleClickStopEventTimer: ReturnType<typeof setTimeout> | null = null;
   // velocity helpers
@@ -107,7 +108,7 @@ export class ZoomPanPinch {
   constructor(props: ReactZoomPanPinchProps) {
     this.props = props;
     this.setup = createSetup(this.props);
-    this.transformState = createState(this.props);
+    this.state = createState(this.props);
   }
 
   mount = () => {
@@ -120,7 +121,7 @@ export class ZoomPanPinch {
 
   update = (newProps: ReactZoomPanPinchProps) => {
     this.props = newProps;
-    handleCalculateBounds(this, this.transformState.scale);
+    handleCalculateBounds(this, this.state.scale);
     this.setup = createSetup(newProps);
   };
 
@@ -248,7 +249,7 @@ export class ZoomPanPinch {
     event.preventDefault();
     event.stopPropagation();
 
-    const { positionX, positionY } = this.transformState;
+    const { positionX, positionY } = this.state;
     const mouseX = positionX - event.deltaX;
     const mouseY = positionY - event.deltaY;
     const newPositionX = panning.lockAxisX ? positionX : mouseX;
@@ -376,10 +377,6 @@ export class ZoomPanPinch {
 
     if (disabled) return;
 
-    const isAllowed = isPanningStartAllowed(this, event);
-
-    if (!isAllowed) return;
-
     const isDoubleTap = this.lastTouch && +new Date() - this.lastTouch < 200;
 
     if (isDoubleTap && event.touches.length === 1) {
@@ -394,7 +391,9 @@ export class ZoomPanPinch {
       const isPanningAction = touches.length === 1;
       const isPinchAction = touches.length === 2;
 
+      const isAllowed = isPanningStartAllowed(this, event);
       if (isPanningAction) {
+        if (!isAllowed) return;
         handleCancelAnimation(this);
         handlePanningStart(this, event);
         handleCallback(getContext(this), event, onPanningStart);
@@ -463,50 +462,30 @@ export class ZoomPanPinch {
     this.pressedKeys[e.key] = false;
   };
 
-  isPressingKeys = (keys: string[]): boolean => {
+  isPressingKeys = (
+    keys: string[] | ((keys: string[]) => boolean),
+  ): boolean => {
+    if (typeof keys === "function") {
+      return keys(
+        Object.entries(this.pressedKeys)
+          .filter(([, pressed]) => pressed)
+          .map(([key]) => key),
+      );
+    }
     if (!keys.length) {
       return true;
     }
     return Boolean(keys.find((key) => this.pressedKeys[key]));
   };
 
-  setTransformState = (
-    scale: number,
-    positionX: number,
-    positionY: number,
-  ): void => {
-    const { onTransform } = this.props;
-
-    if (
-      !Number.isNaN(scale) &&
-      !Number.isNaN(positionX) &&
-      !Number.isNaN(positionY)
-    ) {
-      if (scale !== this.transformState.scale) {
-        this.transformState.previousScale = this.transformState.scale;
-        this.transformState.scale = parseFloat(scale.toFixed(2));
-      }
-
-      this.transformState.positionX = parseFloat(positionX.toFixed(2));
-      this.transformState.positionY = parseFloat(positionY.toFixed(2));
-
-      this.applyTransformation();
-      const ctx = getContext(this);
-      this.onChangeCallbacks.forEach((callback) => callback(ctx));
-      handleCallback(ctx, { scale, positionX, positionY }, onTransform);
-    } else {
-      console.error("Detected NaN set state values");
-    }
-  };
-
   setCenter = (): void => {
     if (this.wrapperComponent && this.contentComponent) {
       const targetState = getCenterPosition(
-        this.transformState.scale,
+        this.state.scale,
         this.wrapperComponent,
         this.contentComponent,
       );
-      this.setTransformState(
+      this.setState(
         targetState.scale,
         targetState.positionX,
         targetState.positionY,
@@ -521,9 +500,13 @@ export class ZoomPanPinch {
     return getTransformStyles(x, y, scale);
   };
 
+  getContext = () => {
+    return getContext(this);
+  };
+
   applyTransformation = (): void => {
     if (!this.mounted || !this.contentComponent) return;
-    const { scale, positionX, positionY } = this.transformState;
+    const { scale, positionX, positionY } = this.state;
     const transform = this.handleTransformStyles(positionX, positionY, scale);
 
     // Detached mode do not apply transformation directly to content component
@@ -536,14 +519,35 @@ export class ZoomPanPinch {
         scale,
         positionX,
         positionY,
-        previousScale: this.transformState.previousScale,
+        previousScale: this.state.previousScale,
         ref: getContext(this),
       }),
     );
   };
 
-  getContext = () => {
-    return getContext(this);
+  setState = (scale: number, positionX: number, positionY: number): void => {
+    const { onTransform } = this.props;
+
+    if (
+      !Number.isNaN(scale) &&
+      !Number.isNaN(positionX) &&
+      !Number.isNaN(positionY)
+    ) {
+      if (scale !== this.state.scale) {
+        this.state.previousScale = this.state.scale;
+        this.state.scale = parseFloat(scale.toFixed(2));
+      }
+
+      this.state.positionX = parseFloat(positionX.toFixed(3));
+      this.state.positionY = parseFloat(positionY.toFixed(3));
+
+      this.applyTransformation();
+      const ctx = getContext(this);
+      this.onChangeCallbacks.forEach((callback) => callback(ctx));
+      handleCallback(ctx, { scale, positionX, positionY }, onTransform);
+    } else {
+      console.error("Detected NaN set state values");
+    }
   };
 
   /**
@@ -596,7 +600,7 @@ export class ZoomPanPinch {
     this.cleanupWindowEvents();
     this.wrapperComponent = wrapperComponent;
     this.contentComponent = contentComponent;
-    handleCalculateBounds(this, this.transformState.scale);
+    handleCalculateBounds(this, this.state.scale);
     this.handleInitializeWrapperEvents(wrapperComponent);
     this.handleInitialize(contentComponent);
     this.initializeWindowEvents();

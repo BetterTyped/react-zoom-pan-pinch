@@ -73,10 +73,7 @@ export const handlePinchZoom = (
   // if touches goes off of the wrapper element
   if (!Number.isFinite(midPoint.x) || !Number.isFinite(midPoint.y)) return;
   const currentDistance = getTouchDistance(event);
-  const newScale =
-    Math.abs(scale - 1.5) < 0.2
-      ? scale
-      : calculatePinchZoom(contextInstance, currentDistance);
+  const newScale = calculatePinchZoom(contextInstance, currentDistance);
 
   const center = getTouchCenter(event);
 
@@ -86,7 +83,7 @@ export const handlePinchZoom = (
   const panX = (center.x - (pinchPreviousCenter?.x || 0)) * scaleDiff;
   const panY = (center.y - (pinchPreviousCenter?.y || 0)) * scaleDiff;
 
-  // if (newScale === scale && 0 == panX && 0 == panY) return;
+  if (newScale === scale && 0 == panX && 0 == panY) return;
 
   contextInstance.pinchPreviousCenter = center;
 

@@ -36,8 +36,8 @@ export const handleWheelZoom = (
 ): void => {
   const { onWheel, onZoom } = contextInstance.props;
 
-  const { contentComponent, setup, transformState } = contextInstance;
-  const { scale } = transformState;
+  const { contentComponent, setup, state } = contextInstance;
+  const { scale } = state;
   const {
     limitToBounds,
     centerZoomedOut,
@@ -87,7 +87,7 @@ export const handleWheelZoom = (
 
   contextInstance.previousWheelEvent = event;
 
-  contextInstance.setTransformState(newScale, x, y);
+  contextInstance.setState(newScale, x, y);
 
   handleCallback(getContext(contextInstance), event, onWheel);
   handleCallback(getContext(contextInstance), event, onZoom);

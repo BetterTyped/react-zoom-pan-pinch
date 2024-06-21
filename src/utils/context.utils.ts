@@ -32,7 +32,7 @@ export const getState = (
 ): ReactZoomPanPinchContextState => {
   return {
     instance: contextInstance,
-    state: contextInstance.transformState,
+    state: contextInstance.state,
   };
 };
 

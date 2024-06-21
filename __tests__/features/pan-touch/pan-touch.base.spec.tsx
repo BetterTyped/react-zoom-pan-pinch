@@ -98,7 +98,7 @@ describe("Pan Touch [Base]", () => {
   //     minPositionX: 30,
   //     minPositionY: 30,
   //     onTransform: (ctx) => {
-  //       console.log(ctx.instance.transformState);
+  //       console.log(ctx.instance.state);
   //     },
   //   });
   //   zoom({ value: 1.5 });

@@ -39,7 +39,7 @@ export function handleAlignToScaleBounds(
   mousePositionX?: number,
   mousePositionY?: number,
 ): void {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { wrapperComponent } = contextInstance;
   const { minScale, limitToBounds, zoomAnimation } = contextInstance.setup;
   const { disabled, animationTime, animationType } = zoomAnimation;

@@ -9,7 +9,7 @@ describe("Pinch [Base]", () => {
       pinch({ value: 1.5 });
       await waitFor(() => {
         expect(content.style.transform).toBe("translate(0px, 0px) scale(1.5)");
-        expect(ref.current?.instance.transformState.scale).toBe(1.5);
+        expect(ref.current?.instance.state.scale).toBe(1.5);
       });
     });
   });

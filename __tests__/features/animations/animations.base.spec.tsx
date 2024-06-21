@@ -7,10 +7,10 @@ describe("Animations [Base]", () => {
   describe("When panning out of boundaries", () => {
     describe("And content is zoomed in", () => {
       it("should animate returning to the bounded position", async () => {
-        const transformStates: ReactZoomPanPinchState[] = [];
+        const states: ReactZoomPanPinchState[] = [];
         const { content, pan, zoom } = renderApp({
           onPanning: (ref) => {
-            transformStates.push(ref.instance.transformState);
+            states.push(ref.instance.state);
           },
         });
         expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
@@ -19,12 +19,12 @@ describe("Animations [Base]", () => {
           "translate(0px, 0px) scale(1.5009999999999448)",
         );
         pan({ x: -100, y: -100 });
-        expect(transformStates).toHaveLength(1);
+        expect(states).toHaveLength(1);
         expect(content.style.transform).toBe(
           "translate(-100px, -100px) scale(1.5009999999999448)",
         );
         // await waitFor(() => {
-        //   expect(transformStates).toHaveLength(5);
+        //   expect(states).toHaveLength(5);
         // });
       });
     });
@@ -36,7 +36,7 @@ describe("Animations [Base]", () => {
         "translate(-100px, -100px) scale(1)",
       );
       // await waitFor(() => {
-      //   expect(transformStates).toHaveLength(5);
+      //   expect(states).toHaveLength(5);
       // });
     });
   });

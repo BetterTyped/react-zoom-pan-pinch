@@ -18,7 +18,7 @@ export const KeepScale = React.forwardRef<
         localRef.current.style.transform = instance.handleTransformStyles(
           positionX,
           positionY,
-          1 / ctx.instance.transformState.scale,
+          1 / ctx.instance.state.scale,
         );
       }
     });

@@ -15,7 +15,7 @@ export const handleCalculateButtonZoom = (
   delta: number,
   step: number,
 ): number => {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { wrapperComponent, setup } = contextInstance;
   const { maxScale, minScale, zoomAnimation, smooth } = setup;
   const { size } = zoomAnimation;
@@ -46,7 +46,7 @@ export function handleZoomToViewCenter(
   animationType: keyof typeof animations,
 ): void {
   const { wrapperComponent } = contextInstance;
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   if (!wrapperComponent) return console.error("No WrapperComponent found");
 
@@ -82,7 +82,7 @@ export function resetTransformations(
   const { setup, wrapperComponent } = contextInstance;
   const { limitToBounds } = setup;
   const initialTransformation = createState(contextInstance.props);
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   if (!wrapperComponent) return;
 
@@ -143,24 +143,18 @@ export function calculateZoomToNode(
   node: HTMLElement,
   customZoom?: number,
 ): { positionX: number; positionY: number; scale: number } {
-  const { wrapperComponent, contentComponent, transformState } =
-    contextInstance;
+  const { wrapperComponent, contentComponent, state } = contextInstance;
   const { limitToBounds, minScale, maxScale } = contextInstance.setup;
-  if (!wrapperComponent || !contentComponent) return transformState;
+  if (!wrapperComponent || !contentComponent) return state;
 
   const wrapperRect = wrapperComponent.getBoundingClientRect();
   const nodeRect = node.getBoundingClientRect();
-  const nodeOffset = getOffset(
-    node,
-    wrapperComponent,
-    contentComponent,
-    transformState,
-  );
+  const nodeOffset = getOffset(node, wrapperComponent, contentComponent, state);
 
   const nodeLeft = nodeOffset.x;
   const nodeTop = nodeOffset.y;
-  const nodeWidth = nodeRect.width / transformState.scale;
-  const nodeHeight = nodeRect.height / transformState.scale;
+  const nodeWidth = nodeRect.width / state.scale;
+  const nodeHeight = nodeRect.height / state.scale;
 
   const scaleX = wrapperComponent.offsetWidth / nodeWidth;
   const scaleY = wrapperComponent.offsetHeight / nodeHeight;

@@ -83,19 +83,15 @@ export function animate(
   const isValid = isValidTargetState(targetState);
   if (!contextInstance.mounted || !isValid) return;
 
-  const { setTransformState } = contextInstance;
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { setState } = contextInstance;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   const scaleDiff = targetState.scale - scale;
   const positionXDiff = targetState.positionX - positionX;
   const positionYDiff = targetState.positionY - positionY;
 
   if (animationTime === 0) {
-    setTransformState(
-      targetState.scale,
-      targetState.positionX,
-      targetState.positionY,
-    );
+    setState(targetState.scale, targetState.positionX, targetState.positionY);
   } else {
     // animation start timestamp
     handleSetupAnimation(
@@ -112,7 +108,7 @@ export function animate(
         const newPositionX = positionX + positionXDiff * step;
         const newPositionY = positionY + positionYDiff * step;
 
-        setTransformState(newScale, newPositionX, newPositionY);
+        setState(newScale, newPositionX, newPositionY);
       },
     );
   }

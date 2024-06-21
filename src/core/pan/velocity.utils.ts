@@ -6,7 +6,7 @@ export const isVelocityCalculationAllowed = (
 ): boolean => {
   const { mounted } = contextInstance;
   const { disabled, velocityAnimation } = contextInstance.setup;
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { disabled: disabledVelocity } = velocityAnimation;
 
   const isAllowed = !disabledVelocity || scale > 1 || !disabled || mounted;
@@ -21,7 +21,7 @@ export const isVelocityAllowed = (
 ): boolean => {
   const { mounted, velocity, bounds } = contextInstance;
   const { disabled, velocityAnimation } = contextInstance.setup;
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { disabled: disabledVelocity } = velocityAnimation;
 
   const isAllowed = !disabledVelocity || scale > 1 || !disabled || mounted;

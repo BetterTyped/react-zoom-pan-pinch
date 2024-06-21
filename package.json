@@ -24,7 +24,7 @@
     "deploy": "gh-pages -d storybook-static",
     "release": "yarn semantic-release",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook:build": "storybook build"
   },
   "peerDependencies": {
     "react": "*",
@@ -48,7 +48,6 @@
     "@storybook/addon-interactions": "^7.6.9",
     "@storybook/addon-links": "7.6.9",
     "@storybook/addon-mdx-gfm": "7.6.9",
-    "@storybook/addon-onboarding": "^1.0.10",
     "@storybook/addon-storysource": "7.6.9",
     "@storybook/blocks": "^7.6.9",
     "@storybook/cli": "^7.6.9",

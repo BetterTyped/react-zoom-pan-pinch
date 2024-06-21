@@ -67,15 +67,15 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       const rect = instance.contentComponent.getBoundingClientRect();
 
       return {
-        width: rect.width / instance.transformState.scale,
-        height: rect.height / instance.transformState.scale,
+        width: rect.width / instance.state.scale,
+        height: rect.height / instance.state.scale,
       };
     }
     return {
       width: 0,
       height: 0,
     };
-  }, [instance.contentComponent, instance.transformState.scale]);
+  }, [instance.contentComponent, instance.state.scale]);
 
   const computeMiniMapScale = useCallback(() => {
     const contentSize = getContentSize();
@@ -129,10 +129,10 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     if (previewRef.current) {
       const size = getContentSize();
       const scale = computeMiniMapScale();
-      const previewScale = scale * (1 / instance.transformState.scale);
+      const previewScale = scale * (1 / instance.state.scale);
       const transform = instance.handleTransformStyles(
-        -instance.transformState.positionX * previewScale,
-        -instance.transformState.positionY * previewScale,
+        -instance.state.positionX * previewScale,
+        -instance.state.positionY * previewScale,
         1,
       );
 
@@ -161,12 +161,11 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     return instance.onChange((zpp) => {
       const scale = computeMiniMapScale();
       if (miniMapInstance.current) {
-        miniMapInstance.current.instance.transformState.scale =
-          zpp.instance.transformState.scale;
-        miniMapInstance.current.instance.transformState.positionX =
-          zpp.instance.transformState.positionX * scale;
-        miniMapInstance.current.instance.transformState.positionY =
-          zpp.instance.transformState.positionY * scale;
+        miniMapInstance.current.instance.state.scale = zpp.instance.state.scale;
+        miniMapInstance.current.instance.state.positionX =
+          zpp.instance.state.positionX * scale;
+        miniMapInstance.current.instance.state.positionY =
+          zpp.instance.state.positionY * scale;
       }
     });
   }, [computeMiniMapScale, instance, miniMapInstance]);
@@ -185,37 +184,30 @@ export const MiniMap: React.FC<MiniMapProps> = ({
         const y = relativeY - previewRect.height / 2;
 
         const instanceWidth =
-          (instance.wrapperComponent?.offsetWidth || 0) *
-          instance.transformState.scale;
+          (instance.wrapperComponent?.offsetWidth || 0) * instance.state.scale;
         const instanceHeight =
-          (instance.wrapperComponent?.offsetHeight || 0) *
-          instance.transformState.scale;
+          (instance.wrapperComponent?.offsetHeight || 0) * instance.state.scale;
 
         const limitWidth =
-          instanceWidth - previewRect.width * 2 * instance.transformState.scale;
+          instanceWidth - previewRect.width * 2 * instance.state.scale;
         const limitHeight =
-          instanceHeight -
-          previewRect.height * 2 * instance.transformState.scale;
+          instanceHeight - previewRect.height * 2 * instance.state.scale;
 
         const boundedX = boundLimiter(
-          x * instance.transformState.scale,
+          x * instance.state.scale,
           0,
           limitWidth,
           true,
         );
 
         const boundedY = boundLimiter(
-          y * instance.transformState.scale,
+          y * instance.state.scale,
           0,
           limitHeight,
           true,
         );
 
-        instance.setTransformState(
-          instance.transformState.scale,
-          -boundedX,
-          -boundedY,
-        );
+        instance.setState(instance.state.scale, -boundedX, -boundedY);
       }
     };
 

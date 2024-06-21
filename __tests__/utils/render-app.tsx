@@ -112,16 +112,16 @@ export const renderApp = ({
 
     const step = 1;
 
-    const isZoomIn = ref.current.instance.transformState.scale < value;
+    const isZoomIn = ref.current.instance.state.scale < value;
     while (true) {
       if (
         (isZoomIn
-          ? ref.current.instance.transformState.scale < value
-          : ref.current.instance.transformState.scale > value) &&
-        ref.current.instance.transformState.scale !== value
+          ? ref.current.instance.state.scale < value
+          : ref.current.instance.state.scale > value) &&
+        ref.current.instance.state.scale !== value
       ) {
         const isNearScale =
-          Math.abs(ref.current.instance.transformState.scale - value) < 0.01;
+          Math.abs(ref.current.instance.state.scale - value) < 0.01;
 
         const newStep = isNearScale ? 0.35 : step;
 
@@ -142,7 +142,7 @@ export const renderApp = ({
     const { value, center = [0, 0] } = options;
     if (!ref.current) throw new Error("ref.current is null");
 
-    const isZoomIn = ref.current.instance.transformState.scale < value;
+    const isZoomIn = ref.current.instance.state.scale < value;
     const from = isZoomIn ? 40 : 200;
     const stepY = 0.1;
     const stepX = 0.1;
@@ -157,12 +157,12 @@ export const renderApp = ({
     while (true) {
       if (
         (isZoomIn
-          ? ref.current.instance.transformState.scale < value
-          : ref.current.instance.transformState.scale > value) &&
-        ref.current.instance.transformState.scale !== value
+          ? ref.current.instance.state.scale < value
+          : ref.current.instance.state.scale > value) &&
+        ref.current.instance.state.scale !== value
       ) {
         const isNearScale =
-          Math.abs(ref.current.instance.transformState.scale - value) < 0.5;
+          Math.abs(ref.current.instance.state.scale - value) < 0.5;
 
         const newStepX = isNearScale ? stepX / 10 : stepX;
         const newStepY = isNearScale ? stepY / 10 : stepY;

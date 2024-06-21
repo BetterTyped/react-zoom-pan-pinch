@@ -72,7 +72,7 @@ export const calculatePinchZoom = (
   }
 
   if (currentDistance < 0) {
-    return contextInstance.transformState.scale;
+    return contextInstance.state.scale;
   }
 
   const touchProportion = currentDistance / pinchStartDistance;

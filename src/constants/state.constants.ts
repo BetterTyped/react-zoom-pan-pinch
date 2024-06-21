@@ -44,6 +44,7 @@ export const initialSetup: LibrarySetup = {
   pinch: {
     step: 5,
     disabled: false,
+    allowPanning: true,
     excluded: [],
   },
   doubleClick: {

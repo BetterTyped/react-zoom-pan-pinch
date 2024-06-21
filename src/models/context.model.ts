@@ -73,7 +73,7 @@ export type ReactZoomPanPinchProps = {
     disabled?: boolean;
     wheelDisabled?: boolean;
     touchPadDisabled?: boolean;
-    activationKeys?: string[];
+    activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
   };
   panning?: {
@@ -84,13 +84,14 @@ export type ReactZoomPanPinchProps = {
     allowLeftClickPan?: boolean;
     allowMiddleClickPan?: boolean;
     allowRightClickPan?: boolean;
-    activationKeys?: string[];
+    activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
     wheelPanning?: boolean;
   };
   pinch?: {
     step?: number;
     disabled?: boolean;
+    allowPanning?: boolean;
     excluded?: string[];
   };
   doubleClick?: {

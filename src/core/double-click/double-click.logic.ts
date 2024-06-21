@@ -59,10 +59,10 @@ export function handleDoubleClick(
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent | TouchEvent,
 ): void {
-  const { setup, doubleClickStopEventTimer, transformState, contentComponent } =
+  const { setup, doubleClickStopEventTimer, state, contentComponent } =
     contextInstance;
 
-  const { scale } = transformState;
+  const { scale } = state;
   const { onZoomStart, onZoom } = contextInstance.props;
   const { disabled, mode, step, animationTime, animationType } =
     setup.doubleClick;
@@ -76,7 +76,7 @@ export function handleDoubleClick(
 
   if (!contentComponent) return console.error("No ContentComponent found");
 
-  const delta = getDoubleClickScale(mode, contextInstance.transformState.scale);
+  const delta = getDoubleClickScale(mode, contextInstance.state.scale);
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 

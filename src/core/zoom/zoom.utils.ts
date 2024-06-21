@@ -13,7 +13,7 @@ export function handleCalculateZoomPositions(
   bounds: BoundsType,
   limitToBounds: boolean,
 ): PositionType {
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   const scaleDifference = newScale - scale;
 

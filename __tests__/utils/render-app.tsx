@@ -21,7 +21,11 @@ interface RenderApp {
   pan: (options: { x: number; y: number; steps?: number }) => void;
   touchPan: (options: { x: number; y: number; steps?: number }) => void;
   zoom: (options: { value: number; center?: [number, number] }) => void;
-  pinch: (options: { value: number; center?: [number, number] }) => void;
+  pinch: (options: {
+    value: number;
+    center?: [number, number];
+    targetCenter?: [number, number];
+  }) => void;
 }
 
 const waitForPreviousActionToEnd = () => {
@@ -42,10 +46,10 @@ function getPinchTouches(
   const dx = (step + from) / 2;
 
   const leftTouch = {
-    pageX: 0 - dx,
-    pageY: 0 - dx,
-    clientX: 0 - dx,
-    clientY: 0 - dx,
+    pageX: cx - dx,
+    pageY: cy - dx,
+    clientX: cx - dx,
+    clientY: cy - dx,
     target: content,
   };
 
@@ -83,6 +87,9 @@ export const renderApp = ({
 
   const exampleProps: ReactZoomPanPinchProps = {
     doubleClick: {
+      disabled: true,
+    },
+    velocityAnimation: {
       disabled: true,
     },
     autoAlignment: {
@@ -155,15 +162,15 @@ export const renderApp = ({
 
     waitForPreviousActionToEnd();
 
+    const targetCenter = options?.targetCenter || center;
     const isZoomIn = ref.current.instance.state.scale < value;
     const from = isZoomIn ? 1 : 2;
     const step = 0.1;
 
     let pinchValue = 0;
-    let touches = getPinchTouches(content, center, step, from);
 
     fireEvent.touchStart(content, {
-      touches,
+      touches: getPinchTouches(content, center, step, from),
     });
 
     const startTime = Date.now();
@@ -182,18 +189,21 @@ export const renderApp = ({
         const newStep = isNearScale ? step / 6 : step;
 
         pinchValue = pinchValue + newStep;
-        touches = getPinchTouches(content, center, pinchValue, from);
 
         fireEvent.touchMove(content, {
-          touches,
+          touches: getPinchTouches(content, center, pinchValue, from),
         });
       } else {
         break;
       }
     }
 
+    fireEvent.touchMove(content, {
+      touches: getPinchTouches(content, targetCenter, pinchValue, from),
+    });
+
     fireEvent.touchEnd(content, {
-      touches,
+      touches: getPinchTouches(content, center, pinchValue, from),
     });
   };
 

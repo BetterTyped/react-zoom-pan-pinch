@@ -35,9 +35,9 @@ export function handleAlignToBounds(
   contextInstance: ReactZoomPanPinchContext,
 ): void {
   const { scale } = contextInstance.state;
-  const { minScale, alignmentAnimation } = contextInstance.setup;
+  const { minScale, autoAlignment } = contextInstance.setup;
   const { disabled, sizeX, sizeY, animationTime, animationType } =
-    alignmentAnimation;
+    autoAlignment;
 
   const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
 
@@ -57,7 +57,7 @@ export function handlePanning(
   device: DeviceType.MOUSE | DeviceType.TOUCH,
 ): void {
   const { startCoords, setup } = contextInstance;
-  const { sizeX, sizeY } = setup.alignmentAnimation;
+  const { sizeX, sizeY } = setup.autoAlignment;
 
   if (!startCoords) return;
 
@@ -91,7 +91,7 @@ export function handlePanningEnd(
       wrapperWidth < contentWidth || wrapperHeight < contentHeight;
 
     const shouldAnimate =
-      !velocityDisabled && velocity && velocity?.total > 0.1 && isZoomed;
+      !velocityDisabled && velocity && velocity.total > 0.1 && isZoomed;
 
     if (shouldAnimate) {
       handleVelocityPanning(contextInstance);

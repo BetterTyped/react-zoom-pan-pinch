@@ -129,7 +129,7 @@ export function handlePaddingAnimation(
   positionY: number,
 ): void {
   const { scale } = contextInstance.state;
-  const { sizeX, sizeY } = contextInstance.setup.alignmentAnimation;
+  const { sizeX, sizeY } = contextInstance.setup.autoAlignment;
 
   if (!sizeX && !sizeY) return;
 

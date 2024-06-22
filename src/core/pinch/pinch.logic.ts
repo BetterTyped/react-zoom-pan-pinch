@@ -39,6 +39,7 @@ export const handlePinchStart = (
   contextInstance.lastDistance = distance;
   contextInstance.pinchStartScale = contextInstance.state.scale;
   contextInstance.isPanning = false;
+  contextInstance.isPinching = true;
 
   contextInstance.pinchPreviousCenter = getTouchCenter(event);
 
@@ -60,7 +61,7 @@ export const handlePinchZoom = (
     limitToBounds,
     centerZoomedOut,
     zoomAnimation,
-    alignmentAnimation,
+    autoAlignment,
     pinch,
     panning,
   } = contextInstance.setup;
@@ -105,7 +106,7 @@ export const handlePinchZoom = (
   if (panning.disabled || !allowPanning) {
     contextInstance.setState(newScale, x, y);
   } else {
-    const { sizeX, sizeY } = alignmentAnimation;
+    const { sizeX, sizeY } = autoAlignment;
     const paddingValueX = getPaddingValue(contextInstance, sizeX, newScale);
     const paddingValueY = getPaddingValue(contextInstance, sizeY, newScale);
 
@@ -133,5 +134,6 @@ export const handlePinchStop = (
   contextInstance.pinchMidpoint = null;
   contextInstance.pinchStartScale = null;
   contextInstance.pinchStartDistance = null;
+  contextInstance.isPinching = false;
   handleAlignToScaleBounds(contextInstance, pinchMidpoint?.x, pinchMidpoint?.y);
 };

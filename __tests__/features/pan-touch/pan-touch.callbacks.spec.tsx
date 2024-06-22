@@ -12,7 +12,10 @@ describe("Pan Touch [Callbacks]", () => {
         onPanningStop: spy3,
       });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      touchPan({ x: 100, y: 100 });
+      touchPan({ x: -100, y: -100 });
+      expect(content.style.transform).toBe(
+        "translate(-100px, -100px) scale(1)",
+      );
       expect(spy1).toBeCalledTimes(1);
       expect(spy2).toBeCalled();
       expect(spy3).toBeCalledTimes(1);

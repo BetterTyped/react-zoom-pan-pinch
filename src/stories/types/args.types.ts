@@ -194,7 +194,7 @@ export const argsTypes = {
 //   animationTime: 200,
 //   animationType: "easeOut",
 // },
-// alignmentAnimation: {
+// autoAlignment: {
 //   disabled: false,
 //   size: 30,
 //   animationTime: 200,

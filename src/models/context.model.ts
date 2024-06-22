@@ -108,7 +108,7 @@ export type ReactZoomPanPinchProps = {
     animationTime?: number;
     animationType?: keyof typeof animations;
   };
-  alignmentAnimation?: {
+  autoAlignment?: {
     disabled?: boolean;
     sizeX?: number;
     sizeY?: number;

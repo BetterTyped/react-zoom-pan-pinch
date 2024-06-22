@@ -373,43 +373,43 @@ export const wrapperPropsTable: ComponentProps = {
       description: "Animations types to choose from.",
     },
   },
-  alignmentAnimation: {
-    alignmentAnimation: {
+  autoAlignment: {
+    autoAlignment: {
       type: [""],
       defaultValue: "",
       description: "",
     },
     disabled: {
       type: ["boolean"],
-      defaultValue: String(initialSetup.alignmentAnimation.disabled),
+      defaultValue: String(initialSetup.autoAlignment.disabled),
       description: "Disable the double click feature.",
     },
     sizeX: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.sizeX),
+      defaultValue: String(initialSetup.autoAlignment.sizeX),
       description:
         "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
     },
     sizeY: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.sizeY),
+      defaultValue: String(initialSetup.autoAlignment.sizeY),
       description:
         "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
     },
     velocityAlignmentTime: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.animationTime),
+      defaultValue: String(initialSetup.autoAlignment.animationTime),
       description:
         "Time of the velocity alignment animation. It is fired when acceleration begins when we are outside the wrapper limits (in the area defined by the above prop size)",
     },
     animationTime: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.animationTime),
+      defaultValue: String(initialSetup.autoAlignment.animationTime),
       description: "Time of the alignment animation.",
     },
     animationType: {
       type: Object.keys(animations),
-      defaultValue: String(initialSetup.alignmentAnimation.animationType),
+      defaultValue: String(initialSetup.autoAlignment.animationType),
       description: "Animations types to choose from.",
     },
   },

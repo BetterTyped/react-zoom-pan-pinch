@@ -87,6 +87,7 @@ export class ZoomPanPinch {
   public startCoords: StartCoordsType = null;
   public lastTouch: number | null = null;
   // pinch helpers
+  public isPinching = false;
   public distance: null | number = null;
   public lastDistance: null | number = null;
   public pinchStartDistance: null | number = null;
@@ -255,7 +256,7 @@ export class ZoomPanPinch {
     const newPositionX = panning.lockAxisX ? positionX : mouseX;
     const newPositionY = panning.lockAxisY ? positionY : mouseY;
 
-    const { sizeX, sizeY } = this.setup.alignmentAnimation;
+    const { sizeX, sizeY } = this.setup.autoAlignment;
     const paddingValueX = getPaddingValue(this, sizeX);
     const paddingValueY = getPaddingValue(this, sizeY);
 
@@ -327,7 +328,7 @@ export class ZoomPanPinch {
 
   onPinchStart = (event: TouchEvent): void => {
     const { disabled } = this.setup;
-    const { onPinchStart, onZoomStart } = this.props;
+    const { onPinchStart } = this.props;
 
     if (disabled) return;
 
@@ -337,12 +338,11 @@ export class ZoomPanPinch {
     handlePinchStart(this, event);
     handleCancelAnimation(this);
     handleCallback(getContext(this), event, onPinchStart);
-    handleCallback(getContext(this), event, onZoomStart);
   };
 
   onPinch = (event: TouchEvent): void => {
     const { disabled } = this.setup;
-    const { onPinch, onZoom } = this.props;
+    const { onPinch } = this.props;
 
     if (disabled) return;
 
@@ -354,16 +354,14 @@ export class ZoomPanPinch {
 
     handlePinchZoom(this, event);
     handleCallback(getContext(this), event, onPinch);
-    handleCallback(getContext(this), event, onZoom);
   };
 
   onPinchStop = (event: TouchEvent): void => {
-    const { onPinchStop, onZoomStop } = this.props;
+    const { onPinchStop } = this.props;
 
     if (this.pinchStartScale) {
       handlePinchStop(this);
       handleCallback(getContext(this), event, onPinchStop);
-      handleCallback(getContext(this), event, onZoomStop);
     }
   };
 

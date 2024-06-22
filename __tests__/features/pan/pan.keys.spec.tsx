@@ -11,7 +11,7 @@ describe("Pan [Keys]", () => {
         },
       });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      pan({ x: 100, y: 100 });
+      pan({ x: -100, y: -100 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
     it("should change translate with activated key", async () => {
@@ -23,8 +23,10 @@ describe("Pan [Keys]", () => {
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       fireEvent.keyDown(document, { key: "Control" });
-      pan({ x: 100, y: 100 });
-      expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");
+      pan({ x: -100, y: -100 });
+      expect(content.style.transform).toBe(
+        "translate(-100px, -100px) scale(1)",
+      );
     });
   });
   describe("When panning with multiple activation keys", () => {
@@ -37,7 +39,7 @@ describe("Pan [Keys]", () => {
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       fireEvent.keyDown(document, { key: "Control" });
-      pan({ x: 100, y: 100 });
+      pan({ x: -100, y: -100 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
     it("should change translate when activated", async () => {
@@ -50,8 +52,10 @@ describe("Pan [Keys]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       fireEvent.keyDown(document, { key: "Control" });
       fireEvent.keyDown(document, { key: "Shift" });
-      pan({ x: 100, y: 100 });
-      expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");
+      pan({ x: -100, y: -100 });
+      expect(content.style.transform).toBe(
+        "translate(-100px, -100px) scale(1)",
+      );
     });
   });
 
@@ -67,8 +71,10 @@ describe("Pan [Keys]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       fireEvent.keyDown(document, { key: "Control" });
       fireEvent.keyDown(document, { key: "Shift" });
-      pan({ x: 100, y: 100 });
-      expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");
+      pan({ x: -100, y: -100 });
+      expect(content.style.transform).toBe(
+        "translate(-100px, -100px) scale(1)",
+      );
     });
     it("should not change translate with partial activation", async () => {
       const { content, pan } = renderApp({
@@ -80,7 +86,7 @@ describe("Pan [Keys]", () => {
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       fireEvent.keyDown(document, { key: "Control" });
-      pan({ x: 100, y: 100 });
+      pan({ x: -100, y: -100 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
   });

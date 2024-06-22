@@ -13,11 +13,13 @@ import {
 
 export function getSizeMultiplier(wrapperComponent: HTMLDivElement): number {
   const defaultMultiplier = 1;
+  const value = wrapperComponent.offsetWidth / window.innerWidth;
 
-  return Math.min(
-    defaultMultiplier,
-    wrapperComponent.offsetWidth / window.innerWidth,
-  );
+  if (isNaN(value)) {
+    return defaultMultiplier;
+  }
+
+  return Math.min(defaultMultiplier, value);
 }
 
 const getMinMaxVelocity = (
@@ -25,10 +27,15 @@ const getMinMaxVelocity = (
   maxStrength: number,
   sensitivity: number,
 ) => {
-  if (velocity < 0) {
-    return Math.max(velocity * sensitivity, -maxStrength);
+  const defaultMultiplier = 0;
+  const value = velocity * sensitivity;
+  if (isNaN(value)) {
+    return defaultMultiplier;
   }
-  return Math.min(velocity * sensitivity, maxStrength);
+  if (velocity < 0) {
+    return Math.max(value, -maxStrength);
+  }
+  return Math.min(value, maxStrength);
 };
 
 export function handleCalculateVelocity(
@@ -103,11 +110,11 @@ export function handleVelocityPanning(
 
   const { velocityX, velocityY, total } = velocity;
   const { maxPositionX, minPositionX, maxPositionY, minPositionY } = bounds;
-  const { limitToBounds, alignmentAnimation } = setup;
+  const { limitToBounds, autoAlignment } = setup;
   const { zoomAnimation, panning } = setup;
   const { lockAxisY, lockAxisX } = panning;
   const { animationType } = zoomAnimation;
-  const { sizeX, sizeY, velocityAlignmentTime } = alignmentAnimation;
+  const { sizeX, sizeY, velocityAlignmentTime } = autoAlignment;
 
   const alignAnimationTime = velocityAlignmentTime;
   const moveAnimationTime = getVelocityMoveTime(contextInstance, total);
@@ -134,7 +141,7 @@ export function handleVelocityPanning(
       const { scale, positionX, positionY } = contextInstance.state;
       const frameTime = new Date().getTime() - startTime;
       const animationProgress = frameTime / alignAnimationTime;
-      const alignAnimation = animations[alignmentAnimation.animationType];
+      const alignAnimation = animations[autoAlignment.animationType];
       const alignStep = 1 - alignAnimation(Math.min(1, animationProgress));
 
       const customStep = 1 - step;

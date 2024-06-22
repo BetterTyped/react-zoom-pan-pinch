@@ -9,7 +9,7 @@ export const isVelocityCalculationAllowed = (
   const { scale } = contextInstance.state;
   const { disabled: disabledVelocity } = velocityAnimation;
 
-  const isAllowed = !disabledVelocity || scale > 1 || !disabled || mounted;
+  const isAllowed = !disabledVelocity && scale > 1 && !disabled && mounted;
 
   if (!isAllowed) return false;
 

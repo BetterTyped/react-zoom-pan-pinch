@@ -17,18 +17,30 @@ jestPreviewConfigure({
   // publicFolder: "static", // No need to configure if `publicFolder` is `public`
 });
 
-const getWidth = (element: HTMLElement) => {
+/** @returns {rotate: "-10 50 100", translate: "-36 45.5", skewX: "40", scale: "1 0.5"} */
+function parseTransform(transform: string): Record<string, string> {
+  return Array.from(transform.matchAll(/(\w+)\((.+?)\)/gm)).reduce(
+    (agg, [, fn, val]) => ({
+      ...agg,
+      [fn]: val,
+    }),
+    {},
+  );
+}
+
+const getSize = (element: HTMLElement) => {
   const isPercentageWidth = element.style.width.includes("%");
   const isPercentageHeight = element.style.height.includes("%");
+
+  const values = parseTransform(element.style.transform);
+
+  const scale = values?.scale || "1";
 
   let width = 0;
   let height = 0;
 
-  const top = parseFloat(element.style.marginTop) || 0;
-  const left = parseFloat(element.style.marginLeft) || 0;
-
   if (isPercentageWidth || isPercentageHeight) {
-    const parent = getWidth(element.parentNode as HTMLElement);
+    const parent = getSize(element.parentNode as HTMLElement);
     width = (parseFloat(element.style.width) * parent.width) / 100;
     height = (parseFloat(element.style.height) * parent.height) / 100;
   } else {
@@ -37,16 +49,52 @@ const getWidth = (element: HTMLElement) => {
   }
 
   return {
-    width,
-    height,
-    top,
-    left,
+    width: width * parseFloat(scale),
+    height: height * parseFloat(scale),
   };
 };
 
-// @ts-ignore
 window.HTMLElement.prototype.getBoundingClientRect = function () {
-  const size = getWidth(this);
-
-  return size;
+  const style = window.getComputedStyle(this);
+  const size = getSize(this);
+  const elements = {
+    x: parseFloat(style.left) || 0,
+    y: parseFloat(style.top) || 0,
+    width: size.width,
+    height: size.height,
+    top: parseFloat(style.top) || 0,
+    right: parseFloat(style.right) || 0,
+    bottom: parseFloat(style.bottom) || 0,
+    left: parseFloat(style.left) || 0,
+  };
+  const rect: DOMRect = {
+    ...elements,
+    toJSON: () => {
+      return JSON.stringify(elements);
+    },
+  };
+  return rect;
 };
+
+Object.defineProperties(window.HTMLElement.prototype, {
+  offsetLeft: {
+    get: function () {
+      return parseFloat(window.getComputedStyle(this).marginLeft) || 0;
+    },
+  },
+  offsetTop: {
+    get: function () {
+      return parseFloat(window.getComputedStyle(this).marginTop) || 0;
+    },
+  },
+  offsetHeight: {
+    get: function () {
+      return getSize(this).height;
+    },
+  },
+  offsetWidth: {
+    get: function () {
+      return getSize(this).width;
+    },
+  },
+});

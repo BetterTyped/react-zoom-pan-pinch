@@ -18,8 +18,8 @@ interface RenderApp {
   center: HTMLElement;
   content: HTMLElement;
   wrapper: HTMLElement;
-  pan: (options: { x: number; y: number }) => void;
-  touchPan: (options: { x: number; y: number }) => void;
+  pan: (options: { x: number; y: number; steps?: number }) => void;
+  touchPan: (options: { x: number; y: number; steps?: number }) => void;
   zoom: (options: { value: number; center?: [number, number] }) => void;
   pinch: (options: { value: number; center?: [number, number] }) => void;
 }
@@ -85,7 +85,7 @@ export const renderApp = ({
     doubleClick: {
       disabled: true,
     },
-    alignmentAnimation: {
+    autoAlignment: {
       disabled: true,
     },
     ...props,
@@ -177,7 +177,7 @@ export const renderApp = ({
         const scaleDifference = Math.abs(
           ref.current.instance.state.scale - value,
         );
-        const isNearScale = scaleDifference < 0.05;
+        const isNearScale = scaleDifference < 0.1;
 
         const newStep = isNearScale ? step / 6 : step;
 
@@ -197,16 +197,30 @@ export const renderApp = ({
     });
   };
 
-  const pan: RenderApp["pan"] = ({ x, y }) => {
+  const pan: RenderApp["pan"] = ({ x, y, steps = 1 }) => {
     userEvent.hover(content);
     fireEvent.mouseDown(content);
-    fireEvent.mouseMove(content, { clientX: x, clientY: y });
+    const xStep = x / steps;
+    const yStep = y / steps;
+    [...Array(steps)].forEach((_, index) => {
+      if (index !== steps - 1) {
+        fireEvent.mouseMove(content, {
+          clientX: xStep * index,
+          clientY: yStep * index,
+        });
+      } else {
+        fireEvent.mouseMove(content, { clientX: x, clientY: y });
+      }
+    });
     fireEvent.mouseUp(content);
     fireEvent.blur(content);
   };
 
-  const touchPan: RenderApp["touchPan"] = ({ x, y }) => {
+  const touchPan: RenderApp["touchPan"] = ({ x, y, steps = 1 }) => {
     waitForPreviousActionToEnd();
+
+    const xStep = x / steps;
+    const yStep = y / steps;
 
     fireEvent.touchStart(content, {
       touches: [
@@ -219,16 +233,32 @@ export const renderApp = ({
         },
       ],
     });
-    fireEvent.touchMove(content, {
-      touches: [
-        {
-          pageX: x,
-          pageY: y,
-          clientX: x,
-          clientY: y,
-          target: content,
-        },
-      ],
+    [...Array(steps)].forEach((_, index) => {
+      if (index !== steps - 1) {
+        fireEvent.touchMove(content, {
+          touches: [
+            {
+              pageX: xStep * index,
+              pageY: yStep * index,
+              clientX: xStep * index,
+              clientY: yStep * index,
+              target: content,
+            },
+          ],
+        });
+      } else {
+        fireEvent.touchMove(content, {
+          touches: [
+            {
+              pageX: x,
+              pageY: y,
+              clientX: x,
+              clientY: y,
+              target: content,
+            },
+          ],
+        });
+      }
     });
     fireEvent.touchEnd(content, {
       touches: [

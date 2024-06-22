@@ -12,7 +12,7 @@ describe("Pan [Callbacks]", () => {
         onPanningStop: spy3,
       });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      pan({ x: 100, y: 100 });
+      pan({ x: -100, y: -100 });
       expect(spy1).toBeCalledTimes(1);
       expect(spy2).toBeCalled();
       expect(spy3).toBeCalledTimes(1);

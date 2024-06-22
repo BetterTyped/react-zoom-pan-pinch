@@ -2,8 +2,15 @@ import React from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
 import { normalizeArgs } from "../../utils";
+import { useTransformComponent } from "../../../hooks";
 
 import styles from "../../utils/styles.module.css";
+
+const CurrentScale = () => {
+  return useTransformComponent(({ state }) => {
+    return <div>Current Scale: {state.scale}</div>;
+  });
+};
 
 export const Example: React.FC<any> = (args: any) => {
   return (
@@ -46,6 +53,7 @@ export const Example: React.FC<any> = (args: any) => {
               maxHeight: "calc(100vh - 50px)",
             }}
           >
+            <CurrentScale />
             <div
               style={{
                 background: "#444",

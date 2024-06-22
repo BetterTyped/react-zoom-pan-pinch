@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import { useTransformContext } from "./use-transform-context";
 import { getState } from "utils";
@@ -9,8 +9,22 @@ export function useTransformComponent<T>(
 ): T {
   const libraryContext = useTransformContext();
 
-  return useMemo(
-    () => callback(getState(libraryContext)),
-    [libraryContext, callback],
+  const [transformRender, setTransformRender] = useState<T>(
+    callback(getState(libraryContext)),
   );
+
+  useEffect(() => {
+    let mounted = true;
+    const unmount = libraryContext.onChange((ref) => {
+      if (mounted) {
+        setTransformRender(callback(getState(ref.instance)));
+      }
+    });
+    return () => {
+      unmount();
+      mounted = false;
+    };
+  }, [callback, libraryContext]);
+
+  return transformRender;
 }

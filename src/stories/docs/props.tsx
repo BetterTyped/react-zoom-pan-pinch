@@ -495,17 +495,17 @@ export const wrapperPropsTable: ComponentProps = {
     defaultValue: "undefined",
     description: "Callback fired when panning event has finished",
   },
-  onPinchingStart: {
+  onPinchStart: {
     type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event has started",
   },
-  onPinching: {
+  onPinch: {
     type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event is ongoing",
   },
-  onPinchingStop: {
+  onPinchStop: {
     type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event has finished",

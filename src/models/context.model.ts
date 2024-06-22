@@ -142,9 +142,9 @@ export type ReactZoomPanPinchProps = {
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
   ) => void;
-  onPinchingStart?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
-  onPinching?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
-  onPinchingStop?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinchStart?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinch?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinchStop?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
   onZoomStart?: (
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
@@ -192,9 +192,9 @@ export type LibrarySetup = Pick<
       | "onPanningStart"
       | "onPanning"
       | "onPanningStop"
-      | "onPinchingStart"
-      | "onPinching"
-      | "onPinchingStop"
+      | "onPinchStart"
+      | "onPinch"
+      | "onPinchStop"
       | "onZoomStart"
       | "onZoom"
       | "onZoomStop"

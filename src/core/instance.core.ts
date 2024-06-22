@@ -327,7 +327,7 @@ export class ZoomPanPinch {
 
   onPinchStart = (event: TouchEvent): void => {
     const { disabled } = this.setup;
-    const { onPinchingStart, onZoomStart } = this.props;
+    const { onPinchStart, onZoomStart } = this.props;
 
     if (disabled) return;
 
@@ -336,13 +336,13 @@ export class ZoomPanPinch {
 
     handlePinchStart(this, event);
     handleCancelAnimation(this);
-    handleCallback(getContext(this), event, onPinchingStart);
+    handleCallback(getContext(this), event, onPinchStart);
     handleCallback(getContext(this), event, onZoomStart);
   };
 
   onPinch = (event: TouchEvent): void => {
     const { disabled } = this.setup;
-    const { onPinching, onZoom } = this.props;
+    const { onPinch, onZoom } = this.props;
 
     if (disabled) return;
 
@@ -353,16 +353,16 @@ export class ZoomPanPinch {
     event.stopPropagation();
 
     handlePinchZoom(this, event);
-    handleCallback(getContext(this), event, onPinching);
+    handleCallback(getContext(this), event, onPinch);
     handleCallback(getContext(this), event, onZoom);
   };
 
   onPinchStop = (event: TouchEvent): void => {
-    const { onPinchingStop, onZoomStop } = this.props;
+    const { onPinchStop, onZoomStop } = this.props;
 
     if (this.pinchStartScale) {
       handlePinchStop(this);
-      handleCallback(getContext(this), event, onPinchingStop);
+      handleCallback(getContext(this), event, onPinchStop);
       handleCallback(getContext(this), event, onZoomStop);
     }
   };
@@ -372,14 +372,15 @@ export class ZoomPanPinch {
   /// ///////
 
   onTouchPanningStart = (event: TouchEvent): void => {
-    const { disabled } = this.setup;
+    const { disabled, doubleClick } = this.setup;
     const { onPanningStart } = this.props;
 
     if (disabled) return;
 
+    const isDoubleTapAllowed = !doubleClick?.disabled;
     const isDoubleTap = this.lastTouch && +new Date() - this.lastTouch < 200;
 
-    if (isDoubleTap && event.touches.length === 1) {
+    if (isDoubleTapAllowed && isDoubleTap && event.touches.length === 1) {
       this.onDoubleClick(event);
     } else {
       this.lastTouch = +new Date();

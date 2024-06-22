@@ -13,10 +13,11 @@ describe("Pan Touch [Base]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
     it("should return to position with padding enabled", async () => {
-      const { content, touchPan, pinch } = renderApp({
-        disablePadding: false,
+      const { content, touchPan } = renderApp({
+        alignmentAnimation: {
+          disabled: false,
+        },
       });
-      pinch({ value: 1.2 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       touchPan({ x: 100, y: 100 });
       expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");

@@ -24,6 +24,12 @@ interface RenderApp {
   pinch: (options: { value: number; center?: [number, number] }) => void;
 }
 
+const waitForPreviousActionToEnd = () => {
+  // Synchronous await for 10ms to wait for the previous event to finish (pinching or touching)
+  const startTime = Date.now();
+  while (Date.now() - startTime < 10) {}
+};
+
 function getPinchTouches(
   content: HTMLElement,
   center: [number, number],
@@ -95,7 +101,7 @@ export const renderApp = ({
       {...{ contentHeight, contentWidth, wrapperHeight, wrapperWidth }}
     />,
   );
-  // // controls buttons
+  // controls buttons
   const zoomInBtn = screen.getByTestId("zoom-in");
   const zoomOutBtn = screen.getByTestId("zoom-out");
   const resetBtn = screen.getByTestId("reset");
@@ -147,6 +153,8 @@ export const renderApp = ({
     const { value, center = [0, 0] } = options;
     if (!ref.current) throw new Error("ref.current is null");
 
+    waitForPreviousActionToEnd();
+
     const isZoomIn = ref.current.instance.state.scale < value;
     const from = isZoomIn ? 1 : 2;
     const step = 0.1;
@@ -169,9 +177,9 @@ export const renderApp = ({
         const scaleDifference = Math.abs(
           ref.current.instance.state.scale - value,
         );
-        const isNearScale = scaleDifference < 0.5;
+        const isNearScale = scaleDifference < 0.05;
 
-        const newStep = isNearScale ? step / 2 : step;
+        const newStep = isNearScale ? step / 6 : step;
 
         pinchValue = pinchValue + newStep;
         touches = getPinchTouches(content, center, pinchValue, from);
@@ -184,7 +192,9 @@ export const renderApp = ({
       }
     }
 
-    fireEvent.touchEnd(content);
+    fireEvent.touchEnd(content, {
+      touches,
+    });
   };
 
   const pan: RenderApp["pan"] = ({ x, y }) => {
@@ -196,17 +206,18 @@ export const renderApp = ({
   };
 
   const touchPan: RenderApp["touchPan"] = ({ x, y }) => {
-    const touches = [
-      {
-        pageX: 0,
-        pageY: 0,
-        clientX: 0,
-        clientY: 0,
-        target: content,
-      },
-    ];
+    waitForPreviousActionToEnd();
+
     fireEvent.touchStart(content, {
-      touches,
+      touches: [
+        {
+          pageX: 0,
+          pageY: 0,
+          clientX: 0,
+          clientY: 0,
+          target: content,
+        },
+      ],
     });
     fireEvent.touchMove(content, {
       touches: [
@@ -219,7 +230,17 @@ export const renderApp = ({
         },
       ],
     });
-    fireEvent.touchEnd(content);
+    fireEvent.touchEnd(content, {
+      touches: [
+        {
+          pageX: x,
+          pageY: y,
+          clientX: x,
+          clientY: y,
+          target: content,
+        },
+      ],
+    });
   };
 
   return {

@@ -7,7 +7,21 @@ import styles from "../../utils/styles.module.css";
 
 export const Example: React.FC<any> = (args: any) => {
   return (
-    <TransformWrapper {...normalizeArgs(args)}>
+    <TransformWrapper
+      {...normalizeArgs(args)}
+      wrapperStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
+      contentStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
+    >
       {({ zoomToElement, resetTransform }) => (
         <>
           <div>

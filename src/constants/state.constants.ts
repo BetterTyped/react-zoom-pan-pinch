@@ -29,6 +29,14 @@ export const initialSetup: LibrarySetup = {
     activationKeys: [],
     excluded: [],
   },
+  trackPadPanning: {
+    disabled: true,
+    velocityDisabled: false,
+    lockAxisX: false,
+    lockAxisY: false,
+    activationKeys: [],
+    excluded: [],
+  },
   panning: {
     disabled: false,
     velocityDisabled: false,
@@ -37,7 +45,6 @@ export const initialSetup: LibrarySetup = {
     allowLeftClickPan: true,
     allowMiddleClickPan: true,
     allowRightClickPan: true,
-    wheelPanning: false,
     activationKeys: [],
     excluded: [],
   },

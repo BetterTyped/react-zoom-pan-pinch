@@ -13,7 +13,18 @@ export const Template = (args) => (
       <div>
         <Controls {...utils} />
         <TransformComponent
-          wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
+          wrapperStyle={{
+            width: "400px",
+            height: "400px",
+            maxWidth: "70vw",
+            maxHeight: "70vh",
+          }}
+          contentStyle={{
+            width: "400px",
+            height: "400px",
+            maxWidth: "70vw",
+            maxHeight: "70vh",
+          }}
         >
           <img src={exampleImg} alt="" />
         </TransformComponent>

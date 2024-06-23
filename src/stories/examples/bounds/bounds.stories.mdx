@@ -16,7 +16,18 @@ export const Template = (args) => (
     {...normalizeArgs(args)}
   >
     <TransformComponent
-      wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
+      wrapperStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
+      contentStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
     >
       <div style={{ background: "#444", color: "white", padding: "50px" }}>
         <p>

@@ -230,17 +230,6 @@ export const wrapperPropsTable: ComponentProps = {
       defaultValue: String(initialSetup.panning.disabled),
       description: "Disable the panning feature.",
     },
-    wheelPanning: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.panning.wheelPanning),
-      description: "Enable wheel/trackpad panning.",
-    },
-    velocityDisabled: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.panning.velocityDisabled),
-      description:
-        "Disable the panning velocity feature. It's triggered when you release the mouse button so the content is still moving after it and slowing down with calculated time.",
-    },
     lockAxisX: {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.lockAxisX),

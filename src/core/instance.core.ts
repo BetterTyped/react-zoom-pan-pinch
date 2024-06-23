@@ -17,15 +17,18 @@ import {
   getTransformStyles,
   makePassiveEventOption,
   getCenterPosition,
+  isExcludedNode,
 } from "../utils";
 import { handleCancelAnimation } from "./animations/animations.utils";
-import { isWheelAllowed } from "./wheel/wheel.utils";
+import { isWheelAllowed, isWheelPanningAllowed } from "./wheel/wheel.utils";
 import { isPinchAllowed, isPinchStartAllowed } from "./pinch/pinch.utils";
 import { handleCalculateBounds } from "./bounds/bounds.utils";
 import {
   handleWheelStart,
   handleWheelZoom,
   handleWheelStop,
+  handleWheelPanningStop,
+  handleWheelPanningStart,
 } from "./wheel/wheel.logic";
 import {
   getPaddingValue,
@@ -135,6 +138,16 @@ export class ZoomPanPinch {
       this.onWheelPanning,
       passive,
     );
+    this.wrapperComponent?.addEventListener(
+      "keyup",
+      this.setKeyUnPressed,
+      passive,
+    );
+    this.wrapperComponent?.addEventListener(
+      "keydown",
+      this.setKeyPressed,
+      passive,
+    );
     // Panning on window to allow panning when mouse is out of component wrapper
     currentWindow?.addEventListener("mousedown", this.onPanningStart, passive);
     currentWindow?.addEventListener("mousemove", this.onPanning, passive);
@@ -163,7 +176,21 @@ export class ZoomPanPinch {
     currentWindow?.removeEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.removeEventListener("keydown", this.setKeyPressed, passive);
     document.removeEventListener("mouseleave", this.clearPanning, passive);
-
+    this.wrapperComponent?.removeEventListener(
+      "wheel",
+      this.onWheelPanning,
+      passive,
+    );
+    this.wrapperComponent?.removeEventListener(
+      "keyup",
+      this.setKeyUnPressed,
+      passive,
+    );
+    this.wrapperComponent?.removeEventListener(
+      "keydown",
+      this.setKeyPressed,
+      passive,
+    );
     handleCancelAnimation(this);
     this.observer?.disconnect();
   };
@@ -222,31 +249,23 @@ export class ZoomPanPinch {
     const isAllowed = isWheelAllowed(this, event);
     if (!isAllowed) return;
 
-    const keysPressed = this.isPressingKeys(this.setup.wheel.activationKeys);
-    if (!keysPressed) return;
-
     handleWheelStart(this, event);
     handleWheelZoom(this, event);
     handleWheelStop(this, event);
   };
 
   /// ///////
-  // Pan
+  // Track Pad Panning
   /// ///////
 
   onWheelPanning = (event: WheelEvent): void => {
-    const { disabled, wheel, panning } = this.setup;
-    if (
-      !this.wrapperComponent ||
-      !this.contentComponent ||
-      disabled ||
-      !wheel.wheelDisabled ||
-      panning.disabled ||
-      !panning.wheelPanning ||
-      event.ctrlKey
-    ) {
-      return;
-    }
+    const { onPanning } = this.props;
+    const { trackPadPanning } = this.setup;
+    const { lockAxisX, lockAxisY } = trackPadPanning;
+
+    const isAllowed = isWheelPanningAllowed(this, event);
+
+    if (!isAllowed) return;
 
     event.preventDefault();
     event.stopPropagation();
@@ -254,8 +273,8 @@ export class ZoomPanPinch {
     const { positionX, positionY } = this.state;
     const mouseX = positionX - event.deltaX;
     const mouseY = positionY - event.deltaY;
-    const newPositionX = panning.lockAxisX ? positionX : mouseX;
-    const newPositionY = panning.lockAxisY ? positionY : mouseY;
+    const newPositionX = lockAxisX ? positionX : mouseX;
+    const newPositionY = lockAxisY ? positionY : mouseY;
 
     const { sizeX, sizeY } = this.setup.autoAlignment;
     const paddingValueX = getPaddingValue(this, sizeX);
@@ -263,6 +282,7 @@ export class ZoomPanPinch {
 
     if (newPositionX === positionX && newPositionY === positionY) return;
 
+    handleWheelPanningStart(this, event);
     handleNewPosition(
       this,
       newPositionX,
@@ -270,7 +290,13 @@ export class ZoomPanPinch {
       paddingValueX,
       paddingValueY,
     );
+    handleCallback(getContext(this), event, onPanning);
+    handleWheelPanningStop(this, event);
   };
+
+  /// ///////
+  // Pan
+  /// ///////
 
   onPanningStart = (event: MouseEvent): void => {
     const { disabled } = this.setup;
@@ -315,10 +341,11 @@ export class ZoomPanPinch {
   };
 
   onPanningStop = (event: MouseEvent | TouchEvent): void => {
+    const { velocityDisabled } = this.setup.panning;
     const { onPanningStop } = this.props;
 
     if (this.isPanning) {
-      handlePanningEnd(this);
+      handlePanningEnd(this, velocityDisabled);
       handleCallback(getContext(this), event, onPanningStop);
     }
   };
@@ -456,6 +483,11 @@ export class ZoomPanPinch {
 
   setKeyPressed = (e: KeyboardEvent): void => {
     this.pressedKeys[e.key] = true;
+    console.log(
+      Object.entries(this.pressedKeys)
+        .filter(([, pressed]) => pressed)
+        .map(([key]) => key),
+    );
   };
 
   setKeyUnPressed = (e: KeyboardEvent): void => {

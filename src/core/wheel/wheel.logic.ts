@@ -119,3 +119,43 @@ export const handleWheelStop = (
     }, wheelStopEventTime);
   }
 };
+
+export const handleWheelPanningStart = (
+  contextInstance: ReactZoomPanPinchContext,
+  event: WheelEvent,
+): void => {
+  const { onWheelStart, onPanningStart } = contextInstance.props;
+
+  if (!contextInstance.wheelStopEventTimer) {
+    handleCancelAnimation(contextInstance);
+    handleCallback(getContext(contextInstance), event, onWheelStart);
+    handleCallback(getContext(contextInstance), event, onPanningStart);
+  }
+};
+
+export const handleWheelPanningStop = (
+  contextInstance: ReactZoomPanPinchContext,
+  event: WheelEvent,
+): void => {
+  const { onWheelStop, onPanningStop } = contextInstance.props;
+
+  // fire animation
+  cancelTimeout(contextInstance.wheelAnimationTimer);
+  contextInstance.wheelAnimationTimer = setTimeout(() => {
+    if (!contextInstance.mounted) return;
+    handleAlignToScaleBounds(contextInstance, event.x, event.y);
+    contextInstance.wheelAnimationTimer = null;
+  }, wheelAnimationTime);
+
+  // Wheel stop event
+  const hasStoppedZooming = handleWheelZoomStop(contextInstance, event);
+  if (hasStoppedZooming) {
+    cancelTimeout(contextInstance.wheelStopEventTimer);
+    contextInstance.wheelStopEventTimer = setTimeout(() => {
+      if (!contextInstance.mounted) return;
+      contextInstance.wheelStopEventTimer = null;
+      handleCallback(getContext(contextInstance), event, onWheelStop);
+      handleCallback(getContext(contextInstance), event, onPanningStop);
+    }, wheelStopEventTime);
+  }
+};

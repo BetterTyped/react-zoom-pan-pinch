@@ -8,7 +8,21 @@ import { normalizeArgs, Controls } from "../../utils";
 import exampleImg from "../../assets/small-image.jpg";
 
 export const Template = (args) => (
-  <TransformWrapper {...normalizeArgs(args)}>
+  <TransformWrapper
+    {...normalizeArgs(args)}
+    wrapperStyle={{
+      width: "400px",
+      height: "400px",
+      maxWidth: "70vw",
+      maxHeight: "70vh",
+    }}
+    contentStyle={{
+      width: "400px",
+      height: "400px",
+      maxWidth: "70vw",
+      maxHeight: "70vh",
+    }}
+  >
     {(utils) => (
       <div>
         <Controls {...utils} />

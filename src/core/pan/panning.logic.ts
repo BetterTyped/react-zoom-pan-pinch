@@ -71,9 +71,9 @@ export function handlePanning(
 
 export function handlePanningEnd(
   contextInstance: ReactZoomPanPinchContext,
+  velocityDisabled: boolean,
 ): void {
   if (contextInstance.isPanning) {
-    const { velocityDisabled } = contextInstance.setup.panning;
     const { velocity, wrapperComponent, contentComponent } = contextInstance;
 
     contextInstance.isPanning = false;

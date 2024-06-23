@@ -61,24 +61,8 @@ export const argsTypes = {
       disable: true,
     },
   },
-  "panning.wheelPanning": {
-    defaultValue: initialSetup.panning.wheelPanning,
-    control: { type: "boolean" },
-    table: {
-      defaultValue: { summary: "false" },
-      type: { summary: "boolean" },
-    },
-  },
   "panning.disabled": {
     defaultValue: initialSetup.panning.disabled,
-    control: { type: "boolean" },
-    table: {
-      defaultValue: { summary: "false" },
-      type: { summary: "boolean" },
-    },
-  },
-  "panning.velocityDisabled": {
-    defaultValue: initialSetup.panning.velocityDisabled,
     control: { type: "boolean" },
     table: {
       defaultValue: { summary: "false" },

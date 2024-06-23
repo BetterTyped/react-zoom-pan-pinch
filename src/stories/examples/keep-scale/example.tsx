@@ -10,10 +10,16 @@ export const Example: React.FC<any> = (args: any) => {
     <TransformWrapper {...normalizeArgs(args)} maxScale={100}>
       <TransformComponent
         wrapperStyle={{
-          width: "700px",
-          height: "500px",
-          maxWidth: "100%",
-          maxHeight: "calc(100vh - 50px)",
+          width: "400px",
+          height: "400px",
+          maxWidth: "70vw",
+          maxHeight: "70vh",
+        }}
+        contentStyle={{
+          width: "400px",
+          height: "400px",
+          maxWidth: "70vw",
+          maxHeight: "70vh",
         }}
       >
         <div

@@ -28,7 +28,21 @@ export const Template = (args: any) => {
   );
 
   return (
-    <TransformWrapper {...normalizeArgs(args)}>
+    <TransformWrapper
+      {...normalizeArgs(args)}
+      wrapperStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
+      contentStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
+    >
       {(utils) => (
         <div>
           <div
@@ -40,16 +54,12 @@ export const Template = (args: any) => {
               border: "1px solid blue",
             }}
           >
-            <MiniMap width={400} height={800}>
+            <MiniMap width={200} height={300}>
               {element}
             </MiniMap>
           </div>
           <Controls {...utils} />
-          <TransformComponent
-            wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
-          >
-            {element}
-          </TransformComponent>
+          <TransformComponent>{element}</TransformComponent>
         </div>
       )}
     </TransformWrapper>

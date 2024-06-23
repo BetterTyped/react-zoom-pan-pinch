@@ -93,12 +93,12 @@ export type ReactZoomPanPinchProps = {
     allowPanning?: boolean;
     excluded?: string[];
   };
-  trackPadPanning: {
-    disabled: boolean;
+  trackPadPanning?: {
+    disabled?: boolean;
     velocityDisabled?: boolean;
     lockAxisX?: boolean;
     lockAxisY?: boolean;
-    activationKeys: string[] | ((keys: string[]) => boolean);
+    activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
   };
   doubleClick?: {

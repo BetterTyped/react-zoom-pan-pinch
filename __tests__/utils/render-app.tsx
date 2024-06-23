@@ -20,6 +20,7 @@ interface RenderApp {
   wrapper: HTMLElement;
   pan: (options: { x: number; y: number; steps?: number }) => void;
   touchPan: (options: { x: number; y: number; steps?: number }) => void;
+  trackPadPan: (options: { x: number; y: number; steps?: number }) => void;
   zoom: (options: { value: number; center?: [number, number] }) => void;
   pinch: (options: {
     value: number;
@@ -283,6 +284,48 @@ export const renderApp = ({
     });
   };
 
+  const trackPadPan: RenderApp["trackPadPan"] = (options) => {
+    const { x, y, steps = 1 } = options;
+    if (!ref.current) throw new Error("ref.current is null");
+
+    waitForPreviousActionToEnd();
+
+    const xStep = x / steps;
+    const yStep = y / steps;
+
+    userEvent.hover(content);
+
+    fireEvent(
+      content,
+      new WheelEvent("wheel", {
+        bubbles: true,
+        deltaX: 0,
+        deltaY: 0,
+      }),
+    );
+    [...Array(steps)].forEach((_, index) => {
+      if (index !== steps - 1) {
+        fireEvent(
+          content,
+          new WheelEvent("wheel", {
+            bubbles: true,
+            deltaX: -xStep * index,
+            deltaY: -yStep * index,
+          }),
+        );
+      } else {
+        fireEvent(
+          content,
+          new WheelEvent("wheel", {
+            bubbles: true,
+            deltaX: -x,
+            deltaY: -y,
+          }),
+        );
+      }
+    });
+  };
+
   return {
     ...view,
     ref,
@@ -297,5 +340,6 @@ export const renderApp = ({
     pan,
     pinch,
     touchPan,
+    trackPadPan,
   };
 };

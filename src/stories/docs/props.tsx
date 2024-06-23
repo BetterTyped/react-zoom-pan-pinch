@@ -294,6 +294,42 @@ export const wrapperPropsTable: ComponentProps = {
         "List of the class names or tags that should not activate this feature. (E.g. ['my-custom-class-name', 'div', 'a'])",
     },
   },
+  trackPadPanning: {
+    trackPadPanning: {
+      type: [""],
+      defaultValue: "",
+      description: "",
+    },
+    disabled: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.disabled),
+      description: "Disable the panning feature.",
+    },
+    lockAxisX: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.lockAxisX),
+      description:
+        "Disable the panning feature for the X axis (prevents horizontal panning).",
+    },
+    lockAxisY: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.lockAxisY),
+      description:
+        "Disable the panning feature for the Y axis (prevents vertical panning).",
+    },
+    activationKeys: {
+      type: ["string[]"],
+      defaultValue: String(initialSetup.panning.activationKeys),
+      description:
+        "List of keys which, when held down, should activate this feature.",
+    },
+    excluded: {
+      type: ["string[]"],
+      defaultValue: String(initialSetup.panning.excluded),
+      description:
+        "List of the class names or tags that should not activate this feature. (E.g. ['my-custom-class-name', 'div', 'a'])",
+    },
+  },
   doubleClick: {
     doubleClick: {
       type: [""],

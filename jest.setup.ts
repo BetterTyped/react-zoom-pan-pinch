@@ -28,19 +28,19 @@ function parseTransform(transform: string): Record<string, string> {
   );
 }
 
-const getSize = (element: HTMLElement) => {
+const getSize = (element: HTMLElement, useScale: boolean) => {
   const isPercentageWidth = element.style.width.includes("%");
   const isPercentageHeight = element.style.height.includes("%");
 
   const values = parseTransform(element.style.transform);
 
-  const scale = values?.scale || "1";
+  const scale = useScale ? values?.scale || "1" : "1";
 
   let width = 0;
   let height = 0;
 
   if (isPercentageWidth || isPercentageHeight) {
-    const parent = getSize(element.parentNode as HTMLElement);
+    const parent = getSize(element.parentNode as HTMLElement, useScale);
     width = (parseFloat(element.style.width) * parent.width) / 100;
     height = (parseFloat(element.style.height) * parent.height) / 100;
   } else {
@@ -56,7 +56,7 @@ const getSize = (element: HTMLElement) => {
 
 window.HTMLElement.prototype.getBoundingClientRect = function () {
   const style = window.getComputedStyle(this);
-  const size = getSize(this);
+  const size = getSize(this, true);
   const elements = {
     x: parseFloat(style.left) || 0,
     y: parseFloat(style.top) || 0,
@@ -89,12 +89,12 @@ Object.defineProperties(window.HTMLElement.prototype, {
   },
   offsetHeight: {
     get: function () {
-      return getSize(this).height;
+      return getSize(this, false).height;
     },
   },
   offsetWidth: {
     get: function () {
-      return getSize(this).width;
+      return getSize(this, false).width;
     },
   },
 });

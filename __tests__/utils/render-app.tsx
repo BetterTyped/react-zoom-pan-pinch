@@ -15,7 +15,7 @@ interface RenderApp {
   zoomInBtn: HTMLElement;
   zoomOutBtn: HTMLElement;
   resetBtn: HTMLElement;
-  center: HTMLElement;
+  centerBtn: HTMLElement;
   content: HTMLElement;
   wrapper: HTMLElement;
   pan: (options: { x: number; y: number; steps?: number }) => void;
@@ -112,7 +112,7 @@ export const renderApp = ({
   const zoomInBtn = screen.getByTestId("zoom-in");
   const zoomOutBtn = screen.getByTestId("zoom-out");
   const resetBtn = screen.getByTestId("reset");
-  const center = screen.getByTestId("center");
+  const centerBtn = screen.getByTestId("center");
   // containers
   const content = screen.getByTestId("content");
   const wrapper = screen.getByTestId("wrapper");
@@ -131,7 +131,7 @@ export const renderApp = ({
     const isZoomIn = ref.current.instance.state.scale < value;
 
     const startTime = Date.now();
-    while (Date.now() - startTime < 200) {
+    while (Date.now() - startTime < 1000) {
       if (
         (isZoomIn
           ? ref.current.instance.state.scale < value
@@ -174,7 +174,7 @@ export const renderApp = ({
     });
 
     const startTime = Date.now();
-    while (Date.now() - startTime < 200) {
+    while (Date.now() - startTime < 1000) {
       if (
         (isZoomIn
           ? ref.current.instance.state.scale < value
@@ -290,7 +290,7 @@ export const renderApp = ({
     zoomInBtn,
     zoomOutBtn,
     resetBtn,
-    center,
+    centerBtn,
     content,
     wrapper,
     zoom,

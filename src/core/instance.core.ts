@@ -200,6 +200,7 @@ export class ZoomPanPinch {
         }
       });
 
+      // TODO: CHANGE to first interaction?
       // if nothing about the contentComponent has changed after 5 seconds, disconnect the observer
       setTimeout(() => {
         this.observer?.disconnect();

@@ -8,9 +8,9 @@ describe("Example view", () => {
       expect(wrapper).toBeDefined();
     });
     test("it renders center in button without errors", () => {
-      const { center } = renderApp();
+      const { centerBtn } = renderApp();
 
-      expect(center).toBeDefined();
+      expect(centerBtn).toBeDefined();
     });
     test("it renders zoom in button without errors", () => {
       const { zoomInBtn } = renderApp();

@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 
 import { Context } from "../transform-wrapper/transform-wrapper";
+import { baseClasses } from "../../constants/state.constants";
 
 import styles from "./transform-component.module.css";
 
@@ -45,13 +46,13 @@ export const TransformComponent: React.FC<Props> = ({
     <div
       {...wrapperProps}
       ref={wrapperRef}
-      className={`react-transform-wrapper ${styles.wrapper} ${wrapperClass}`}
+      className={`${baseClasses.wrapperClass} ${styles.wrapper} ${wrapperClass}`}
       style={wrapperStyle}
     >
       <div
         {...contentProps}
         ref={contentRef}
-        className={`react-transform-component ${styles.content} ${contentClass}`}
+        className={`${baseClasses.contentClass} ${styles.content} ${contentClass}`}
         style={contentStyle}
       >
         {children}

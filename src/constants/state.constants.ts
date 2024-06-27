@@ -1,4 +1,4 @@
-import { LibrarySetup, ReactZoomPanPinchState } from "../models/context.model";
+import { LibrarySetup, ReactZoomPanPinchState, ReactZoomPanPinchBaseClasses } from "../models/context.model";
 
 export const initialState: ReactZoomPanPinchState = {
   previousScale: 1,
@@ -75,4 +75,9 @@ export const initialSetup: LibrarySetup = {
     animationType: "easeOut",
     equalToMove: true,
   },
+};
+
+export const baseClasses: ReactZoomPanPinchBaseClasses = {
+  wrapperClass: "react-transform-wrapper",
+  contentClass: "react-transform-component",
 };

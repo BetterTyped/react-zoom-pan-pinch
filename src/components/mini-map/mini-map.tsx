@@ -51,6 +51,21 @@ export const MiniMap: React.FC<MiniMapProps> = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
 
+  const getViewportSize = useCallback(() => {
+    if (instance.wrapperComponent) {
+      const rect = instance.wrapperComponent.getBoundingClientRect();
+
+      return {
+        width: rect.width,
+        height: rect.height
+      };
+    }
+    return {
+      width: 0,
+      height: 0
+    };
+  }, [instance.wrapperComponent]);
+
   const getContentSize = useCallback(() => {
     if (instance.contentComponent) {
       const rect = instance.contentComponent.getBoundingClientRect();
@@ -116,7 +131,7 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       mainRef.current.style.height = `${miniSize.height}px`;
     }
     if (previewRef.current) {
-      const size = getContentSize();
+      const size = getViewportSize();
       const scale = computeMiniMapScale();
       const previewScale = scale * (1 / instance.transformState.scale);
       const transform = instance.handleTransformStyles(

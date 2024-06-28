@@ -1,0 +1,64 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+
+import { TransformWrapper, TransformComponent } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs } from "../../utils";
+
+import exampleImg from "./image.png";
+
+export const Template = (args) => (
+  <TransformWrapper
+    {...normalizeArgs(args)}
+    wheel={{
+      activationKeys: (keys) =>
+        ["Meta", "Ctrl"].some((key) => keys.includes(key)),
+    }}
+    trackPadPanning={{
+      disabled: false,
+      activationKeys: (keys) =>
+        !["Meta", "Ctrl"].some((key) => keys.includes(key)),
+    }}
+  >
+    <TransformComponent
+      wrapperStyle={{
+        width: "400px",
+        height: "400px",
+        maxWidth: "70vw",
+        maxHeight: "70vh",
+      }}
+      contentStyle={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <div style={{ background: "#ababab", color: "black", padding: "0px" }}>
+        <div>Click cmd + wheel to zoom</div>
+        <div>Navigate easily with touchpad</div>
+        <img
+          src={exampleImg}
+          alt=""
+          style={{
+            width: "100%",
+          }}
+        />
+      </div>
+    </TransformComponent>
+  </TransformWrapper>
+);
+
+<Meta title="Examples/Cinema" component={TransformWrapper} />
+
+# Cinema
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Cinema">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Cinema" />

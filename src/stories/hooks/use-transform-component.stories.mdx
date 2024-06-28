@@ -1,0 +1,27 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Hooks/useTransformComponent" />
+
+# useTransformComponent
+
+This hooks allows to easily connect with lifecycle into the Zoom-Pan-Pinch state
+for rendering a component. It will trigger the provided callback every time the
+transform state is changed.
+
+It will not affect rerendering so you can control the way you use received data.
+
+### Example
+
+```tsx
+const App = () => {
+  // It will trigger every time you interact with transform-component
+  // At the same time it will not cause rerendering so you can control it on your own
+  const transformedComponent = useTransformComponent(({ state, instance }) => {
+    console.log(state); // { previousScale: 1, scale: 1, positionX: 0, positionY: 0 }
+
+    return <div>Current scale: {state.scale}</div>;
+  });
+
+  return transformedComponent;
+};
+```

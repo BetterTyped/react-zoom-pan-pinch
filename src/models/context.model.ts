@@ -210,3 +210,8 @@ export type LibrarySetup = Pick<
       | "customTransform"
     >
   >;
+
+export type ReactZoomPanPinchBaseClasses = {
+  wrapperClass: string;
+  contentClass: string;
+};

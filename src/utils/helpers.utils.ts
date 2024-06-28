@@ -1,9 +1,13 @@
+import { baseClasses } from "../constants/state.constants";
+
+const matchPrefix = `.${baseClasses.wrapperClass}`;
+
 export const isExcludedNode = (
   node: HTMLElement,
   excluded: string[],
 ): boolean => {
-  return excluded.some((exclude) =>
-    node.matches(`${exclude}, .${exclude}, ${exclude} *, .${exclude} *`),
+  return excluded.some((exclude) => 
+    node.matches(`${matchPrefix} ${exclude}, ${matchPrefix} .${exclude}, ${matchPrefix} ${exclude} *, ${matchPrefix} .${exclude} *`),
   );
 };
 

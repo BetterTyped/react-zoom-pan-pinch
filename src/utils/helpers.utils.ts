@@ -6,8 +6,10 @@ export const isExcludedNode = (
   node: HTMLElement,
   excluded: string[],
 ): boolean => {
-  return excluded.some((exclude) => 
-    node.matches(`${matchPrefix} ${exclude}, ${matchPrefix} .${exclude}, ${matchPrefix} ${exclude} *, ${matchPrefix} .${exclude} *`),
+  return excluded.some((exclude) =>
+    node.matches(
+      `${matchPrefix} ${exclude}, ${matchPrefix} .${exclude}, ${matchPrefix} ${exclude} *, ${matchPrefix} .${exclude} *`,
+    ),
   );
 };
 

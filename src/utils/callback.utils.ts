@@ -1,8 +1,4 @@
-import {
-  ReactZoomPanPinchContext,
-  ReactZoomPanPinchProps,
-  ReactZoomPanPinchRef,
-} from "../models";
+import { ReactZoomPanPinchRef } from "../models";
 
 export const handleCallback = <T>(
   context: ReactZoomPanPinchRef,

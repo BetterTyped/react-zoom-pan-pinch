@@ -15,7 +15,7 @@ export function getSizeMultiplier(wrapperComponent: HTMLDivElement): number {
   const defaultMultiplier = 1;
   const value = wrapperComponent.offsetWidth / window.innerWidth;
 
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     return defaultMultiplier;
   }
 
@@ -29,7 +29,7 @@ const getMinMaxVelocity = (
 ) => {
   const defaultMultiplier = 0;
   const value = velocity * sensitivity;
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     return defaultMultiplier;
   }
   if (velocity < 0) {

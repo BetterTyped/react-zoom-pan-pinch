@@ -1,4 +1,8 @@
-import { LibrarySetup, ReactZoomPanPinchState, ReactZoomPanPinchBaseClasses } from "../models/context.model";
+import {
+  LibrarySetup,
+  ReactZoomPanPinchState,
+  ReactZoomPanPinchBaseClasses,
+} from "../models/context.model";
 
 export const initialState: ReactZoomPanPinchState = {
   previousScale: 1,

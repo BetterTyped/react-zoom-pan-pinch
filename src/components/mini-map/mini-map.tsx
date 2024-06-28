@@ -181,10 +181,16 @@ export const MiniMap: React.FC<MiniMapProps> = ({
 
   useEffect(() => {
     const move = (e: MouseEvent) => {
-      if (panning && isDown && instance.contentComponent) {
+      if (
+        panning &&
+        isDown &&
+        instance.contentComponent &&
+        previewRef.current &&
+        mainRef.current
+      ) {
         const scale = computeMiniMapScale();
-        const previewRect = previewRef.current?.getBoundingClientRect()!;
-        const mainRect = mainRef.current?.getBoundingClientRect()!;
+        const previewRect = previewRef.current.getBoundingClientRect();
+        const mainRect = mainRef.current.getBoundingClientRect();
 
         const relativeX = (e.clientX - mainRect.left) / scale;
         const relativeY = (e.clientY - mainRect.top) / scale;

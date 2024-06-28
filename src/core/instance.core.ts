@@ -483,11 +483,6 @@ export class ZoomPanPinch {
 
   setKeyPressed = (e: KeyboardEvent): void => {
     this.pressedKeys[e.key] = true;
-    console.log(
-      Object.entries(this.pressedKeys)
-        .filter(([, pressed]) => pressed)
-        .map(([key]) => key),
-    );
   };
 
   setKeyUnPressed = (e: KeyboardEvent): void => {

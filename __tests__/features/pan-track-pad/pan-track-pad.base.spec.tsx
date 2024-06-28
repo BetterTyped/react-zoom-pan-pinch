@@ -1,6 +1,6 @@
 import { waitFor } from "@testing-library/react";
 
-import { renderApp, sleep } from "../../utils";
+import { renderApp } from "../../utils";
 
 describe("Pan TrackPad [Base]", () => {
   describe("When panning to coords", () => {

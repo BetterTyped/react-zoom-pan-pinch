@@ -88,6 +88,7 @@
     "jest-extended": "^4.0.2",
     "jest-preview": "^0.3.1",
     "jest-watch-typeahead": "^2.2.2",
+    "prettier": "^3.3.2",
     "prism-react-renderer": "^2.3.1",
     "react": "*",
     "react-dom": "*",

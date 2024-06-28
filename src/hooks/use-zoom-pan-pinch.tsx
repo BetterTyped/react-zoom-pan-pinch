@@ -1,7 +1,8 @@
+import { useLayoutEffect, useRef } from "react";
+
 import { initialSetup } from "constants/state.constants";
 import { ZoomPanPinch } from "core/instance.core";
 import { ReactZoomPanPinchProps, ReactZoomPanPinchRef } from "models";
-import { useLayoutEffect, useRef } from "react";
 
 export const useZoomPanPinch = (props?: ReactZoomPanPinchProps) => {
   const contentRef = useRef<HTMLDivElement>(null);

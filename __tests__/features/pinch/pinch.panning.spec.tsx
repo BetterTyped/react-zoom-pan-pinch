@@ -1,4 +1,5 @@
 import { waitFor } from "@testing-library/dom";
+
 import { renderApp } from "../../utils/render-app";
 
 describe("Pinch [Panning]", () => {

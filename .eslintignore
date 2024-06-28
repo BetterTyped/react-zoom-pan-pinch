@@ -4,3 +4,8 @@ storybook-static
 .storybook
 coverage
 rollup.config.js
+jest.config.ts
+jest.setup.ts
+next-env.d.ts
+commitlint.config.js
+next.config.js

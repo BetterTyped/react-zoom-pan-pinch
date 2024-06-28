@@ -32,7 +32,9 @@ interface RenderApp {
 const waitForPreviousActionToEnd = () => {
   // Synchronous await for 10ms to wait for the previous event to finish (pinching or touching)
   const startTime = Date.now();
-  while (Date.now() - startTime < 10) {}
+  while (Date.now() - startTime < 10) {
+    // wait
+  }
 };
 
 function getPinchTouches(
@@ -80,7 +82,7 @@ export const renderApp = ({
   wrapperHeight?: string;
 } = {}): RenderResult & RenderApp => {
   let renders = 0;
-  let ref: { current: ReactZoomPanPinchRef | null } = { current: null };
+  const ref: { current: ReactZoomPanPinchRef | null } = { current: null };
 
   const onRender = () => {
     renders += 1;
@@ -189,7 +191,7 @@ export const renderApp = ({
 
         const newStep = isNearScale ? step / 6 : step;
 
-        pinchValue = pinchValue + newStep;
+        pinchValue += newStep;
 
         fireEvent.touchMove(content, {
           touches: getPinchTouches(content, center, pinchValue, from),

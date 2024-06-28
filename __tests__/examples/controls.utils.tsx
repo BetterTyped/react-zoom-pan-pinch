@@ -11,7 +11,6 @@ export const Controls: React.FC = () => {
         type="button"
         onClick={() => {
           zoomIn();
-          console.log("zoomIn");
         }}
         data-testid="zoom-in"
       >
@@ -21,7 +20,6 @@ export const Controls: React.FC = () => {
         type="button"
         onClick={() => {
           zoomOut();
-          console.log("zoomOut");
         }}
         data-testid="zoom-out"
       >
@@ -31,7 +29,6 @@ export const Controls: React.FC = () => {
         type="button"
         onClick={() => {
           resetTransform();
-          console.log("resetTransform");
         }}
         data-testid="reset"
       >
@@ -41,7 +38,6 @@ export const Controls: React.FC = () => {
         type="button"
         onClick={() => {
           centerView();
-          console.log("centerView");
         }}
         data-testid="center"
       >

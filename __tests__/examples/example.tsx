@@ -56,12 +56,12 @@ export const Example = (options: {
           <div style={{ background: "#444", color: "white", padding: "50px" }}>
             <h1>Title</h1>
             <h2>Subtitle</h2>
-            <button
+            {/* <button
               type="button"
               onClick={() => alert("You can still interact with click events!")}
             >
               Click me!
-            </button>
+            </button> */}
             <div
               style={{
                 display: "flex",

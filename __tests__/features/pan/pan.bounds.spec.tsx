@@ -1,7 +1,3 @@
-import { waitFor } from "@testing-library/react";
-
-import { renderApp } from "../../utils";
-
 describe("Pan [Bounds]", () => {
   it("TODO", () => {
     expect(true).toBe(true);

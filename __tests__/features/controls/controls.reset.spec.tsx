@@ -1,7 +1,6 @@
 import { fireEvent, waitFor } from "@testing-library/react";
 
 import { renderApp } from "../../utils/render-app";
-import { sleep } from "../../utils";
 
 describe("Controls [Reset]", () => {
   describe("When resetting state with controls button", () => {

@@ -20,9 +20,9 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noEmit": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "build", "dist", "rollup.config.mjs", "__tests__"]
+  "include": ["src", "__tests__"],
+  "exclude": ["node_modules", "build", "dist", "rollup.config.mjs"]
 }

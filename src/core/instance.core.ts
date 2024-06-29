@@ -17,7 +17,6 @@ import {
   getTransformStyles,
   makePassiveEventOption,
   getCenterPosition,
-  isExcludedNode,
 } from "../utils";
 import { handleCancelAnimation } from "./animations/animations.utils";
 import { isWheelAllowed, isWheelPanningAllowed } from "./wheel/wheel.utils";

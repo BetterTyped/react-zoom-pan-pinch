@@ -13,6 +13,10 @@ describe("Zoom [Base]", () => {
         expect(ref.current?.instance.state.scale).toBe(1.5);
       });
     });
+    it("should not move the center during scroll", async () => {
+      // TODO: Implement test
+      expect(true).toBe(true);
+    });
     it("should zoom to the position of cursor", async () => {
       // TODO: Implement test
       expect(true).toBe(true);

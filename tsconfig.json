@@ -23,6 +23,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src", "__tests__"],
-  "exclude": ["node_modules", "build", "dist", "rollup.config.mjs"]
+  "include": ["src"],
+  "exclude": ["node_modules", "build", "dist", "rollup.config.mjs", "__tests__"]
 }

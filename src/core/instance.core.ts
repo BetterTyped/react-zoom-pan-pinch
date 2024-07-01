@@ -376,9 +376,7 @@ export class ZoomPanPinch {
 
     const isDoubleTap = this.lastTouch && +new Date() - this.lastTouch < 200;
 
-    if (isDoubleTap && event.touches.length === 1) {
-      this.onDoubleClick(event);
-    } else {
+    if (!isDoubleTap) {
       this.lastTouch = +new Date();
 
       handleCancelAnimation(this);

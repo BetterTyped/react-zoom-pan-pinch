@@ -60,7 +60,7 @@ export class ZoomPanPinch {
 
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
-  public observer!: ResizeObserver;
+  public observer?: ResizeObserver;
   public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
     new Set();
   public onInitCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> = new Set();
@@ -158,7 +158,7 @@ export class ZoomPanPinch {
     document.removeEventListener("mouseleave", this.clearPanning, passive);
 
     handleCancelAnimation(this);
-    this.observer.disconnect();
+    this.observer?.disconnect();
   };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {

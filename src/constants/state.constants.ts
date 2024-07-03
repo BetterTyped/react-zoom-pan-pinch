@@ -23,7 +23,6 @@ export const initialSetup: LibrarySetup = {
   centerZoomedOut: false,
   centerOnInit: false,
   disablePadding: false,
-  resizeAlignmentTime: 16,
   smooth: true,
   wheel: {
     step: 0.2,

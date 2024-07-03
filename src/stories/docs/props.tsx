@@ -159,12 +159,6 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "Used to disable panning, zooming boundary padding effect. By enabling this option, you will not be able to zoom outside the image area.",
   },
-  resizeAlignmentTime: {
-    type: ["number"],
-    defaultValue: String(initialSetup.resizeAlignmentTime),
-    description:
-      "Time delay in ms for auto align to bounds after wrapper or content component resized.",
-  },
   customTransform: {
     type: ["function"],
     defaultValue: "undefined",

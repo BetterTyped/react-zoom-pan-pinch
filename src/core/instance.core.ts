@@ -46,6 +46,7 @@ import {
   handleDoubleClick,
   isDoubleClickAllowed,
 } from "./double-click/double-click.logic";
+import { handleAlignToScaleBounds } from "./zoom/zoom.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 
@@ -59,7 +60,7 @@ export class ZoomPanPinch {
 
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
-  public observer?: ResizeObserver;
+  public observer: ResizeObserver;
   public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
     new Set();
   public onInitCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> = new Set();
@@ -157,7 +158,7 @@ export class ZoomPanPinch {
     document.removeEventListener("mouseleave", this.clearPanning, passive);
 
     handleCancelAnimation(this);
-    this.observer?.disconnect();
+    this.observer.disconnect();
   };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
@@ -172,34 +173,40 @@ export class ZoomPanPinch {
   };
 
   handleInitialize = (contentComponent: HTMLDivElement): void => {
+    let isCentered = false;
+    
     const { centerOnInit } = this.setup;
+
     this.applyTransformation();
-    this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
+    this.onInitCallbacks.forEach((callback) => {
+      callback(getContext(this));
+    });
 
-    if (centerOnInit) {
-      this.setCenter();
-      this.observer = new ResizeObserver(() => {
-        const currentWidth = contentComponent.offsetWidth;
-        const currentHeight = contentComponent.offsetHeight;
+    this.observer = new ResizeObserver((entries) => {
+      for(const entry of entries) {
+        if(entry.target === contentComponent) {
+          if(centerOnInit && !isCentered) {
+            const currentWidth = contentComponent.offsetWidth;
+            const currentHeight = contentComponent.offsetHeight;
+    
+            if (currentWidth > 0 || currentHeight > 0) {
+              isCentered = true;
+    
+              this.setCenter();
+            }
+          } else {
+            const { pinchMidpoint } = this;
+    
+            handleAlignToScaleBounds(this, pinchMidpoint?.x, pinchMidpoint?.y);
+          }
 
-        if (currentWidth > 0 || currentHeight > 0) {
-          this.onInitCallbacks.forEach((callback) =>
-            callback(getContext(this)),
-          );
-          this.setCenter();
-
-          this.observer?.disconnect();
+          break;
         }
-      });
+      }
+    });
 
-      // if nothing about the contentComponent has changed after 5 seconds, disconnect the observer
-      setTimeout(() => {
-        this.observer?.disconnect();
-      }, 5000);
-
-      // Start observing the target node for configured mutations
-      this.observer.observe(contentComponent);
-    }
+    // Start observing the target node for configured mutations
+    this.observer.observe(contentComponent);
   };
 
   /// ///////

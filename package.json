@@ -14,7 +14,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:docs": "build-storybook",
-    "start": "DISABLE_ESLINT_PLUGIN=true start-storybook -p 6006 --no-manager-cache",
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true start-storybook -p 6006 --no-manager-cache",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.tsx,.ts --fix",
     "format": "prettier --write .",

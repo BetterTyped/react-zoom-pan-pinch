@@ -176,8 +176,8 @@ export class ZoomPanPinch {
     wrapper: HTMLDivElement,
     contentComponent: HTMLDivElement,
   ): void => {
-    let frameId: number;
     let isCentered = false;
+    let timerId: ReturnType<typeof setTimeout>;
 
     const { centerOnInit } = this.setup;
 
@@ -208,15 +208,15 @@ export class ZoomPanPinch {
             this.setCenter();
           }
         } else {
-          cancelAnimationFrame(frameId);
+          clearTimeout(timerId);
 
-          frameId = requestAnimationFrame(() => {
+          timerId = setTimeout(() => {
             const { scale } = this.transformState;
 
             handleCancelAnimation(this);
             handleCalculateBounds(this, scale);
             handleAlignToBounds(this);
-          });
+          }, this.setup.resizeAlignmentTime);
         }
       }
     });

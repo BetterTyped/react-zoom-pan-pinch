@@ -74,7 +74,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "gh-pages": "^3.1.0",
+    "gh-pages": "^5.0.0",
     "install-peers-cli": "^2.2.0",
     "jest-css-modules": "^2.1.0",
     "jest-extended": "^3.2.0",

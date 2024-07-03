@@ -57,12 +57,12 @@ export const MiniMap: React.FC<MiniMapProps> = ({
 
       return {
         width: rect.width,
-        height: rect.height
+        height: rect.height,
       };
     }
     return {
       width: 0,
-      height: 0
+      height: 0,
     };
   }, [instance.wrapperComponent]);
 

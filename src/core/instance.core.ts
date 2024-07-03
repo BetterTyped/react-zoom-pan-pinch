@@ -36,6 +36,7 @@ import {
   handlePanning,
   handlePanningEnd,
   handlePanningStart,
+  handleAlignToBounds,
 } from "./pan/panning.logic";
 import {
   handlePinchStart,
@@ -46,7 +47,6 @@ import {
   handleDoubleClick,
   isDoubleClickAllowed,
 } from "./double-click/double-click.logic";
-import { handleAlignToScaleBounds } from "./zoom/zoom.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
 
@@ -60,7 +60,7 @@ export class ZoomPanPinch {
 
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
-  public observer: ResizeObserver;
+  public observer?: ResizeObserver;
   public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
     new Set();
   public onInitCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> = new Set();
@@ -158,7 +158,7 @@ export class ZoomPanPinch {
     document.removeEventListener("mouseleave", this.clearPanning, passive);
 
     handleCancelAnimation(this);
-    this.observer.disconnect();
+    this.observer?.disconnect();
   };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
@@ -172,10 +172,23 @@ export class ZoomPanPinch {
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitialize = (contentComponent: HTMLDivElement): void => {
+  handleInitialize = (
+    wrapper: HTMLDivElement,
+    contentComponent: HTMLDivElement,
+  ): void => {
     let isCentered = false;
-    
+
     const { centerOnInit } = this.setup;
+
+    const hasTarget = (entries: ResizeObserverEntry[], target: Element) => {
+      for (const entry of entries) {
+        if (entry.target === target) {
+          return true;
+        }
+      }
+
+      return false;
+    };
 
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => {
@@ -183,29 +196,26 @@ export class ZoomPanPinch {
     });
 
     this.observer = new ResizeObserver((entries) => {
-      for(const entry of entries) {
-        if(entry.target === contentComponent) {
-          if(centerOnInit && !isCentered) {
-            const currentWidth = contentComponent.offsetWidth;
-            const currentHeight = contentComponent.offsetHeight;
-    
-            if (currentWidth > 0 || currentHeight > 0) {
-              isCentered = true;
-    
-              this.setCenter();
-            }
-          } else {
-            const { pinchMidpoint } = this;
-    
-            handleAlignToScaleBounds(this, pinchMidpoint?.x, pinchMidpoint?.y);
-          }
+      if (hasTarget(entries, wrapper) || hasTarget(entries, contentComponent)) {
+        if (centerOnInit && !isCentered) {
+          const currentWidth = contentComponent.offsetWidth;
+          const currentHeight = contentComponent.offsetHeight;
 
-          break;
+          if (currentWidth > 0 || currentHeight > 0) {
+            isCentered = true;
+
+            this.setCenter();
+          }
+        } else {
+          handleCancelAnimation(this);
+          handleCalculateBounds(this, this.transformState.scale);
+          handleAlignToBounds(this, 0);
         }
       }
     });
 
     // Start observing the target node for configured mutations
+    this.observer.observe(wrapper);
     this.observer.observe(contentComponent);
   };
 
@@ -565,7 +575,7 @@ export class ZoomPanPinch {
     this.contentComponent = contentComponent;
     handleCalculateBounds(this, this.transformState.scale);
     this.handleInitializeWrapperEvents(wrapperComponent);
-    this.handleInitialize(contentComponent);
+    this.handleInitialize(wrapperComponent, contentComponent);
     this.initializeWindowEvents();
     this.isInitialized = true;
     const ctx = getContext(this);

@@ -60,7 +60,7 @@ export class ZoomPanPinch {
 
   public transformState: ReactZoomPanPinchState;
   public setup: LibrarySetup;
-  public observer: ResizeObserver;
+  public observer!: ResizeObserver;
   public onChangeCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> =
     new Set();
   public onInitCallbacks: Set<(ctx: ReactZoomPanPinchRef) => void> = new Set();
@@ -172,21 +172,24 @@ export class ZoomPanPinch {
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitialize = (wrapper: HTMLDivElement, contentComponent: HTMLDivElement): void => {
+  handleInitialize = (
+    wrapper: HTMLDivElement,
+    contentComponent: HTMLDivElement,
+  ): void => {
     let frameId: number;
     let isCentered = false;
-    
+
     const { centerOnInit } = this.setup;
 
     const hasTarget = (entries: ResizeObserverEntry[], target: Element) => {
-      for(const entry of entries) {
-        if(entry.target === target) {
+      for (const entry of entries) {
+        if (entry.target === target) {
           return true;
         }
       }
 
       return false;
-    }
+    };
 
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => {
@@ -194,14 +197,14 @@ export class ZoomPanPinch {
     });
 
     this.observer = new ResizeObserver((entries) => {
-      if(hasTarget(entries, wrapper) || hasTarget(contentComponent)) {
-        if(centerOnInit && !isCentered) {
+      if (hasTarget(entries, wrapper) || hasTarget(entries, contentComponent)) {
+        if (centerOnInit && !isCentered) {
           const currentWidth = contentComponent.offsetWidth;
           const currentHeight = contentComponent.offsetHeight;
-  
+
           if (currentWidth > 0 || currentHeight > 0) {
             isCentered = true;
-  
+
             this.setCenter();
           }
         } else {
@@ -214,7 +217,7 @@ export class ZoomPanPinch {
             handleCalculateBounds(this, scale);
             handleAlignToBounds(this);
           });
-        }  
+        }
       }
     });
 

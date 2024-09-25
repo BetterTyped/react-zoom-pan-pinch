@@ -83,7 +83,7 @@
     "react": "*",
     "react-dom": "*",
     "react-scripts": "5.0.1",
-    "rollup": "^2.46.0",
+    "rollup": "^3.29.5",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^3.0.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",

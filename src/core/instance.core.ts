@@ -391,7 +391,10 @@ export class ZoomPanPinch {
 
     if (!isAllowed) return;
 
-    const isDoubleTap = this.lastTouch && +new Date() - this.lastTouch < 200;
+    const isDoubleTap =
+      this.lastTouch &&
+      +new Date() - this.lastTouch < 200 &&
+      event.touches.length === 1;
 
     if (!isDoubleTap) {
       this.lastTouch = +new Date();

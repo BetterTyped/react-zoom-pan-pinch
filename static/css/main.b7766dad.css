@@ -97,6 +97,7 @@ body td > pre.prism-code {
   user-select: none;
   margin: 0;
   padding: 0;
+  transform: translate3d(0, 0, 0);
 }
 .transform-component_content__FdhWn {
   display: flex;
@@ -114,4 +115,4 @@ body td > pre.prism-code {
 }
 
 
-/*# sourceMappingURL=main.fea750bd.css.map*/
+/*# sourceMappingURL=main.b7766dad.css.map*/

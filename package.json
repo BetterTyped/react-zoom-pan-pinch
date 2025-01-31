@@ -83,6 +83,7 @@
     "react": "*",
     "react-dom": "*",
     "react-scripts": "5.0.1",
+    "resize-observer-polyfill": "^1.5.1",
     "rollup": "^2.46.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^3.0.2",

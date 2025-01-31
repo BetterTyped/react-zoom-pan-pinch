@@ -181,6 +181,7 @@ export class ZoomPanPinch {
     const { centerOnInit } = this.setup;
 
     const hasTarget = (entries: ResizeObserverEntry[], target: Element) => {
+      // eslint-disable-next-line no-restricted-syntax
       for (const entry of entries) {
         if (entry.target === target) {
           return true;

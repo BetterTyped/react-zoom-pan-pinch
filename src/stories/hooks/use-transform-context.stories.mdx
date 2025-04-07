@@ -4,12 +4,35 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # useTransformContext
 
+Must be used within the `TransformWrapper`.
+
 Use the direct access to the `Zoom-Pan-Pinch instance` and create your own hooks
 and logic with ease.
+
+An example is accessing the current positions and scale of the `instance` through `context.transformState`. 
 
 ### Example
 
 ```tsx
-// Simple access to the context instance
-const context = useTransformContext();
+  const App = () => {
+
+  const MyComponent = () => {
+    // Simple access to the context
+    const context = useTransformContext();
+    return (...)
+  };
+
+
+  return (
+        <TransformWrapper
+          {...props}
+        >
+            <TransformComponent>
+                <MyComponent/>
+            </TransformComponent>
+        </TransformWrapper>
+  );
+};
+
+
 ```

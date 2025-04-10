@@ -60,7 +60,7 @@ export function handlePanning(
   clientX: number,
   clientY: number,
 ): void {
-  const { startCoords, setup } = contextInstance;
+  const { startCoords, clientCoords, setup } = contextInstance;
   const { sizeX, sizeY } = setup.alignmentAnimation;
 
   if (!startCoords) return;
@@ -69,7 +69,7 @@ export function handlePanning(
   const paddingValueX = getPaddingValue(contextInstance, sizeX);
   const paddingValueY = getPaddingValue(contextInstance, sizeY);
 
-  handleCalculateVelocity(contextInstance, { x, y });
+  if(clientCoords?.x != clientX && clientCoords?.y != clientY) handleCalculateVelocity(contextInstance, { x, y });
   handleNewPosition(contextInstance, x, y, paddingValueX, paddingValueY);
 }
 

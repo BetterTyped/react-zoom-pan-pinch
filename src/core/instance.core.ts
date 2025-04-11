@@ -49,6 +49,7 @@ import {
 } from "./double-click/double-click.logic";
 
 type StartCoordsType = { x: number; y: number } | null;
+type ClientCoordsType = StartCoordsType;
 
 export class ZoomPanPinch {
   public props: ReactZoomPanPinchProps;
@@ -79,6 +80,7 @@ export class ZoomPanPinch {
   public isPanning = false;
   public isWheelPanning = false;
   public startCoords: StartCoordsType = null;
+  public clientCoords: ClientCoordsType = null;
   public lastTouch: number | null = null;
   // pinch helpers
   public distance: null | number = null;

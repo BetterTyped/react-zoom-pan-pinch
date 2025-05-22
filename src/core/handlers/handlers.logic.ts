@@ -100,6 +100,8 @@ export const zoomToElement =
     scale?: number,
     animationTime = 600,
     animationType: keyof typeof animations = "easeOut",
+    offsetX = 0,
+    offsetY = 0,
   ): void => {
     handleCancelAnimation(contextInstance);
 
@@ -109,7 +111,13 @@ export const zoomToElement =
       typeof node === "string" ? document.getElementById(node) : node;
 
     if (wrapperComponent && target && wrapperComponent.contains(target)) {
-      const targetState = calculateZoomToNode(contextInstance, target, scale);
+      const targetState = calculateZoomToNode(
+        contextInstance,
+        target,
+        scale,
+        offsetX,
+        offsetY,
+      );
       animate(contextInstance, targetState, animationTime, animationType);
     }
   };

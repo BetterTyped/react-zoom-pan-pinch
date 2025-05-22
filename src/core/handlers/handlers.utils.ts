@@ -142,6 +142,8 @@ export function calculateZoomToNode(
   contextInstance: ReactZoomPanPinchContext,
   node: HTMLElement,
   customZoom?: number,
+  customOffsetX = 0,
+  customOffsetY = 0,
 ): { positionX: number; positionY: number; scale: number } {
   const { wrapperComponent, contentComponent, transformState } =
     contextInstance;
@@ -176,8 +178,10 @@ export function calculateZoomToNode(
   const offsetX = (wrapperRect.width - nodeWidth * newScale) / 2;
   const offsetY = (wrapperRect.height - nodeHeight * newScale) / 2;
 
-  const newPositionX = (wrapperRect.left - nodeLeft) * newScale + offsetX;
-  const newPositionY = (wrapperRect.top - nodeTop) * newScale + offsetY;
+  const newPositionX =
+    (wrapperRect.left - nodeLeft) * newScale + offsetX + customOffsetX;
+  const newPositionY =
+    (wrapperRect.top - nodeTop) * newScale + offsetY + customOffsetY;
 
   const bounds = calculateBounds(contextInstance, newScale);
 

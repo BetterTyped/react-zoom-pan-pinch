@@ -11,16 +11,22 @@ export const KeepScale = React.forwardRef<
   const instance = useContext(Context);
 
   useEffect(() => {
-    return instance.onChange((ctx) => {
+    const applyScale = (scale: number) => {
       if (localRef.current) {
         const positionX = 0;
         const positionY = 0;
         localRef.current.style.transform = instance.handleTransformStyles(
           positionX,
           positionY,
-          1 / ctx.instance.transformState.scale,
+          1 / scale,
         );
       }
+    };
+
+    applyScale(instance.transformState.scale);
+
+    return instance.onChange((ctx) => {
+      applyScale(ctx.instance.transformState.scale);
     });
   }, [instance]);
 

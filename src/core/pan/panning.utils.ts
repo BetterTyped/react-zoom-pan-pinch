@@ -16,8 +16,8 @@ export const isPanningStartAllowed = (
   const { isInitialized, wrapperComponent } = contextInstance;
 
   const target = event.target as HTMLElement;
-  const targetIsShadowDom = "shadowRoot" in target && "composedPath" in event;
-  const isWrapperChild = targetIsShadowDom
+
+  const isWrapperChild = target.shadowRoot
     ? event.composedPath().some((el) => {
         if (!(el instanceof Element)) {
           return false;
@@ -64,7 +64,7 @@ export const handlePanningSetup = (
   const y = event.clientY;
 
   contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-  contextInstance.clientCoords = {x: x, y:  y};
+  contextInstance.clientCoords = { x: x, y: y };
 };
 
 export const handleTouchPanningSetup = (
@@ -82,7 +82,7 @@ export const handleTouchPanningSetup = (
     const x = touches[0].clientX;
     const y = touches[0].clientY;
     contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-    contextInstance.clientCoords = {x: x, y:  y};
+    contextInstance.clientCoords = { x: x, y: y };
   }
 };
 export function handlePanToBounds(

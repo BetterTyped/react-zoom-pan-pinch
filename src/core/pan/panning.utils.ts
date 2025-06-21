@@ -145,6 +145,7 @@ export function handleNewPosition(
   paddingValueX: number,
   paddingValueY: number,
 ): void {
+  const { maxBounds } = contextInstance;
   const { limitToBounds } = contextInstance.setup;
   const { wrapperComponent, bounds } = contextInstance;
   const { scale, positionX, positionY } = contextInstance.transformState;
@@ -165,6 +166,7 @@ export function handleNewPosition(
     paddingValueX,
     paddingValueY,
     wrapperComponent,
+    maxBounds
   );
 
   contextInstance.setTransformState(scale, x, y);

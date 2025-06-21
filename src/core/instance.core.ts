@@ -105,6 +105,14 @@ export class ZoomPanPinch {
     this.props = props;
     this.setup = createSetup(this.props);
     this.transformState = createState(this.props);
+    if (this.props.minPositionX || this.props.minPositionY || this.props.maxPositionX || this.props.maxPositionY) {
+      this.maxBounds = {
+        minPositionX: this.props.minPositionX ?? -Infinity,
+        minPositionY: this.props.minPositionY ?? -Infinity,
+        maxPositionX: this.props.maxPositionX ?? Infinity,
+        maxPositionY: this.props.maxPositionY ?? Infinity,
+      };
+    }
   }
 
   mount = () => {
@@ -119,6 +127,14 @@ export class ZoomPanPinch {
     this.props = newProps;
     handleCalculateBounds(this, this.transformState.scale);
     this.setup = createSetup(newProps);
+    if (newProps.minPositionX || newProps.minPositionY || newProps.maxPositionX || newProps.maxPositionY) {
+      this.maxBounds = {
+        minPositionX: newProps.minPositionX ?? -Infinity,
+        minPositionY: newProps.minPositionY ?? -Infinity,
+        maxPositionX: newProps.maxPositionX ?? Infinity,
+        maxPositionY: newProps.maxPositionY ?? Infinity,
+      };
+    }
   };
 
   initializeWindowEvents = (): void => {

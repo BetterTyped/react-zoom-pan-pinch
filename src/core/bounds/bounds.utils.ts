@@ -159,6 +159,7 @@ export function getMouseBoundedPosition(
   paddingValueX: number,
   paddingValueY: number,
   wrapperComponent: HTMLDivElement | null,
+  maxBounds: BoundsType | null
 ): PositionType {
   const { minPositionX, minPositionY, maxPositionX, maxPositionY } = bounds;
 
@@ -170,17 +171,22 @@ export function getMouseBoundedPosition(
     paddingY = paddingValueY;
   }
 
+  const minPositionXBound = limitToBounds && maxBounds?.minPositionX ? Math.max(minPositionX - paddingX, maxBounds?.minPositionX) : minPositionX - paddingX;
+  const maxPositionXBound = limitToBounds && maxBounds?.maxPositionX ? Math.max(maxPositionX + paddingX, maxBounds?.maxPositionX) : maxPositionX + paddingX;
+  const minPositionYBound = limitToBounds && maxBounds?.minPositionY ? Math.max(minPositionY - paddingY, maxBounds?.minPositionY) : minPositionY - paddingY;
+  const maxPositionYBound = limitToBounds && maxBounds?.maxPositionY ? Math.max(maxPositionY + paddingY, maxBounds?.maxPositionY) : maxPositionY + paddingY;
+
   const x = boundLimiter(
     positionX,
-    minPositionX - paddingX,
-    maxPositionX + paddingX,
+    minPositionXBound,
+    maxPositionXBound, 
     limitToBounds,
   );
 
   const y = boundLimiter(
     positionY,
-    minPositionY - paddingY,
-    maxPositionY + paddingY,
+    minPositionYBound,
+    maxPositionYBound,
     limitToBounds,
   );
   return { x, y };

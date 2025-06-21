@@ -52,7 +52,7 @@ export const handlePinchZoom = (
   contextInstance: ReactZoomPanPinchContext,
   event: TouchEvent,
 ): void => {
-  const { contentComponent, pinchStartDistance, wrapperComponent } =
+  const { contentComponent, pinchStartDistance, wrapperComponent, maxBounds } =
     contextInstance;
   const { scale } = contextInstance.transformState;
   const { limitToBounds, centerZoomedOut, zoomAnimation, alignmentAnimation } =
@@ -111,6 +111,7 @@ export const handlePinchZoom = (
     paddingValueX,
     paddingValueY,
     wrapperComponent,
+    maxBounds
   );
 
   contextInstance.setTransformState(newScale, finalX, finalY);

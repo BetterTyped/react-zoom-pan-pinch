@@ -79,7 +79,7 @@ export function resetTransformations(
   animationType: keyof typeof animations,
   onResetTransformation?: () => void,
 ): void {
-  const { setup, wrapperComponent } = contextInstance;
+  const { setup, wrapperComponent, maxBounds } = contextInstance;
   const { limitToBounds } = setup;
   const initialTransformation = createState(contextInstance.props);
   const { scale, positionX, positionY } = contextInstance.transformState;
@@ -99,6 +99,7 @@ export function resetTransformations(
     0,
     0,
     wrapperComponent,
+    maxBounds
   );
 
   const newState = {
@@ -145,7 +146,7 @@ export function calculateZoomToNode(
   customOffsetX = 0,
   customOffsetY = 0,
 ): { positionX: number; positionY: number; scale: number } {
-  const { wrapperComponent, contentComponent, transformState } =
+  const { wrapperComponent, contentComponent, transformState, maxBounds } =
     contextInstance;
   const { limitToBounds, minScale, maxScale } = contextInstance.setup;
   if (!wrapperComponent || !contentComponent) return transformState;
@@ -193,6 +194,7 @@ export function calculateZoomToNode(
     0,
     0,
     wrapperComponent,
+    maxBounds
   );
 
   return { positionX: x, positionY: y, scale: newScale };

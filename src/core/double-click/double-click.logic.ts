@@ -47,9 +47,10 @@ export const handleDoubleClickResetMode = (
 function getDoubleClickScale(
   mode: LibrarySetup["doubleClick"]["mode"],
   scale: number,
+  initialScale?: number,
 ) {
   if (mode === "toggle") {
-    return scale === 1 ? 1 : -1;
+    return scale === (initialScale ?? 1) ? 1 : -1;
   }
 
   return mode === "zoomOut" ? -1 : 1;
@@ -76,7 +77,7 @@ export function handleDoubleClick(
 
   if (!contentComponent) return console.error("No ContentComponent found");
 
-  const delta = getDoubleClickScale(mode, contextInstance.transformState.scale);
+  const delta = getDoubleClickScale(mode, contextInstance.transformState.scale, contextInstance.props.initialScale);
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 

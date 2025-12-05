@@ -17,9 +17,18 @@ export const isPanningStartAllowed = (
 
   const target = event.target as HTMLElement;
   const targetIsShadowDom = "shadowRoot" in target && "composedPath" in event;
+
+  // Helper function to check if an object is an Element (cross-window compatible)
+  // Using numeric constant 1 (ELEMENT_NODE) instead of Node.ELEMENT_NODE for cross-window compatibility
+  const isElement = (el: unknown): el is Element => {
+    return (
+      el != null && typeof el === "object" && (el as Element).nodeType === 1
+    );
+  };
+
   const isWrapperChild = targetIsShadowDom
     ? event.composedPath().some((el) => {
-        if (!(el instanceof Element)) {
+        if (!isElement(el)) {
           return false;
         }
 
@@ -64,7 +73,7 @@ export const handlePanningSetup = (
   const y = event.clientY;
 
   contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-  contextInstance.clientCoords = {x: x, y:  y};
+  contextInstance.clientCoords = { x, y };
 };
 
 export const handleTouchPanningSetup = (
@@ -82,7 +91,7 @@ export const handleTouchPanningSetup = (
     const x = touches[0].clientX;
     const y = touches[0].clientY;
     contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-    contextInstance.clientCoords = {x: x, y:  y};
+    contextInstance.clientCoords = { x, y };
   }
 };
 export function handlePanToBounds(

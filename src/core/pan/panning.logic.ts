@@ -69,7 +69,8 @@ export function handlePanning(
   const paddingValueX = getPaddingValue(contextInstance, sizeX);
   const paddingValueY = getPaddingValue(contextInstance, sizeY);
 
-  if(clientCoords?.x != clientX && clientCoords?.y != clientY) handleCalculateVelocity(contextInstance, { x, y });
+  if (clientCoords?.x != clientX && clientCoords?.y != clientY)
+    handleCalculateVelocity(contextInstance, { x, y });
   handleNewPosition(contextInstance, x, y, paddingValueX, paddingValueY);
 }
 

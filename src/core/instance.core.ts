@@ -7,6 +7,7 @@ import {
   ReactZoomPanPinchProps,
   ReactZoomPanPinchState,
   ReactZoomPanPinchRef,
+  StateType,
 } from "../models";
 import {
   getContext,
@@ -101,10 +102,16 @@ export class ZoomPanPinch {
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
-  constructor(props: ReactZoomPanPinchProps) {
+  public parentInstance: ZoomPanPinch | null;
+
+  constructor(
+    props: ReactZoomPanPinchProps,
+    parentInstance: ZoomPanPinch | null,
+  ) {
     this.props = props;
     this.setup = createSetup(this.props);
     this.transformState = createState(this.props);
+    this.parentInstance = parentInstance;
   }
 
   mount = () => {
@@ -586,5 +593,16 @@ export class ZoomPanPinch {
     this.isInitialized = true;
     const ctx = getContext(this);
     handleCallback(ctx, undefined, this.props.onInit);
+  };
+
+  getCenterPosition = (): StateType => {
+    if (this.wrapperComponent && this.contentComponent) {
+      return getCenterPosition(
+        this.transformState.scale,
+        this.wrapperComponent,
+        this.contentComponent,
+      );
+    }
+    return { scale: 1, positionX: 0, positionY: 0 };
   };
 }

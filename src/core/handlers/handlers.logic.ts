@@ -1,4 +1,4 @@
-import { ReactZoomPanPinchContext } from "../../models";
+import { ReactZoomPanPinchContext, StateType } from "../../models";
 import {
   calculateZoomToNode,
   handleZoomToViewCenter,
@@ -7,6 +7,19 @@ import {
 import { animations } from "../animations/animations.constants";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import { getCenterPosition } from "../../utils";
+
+function applyParentScale(
+  targetState: StateType,
+  contextInstance: ReactZoomPanPinchContext,
+): StateType {
+  const result = targetState;
+  if (contextInstance.parentInstance !== null) {
+    result.positionX /= contextInstance.parentInstance.transformState.scale;
+    result.positionY /= contextInstance.parentInstance.transformState.scale;
+    return applyParentScale(targetState, contextInstance.parentInstance);
+  }
+  return result;
+}
 
 export const zoomIn =
   (contextInstance: ReactZoomPanPinchContext) =>
@@ -55,11 +68,14 @@ export const setTransform =
 
     if (disabled || !wrapperComponent || !contentComponent) return;
 
-    const targetState = {
-      positionX: Number.isNaN(newPositionX) ? positionX : newPositionX,
-      positionY: Number.isNaN(newPositionY) ? positionY : newPositionY,
-      scale: Number.isNaN(newScale) ? scale : newScale,
-    };
+    const targetState = applyParentScale(
+      {
+        positionX: Number.isNaN(newPositionX) ? positionX : newPositionX,
+        positionY: Number.isNaN(newPositionY) ? positionY : newPositionY,
+        scale: Number.isNaN(newScale) ? scale : newScale,
+      },
+      contextInstance,
+    );
 
     animate(contextInstance, targetState, animationTime, animationType);
   };
@@ -83,10 +99,13 @@ export const centerView =
     const { transformState, wrapperComponent, contentComponent } =
       contextInstance;
     if (wrapperComponent && contentComponent) {
-      const targetState = getCenterPosition(
-        scale || transformState.scale,
-        wrapperComponent,
-        contentComponent,
+      const targetState = applyParentScale(
+        getCenterPosition(
+          scale || transformState.scale,
+          wrapperComponent,
+          contentComponent,
+        ),
+        contextInstance,
       );
 
       animate(contextInstance, targetState, animationTime, animationType);
@@ -111,12 +130,9 @@ export const zoomToElement =
       typeof node === "string" ? document.getElementById(node) : node;
 
     if (wrapperComponent && target && wrapperComponent.contains(target)) {
-      const targetState = calculateZoomToNode(
+      const targetState = applyParentScale(
+        calculateZoomToNode(contextInstance, target, scale, offsetX, offsetY),
         contextInstance,
-        target,
-        scale,
-        offsetX,
-        offsetY,
       );
       animate(contextInstance, targetState, animationTime, animationType);
     }

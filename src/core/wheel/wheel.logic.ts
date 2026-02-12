@@ -53,7 +53,9 @@ export const handleWheelZoom = (
     throw new Error("Component not mounted");
   }
 
-  event.preventDefault();
+  if (event.cancelable) {
+    event.preventDefault();
+  }
   event.stopPropagation();
 
   const delta = getDelta(event, null);

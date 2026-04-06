@@ -87,17 +87,20 @@ describe("ReactZoomPanPinchProps.wheel", () => {
       );
       expect(ref.current!.instance.state.scale).toBe(1);
 
-      fireEvent.keyDown(document, { key: "Control" });
+      // Real browsers include ctrlKey on WheelEvent when Control is held;
+      // syncModifierKeys reads it so keyDown alone is not enough in tests.
       fireEvent(
         content,
-        new WheelEvent("wheel", { bubbles: true, deltaY: -5 }),
+        new WheelEvent("wheel", { bubbles: true, deltaY: -5, ctrlKey: true }),
       );
       expect(ref.current!.instance.state.scale).toBeGreaterThan(1);
     });
 
     it("supports predicate function for activationKeys", () => {
       const { content, ref } = renderApp({
-        wheel: { activationKeys: (keys: string[]) => keys.includes("Meta") },
+        wheel: {
+          activationKeys: (keys: string[]) => keys.includes("Meta"),
+        },
       });
       userEvent.hover(content);
       fireEvent(
@@ -105,6 +108,12 @@ describe("ReactZoomPanPinchProps.wheel", () => {
         new WheelEvent("wheel", { bubbles: true, deltaY: -5 }),
       );
       expect(ref.current!.instance.state.scale).toBe(1);
+
+      fireEvent(
+        content,
+        new WheelEvent("wheel", { bubbles: true, deltaY: -5, metaKey: true }),
+      );
+      expect(ref.current!.instance.state.scale).toBeGreaterThan(1);
     });
   });
 

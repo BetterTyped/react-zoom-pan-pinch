@@ -3,7 +3,7 @@
   height: calc(100vh - 200px);
 }
 
-/* ── Control bar (glassmorphism floating toolbar) ────────────── */
+/* ── Control bar (glassmorphism toolbar) ─────────────────────── */
 
 .controlBar {
   position: absolute;
@@ -24,26 +24,26 @@
 }
 
 .controlsTopLeft {
-  top: 24px;
-  left: 24px;
+  top: 12px;
+  left: 12px;
 }
 
 .controlsTopRight {
-  top: 24px;
-  right: 24px;
+  top: 12px;
+  right: 12px;
 }
 
 .controlsBottomLeft {
-  bottom: 24px;
-  left: 24px;
+  bottom: 12px;
+  left: 12px;
 }
 
 .controlsBottomRight {
-  bottom: 24px;
-  right: 24px;
+  bottom: 12px;
+  right: 12px;
 }
 
-/* ── Button groups & divider ─────────────────────────────────── */
+/* ── Button groups ───────────────────────────────────────────── */
 
 .controlGroup {
   display: flex;
@@ -76,8 +76,7 @@
   cursor: pointer;
   transition:
     background 0.15s ease,
-    color 0.15s ease,
-    transform 0.1s ease;
+    color 0.15s ease;
 }
 
 .controlIcon:hover {
@@ -88,7 +87,7 @@
 .controlIcon:active {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
-  transform: scale(0.92);
+  transform: scale(0.94);
 }
 
 .controlIcon:focus-visible {
@@ -96,46 +95,7 @@
   outline-offset: -1px;
 }
 
-/* ── Tooltip (CSS-only, driven by data-tooltip) ─────────────── */
-
-.controlIcon[data-tooltip],
-.controlText[data-tooltip] {
-  position: relative;
-}
-
-.controlIcon[data-tooltip]::after,
-.controlText[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  padding: 5px 10px;
-  border-radius: 7px;
-  background: rgba(10, 10, 16, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
-
-.controlIcon[data-tooltip]:hover::after,
-.controlText[data-tooltip]:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ── Text button (labels like "Zoom to X") ───────────────────── */
+/* ── Text button (for labels like "Zoom to X") ───────────────── */
 
 .controlText {
   display: flex;
@@ -155,8 +115,7 @@
   font-family: inherit;
   transition:
     background 0.15s ease,
-    color 0.15s ease,
-    transform 0.1s ease;
+    color 0.15s ease;
 }
 
 .controlText:hover {
@@ -175,7 +134,7 @@
   outline-offset: -1px;
 }
 
-/* ── Legacy classes (kept for stories still referencing them) ── */
+/* ── Legacy single button (kept for stories still using it) ─── */
 
 .controlPanel {
   position: absolute;

@@ -1,5 +1,3 @@
-import { fireEvent } from "@testing-library/react";
-
 import { renderApp } from "../../utils";
 
 describe("Zoom [Keys]", () => {
@@ -22,8 +20,7 @@ describe("Zoom [Keys]", () => {
       });
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      fireEvent.keyDown(document, { key: "Control" });
-      zoom({ value: 2 });
+      zoom({ value: 2, modifiers: { ctrlKey: true } });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(2)");
     });
   });
@@ -36,8 +33,7 @@ describe("Zoom [Keys]", () => {
       });
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      fireEvent.keyDown(document, { key: "Control" });
-      zoom({ value: 2 });
+      zoom({ value: 2, modifiers: { ctrlKey: true } });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
     it("should change translate when activated", async () => {
@@ -48,9 +44,7 @@ describe("Zoom [Keys]", () => {
       });
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      fireEvent.keyDown(document, { key: "Control" });
-      fireEvent.keyDown(document, { key: "Shift" });
-      zoom({ value: 2 });
+      zoom({ value: 2, modifiers: { ctrlKey: true, shiftKey: true } });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(2)");
     });
   });
@@ -65,9 +59,7 @@ describe("Zoom [Keys]", () => {
       });
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      fireEvent.keyDown(document, { key: "Control" });
-      fireEvent.keyDown(document, { key: "Shift" });
-      zoom({ value: 2 });
+      zoom({ value: 2, modifiers: { ctrlKey: true, shiftKey: true } });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(2)");
     });
     it("should not change translate with partial activation", async () => {
@@ -79,8 +71,7 @@ describe("Zoom [Keys]", () => {
       });
 
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-      fireEvent.keyDown(document, { key: "Control" });
-      zoom({ value: 2 });
+      zoom({ value: 2, modifiers: { ctrlKey: true } });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
   });

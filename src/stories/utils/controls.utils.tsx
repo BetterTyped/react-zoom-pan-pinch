@@ -7,36 +7,16 @@ import styles from "./styles.module.css";
 const ZoomInIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.5" />
-    <path
-      d="M11 11L14 14"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M7 5V9M5 7H9"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
+    <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M7 5V9M5 7H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
 const ZoomOutIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.5" />
-    <path
-      d="M11 11L14 14"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M5 7H9"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
+    <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M5 7H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -62,12 +42,7 @@ const ResetIcon = () => (
 const CenterIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" />
-    <path
-      d="M8 2V5M8 11V14M2 8H5M11 8H14"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
+    <path d="M8 2V5M8 11V14M2 8H5M11 8H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -89,7 +64,7 @@ export const Controls: React.FC<ControlsProps> = ({
   centerView,
   extraButtons,
   position = "top-left",
-}: ControlsProps) => {
+}) => {
   const positionClass =
     position === "top-right"
       ? styles.controlsTopRight
@@ -106,7 +81,7 @@ export const Controls: React.FC<ControlsProps> = ({
           type="button"
           className={styles.controlIcon}
           onClick={() => zoomIn()}
-          data-tooltip="Zoom in"
+          title="Zoom In"
         >
           <ZoomInIcon />
         </button>
@@ -114,7 +89,7 @@ export const Controls: React.FC<ControlsProps> = ({
           type="button"
           className={styles.controlIcon}
           onClick={() => zoomOut()}
-          data-tooltip="Zoom out"
+          title="Zoom Out"
         >
           <ZoomOutIcon />
         </button>
@@ -127,7 +102,7 @@ export const Controls: React.FC<ControlsProps> = ({
           type="button"
           className={styles.controlIcon}
           onClick={() => resetTransform()}
-          data-tooltip="Reset"
+          title="Reset"
         >
           <ResetIcon />
         </button>
@@ -135,7 +110,7 @@ export const Controls: React.FC<ControlsProps> = ({
           type="button"
           className={styles.controlIcon}
           onClick={() => centerView()}
-          data-tooltip="Center"
+          title="Center"
         >
           <CenterIcon />
         </button>
@@ -151,7 +126,7 @@ export const Controls: React.FC<ControlsProps> = ({
                 type="button"
                 className={btn.icon ? styles.controlIcon : styles.controlText}
                 onClick={btn.onClick}
-                data-tooltip={btn.label}
+                title={btn.label}
               >
                 {btn.icon ?? btn.label}
               </button>

@@ -91,8 +91,7 @@ describe("ReactZoomPanPinchProps.panning", () => {
       pan({ x: -100, y: -100 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
 
-      fireEvent.keyDown(document, { key: "Shift" });
-      pan({ x: -100, y: -100 });
+      pan({ x: -100, y: -100, modifiers: { shiftKey: true } });
       expect(content.style.transform).not.toBe(
         "translate(0px, 0px) scale(1)",
       );

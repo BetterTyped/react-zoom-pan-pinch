@@ -134,6 +134,16 @@ export interface PanGestureOptions {
    * @default { clientX: 0, clientY: 0 }
    */
   from?: { clientX: number; clientY: number };
+  /**
+   * Modifier keys held during the gesture. Propagated to every synthesized
+   * mouse event so that `syncModifierKeys` (iframe support) sees them.
+   */
+  modifiers?: {
+    shiftKey?: boolean;
+    ctrlKey?: boolean;
+    metaKey?: boolean;
+    altKey?: boolean;
+  };
 }
 
 /** Return type of {@link renderApp}. */
@@ -176,7 +186,16 @@ export interface RenderApp {
    */
   trackPadPan: (options: PanGestureOptions) => void;
   /** Simulate wheel-driven zoom to a target scale value. */
-  zoom: (options: { value: number; center?: [number, number] }) => void;
+  zoom: (options: {
+    value: number;
+    center?: [number, number];
+    modifiers?: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      altKey?: boolean;
+    };
+  }) => void;
   /** Simulate a two-finger pinch gesture to a target scale value. */
   pinch: (options: {
     value: number;
@@ -330,7 +349,7 @@ export const renderApp = ({
   const wrapper = screen.getByTestId("wrapper");
 
   const zoom: RenderApp["zoom"] = (options) => {
-    const { value, center } = options;
+    const { value, center, modifiers = {} } = options;
     if (!ref.current) throw new Error("ref.current is null");
 
     userEvent.hover(content);
@@ -363,6 +382,7 @@ export const renderApp = ({
             deltaY: isZoomIn ? -newStep : newStep,
             clientX: cx,
             clientY: cy,
+            ...modifiers,
           }),
         );
       } else {
@@ -395,31 +415,39 @@ export const renderApp = ({
     const from = isZoomIn ? 1 : 2;
     const step = 0.1;
 
-    let pinchValue = 0;
+    const scaleCloseEnough = (a: number, b: number) => Math.abs(a - b) < 1e-5;
+
+    // Pinch zoom is driven by touch distance vs pinch-start distance. Increasing
+    // separation zooms in; narrowing zooms out — the previous helper only ever
+    // increased separation, so zoom-out gestures ran away to max scale.
+    let spread = isZoomIn ? step : from + 6;
 
     fireEvent.touchStart(content, {
-      touches: getPinchTouches(content, center, step, from),
+      touches: getPinchTouches(content, center, spread, from),
     });
 
     const startTime = Date.now();
     while (Date.now() - startTime < 1000) {
+      const currentScale = ref.current.instance.state.scale;
+      if (scaleCloseEnough(currentScale, value)) {
+        break;
+      }
       if (
-        (isZoomIn
-          ? ref.current.instance.state.scale < value
-          : ref.current.instance.state.scale > value) &&
-        ref.current.instance.state.scale !== value
+        isZoomIn
+          ? currentScale < value - 1e-5
+          : currentScale > value + 1e-5
       ) {
-        const scaleDifference = Math.abs(
-          ref.current.instance.state.scale - value,
-        );
+        const scaleDifference = Math.abs(currentScale - value);
         const isNearScale = scaleDifference < 0.1;
         const newStep = isNearScale ? step / 6 : step;
 
-        // Pinch-out must narrow finger spacing (smaller dx); pinch-in widens it.
-        pinchValue += isZoomIn ? newStep : -newStep;
+        spread = isZoomIn ? spread + newStep : spread - newStep;
+        if (!isZoomIn) {
+          spread = Math.max(spread, -from + step);
+        }
 
         fireEvent.touchMove(content, {
-          touches: getPinchTouches(content, center, pinchValue, from),
+          touches: getPinchTouches(content, center, spread, from),
         });
       } else {
         break;
@@ -427,11 +455,11 @@ export const renderApp = ({
     }
 
     fireEvent.touchMove(content, {
-      touches: getPinchTouches(content, targetCenter, pinchValue, from),
+      touches: getPinchTouches(content, targetCenter, spread, from),
     });
 
     fireEvent.touchEnd(content, {
-      touches: getPinchTouches(content, center, pinchValue, from),
+      touches: getPinchTouches(content, center, spread, from),
     });
   };
 
@@ -441,12 +469,14 @@ export const renderApp = ({
     moveEventCount = 1,
     msPerStep = DEFAULT_MS_PER_STEP,
     from = { clientX: 0, clientY: 0 },
+    modifiers = {},
   }) => {
     userEvent.hover(content);
     fireEvent.mouseDown(content, {
       clientX: from.clientX,
       clientY: from.clientY,
       buttons: 1,
+      ...modifiers,
     });
 
     for (let i = 1; i <= moveEventCount; i++) {
@@ -456,6 +486,7 @@ export const renderApp = ({
         clientX: from.clientX + x * progress,
         clientY: from.clientY + y * progress,
         buttons: 1,
+        ...modifiers,
       });
     }
 

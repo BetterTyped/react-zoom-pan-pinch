@@ -54,10 +54,9 @@ describe("regressions: wheel and zoom behavior", () => {
       );
       expect(ref.current!.instance.state.scale).toBe(1);
 
-      fireEvent.keyDown(document, { key: "Control" });
       fireEvent(
         content,
-        new WheelEvent("wheel", { bubbles: true, deltaY: -5 }),
+        new WheelEvent("wheel", { bubbles: true, deltaY: -5, ctrlKey: true }),
       );
       expect(ref.current!.instance.state.scale).toBeGreaterThan(1);
     });

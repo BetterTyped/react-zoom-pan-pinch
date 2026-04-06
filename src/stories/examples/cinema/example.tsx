@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
-import { normalizeArgs } from "../../utils";
+import { normalizeArgs, Controls } from "../../utils";
 import {
   CinemaLayout,
   CATEGORY_STYLES,
@@ -48,12 +48,8 @@ export const Example: React.FC<any> = (args: any) => {
           apiRef.current = api;
           return (
             <>
-              <ControlBar
-                seat={selectedSeat}
-                onZoomIn={() => api.zoomIn()}
-                onZoomOut={() => api.zoomOut()}
-                onReset={handleReset}
-              />
+              <Controls {...api} extraButtons={selectedSeat ? [{ label: "Deselect", onClick: handleReset }] : []} />
+              <SeatBadge seat={selectedSeat} />
               <TransformComponent
                 wrapperStyle={{
                   width: "800px",
@@ -307,107 +303,44 @@ function SeatMap({
   );
 }
 
-function ControlBar({
-  seat,
-  onZoomIn,
-  onZoomOut,
-  onReset,
-}: {
-  seat: SeatInfo | null;
-  onZoomIn: () => void;
-  onZoomOut: () => void;
-  onReset: () => void;
-}) {
-  const catStyle = seat ? CATEGORY_STYLES[seat.category] : null;
+function SeatBadge({ seat }: { seat: SeatInfo | null }) {
+  if (!seat) return null;
+  const cat = CATEGORY_STYLES[seat.category];
 
   return (
     <div
       style={{
         position: "absolute",
-        top: "25px",
-        left: "25px",
+        top: 30,
+        left: 300,
         zIndex: 10,
+        padding: "6px 14px",
+        borderRadius: 10,
+        background: "rgba(10, 10, 18, 0.82)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: `1px solid ${cat.border}`,
         display: "flex",
         alignItems: "center",
-        gap: 6,
-        flexWrap: "wrap",
+        gap: 10,
+        fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
-      <ControlBtn label="+" onClick={onZoomIn} />
-      <ControlBtn label="−" onClick={onZoomOut} />
-      <ControlBtn label="Reset" onClick={onReset} />
-
-      {seat && catStyle && (
-        <div
-          style={{
-            marginLeft: 8,
-            padding: "6px 14px",
-            borderRadius: 8,
-            background: "rgba(0,0,0,0.85)",
-            border: `1px solid ${catStyle.border}`,
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <span
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 3,
-              background: catStyle.bg,
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              color: "#fff",
-              fontSize: 12,
-              fontWeight: 600,
-              whiteSpace: "nowrap",
-            }}
-          >
-            Row {seat.row} · Seat {seat.number}
-          </span>
-          <span
-            style={{
-              color: "rgba(255,255,255,0.5)",
-              fontSize: 11,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {catStyle.label} · {catStyle.price}
-          </span>
-        </div>
-      )}
+      <span
+        style={{
+          width: 10,
+          height: 10,
+          borderRadius: 3,
+          background: cat.bg,
+          flexShrink: 0,
+        }}
+      />
+      <span style={{ color: "#fff", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
+        Row {seat.row} · Seat {seat.number}
+      </span>
+      <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, whiteSpace: "nowrap" }}>
+        {cat.label} · {cat.price}
+      </span>
     </div>
-  );
-}
-
-function ControlBtn({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        padding: "5px 12px",
-        background: "rgba(255,255,255,0.12)",
-        border: "1px solid rgba(255,255,255,0.18)",
-        borderRadius: 6,
-        color: "#fff",
-        fontSize: 12,
-        fontWeight: 600,
-        cursor: "pointer",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      {label}
-    </button>
   );
 }

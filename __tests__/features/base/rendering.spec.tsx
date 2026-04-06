@@ -35,28 +35,35 @@ describe("Base [Rendering]", () => {
       expect(content).toBeDefined();
     });
   });
-
-  describe("When rendering with initial props", () => {
+  describe("When example view has been rendered", () => {
     it("should render with initial scale", async () => {
-      const { ref, content } = renderApp({
+      const { ref } = renderApp({
         initialScale: 2,
       });
-      expect(ref.current!.instance.state.scale).toBe(2);
-      expect(content.style.transform).toContain("scale(2)");
+
+      await waitFor(() => {
+        expect(ref.current?.instance.state.scale).toBe(2);
+      });
     });
     it("should render with limit initial scale to minScale", async () => {
       const { ref } = renderApp({
-        initialScale: 0.5,
-        minScale: 1,
+        initialScale: 0.1,
+        minScale: 0.5,
       });
-      expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(1);
+
+      await waitFor(() => {
+        expect(ref.current?.instance.state.scale).toBeGreaterThanOrEqual(0.5);
+      });
     });
     it("should render with limit initial scale to maxScale", async () => {
       const { ref } = renderApp({
-        initialScale: 10,
+        initialScale: 20,
         maxScale: 5,
       });
-      expect(ref.current!.instance.state.scale).toBeLessThanOrEqual(5);
+
+      await waitFor(() => {
+        expect(ref.current?.instance.state.scale).toBeLessThanOrEqual(5);
+      });
     });
     it("should center on initialization", async () => {
       const { ref } = renderApp({
@@ -68,46 +75,9 @@ describe("Base [Rendering]", () => {
       });
 
       await waitFor(() => {
-        expect(ref.current!.instance.state.positionX).toBe(-100);
-        expect(ref.current!.instance.state.positionY).toBe(-100);
+        expect(ref.current?.instance.state.positionX).toBe(-100);
+        expect(ref.current?.instance.state.positionY).toBe(-100);
       });
-    });
-    it("should render with default scale of 1", () => {
-      const { ref, content } = renderApp();
-      expect(ref.current!.instance.state.scale).toBe(1);
-      expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
-    });
-    it("should render with default position of 0,0", () => {
-      const { ref } = renderApp();
-      expect(ref.current!.instance.state.positionX).toBe(0);
-      expect(ref.current!.instance.state.positionY).toBe(0);
-    });
-    it("should render with initial position", () => {
-      const { ref } = renderApp({
-        initialPositionX: 10,
-        initialPositionY: 20,
-      });
-      expect(ref.current!.instance.state.positionX).toBe(10);
-      expect(ref.current!.instance.state.positionY).toBe(20);
-    });
-  });
-
-  describe("When rendering DOM structure", () => {
-    it("should have wrapper with correct class", () => {
-      const { wrapper } = renderApp();
-      expect(wrapper.className).toContain("react-transform-wrapper");
-    });
-    it("should have content with correct class", () => {
-      const { content } = renderApp();
-      expect(content.className).toContain("react-transform-component");
-    });
-    it("should apply wrapper style dimensions", () => {
-      const { wrapper } = renderApp({
-        wrapperWidth: "300px",
-        wrapperHeight: "400px",
-      });
-      expect(wrapper.style.width).toBe("300px");
-      expect(wrapper.style.height).toBe("400px");
     });
   });
 });

@@ -17,8 +17,8 @@ Panning velocity/inertia is explicitly disabled when `scale <= 1` in the source 
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-04-06 | Fixed: replaced `scale > 1` guard in `isVelocityCalculationAllowed` with content-overflow check (`offsetWidth * scale` vs wrapper). Also fixed `isVelocityAllowed` using `\|\|` instead of `&&`, and switched `handlePanningEnd` from `getBoundingClientRect` to `offsetWidth * scale` with `!limitToBounds` bypass. |
 
 ## Regression spec
 
-- **`__tests__/regressions/velocity-animation.spec.tsx`** — **Failing** on v4 (confirmed bug).
+- **`__tests__/regressions/velocity-animation.spec.tsx`** — 4 tests covering: scale-1 velocity with `limitToBounds: false`, big-image overflow at scale 1, zoom-in-then-reset, and negative case (content fits = no velocity).

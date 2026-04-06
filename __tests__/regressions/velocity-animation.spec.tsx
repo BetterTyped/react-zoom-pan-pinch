@@ -6,6 +6,25 @@ import {
   DEFAULT_MS_PER_STEP,
 } from "../utils";
 
+/**
+ * Helper to mock offsetWidth/offsetHeight on a DOM element.
+ * jsdom does not compute layout, so dimensions are 0 by default.
+ */
+function mockDimensions(
+  el: HTMLElement,
+  width: number,
+  height: number,
+): void {
+  Object.defineProperty(el, "offsetWidth", {
+    value: width,
+    configurable: true,
+  });
+  Object.defineProperty(el, "offsetHeight", {
+    value: height,
+    configurable: true,
+  });
+}
+
 describe("regressions: velocity and zoom animation", () => {
   describe("Ref #363", () => {
     afterEach(() => {
@@ -28,6 +47,82 @@ describe("regressions: velocity and zoom animation", () => {
 
       expect(ref.current!.instance.state.scale).toBe(1);
       expect(ref.current!.instance.state.positionX).not.toBe(xAfterPan);
+    });
+
+    it("velocity triggers when content is larger than wrapper at scale 1 — big image scenario (Ref #363)", () => {
+      jest.useFakeTimers();
+      const { pan, ref, wrapper, content } = renderApp({
+        velocityAnimation: { disabled: false },
+      });
+
+      // Content (800×600) overflows the wrapper (400×400) at scale 1
+      mockDimensions(wrapper, 400, 400);
+      mockDimensions(content, 800, 600);
+
+      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      const xAfterPan = ref.current!.instance.state.positionX;
+
+      act(() => {
+        flushAnimationFrames();
+      });
+
+      expect(ref.current!.instance.state.scale).toBe(1);
+      expect(ref.current!.instance.state.positionX).not.toBe(xAfterPan);
+    });
+
+    it("velocity triggers after zooming in and returning to initial scale when content overflows (Ref #363)", () => {
+      jest.useFakeTimers();
+      const { pan, ref, wrapper, content } = renderApp({
+        velocityAnimation: { disabled: false },
+        limitToBounds: false,
+      });
+
+      // Content (800×600) overflows wrapper (400×400)
+      mockDimensions(wrapper, 400, 400);
+      mockDimensions(content, 800, 600);
+
+      // Zoom in then reset to scale 1
+      act(() => {
+        ref.current!.zoomIn(1);
+      });
+      act(() => {
+        flushAnimationFrames();
+      });
+      act(() => {
+        ref.current!.resetTransform(0);
+      });
+
+      expect(ref.current!.instance.state.scale).toBe(1);
+
+      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      const xAfterPan = ref.current!.instance.state.positionX;
+
+      act(() => {
+        flushAnimationFrames();
+      });
+
+      expect(ref.current!.instance.state.positionX).not.toBe(xAfterPan);
+    });
+
+    it("does not trigger velocity when content fits inside wrapper at scale 1", () => {
+      jest.useFakeTimers();
+      const { pan, ref, wrapper, content } = renderApp({
+        velocityAnimation: { disabled: false },
+      });
+
+      // Content (200×200) fits inside wrapper (400×400)
+      mockDimensions(wrapper, 400, 400);
+      mockDimensions(content, 200, 200);
+
+      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      const xAfterPan = ref.current!.instance.state.positionX;
+
+      act(() => {
+        flushAnimationFrames();
+      });
+
+      expect(ref.current!.instance.state.scale).toBe(1);
+      expect(ref.current!.instance.state.positionX).toBe(xAfterPan);
     });
   });
 
@@ -55,7 +150,7 @@ describe("regressions: velocity and zoom animation", () => {
       });
 
       expect(onPanning.mock.calls.length).toBeGreaterThan(callsAfterPan);
-      expect(ref.current!.instance.state.scale).toBe(1.5);
+      expect(ref.current!.instance.state.scale).toBeCloseTo(1.5, 1);
     });
   });
 

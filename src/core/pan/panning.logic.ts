@@ -20,8 +20,9 @@ export function handlePanningStart(
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent | TouchEvent,
 ): void {
-  const { scale } = contextInstance.state;
+  const { scale, positionX, positionY } = contextInstance.state;
 
+  contextInstance.panStartPosition = { x: positionX, y: positionY };
   handleCancelAnimation(contextInstance);
   handleCalculateBounds(contextInstance, scale);
   if (window.TouchEvent !== undefined && event instanceof TouchEvent) {
@@ -77,21 +78,34 @@ export function handlePanningEnd(
     const { velocity, wrapperComponent, contentComponent } = contextInstance;
 
     contextInstance.isPanning = false;
+
+    const { positionX, positionY, scale } = contextInstance.state;
+    const start = contextInstance.panStartPosition;
+    contextInstance.panStartPosition = null;
+
+    if (start) {
+      const dx = positionX - start.x;
+      const dy = positionY - start.y;
+      if (dx * dx + dy * dy <= 25) return;
+    }
+
     contextInstance.isAnimating = false;
     contextInstance.animation = null;
 
-    const wrapperRect = wrapperComponent?.getBoundingClientRect();
-    const contentRect = contentComponent?.getBoundingClientRect();
-
-    const wrapperWidth = wrapperRect?.width || 0;
-    const wrapperHeight = wrapperRect?.height || 0;
-    const contentWidth = contentRect?.width || 0;
-    const contentHeight = contentRect?.height || 0;
-    const isZoomed =
-      wrapperWidth < contentWidth || wrapperHeight < contentHeight;
+    const wrapperWidth = wrapperComponent?.offsetWidth || 0;
+    const wrapperHeight = wrapperComponent?.offsetHeight || 0;
+    const contentWidth = (contentComponent?.offsetWidth || 0) * scale;
+    const contentHeight = (contentComponent?.offsetHeight || 0) * scale;
+    const isContentOverflowing =
+      !contextInstance.setup.limitToBounds ||
+      wrapperWidth < contentWidth ||
+      wrapperHeight < contentHeight;
 
     const shouldAnimate =
-      !velocityDisabled && velocity && velocity.total > 0.1 && isZoomed;
+      !velocityDisabled &&
+      velocity &&
+      velocity.total > 0.1 &&
+      isContentOverflowing;
 
     if (shouldAnimate) {
       handleVelocityPanning(contextInstance);

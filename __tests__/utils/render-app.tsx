@@ -359,7 +359,8 @@ export const renderApp = ({
         const isNearScale = scaleDifference < 0.1;
         const newStep = isNearScale ? step / 6 : step;
 
-        pinchValue += newStep;
+        // Pinch-out must narrow finger spacing (smaller dx); pinch-in widens it.
+        pinchValue += isZoomIn ? newStep : -newStep;
 
         fireEvent.touchMove(content, {
           touches: getPinchTouches(content, center, pinchValue, from),

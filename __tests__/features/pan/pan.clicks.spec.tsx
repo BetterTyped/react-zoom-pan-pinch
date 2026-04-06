@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { renderApp } from "../../utils";
 
+/** MouseEvent.buttons while the primary button is held (matches renderApp `pan` helper). */
 const BUTTONS_WHILE_DOWN: Record<number, number> = {
   0: 1,
   1: 4,

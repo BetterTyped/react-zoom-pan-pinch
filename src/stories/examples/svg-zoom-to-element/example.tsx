@@ -2,10 +2,15 @@ import React from "react";
 
 import { TransformWrapper } from "components/transform-wrapper/transform-wrapper";
 import { TransformComponent } from "components/transform-component/transform-component";
-import { normalizeArgs } from "../../utils";
+import { Controls, normalizeArgs } from "../../utils";
 import { ReactComponent as Creativity } from "./creativity.svg";
 
-import styles from "../../utils/styles.module.css";
+const TargetIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <rect x="3" y="3" width="10" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="8" cy="8" r="1.5" fill="currentColor" />
+  </svg>
+);
 
 export const Example: React.FC<any> = (args: any) => {
   return (
@@ -24,38 +29,16 @@ export const Example: React.FC<any> = (args: any) => {
         maxHeight: "70vh",
       }}
     >
-      {({ zoomToElement, resetTransform }) => (
+      {(utils) => (
         <>
-          <div>
-            <button
-              type="button"
-              className={styles.controlBtn}
-              onClick={() => zoomToElement("element1")}
-            >
-              Zoom to Cloud
-            </button>
-            <button
-              type="button"
-              className={styles.controlBtn}
-              onClick={() => zoomToElement("element2")}
-            >
-              Zoom to Face
-            </button>
-            <button
-              type="button"
-              className={styles.controlBtn}
-              onClick={() => zoomToElement("element3")}
-            >
-              Zoom to Plane
-            </button>
-            <button
-              type="button"
-              className={styles.controlBtn}
-              onClick={() => resetTransform()}
-            >
-              Reset
-            </button>
-          </div>
+          <Controls
+            {...utils}
+            extraButtons={[
+              { label: "Cloud", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element1") },
+              { label: "Face", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element2") },
+              { label: "Plane", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element3") },
+            ]}
+          />
           <TransformComponent
             wrapperStyle={{
               maxWidth: "100%",

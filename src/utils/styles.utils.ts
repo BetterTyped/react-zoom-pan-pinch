@@ -1,12 +1,17 @@
 import { StateType } from "models";
 
+/** Drop binary float noise on scale (e.g. 1.5000000000000002) without clipping real zoom values. */
+export const roundScaleForTransform = (scale: number): number =>
+  Number.parseFloat(scale.toFixed(8));
+
 export const getTransformStyles = (
   x: number,
   y: number,
   scale: number,
 ): string => {
   // Standard translate prevents blurry svg on the safari
-  return `translate(${x}px, ${y}px) scale(${scale})`;
+  const s = roundScaleForTransform(scale);
+  return `translate(${x}px, ${y}px) scale(${s})`;
 };
 
 export const getMatrixTransformStyles = (

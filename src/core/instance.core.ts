@@ -88,6 +88,7 @@ export class ZoomPanPinch {
   public isPanning = false;
   public isWheelPanning = false;
   public startCoords: StartCoordsType = null;
+  public panStartPosition: { x: number; y: number } | null = null;
   public lastTouch: number | null = null;
   // pinch helpers
   public isPinching = false;

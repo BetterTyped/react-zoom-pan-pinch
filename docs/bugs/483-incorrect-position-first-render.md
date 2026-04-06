@@ -21,4 +21,4 @@ Content appears at the wrong position on first render, then corrects itself on i
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) (appears fixed in v4)

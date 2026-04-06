@@ -21,4 +21,4 @@ The `minScale` bound is not enforced when zooming out with Ctrl+scroll (keyboard
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/zoom-behavior.spec.tsx`** — **Failing** on v4 (confirmed bug).

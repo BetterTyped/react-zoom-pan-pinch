@@ -21,4 +21,4 @@ When the browser window is resized, the zoom level changes inconsistently. The c
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) (appears fixed in v4)

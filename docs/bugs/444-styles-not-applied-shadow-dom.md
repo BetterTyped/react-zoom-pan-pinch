@@ -21,4 +21,4 @@ When the component is rendered inside a Shadow DOM, the library's injected style
 
 ## Regression spec
 
-_Pending_
+- **N/A** — Shadow DOM style encapsulation; requires browser testing.

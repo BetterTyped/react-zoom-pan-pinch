@@ -21,4 +21,4 @@ Panning stops responding after reaching certain boundary conditions. User must s
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/bounds-centering.spec.tsx`** — **FAILING**. Asserts panning stays stuck after hitting bounds: reversing pan direction does not update position.

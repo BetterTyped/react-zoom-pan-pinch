@@ -59,25 +59,32 @@ export const DEFAULT_MS_PER_STEP = 16;
 
 /** Options shared by pan-like gesture helpers. */
 export interface PanGestureOptions {
-  /** Target X position (clientX delta from gesture origin). */
+  /**
+   * Horizontal displacement in pixels.
+   * The gesture moves from `from.clientX` to `from.clientX + x`.
+   * The resulting `translateX` change equals `x`.
+   */
   x: number;
-  /** Target Y position (clientY delta from gesture origin). */
+  /**
+   * Vertical displacement in pixels.
+   * The gesture moves from `from.clientY` to `from.clientY + y`.
+   * The resulting `translateY` change equals `y`.
+   */
   y: number;
   /**
-   * Number of intermediate `mousemove` / `touchmove` events synthesized along
-   * the straight line from the origin to `(x, y)`.
+   * Number of move events synthesized along the straight line from the
+   * origin to `(x, y)`. Every event produces a **uniform delta** of
+   * `(x / moveEventCount, y / moveEventCount)`, so the velocity seen by
+   * `handleCalculateVelocity` on each tick — including the last one — is:
    *
-   * Higher values produce smoother velocity curves (more samples for
-   * `handleCalculateVelocity`). Defaults to `1` for quick, non-velocity
-   * tests.
+   *     velocity = (x / moveEventCount) / msPerStep
+   *
+   * Use `1` (default) for non-velocity tests where you only care about
+   * the final position. Use `5–10` for velocity tests.
    *
    * @default 1
    */
   moveEventCount?: number;
-  /**
-   * @deprecated Use `moveEventCount` instead. Kept for backwards compat.
-   */
-  steps?: number;
   /**
    * Milliseconds to advance the fake-timer clock between each move event.
    * Only applies when `jest.useFakeTimers()` is active.
@@ -103,26 +110,32 @@ export interface RenderApp {
   content: HTMLElement;
   wrapper: HTMLElement;
   /**
-   * Simulate a mouse-driven pan gesture from origin to `(x, y)`.
+   * Simulate a mouse-driven pan gesture.
    *
-   * Fires `mousedown` → N × `mousemove` → `mouseup` → `blur` on the
-   * content element. When fake timers are active, advances the clock by
-   * `msPerStep` between each move so velocity calculations are stable.
+   * Fires `mousedown` at `from` → N × `mousemove` (uniform deltas) →
+   * `mouseup` → `blur`. The last move always lands exactly at
+   * `(from.clientX + x, from.clientY + y)`.
+   *
+   * Without velocity (`velocityAnimation.disabled: true`, the default):
+   * the content ends at exactly `translate(Xpx, Ypx)`.
+   *
+   * With velocity: use fake timers + `moveEventCount > 1` to get a
+   * deterministic velocity, then call `flushAnimationFrames()` inside
+   * `act()` to drive the inertia animation to a stable final position.
    */
   pan: (options: PanGestureOptions) => void;
   /**
    * Simulate a single-finger touch pan gesture.
    *
-   * Fires `touchstart` → N × `touchmove` → `touchend`. Timer behavior
-   * matches {@link pan}.
+   * Fires `touchstart` → N × `touchmove` (uniform deltas) → `touchend`.
+   * Same deterministic guarantees as {@link pan}.
    */
   touchPan: (options: PanGestureOptions) => void;
   /**
    * Simulate a trackpad/wheel-based pan gesture.
    *
-   * Fires an initial zero-delta `wheel` event followed by N intermediate
-   * `wheel` events with increasing `deltaX`/`deltaY`. Timer behavior
-   * matches {@link pan}.
+   * Fires an initial zero-delta `wheel` event followed by N `wheel`
+   * events, each with a uniform per-event delta of `(x/N, y/N)`.
    */
   trackPadPan: (options: PanGestureOptions) => void;
   /** Simulate wheel-driven zoom to a target scale value. */
@@ -133,26 +146,6 @@ export interface RenderApp {
     center?: [number, number];
     targetCenter?: [number, number];
   }) => void;
-}
-
-/**
- * Detect whether Jest fake timers are currently active by checking if
- * `Date.now` has been replaced by the fake implementation.
- */
-function areFakeTimersActive(): boolean {
-  try {
-    // jest.isMockFunction is available when jest globals are in scope
-    return !!(jest as any).isMockFunction(Date.now) || isDateMocked();
-  } catch {
-    return false;
-  }
-}
-
-function isDateMocked(): boolean {
-  const marker = Date.now();
-  // Under fake timers, advanceTimersByTime won't change Date.now from the
-  // outside, but the toString of Date.now will differ from native.
-  return Date.now.toString().includes("mock") || Date.now.toString().includes("jest");
 }
 
 /**
@@ -384,36 +377,23 @@ export const renderApp = ({
   const pan: RenderApp["pan"] = ({
     x,
     y,
-    moveEventCount: count,
-    steps,
+    moveEventCount = 1,
     msPerStep = DEFAULT_MS_PER_STEP,
     from = { clientX: 0, clientY: 0 },
   }) => {
-    const n = count ?? steps ?? 1;
-
     userEvent.hover(content);
     fireEvent.mouseDown(content, {
       clientX: from.clientX,
       clientY: from.clientY,
     });
 
-    const xStep = x / n;
-    const yStep = y / n;
-
-    for (let i = 0; i < n; i++) {
+    for (let i = 1; i <= moveEventCount; i++) {
       maybeAdvanceTimers(msPerStep);
-
-      if (i < n - 1) {
-        fireEvent.mouseMove(content, {
-          clientX: from.clientX + xStep * i,
-          clientY: from.clientY + yStep * i,
-        });
-      } else {
-        fireEvent.mouseMove(content, {
-          clientX: from.clientX + x,
-          clientY: from.clientY + y,
-        });
-      }
+      const progress = i / moveEventCount;
+      fireEvent.mouseMove(content, {
+        clientX: from.clientX + x * progress,
+        clientY: from.clientY + y * progress,
+      });
     }
 
     fireEvent.mouseUp(content);
@@ -423,17 +403,11 @@ export const renderApp = ({
   const touchPan: RenderApp["touchPan"] = ({
     x,
     y,
-    moveEventCount: count,
-    steps,
+    moveEventCount = 1,
     msPerStep = DEFAULT_MS_PER_STEP,
     from = { clientX: 0, clientY: 0 },
   }) => {
-    const n = count ?? steps ?? 1;
-
     waitForPreviousActionToEnd();
-
-    const xStep = x / n;
-    const yStep = y / n;
 
     fireEvent.touchStart(content, {
       touches: [
@@ -447,11 +421,11 @@ export const renderApp = ({
       ],
     });
 
-    for (let i = 0; i < n; i++) {
+    for (let i = 1; i <= moveEventCount; i++) {
       maybeAdvanceTimers(msPerStep);
-
-      const cx = i < n - 1 ? from.clientX + xStep * i : from.clientX + x;
-      const cy = i < n - 1 ? from.clientY + yStep * i : from.clientY + y;
+      const progress = i / moveEventCount;
+      const cx = from.clientX + x * progress;
+      const cy = from.clientY + y * progress;
 
       fireEvent.touchMove(content, {
         touches: [
@@ -482,19 +456,12 @@ export const renderApp = ({
   const trackPadPan: RenderApp["trackPadPan"] = ({
     x,
     y,
-    moveEventCount: count,
-    steps,
+    moveEventCount = 1,
     msPerStep = DEFAULT_MS_PER_STEP,
   }) => {
-    const n = count ?? steps ?? 1;
-
     if (!ref.current) throw new Error("ref.current is null");
 
     waitForPreviousActionToEnd();
-
-    const xStep = x / n;
-    const yStep = y / n;
-
     userEvent.hover(content);
 
     fireEvent(
@@ -506,28 +473,19 @@ export const renderApp = ({
       }),
     );
 
-    for (let i = 0; i < n; i++) {
-      maybeAdvanceTimers(msPerStep);
+    const deltaXPerEvent = -x / moveEventCount;
+    const deltaYPerEvent = -y / moveEventCount;
 
-      if (i < n - 1) {
-        fireEvent(
-          content,
-          new WheelEvent("wheel", {
-            bubbles: true,
-            deltaX: -xStep * i,
-            deltaY: -yStep * i,
-          }),
-        );
-      } else {
-        fireEvent(
-          content,
-          new WheelEvent("wheel", {
-            bubbles: true,
-            deltaX: -x,
-            deltaY: -y,
-          }),
-        );
-      }
+    for (let i = 0; i < moveEventCount; i++) {
+      maybeAdvanceTimers(msPerStep);
+      fireEvent(
+        content,
+        new WheelEvent("wheel", {
+          bubbles: true,
+          deltaX: deltaXPerEvent,
+          deltaY: deltaYPerEvent,
+        }),
+      );
     }
   };
 

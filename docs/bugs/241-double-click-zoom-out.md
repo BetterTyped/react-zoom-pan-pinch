@@ -21,4 +21,4 @@ Double-click zoom-out does not work in the demo. First double-click zooms in, bu
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) (appears fixed in v4)

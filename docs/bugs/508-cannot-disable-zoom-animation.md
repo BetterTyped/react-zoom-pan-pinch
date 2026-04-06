@@ -21,4 +21,4 @@ Setting `zoomAnimation.disabled: true` does not remove the animation. Users must
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/velocity-animation.spec.tsx`** — **Failing** on v4 (confirmed bug).

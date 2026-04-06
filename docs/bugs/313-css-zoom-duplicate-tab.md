@@ -21,4 +21,4 @@ Duplicating a browser tab that has an active transform state causes CSS renderin
 
 ## Regression spec
 
-_Pending_
+- **N/A** — browser tab duplication; not reproducible in jsdom.

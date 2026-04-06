@@ -21,4 +21,4 @@ The `minPositionX`, `maxPositionX`, `minPositionY`, `maxPositionY` props have no
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) (appears fixed in v4)

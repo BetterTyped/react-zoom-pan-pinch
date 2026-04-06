@@ -21,4 +21,4 @@ On iOS Safari and Android Chrome, when a text input inside TransformComponent ga
 
 ## Regression spec
 
-_Pending_
+- **N/A** — mobile virtual keyboard viewport shift; requires device testing.

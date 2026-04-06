@@ -21,4 +21,4 @@ Pinch-related props (`pinch.step`, `pinch.disabled`, `onPinching`) have no effec
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) (appears fixed in v4)

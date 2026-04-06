@@ -21,4 +21,4 @@ Pinch-to-zoom does not work on elements that have the `panning.excluded` class. 
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) (appears fixed in v4)

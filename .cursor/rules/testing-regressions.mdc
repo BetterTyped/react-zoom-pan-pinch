@@ -30,6 +30,18 @@ alwaysApply: false
 - Prefer **moveEventCount** (or the project-standard name) over vague steps in
   public test helper types.
 
+## Running tests
+
+The project uses **jest-watch-typeahead** (`jest.config.ts` → `watchPlugins`).
+In watch mode (`yarn test --watch`) press:
+
+- **`p`** — filter by **filename** (e.g. type `pan.velocity` to run only that spec)
+- **`t`** — filter by **test name** (e.g. type `should trigger velocity`)
+
+Use these to quickly iterate on a single spec without running the full suite.
+
+To run a single file directly: `yarn test __tests__/features/pan/pan.velocity.spec.tsx`
+
 ## General
 
 - Match existing test layout under **tests**/features/ for broad coverage; use

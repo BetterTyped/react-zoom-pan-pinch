@@ -21,4 +21,4 @@ Panning and other interactions break when the component is rendered inside a por
 
 ## Regression spec
 
-_Pending_
+- **N/A** — multi-document window.open; not reproducible in jsdom.

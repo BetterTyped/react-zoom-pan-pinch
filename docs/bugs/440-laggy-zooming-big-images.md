@@ -21,4 +21,4 @@ Zooming on large images causes noticeable lag/jank. The CSS transform triggers e
 
 ## Regression spec
 
-_Pending_
+- **N/A** — performance; not a correctness assertion.

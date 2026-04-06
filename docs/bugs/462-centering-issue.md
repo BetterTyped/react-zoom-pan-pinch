@@ -21,4 +21,4 @@ Content centering is incorrect in certain CSS layout contexts (e.g., fixed-width
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/bounds-centering.spec.tsx`** — **FAILING**. Asserts `centerView` does not account for the wrapper’s viewport offset in the page layout.

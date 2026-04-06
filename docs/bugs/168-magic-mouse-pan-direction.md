@@ -21,4 +21,4 @@ Swiping left/right on Apple Magic Mouse while zoomed in triggers zoom instead of
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) (appears fixed in v4)

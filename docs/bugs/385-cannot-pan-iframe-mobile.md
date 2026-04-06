@@ -21,4 +21,4 @@ Panning does not work on mobile devices when an iframe is a child of `TransformC
 
 ## Regression spec
 
-_Pending_
+- **N/A** — iframe touch events on mobile; requires device testing.

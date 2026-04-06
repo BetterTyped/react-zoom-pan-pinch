@@ -21,4 +21,4 @@ The ref object returned by TransformWrapper has inconsistent structure: sometime
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/programmatic-api-callbacks.spec.tsx`** — **Failing** on v4 (confirmed bug).

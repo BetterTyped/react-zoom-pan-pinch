@@ -21,4 +21,6 @@ Text inputs, textareas, and elements with `contenteditable="true"` inside `Trans
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/pan-interaction.spec.tsx`** — **mixed**:
+  - **PASSING** — `panning.excluded` on the contenteditable still prevents pan handlers from taking over (documented workaround).
+  - **FAILING** — mousedown on a contenteditable inside the transform still hits `preventDefault`, confirming the underlying bug for the default configuration.

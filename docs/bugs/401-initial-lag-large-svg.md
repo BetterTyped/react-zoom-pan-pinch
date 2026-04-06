@@ -21,4 +21,4 @@ Large SVG content (~5MB+) causes significant lag on initial render and first int
 
 ## Regression spec
 
-_Pending_
+- **N/A** — performance/paint lag; not a correctness assertion.

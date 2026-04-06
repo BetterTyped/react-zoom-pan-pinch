@@ -21,4 +21,4 @@ Setting `centerZoomedOut={false}` does not prevent content from being centered w
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) (appears fixed in v4)

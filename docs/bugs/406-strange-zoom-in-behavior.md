@@ -21,4 +21,4 @@ Zoom-in behavior is erratic: the zoom level jumps inconsistently or overshoots. 
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/zoom-behavior.spec.tsx`** — **PASSING**. The test was rewritten to assert zoom targets the **cursor** position (not an arbitrary fixed point). It passes; erratic zoom-at-wrong-anchor behavior appears fixed in v4 for what the spec covers.

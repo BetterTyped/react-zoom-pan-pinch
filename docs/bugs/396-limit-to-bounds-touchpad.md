@@ -21,4 +21,4 @@
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/bounds-centering.spec.tsx`** — **FAILING**. The test was rewritten: it fires ctrl+wheel zoom-out with `deltaMode: 0` (trackpad-style) and checks that scale does not go below `minScale`. It currently fails, confirming touchpad zoom-out can ignore `minScale`. The earlier spec was passing for the wrong reason.

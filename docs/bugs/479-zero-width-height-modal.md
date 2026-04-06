@@ -21,4 +21,4 @@ TransformWrapper and TransformComponent report 0 width/height when rendered insi
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/component-lifecycle.spec.tsx`** — **PASSING**. Asserts the library handles zero wrapper dimensions without crashing and recovers when dimensions become non-zero (dialog / late layout timing class of bugs).

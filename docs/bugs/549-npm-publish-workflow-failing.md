@@ -21,4 +21,4 @@ The GitHub Actions workflow for publishing to npm is broken. Packages are not be
 
 ## Regression spec
 
-_Pending_
+- **N/A** — GitHub Actions CI/CD; not a runtime test.

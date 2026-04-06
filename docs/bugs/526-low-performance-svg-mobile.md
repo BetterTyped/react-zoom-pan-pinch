@@ -21,4 +21,4 @@ Large SVG content (5MB+ map) causes severe performance degradation on Android de
 
 ## Regression spec
 
-_Pending_
+- **N/A** — mobile GPU/paint performance; not a correctness assertion.

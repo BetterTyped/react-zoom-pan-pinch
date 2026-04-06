@@ -21,4 +21,4 @@ Drag and drop functionality (HTML5 DnD or libraries like react-beautiful-dnd) do
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. Asserts the library starts pan and calls `preventDefault` on `mousedown` even on draggable elements (current behavior blocks HTML5 DnD inside the wrapper).

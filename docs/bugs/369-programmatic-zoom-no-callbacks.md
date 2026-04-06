@@ -21,4 +21,4 @@ Programmatic methods `zoomIn()`, `zoomOut()`, `resetTransform()`, and double-cli
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) (appears fixed in v4)

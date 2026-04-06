@@ -21,4 +21,4 @@ Calling `setState` in a parent component above `TransformWrapper` causes the mou
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) (appears fixed in v4)

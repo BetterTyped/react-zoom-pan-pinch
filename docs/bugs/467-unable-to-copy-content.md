@@ -21,4 +21,4 @@ Text selection and copy (Ctrl+C / Cmd+C) does not work on content inside Transfo
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. The test was rewritten to read the CSS module source directly. It expects the wrapper stylesheet **not** to contain `user-select: none`; failure means that rule is **still** present, matching selection/copy being blocked until the CSS changes. Real browser copy behavior can still be verified manually.

@@ -21,4 +21,4 @@ Rapidly double-clicking to zoom causes the content to pan randomly. The animatio
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) (appears fixed in v4)

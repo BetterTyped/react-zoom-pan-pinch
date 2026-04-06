@@ -21,4 +21,4 @@ Users want to pan while pinch-zooming. Currently panning is disabled during pinc
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) (appears fixed in v4)

@@ -21,4 +21,4 @@ The published npm package includes source maps that reference TypeScript files u
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/css-and-styles.spec.tsx`** — **FAILING**. Asserts `package.json` `files` does not include `src/` (published maps still reference missing sources until packaging is fixed).

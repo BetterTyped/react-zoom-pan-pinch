@@ -21,4 +21,4 @@ When browser cache is disabled in Chrome, the initial image position is calculat
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. Asserts the library does not re-measure after content dimensions change (Chrome no-cache / late image load class of bugs).

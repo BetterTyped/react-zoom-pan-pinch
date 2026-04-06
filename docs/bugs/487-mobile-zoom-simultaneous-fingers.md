@@ -21,4 +21,4 @@ Pinch-to-zoom fails on mobile when both fingers touch the screen simultaneously.
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) (appears fixed in v4)

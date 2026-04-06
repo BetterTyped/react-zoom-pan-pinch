@@ -21,4 +21,4 @@ Panning velocity/inertia is explicitly disabled when `scale <= 1` in the source 
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/velocity-animation.spec.tsx`** — **Failing** on v4 (confirmed bug).

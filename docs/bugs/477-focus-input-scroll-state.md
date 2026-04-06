@@ -21,4 +21,4 @@ Focusing an input inside TransformComponent causes the browser to scroll the con
 
 ## Regression spec
 
-_Pending_
+- **N/A** — focus scrollIntoView behavior; requires browser testing.

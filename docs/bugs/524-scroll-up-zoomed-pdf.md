@@ -21,4 +21,4 @@ When zoomed into a PDF viewer inside TransformComponent, content above the zoom 
 
 ## Regression spec
 
-_Pending_
+**PASSING** — [`bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) (appears fixed in v4)

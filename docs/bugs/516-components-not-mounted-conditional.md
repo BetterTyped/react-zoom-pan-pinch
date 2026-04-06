@@ -21,4 +21,4 @@ If `TransformComponent` is rendered conditionally (delayed or inside a lazy-load
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/component-lifecycle.spec.tsx`** — **Failing** on v4 (confirmed bug).

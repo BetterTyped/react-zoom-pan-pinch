@@ -21,4 +21,4 @@ When zooming, the browser's native scrollbar thumb jumps to an unexpected positi
 
 ## Regression spec
 
-_Pending_
+- **N/A** — native scrollbar behavior; requires browser testing.

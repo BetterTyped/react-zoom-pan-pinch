@@ -21,4 +21,4 @@ The `pinch.step` prop does not affect pinch zoom sensitivity. The step value is 
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/pinch-interaction.spec.tsx`** — **Failing** on v4 (confirmed bug).

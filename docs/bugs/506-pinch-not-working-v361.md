@@ -21,4 +21,4 @@ Pinch zoom stopped working entirely in v3.6.1+. Instead of zooming the element, 
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/css-and-styles.spec.tsx`** — **FAILING**. Asserts the wrapper does not set `touch-action: none` in applied styles (regression tied to page-level pinch zoom).

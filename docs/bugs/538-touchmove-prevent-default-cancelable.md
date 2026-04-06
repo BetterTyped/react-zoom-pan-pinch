@@ -21,4 +21,4 @@ Console warning: "Ignored attempt to cancel a touchmove event with cancelable=fa
 
 ## Regression spec
 
-_Pending_
+- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. Asserts `onTouchPanning` calls `preventDefault` without checking `event.cancelable` (matches the browser warning on non-cancelable touchmove).

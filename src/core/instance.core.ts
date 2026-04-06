@@ -17,6 +17,7 @@ import {
   getTransformStyles,
   makePassiveEventOption,
   getCenterPosition,
+  assignRef,
 } from "../utils";
 import { handleCancelAnimation } from "./animations/animations.utils";
 import { isWheelAllowed, isWheelPanningAllowed } from "./wheel/wheel.utils";
@@ -633,5 +634,6 @@ export class ZoomPanPinch {
     this.isInitialized = true;
     const ctx = getContext(this);
     handleCallback(ctx, undefined, this.props.onInit);
+    assignRef(this.props.ref, ctx);
   };
 }

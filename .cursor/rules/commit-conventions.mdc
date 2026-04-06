@@ -1,0 +1,108 @@
+---
+description: Commit message conventions for semantic-release and auto-closing GitHub issues
+alwaysApply: true
+---
+
+# Commit conventions
+
+This project uses **semantic-release** (`@semantic-release/github`) with
+**conventional commits** (`@commitlint/config-conventional`). Every commit
+message must follow the format below so releases are automated and issues are
+auto-closed when the PR merges.
+
+## Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types (from `.releaserc.json`)
+
+| Type | Release | When to use |
+|------|---------|-------------|
+| `fix` | patch | Bug fix |
+| `feat` | minor | New feature / capability |
+| `refactor(core-*)` | minor | Core module refactor |
+| `perf` | patch | Performance improvement |
+| `test` | patch | Adding / updating tests only |
+| `docs` | patch | Documentation only |
+| `chore` | patch | Build, CI, tooling |
+| `*` (anything else) | patch | Catch-all |
+| Any with `(no-release)` scope | **none** | Explicitly skip release |
+
+### BREAKING CHANGE
+
+Append `!` after type or add `BREAKING CHANGE:` in the footer → **major** release.
+
+## Issue references — auto-close on merge
+
+`@semantic-release/github` resolves issues listed with
+[GitHub closing keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
+in the commit body or footer. **Every bug-fix commit must reference all related
+issue numbers** (primary + duplicates from `docs/bugs/*.md`) so they auto-close
+when the release publishes.
+
+### Rules
+
+1. **Footer** — Use `Closes #NNN` (or `Fixes #NNN`) for the primary issue.
+   Add every deduped issue on the same line or subsequent lines:
+
+   ```
+   fix(pan): stop velocity from being disabled at scale <= 1
+
+   The velocity calculation guard rejected all scales not strictly greater
+   than 1, preventing inertia at the default zoom level.
+
+   Closes #363
+   Closes #433
+   ```
+
+2. **Multiple issues in one commit** — List each on its own `Closes` line.
+   Do **not** comma-separate them (`Closes #1, #2` only closes #1 on some
+   parsers).
+
+3. **Feature requests** — Use `Closes` when the commit fully implements the
+   request. Use `Ref #NNN` (no closing keyword) when partially addressed.
+
+4. **Regression test commits** — Reference the issue but do **not** close it
+   (the fix commit closes it):
+
+   ```
+   test(pan): add regression for velocity at scale <= 1
+
+   Ref #363
+   ```
+
+5. **Scope** — Use the library area: `pan`, `zoom`, `pinch`, `bounds`,
+   `controls`, `animation`, `css`, `build`, `api`, `minimap`.
+
+## Examples
+
+```
+fix(zoom): fire onZoom callbacks from programmatic zoomIn/zoomOut
+
+Programmatic methods now emit the same callback sequence as user-driven
+gestures.
+
+Closes #369
+Closes #259
+Closes #305
+```
+
+```
+feat(controls): add directional pan buttons to Controls component
+
+Closes #527
+Closes #326
+```
+
+```
+fix(build): include src/ in published package for source maps
+
+Closes #529
+Closes #542
+```

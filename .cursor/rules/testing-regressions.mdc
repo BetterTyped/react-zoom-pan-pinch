@@ -1,0 +1,45 @@
+---
+description:
+  Regression tests for GitHub bugs and deterministic test harness usage
+globs: __tests__/**/*
+alwaysApply: false
+---
+
+# Regressions and test harness
+
+## GitHub-linked regressions
+
+- For each **unique** bug (see matching docs/bugs/\*.md), add **at least one**
+  regression test before merging the fix. One test per **cluster**; list every
+  merged issue number in a comment.
+- Prefer new specs under **tests**/regressions/. Name files by theme or primary
+  issue, e.g. issue-543-wheel-while-pan.spec.tsx.
+- Every such it should be traceable: title or comment with
+  https://github.com/BetterTyped/react-zoom-pan-pinch/issues/N (and sibling #
+  for dupes).
+- If a bug is **not** testable in Jest (e.g. publish workflow, package layout
+  only), do not skip silently—record **N/A** and the verification path in that
+  bug's docs/bugs/\*.md file.
+
+## renderApp / pan / velocity
+
+- **tests**/utils/render-app.tsx: pan-like helpers must support
+  **deterministic** velocity when needed—fake timers, fixed delay between move
+  events, and a way to flush requestAnimationFrame-driven animations. Default
+  pan({ x, y }) should remain ergonomic; document behavior in JSDoc.
+- Prefer **moveEventCount** (or the project-standard name) over vague steps in
+  public test helper types.
+
+## General
+
+- Match existing test layout under **tests**/features/ for broad coverage; use
+  regressions/ for issue-tagged minimum repros.
+- Avoid renaming library public APIs unless unavoidable; regressions lock
+  behavior instead.
+
+## Failing tests
+
+- A failing test usually indicates **incorrect library logic**, not a bad
+  test—if the spec is clear and the harness is sound, **fix `src/`** until
+  green. Only revise the test when the expectation or setup was wrong; say so in
+  a comment or PR note.

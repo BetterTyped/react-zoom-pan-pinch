@@ -12,7 +12,7 @@ describe("Pan Touch [Velocity]", () => {
       });
       pinch({ value: 1.5 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1.5)");
-      touchPan({ x: -10, y: -10, steps: 5 });
+      touchPan({ x: -10, y: -10, moveEventCount: 5 });
       expect(content.style.transform).toBe(
         "translate(-10px, -10px) scale(1.5)",
       );
@@ -33,7 +33,7 @@ describe("Pan Touch [Velocity]", () => {
       });
       pinch({ value: 1.5 });
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1.5)");
-      touchPan({ x: -10, y: -10, steps: 5 });
+      touchPan({ x: -10, y: -10, moveEventCount: 5 });
       expect(content.style.transform).toBe(
         "translate(-10px, -10px) scale(1.5)",
       );

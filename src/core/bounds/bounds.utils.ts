@@ -2,7 +2,6 @@
 import { roundNumber } from "../../utils";
 import {
   BoundsType,
-  LibrarySetup,
   PositionType,
   ReactZoomPanPinchContext,
 } from "../../models";
@@ -45,11 +44,11 @@ export const getBounds = (
 ): BoundsType => {
   const scaleWidthFactor =
     wrapperWidth > newContentWidth
-      ? diffWidth * (centerZoomedOut ? 1 : 0.5)
+      ? diffWidth * (centerZoomedOut ? 0.5 : 1)
       : 0;
   const scaleHeightFactor =
     wrapperHeight > newContentHeight
-      ? diffHeight * (centerZoomedOut ? 1 : 0.5)
+      ? diffHeight * (centerZoomedOut ? 0.5 : 1)
       : 0;
 
   const minPositionX = wrapperWidth - newContentWidth - scaleWidthFactor;
@@ -82,8 +81,8 @@ export const calculateBounds = (
     wrapperWidth,
     wrapperHeight,
     newContentWidth,
-    newDiffWidth,
     newContentHeight,
+    newDiffWidth,
     newDiffHeight,
   } = getComponentsSizes(wrapperComponent, contentComponent, newScale);
 
@@ -99,7 +98,7 @@ export const calculateBounds = (
 
   const contentFitsCompletely =
     wrapperWidth >= newContentWidth && wrapperHeight >= newContentHeight;
-  if (disablePadding && contentFitsCompletely) {
+  if (disablePadding && contentFitsCompletely && !centerZoomedOut) {
     bounds.minPositionX = 0;
     bounds.maxPositionX = 0;
     bounds.minPositionY = 0;
@@ -120,20 +119,6 @@ export const calculateBounds = (
 
   return bounds;
 };
-
-export function hasExplicitPositionBounds(
-  setup: Pick<
-    LibrarySetup,
-    "minPositionX" | "maxPositionX" | "minPositionY" | "maxPositionY"
-  >,
-): boolean {
-  return (
-    setup.minPositionX != null ||
-    setup.maxPositionX != null ||
-    setup.minPositionY != null ||
-    setup.maxPositionY != null
-  );
-}
 
 export function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(v, max));

@@ -115,4 +115,34 @@ describe("bounds and centering regressions", () => {
       expect(ref.current!.instance.state.positionX).toBe(100);
     });
   });
+
+  it("centerZoomedOut locks content to center after panning when zoomed out", async () => {
+    const { pan, ref } = renderApp({
+      wrapperWidth: "500px",
+      wrapperHeight: "500px",
+      contentWidth: "300px",
+      contentHeight: "300px",
+      centerOnInit: true,
+      centerZoomedOut: true,
+      limitToBounds: true,
+      disablePadding: true,
+    });
+
+    await waitFor(() => {
+      expect(ref.current!.instance.state.positionX).toBe(100);
+      expect(ref.current!.instance.state.positionY).toBe(100);
+    });
+
+    pan({ x: 200, y: 0 });
+    expect(ref.current!.instance.state.positionX).toBe(100);
+    expect(ref.current!.instance.state.positionY).toBe(100);
+
+    pan({ x: -200, y: 0, from: { clientX: 250, clientY: 250 } });
+    expect(ref.current!.instance.state.positionX).toBe(100);
+    expect(ref.current!.instance.state.positionY).toBe(100);
+
+    pan({ x: 150, y: -150, from: { clientX: 250, clientY: 250 } });
+    expect(ref.current!.instance.state.positionX).toBe(100);
+    expect(ref.current!.instance.state.positionY).toBe(100);
+  });
 });

@@ -47,8 +47,11 @@ export function handleZoomToViewCenter(
 ): void {
   const { wrapperComponent } = contextInstance;
   const { scale, positionX, positionY } = contextInstance.state;
+  const { zoomAnimation } = contextInstance.setup;
 
   if (!wrapperComponent) return console.error("No WrapperComponent found");
+
+  const effectiveAnimationTime = zoomAnimation.disabled ? 0 : animationTime;
 
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
@@ -75,7 +78,7 @@ export function handleZoomToViewCenter(
   const ctx = getContext(contextInstance);
   handleCallback(ctx, event, onZoomStart);
   handleCallback(ctx, event, onZoom);
-  animate(contextInstance, targetState, animationTime, animationType);
+  animate(contextInstance, targetState, effectiveAnimationTime, animationType);
   const win =
     wrapperComponent.ownerDocument?.defaultView ??
     (typeof window !== "undefined" ? window : null);
@@ -83,7 +86,7 @@ export function handleZoomToViewCenter(
     win.setTimeout(() => {
       if (!contextInstance.mounted) return;
       handleCallback(getContext(contextInstance), event, onZoomStop);
-    }, animationTime);
+    }, effectiveAnimationTime);
   }
 }
 

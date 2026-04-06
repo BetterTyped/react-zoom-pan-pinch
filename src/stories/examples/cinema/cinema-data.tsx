@@ -176,7 +176,6 @@ export function CinemaLayout({ selectedSeat, onSeatClick }: CinemaLayoutProps) {
         height: CANVAS_HEIGHT,
         background:
           "radial-gradient(ellipse at 50% 8%, #1a1033 0%, #0c0a1a 50%, #060612 100%)",
-        overflow: "hidden",
         fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
       }}
     >

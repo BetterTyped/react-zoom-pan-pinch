@@ -16,26 +16,12 @@ export const Example: React.FC<any> = (args: any) => {
   return (
     <TransformWrapper
       {...normalizeArgs(args)}
-      initialScale={0.55}
+      initialScale={0.5}
       minScale={0.5}
       maxScale={8}
       limitToBounds
       centerZoomedOut
       centerOnInit
-      wrapperStyle={{
-        width: "100%",
-        maxWidth: "800px",
-        height: "auto",
-        aspectRatio: "4 / 3",
-        maxHeight: "800px",
-        borderRadius: "12px",
-        overflow: "hidden",
-        background: "#060612",
-      }}
-      contentStyle={{
-        width: CANVAS_WIDTH,
-        height: CANVAS_HEIGHT,
-      }}
     >
       {({ zoomToElement, resetTransform, zoomIn, zoomOut }) => (
         <>
@@ -49,7 +35,20 @@ export const Example: React.FC<any> = (args: any) => {
             }}
           />
 
-          <TransformComponent>
+          <TransformComponent
+            wrapperStyle={{
+              width: "800px",
+              maxWidth: "100%",
+              height: "600px",
+              maxHeight: "70vh",
+              borderRadius: "12px",
+              background: "#060612",
+            }}
+            contentStyle={{
+              width: CANVAS_WIDTH,
+              height: CANVAS_HEIGHT,
+            }}
+          >
             <CinemaLayout
               selectedSeat={selectedSeat?.id ?? null}
               onSeatClick={(seat) => {
@@ -81,8 +80,8 @@ function ControlBar({
     <div
       style={{
         position: "absolute",
-        top: 12,
-        left: 12,
+        top: "25px",
+        left: "25px",
         zIndex: 10,
         display: "flex",
         alignItems: "center",

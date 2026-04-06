@@ -19,12 +19,12 @@ export const isPanningStartAllowed = (
   const targetIsShadowDom = "shadowRoot" in target && "composedPath" in event;
   const isWrapperChild = targetIsShadowDom
     ? event.composedPath().some((el) => {
-        if (!(el instanceof Element)) {
-          return false;
-        }
+      if (!(el instanceof Element)) {
+        return false;
+      }
 
-        return wrapperComponent?.contains(el);
-      })
+      return wrapperComponent?.contains(el);
+    })
     : wrapperComponent?.contains(target);
 
   const isAllowed = isInitialized && target && isWrapperChild;
@@ -34,6 +34,14 @@ export const isPanningStartAllowed = (
   const isExcluded = isExcludedNode(target, excluded);
 
   if (isExcluded) return false;
+
+  if (
+    target.getAttribute("draggable") === "true" ||
+    target.getAttribute("contenteditable") === "true" ||
+    target.isContentEditable
+  ) {
+    return false;
+  }
 
   return true;
 };
@@ -196,11 +204,11 @@ export const getPaddingValue = (
   explicitScale?: number,
 ): number => {
   const { setup, state } = contextInstance;
-  const { minScale, disablePadding } = setup;
+  const { minScale, disablePadding, centerZoomedOut } = setup;
 
   const scale = explicitScale ?? state.scale;
 
-  if (size > 0 && scale >= minScale && !disablePadding) {
+  if (size > 0 && scale >= minScale && !disablePadding && !centerZoomedOut) {
     return size;
   }
 

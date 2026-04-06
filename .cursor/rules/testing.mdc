@@ -1,0 +1,24 @@
+---
+description: Testing conventions — always use yarn test
+alwaysApply: true
+---
+
+# Testing
+
+Always use `yarn test` to run the test suite. Never use `npx jest` or `npm test`.
+
+```bash
+# ✅ GOOD
+yarn test
+
+# ❌ BAD
+npx jest
+npm test
+npx jest --testPathPattern="..."
+```
+
+When running a subset of tests, pass args through yarn:
+
+```bash
+yarn test --testPathPattern="some-pattern"
+```

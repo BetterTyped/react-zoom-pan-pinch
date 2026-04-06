@@ -204,6 +204,25 @@ describe("regressions: wheel and zoom behavior", () => {
     });
   });
 
+  describe("setState precision (trackpad zoom drift regression)", () => {
+    it("setState preserves full floating-point precision for scale and position", () => {
+      const { ref } = renderApp();
+
+      const preciseScale = 1.23456789;
+      const preciseX = 42.123456789;
+      const preciseY = -17.987654321;
+
+      ref.current!.instance.setState(preciseScale, preciseX, preciseY);
+
+      // Values must be stored at full precision. Rounding (e.g. toFixed(2)
+      // on scale or toFixed(3) on position) causes compounding drift
+      // during rapid trackpad pinch-to-zoom.
+      expect(ref.current!.instance.state.scale).toBe(preciseScale);
+      expect(ref.current!.instance.state.positionX).toBe(preciseX);
+      expect(ref.current!.instance.state.positionY).toBe(preciseY);
+    });
+  });
+
   describe("Ref #495", () => {
     it("wheel.step changes zoom sensitivity (Ref #495)", () => {
       const run = (step: number) => {

@@ -4,10 +4,7 @@ import { handleCallback } from "../../utils/callback.utils";
 import { getContext } from "../../utils/context.utils";
 import { cancelTimeout } from "../../utils/helpers.utils";
 import { handleCancelAnimation } from "../animations/animations.utils";
-import {
-  handleCalculateBounds,
-  hasExplicitPositionBounds,
-} from "../bounds/bounds.utils";
+import { handleCalculateBounds } from "../bounds/bounds.utils";
 import {
   getDelta,
   handleCalculateWheelZoom,
@@ -77,9 +74,7 @@ export const handleWheelZoom = (
 
   const isPaddingDisabled =
     disabled || size === 0 || centerZoomedOut || disablePadding;
-  const isLimitedToBounds =
-    (limitToBounds && isPaddingDisabled) ||
-    hasExplicitPositionBounds(setup);
+  const isLimitedToBounds = limitToBounds && isPaddingDisabled;
 
   const { x, y } = handleCalculateZoomPositions(
     contextInstance,

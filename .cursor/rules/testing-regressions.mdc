@@ -7,6 +7,8 @@ alwaysApply: false
 
 # Regressions and test harness
 
+Use `yarn test` command.
+
 ## GitHub-linked regressions
 
 - For each **unique** bug (see matching docs/bugs/\*.md), add **at least one**

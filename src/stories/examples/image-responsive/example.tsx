@@ -1,13 +1,41 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { normalizeArgs } from "stories/utils";
+import { Controls, normalizeArgs } from "stories/utils";
+import { useTransformComponent } from "../../../hooks";
 import exampleImg from "../../assets/medium-image.jpg";
+
+function ScaleBadge() {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 10,
+        padding: "5px 12px",
+        borderRadius: 8,
+        background: "rgba(10, 10, 18, 0.78)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "rgba(255,255,255,0.7)",
+        fontSize: 11,
+        fontWeight: 600,
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        letterSpacing: "0.02em",
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      {state.scale.toFixed(2)}x
+    </div>
+  ));
+}
 
 export const Example: React.FC<any> = (args: any) => {
   const src = exampleImg;
   const alt = "example";
-  const backgroundColor = "black";
   const scaleUp = true;
   const zoomFactor = 8;
 
@@ -75,7 +103,14 @@ export const Example: React.FC<any> = (args: any) => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor,
+        background:
+          "linear-gradient(135deg, #0a0a14 0%, #0f0f1e 50%, #0a0a14 100%)",
+        borderRadius: "12px",
+        border: "2px solid rgba(255,255,255,0.08)",
+        boxShadow:
+          "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+        overflow: "hidden",
+        position: "relative",
       }}
       ref={(el: HTMLDivElement | null) => setContainer(el)}
     >
@@ -88,14 +123,20 @@ export const Example: React.FC<any> = (args: any) => {
           centerOnInit
           {...normalizeArgs(args)}
         >
-          <TransformComponent
-            wrapperStyle={{
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <img alt={alt} src={src} />
-          </TransformComponent>
+          {(utils) => (
+            <>
+              <Controls {...utils} />
+              <ScaleBadge />
+              <TransformComponent
+                wrapperStyle={{
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <img alt={alt} src={src} />
+              </TransformComponent>
+            </>
+          )}
         </TransformWrapper>
       )}
     </div>

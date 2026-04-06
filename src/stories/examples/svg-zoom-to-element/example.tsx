@@ -1,7 +1,6 @@
 import React from "react";
 
-import { TransformWrapper } from "components/transform-wrapper/transform-wrapper";
-import { TransformComponent } from "components/transform-component/transform-component";
+import { TransformComponent, TransformWrapper } from "components";
 import { Controls, normalizeArgs } from "../../utils";
 import { ReactComponent as Creativity } from "./creativity.svg";
 
@@ -14,41 +13,36 @@ const TargetIcon = () => (
 
 export const Example: React.FC<any> = (args: any) => {
   return (
-    <TransformWrapper
-      {...normalizeArgs(args)}
-      wrapperStyle={{
-        width: "400px",
-        height: "400px",
-        maxWidth: "70vw",
-        maxHeight: "70vh",
-      }}
-      contentStyle={{
-        width: "400px",
-        height: "400px",
-        maxWidth: "70vw",
-        maxHeight: "70vh",
-      }}
-    >
-      {(utils) => (
-        <>
-          <Controls
-            {...utils}
-            extraButtons={[
-              { label: "Cloud", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element1") },
-              { label: "Face", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element2") },
-              { label: "Plane", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element3") },
-            ]}
-          />
-          <TransformComponent
-            wrapperStyle={{
-              maxWidth: "100%",
-              maxHeight: "calc(100vh - 50px)",
-            }}
-          >
-            <Creativity />
-          </TransformComponent>
-        </>
-      )}
-    </TransformWrapper>
+    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <TransformWrapper {...normalizeArgs(args)}>
+        {(utils) => (
+          <>
+            <Controls
+              {...utils}
+              extraButtons={[
+                { label: "Element 1", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element1") },
+                { label: "Element 2", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element2") },
+                { label: "Element 3", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element3") },
+              ]}
+            />
+            <TransformComponent
+              wrapperStyle={{
+                width: "500px",
+                height: "500px",
+                maxWidth: "80vw",
+                maxHeight: "75vh",
+                borderRadius: "12px",
+                border: "2px solid rgba(255,255,255,0.08)",
+                boxShadow:
+                  "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+                background: "#0f0f1a",
+              }}
+            >
+              <Creativity style={{ width: "100%" }} />
+            </TransformComponent>
+          </>
+        )}
+      </TransformWrapper>
+    </div>
   );
 };

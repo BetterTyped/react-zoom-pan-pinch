@@ -2,7 +2,7 @@ import { Meta } from "@storybook/blocks";
 
 <Meta title="Docs/Introduction" />
 
-# 🖼 React Zoom Pan Pinch
+# React Zoom Pan Pinch
 
 <p>
   <a href="https://bettertyped.com/">
@@ -17,9 +17,6 @@ import { Meta } from "@storybook/blocks";
   <a href="https://github.com/prc5/react-zoom-pan-pinch/blob/main/License.md">
     <img src="https://custom-icon-badges.demolab.com/github/license/prc5/react-zoom-pan-pinch?logo=law&color=yellow" />
   </a>
-  <a href="https://github.com/semantic-release/semantic-release">
-    <img src="https://custom-icon-badges.demolab.com/badge/semver-commitzen-e10079?logo=semantic-release&color=e76f51" />
-  </a>
   <a href="https://www.npmjs.com/package/react-zoom-pan-pinch">
     <img src="https://custom-icon-badges.demolab.com/npm/dm/react-zoom-pan-pinch?logoColor=fff&logo=trending-up" />
   </a>
@@ -29,140 +26,104 @@ import { Meta } from "@storybook/blocks";
   <a href="https://github.com/prc5/react-zoom-pan-pinch">
     <img src="https://custom-icon-badges.demolab.com/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white" />
   </a>
-  <a href="https://hits.sh/github.com/prc5/react-zoom-pan-pinch/">
-    <img src="https://hits.sh/github.com/prc5/react-zoom-pan-pinch.svg?color=64BC4B&logo=bookmeter" />
-  </a>
-  <a href="https://twitter.com/maciej_pyrc">
-    <img
-      alt="Twitter Follow"
-      src="https://img.shields.io/twitter/follow/maciej_pyrc?label=Follow%20&style=social"
-    />
-  </a>
 </p>
 
-> Super fast and light react npm package for zooming, panning and pinching html
-> elements in easy way
-
-- [Demo](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
-- [Docs](https://prc5.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
+> Super fast and light React library for zooming, panning, and pinching HTML
+> elements with ease.
 
 ## Key Features
 
-- 🚀 Fast and easy to use
-- 🏭 Light, without external dependencies
-- 💎 Mobile gestures, touchpad gestures and desktop mouse events support
-- 🎁 Powerful context usage, which gives you a lot of freedom
-- 🔧 Highly customizable
-- 👑 Animations and Utils to create own tools
-- 🔮 Advanced hooks and components
-
-## Help me keep working on this project ❤️
-
-- [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
-
----
+- **Fast and lightweight** — no external dependencies
+- **Touch, trackpad, and mouse** — full gesture support across devices
+- **Render props and hooks** — flexible API for any component architecture
+- **Highly customizable** — animations, bounds, velocity, padding, and more
+- **Advanced components** — `KeepScale`, `MiniMap`, and programmatic controls
 
 ## Installation
 
 ```bash
-npm install --save react-zoom-pan-pinch
+npm install react-zoom-pan-pinch
+```
+
 or
+
+```bash
 yarn add react-zoom-pan-pinch
 ```
 
-## Examples
+## Quick Start
 
-```jsx
-import React, { Component } from "react";
-
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
-const Example = () => {
-  return (
-    <TransformWrapper>
-      <TransformComponent>
-        <img src="image.jpg" alt="test" />
-      </TransformComponent>
-    </TransformWrapper>
-  );
-};
-```
-
-or
-
-```jsx
-import React, { Component } from "react";
-
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
-const Example = () => {
-  return (
-    <TransformWrapper
-      initialScale={1}
-      initialPositionX={200}
-      initialPositionY={100}
-    >
-      {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-        <React.Fragment>
-          <div className="tools">
-            <button onClick={() => zoomIn()}>+</button>
-            <button onClick={() => zoomOut()}>-</button>
-            <button onClick={() => resetTransform()}>x</button>
-          </div>
-          <TransformComponent>
-            <img src="image.jpg" alt="test" />
-            <div>Example text</div>
-          </TransformComponent>
-        </React.Fragment>
-      )}
-    </TransformWrapper>
-  );
-};
-```
-
-or
+The simplest setup — wrap any content with `TransformWrapper` and
+`TransformComponent`:
 
 ```tsx
-import React, { useRef } from "react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
+const App = () => (
+  <TransformWrapper>
+    <TransformComponent>
+      <img src="image.jpg" alt="Zoomable" />
+    </TransformComponent>
+  </TransformWrapper>
+);
+```
+
+## With Controls (Render Props)
+
+Access zoom/pan handlers through render props:
+
+```tsx
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
+const App = () => (
+  <TransformWrapper initialScale={1} initialPositionX={200} initialPositionY={100}>
+    {({ zoomIn, zoomOut, resetTransform }) => (
+      <>
+        <div className="tools">
+          <button onClick={() => zoomIn()}>+</button>
+          <button onClick={() => zoomOut()}>-</button>
+          <button onClick={() => resetTransform()}>x</button>
+        </div>
+        <TransformComponent>
+          <img src="image.jpg" alt="Zoomable" />
+        </TransformComponent>
+      </>
+    )}
+  </TransformWrapper>
+);
+```
+
+## With Ref and zoomToElement
+
+Use a ref for imperative access outside of render props:
+
+```tsx
+import { useRef } from "react";
 import {
   TransformWrapper,
   TransformComponent,
   ReactZoomPanPinchRef,
 } from "react-zoom-pan-pinch";
 
-const Controls = ({ zoomIn, zoomOut, resetTransform }) => (
-  <>
-    <button onClick={() => zoomIn()}>+</button>
-    <button onClick={() => zoomOut()}>-</button>
-    <button onClick={() => resetTransform()}>x</button>
-  </>
-);
+const App = () => {
+  const ref = useRef<ReactZoomPanPinchRef | null>(null);
 
-const Component = () => {
-  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
-
-  const zoomToImage = () => {
-    if (transformComponentRef.current) {
-      const { zoomToElement } = transformComponentRef.current;
-      zoomToElement("imgExample");
-    }
+  const focusImage = () => {
+    ref.current?.zoomToElement("imgExample");
   };
 
   return (
-    <TransformWrapper
-      initialScale={1}
-      initialPositionX={200}
-      initialPositionY={100}
-      ref={transformComponentRef}
-    >
-      {(utils) => (
-        <React.Fragment>
-          <Controls {...utils} />
+    <TransformWrapper ref={ref}>
+      {({ zoomIn, zoomOut, resetTransform }) => (
+        <>
+          <button onClick={() => zoomIn()}>+</button>
+          <button onClick={() => zoomOut()}>-</button>
+          <button onClick={() => resetTransform()}>x</button>
           <TransformComponent>
-            <img src="image.jpg" alt="test" id="imgExample" />
-            <div onClick={zoomToImage}>Example text</div>
+            <img src="image.jpg" alt="Zoomable" id="imgExample" />
+            <div onClick={focusImage}>Focus image</div>
           </TransformComponent>
-        </React.Fragment>
+        </>
       )}
     </TransformWrapper>
   );

@@ -1,5 +1,4 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
@@ -8,52 +7,120 @@ import { normalizeArgs } from "../../utils";
 import exampleImg from "./image.png";
 
 export const Template = (args) => (
-  <TransformWrapper
-    {...normalizeArgs(args)}
-    wheel={{
-      activationKeys: (keys) =>
-        ["Meta", "Ctrl"].some((key) => keys.includes(key)),
-    }}
-    trackPadPanning={{
-      disabled: false,
-      activationKeys: (keys) =>
-        !["Meta", "Ctrl"].some((key) => keys.includes(key)),
-    }}
-  >
-    <TransformComponent
-      wrapperStyle={{
-        width: "400px",
-        height: "400px",
-        maxWidth: "70vw",
-        maxHeight: "70vh",
+  <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <TransformWrapper
+      {...normalizeArgs(args)}
+      wheel={{
+        activationKeys: (keys) =>
+          ["Meta", "Ctrl"].some((key) => keys.includes(key)),
       }}
-      contentStyle={{
-        width: "100%",
-        height: "100%",
+      trackPadPanning={{
+        disabled: false,
+        activationKeys: (keys) =>
+          !["Meta", "Ctrl"].some((key) => keys.includes(key)),
       }}
     >
-      <div style={{ background: "#ababab", color: "black", padding: "0px" }}>
-        <div>Click cmd + wheel to zoom</div>
-        <div>Navigate easily with touchpad</div>
-        <img
-          src={exampleImg}
-          alt=""
-          style={{
-            width: "100%",
-          }}
-        />
-      </div>
-    </TransformComponent>
-  </TransformWrapper>
+      <TransformComponent
+        wrapperStyle={{
+          width: "500px",
+          height: "500px",
+          maxWidth: "80vw",
+          maxHeight: "75vh",
+          borderRadius: "12px",
+          border: "2px solid rgba(255,255,255,0.08)",
+          boxShadow:
+            "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+          background: "#0c0c1d",
+        }}
+        contentStyle={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div style={{ position: "relative" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: 16,
+              left: 16,
+              zIndex: 10,
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+            }}
+          >
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 12px",
+                borderRadius: 8,
+                background: "rgba(10, 10, 18, 0.78)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
+              <kbd
+                style={{
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                  background: "rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "rgba(255,255,255,0.7)",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  fontFamily: "system-ui, -apple-system, sans-serif",
+                }}
+              >
+                Cmd
+              </kbd>
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>+</span>
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontWeight: 600 }}>
+                Scroll to zoom
+              </span>
+            </div>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 12px",
+                borderRadius: 8,
+                background: "rgba(10, 10, 18, 0.78)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            >
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontWeight: 600 }}>
+                Trackpad to pan
+              </span>
+            </div>
+          </div>
+          <img
+            src={exampleImg}
+            alt=""
+            style={{ width: "100%", display: "block" }}
+          />
+        </div>
+      </TransformComponent>
+    </TransformWrapper>
+  </div>
 );
 
-<Meta title="Examples/Miro" component={TransformWrapper} />
+<Meta title="Examples/Miro" component={TransformWrapper} argTypes={argsTypes} />
 
 # Miro
 
-<br />
+A **Miro-style** canvas interaction: hold `Cmd` (or `Ctrl`) and scroll to
+zoom, or use the trackpad freely to pan. The `activationKeys` option accepts
+a function that receives the currently held keys, letting you create
+conditional gesture activation.
 
-### Preview:
+This pattern separates zoom from scroll — ideal for infinite canvas apps
+where the default scroll behavior should pan, not zoom.
 
 <Canvas>
   <Story name="Miro">{(args) => <Template {...args} />}</Story>

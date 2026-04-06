@@ -1,35 +1,92 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs } from "../../utils";
+import { normalizeArgs, Controls } from "../../utils";
+import { useTransformComponent } from "../../../hooks";
 
 import exampleImg from "../../assets/medium-image.jpg";
 
+export const ScaleBadge = () => {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        top: 16,
+        right: 16,
+        zIndex: 10,
+        padding: "5px 12px",
+        borderRadius: 8,
+        background: "rgba(10, 10, 18, 0.78)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "rgba(255,255,255,0.7)",
+        fontSize: 11,
+        fontWeight: 600,
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        letterSpacing: "0.02em",
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      {state.scale.toFixed(2)}x
+    </div>
+  ));
+};
+
 export const Template = (args) => (
-  <TransformWrapper
-    {...normalizeArgs(args)}
-    initialScale={0.4}
-    minScale={0.2}
-    centerOnInit={true}
-    wrapperStyle={{
-      width: "400px",
-      height: "400px",
-      maxWidth: "70vw",
-      maxHeight: "70vh",
-    }}
-    contentStyle={{
-      width: "400px",
-      height: "400px",
-      maxWidth: "70vw",
-      maxHeight: "70vh",
-    }}
-  >
-    <TransformComponent>
-      <img style={{ width: "100%" }} src={exampleImg} alt="" />
-    </TransformComponent>
-  </TransformWrapper>
+  <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <TransformWrapper
+      {...normalizeArgs(args)}
+      initialScale={0.4}
+      minScale={0.2}
+      centerOnInit={true}
+    >
+      {(utils) => (
+        <>
+          <Controls {...utils} />
+          <div style={{ position: "relative", display: "inline-block" }}>
+            <TransformComponent
+              wrapperStyle={{
+                width: "500px",
+                height: "500px",
+                maxWidth: "80vw",
+                maxHeight: "75vh",
+                borderRadius: "12px",
+                border: "2px solid rgba(255,255,255,0.08)",
+                boxShadow:
+                  "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+                background: "#0a0a14",
+                backgroundImage:
+                  "linear-gradient(45deg, #0e0e1a 25%, transparent 25%), linear-gradient(-45deg, #0e0e1a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #0e0e1a 75%), linear-gradient(-45deg, transparent 75%, #0e0e1a 75%)",
+                backgroundSize: "20px 20px",
+                backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
+              }}
+            >
+              <img style={{ width: "100%" }} src={exampleImg} alt="" />
+            </TransformComponent>
+            <ScaleBadge />
+          </div>
+        </>
+      )}
+    </TransformWrapper>
+    <p
+      style={{
+        fontSize: "13px",
+        color: "#888",
+        marginTop: "12px",
+        maxWidth: "500px",
+        lineHeight: 1.5,
+      }}
+    >
+      The content starts at <strong>0.4x</strong> scale and can zoom down to{" "}
+      <strong>0.2x</strong>. The checkerboard background makes it easy to see
+      the zoomed-out boundaries. Use <code>initialScale</code> to set the
+      starting zoom and <code>minScale</code> to control how far the user can
+      zoom out.
+    </p>
+  </div>
 );
 
 <Meta
@@ -38,11 +95,16 @@ export const Template = (args) => (
   argTypes={argsTypes}
 />
 
-# Zoomed Out
+# Zoomed Out Content
 
-<br />
+Start the viewport at a **reduced scale** so users see the full picture at a
+glance and can zoom in to explore details. This pattern works well for large
+diagrams, floor plans, and high-resolution photos where an overview-first
+experience is more useful than starting at 1:1.
 
-### Preview:
+Set `initialScale` below `1` to begin zoomed out, and `minScale` to control the
+lower bound. The library's `centerOnInit` ensures the content is centered in the
+viewport at load time.
 
 <Canvas>
   <Story name="Zoomed Out">{(args) => <Template {...args} />}</Story>

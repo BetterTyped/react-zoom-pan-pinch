@@ -1,5 +1,4 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -10,36 +9,24 @@ export const Template = (args) => <Example {...args} />;
 <Meta
   title="Advanced/Keep Scale"
   component={TransformWrapper}
-  argTypes={{
-    ...argsTypes,
-    "wheel.excluded": {
-      ...argsTypes["wheel.excluded"],
-      defaultValue: ["wheelDisabled"],
-    },
-    "panning.excluded": {
-      ...argsTypes["panning.excluded"],
-      defaultValue: ["panningDisabled"],
-    },
-    "pinch.excluded": {
-      ...argsTypes["pinch.excluded"],
-      defaultValue: ["pinchDisabled"],
-    },
-    centerOnInit: {
-      defaultValue: true,
-    },
-  }}
+  argTypes={argsTypes}
 />
 
-# Keep scale
+# Keep Scale
 
-<br />
+The `KeepScale` component wraps child elements so they **maintain their visual
+size** regardless of the current zoom level. As you zoom into the map, the
+markers stay the same size on screen while the underlying content scales
+normally.
 
-### Preview:
+This is essential for map pins, annotations, tooltips, or any overlay element
+that should remain readable at all zoom levels. Try zooming to 100x — the
+markers stay crisp and legible while the map image scales up.
 
 <Canvas>
-  <Story name="Keep scale">{(args) => <Template {...args} />}</Story>
+  <Story name="Keep Scale">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
 ## Component API
 
-<ArgsTable story="Keep scale" />
+<ArgsTable story="Keep Scale" />

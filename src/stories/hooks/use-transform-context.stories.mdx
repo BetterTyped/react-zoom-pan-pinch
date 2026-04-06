@@ -4,12 +4,80 @@ import { Meta } from "@storybook/blocks";
 
 # useTransformContext
 
-Use the direct access to the `Zoom-Pan-Pinch instance` and create your own hooks
-and logic with ease.
+The **lowest-level** hook — returns the raw library context (the `ZoomPanPinch`
+instance). All other hooks (`useControls`, `useTransformComponent`,
+`useTransformEffect`, `useTransformInit`) are built on top of this one.
 
-### Example
+## Signature
+
+```ts
+function useTransformContext(): ReactZoomPanPinchContext
+```
+
+## Return Value
+
+The returned context object provides:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `state` | `{ scale, positionX, positionY, previousScale }` | Current mutable transform state |
+| `setup` | `object` | Resolved configuration (minScale, maxScale, etc.) |
+| `wrapperComponent` | `HTMLDivElement \| null` | The wrapper DOM element |
+| `contentComponent` | `HTMLDivElement \| null` | The content DOM element |
+| `onChange` | `(callback) => unsubscribe` | Subscribe to transform changes |
+| `onInit` | `(callback) => unsubscribe` | Subscribe to initialization |
+
+## When to Use
+
+- **Building custom hooks** on top of the library internals
+- **Direct DOM access** to wrapper/content elements for measurements
+- **Advanced integrations** that need the raw instance (e.g., syncing with
+  external renderers like Canvas or WebGL)
+
+Most applications should use `useControls` (for actions) or
+`useTransformComponent` (for reactive state) instead.
+
+## Example — Custom Scale Logger
 
 ```tsx
-// Simple access to the context instance
-const context = useTransformContext();
+import { useEffect } from "react";
+import { useTransformContext } from "react-zoom-pan-pinch";
+
+function useLogScale() {
+  const ctx = useTransformContext();
+
+  useEffect(() => {
+    const unsub = ctx.onChange((ref) => {
+      console.log("Scale:", ref.instance.state.scale);
+    });
+    return unsub;
+  }, [ctx]);
+}
 ```
+
+## Example — Wrapper Dimensions
+
+```tsx
+function useWrapperSize() {
+  const ctx = useTransformContext();
+  const wrapper = ctx.wrapperComponent;
+
+  if (!wrapper) return { width: 0, height: 0 };
+  return {
+    width: wrapper.offsetWidth,
+    height: wrapper.offsetHeight,
+  };
+}
+```
+
+## Error Handling
+
+Throws if called outside of `TransformWrapper`:
+
+```
+Error: Transform context must be placed inside TransformWrapper
+```
+
+## Requirements
+
+Must be called inside a descendant of `TransformWrapper`.

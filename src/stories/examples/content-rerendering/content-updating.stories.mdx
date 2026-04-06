@@ -1,5 +1,4 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -8,38 +7,25 @@ import { Example } from "./example";
 export const Template = (args) => <Example {...args} />;
 
 <Meta
-  title="Advanced/Rerendering Content"
+  title="Basic/Rerendering"
   component={TransformWrapper}
-  argTypes={{
-    ...argsTypes,
-    "wheel.excluded": {
-      ...argsTypes["wheel.excluded"],
-      defaultValue: ["wheelDisabled"],
-    },
-    "panning.excluded": {
-      ...argsTypes["panning.excluded"],
-      defaultValue: ["panningDisabled"],
-    },
-    "pinch.excluded": {
-      ...argsTypes["pinch.excluded"],
-      defaultValue: ["pinchDisabled"],
-    },
-    centerOnInit: {
-      defaultValue: true,
-    },
-  }}
+  argTypes={argsTypes}
 />
 
-# Rerendering content
+# Rerendering
 
-<br />
+Proves that **frequent React re-renders** inside `TransformComponent` do not
+disrupt the current zoom or pan state. Three content blocks update on
+independent timers (1 s, 3 s, 12 s) — zoom in, pan around, and watch the
+blocks toggle without resetting your viewport.
 
-### Preview:
+This is important for dashboards, live data feeds, or any UI where child
+components update independently of the user's zoom/pan interaction.
 
 <Canvas>
-  <Story name="Rerendering content">{(args) => <Template {...args} />}</Story>
+  <Story name="Rerendering">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
 ## Component API
 
-<ArgsTable story="Rerendering content" />
+<ArgsTable story="Rerendering" />

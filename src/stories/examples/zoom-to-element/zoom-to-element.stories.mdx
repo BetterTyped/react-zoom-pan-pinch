@@ -1,5 +1,4 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -15,9 +14,13 @@ export const Template = (args) => <Example {...args} />;
 
 # Zoom To Element
 
-<br />
+Programmatically animate the viewport to **focus on a specific element** inside
+the transformed content. Click any card on the canvas or use the target buttons
+in the control bar — `zoomToElement(elementId)` smoothly pans and zooms to frame
+that element in view.
 
-### Preview:
+This is the core API for seat-map selectors, diagram node focus, annotation
+highlights, and any "navigate to target" interaction pattern.
 
 <Canvas>
   <Story name="Zoom To Element">{(args) => <Template {...args} />}</Story>

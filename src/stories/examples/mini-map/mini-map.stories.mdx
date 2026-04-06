@@ -1,16 +1,8 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
-import {
-  TransformWrapper,
-  TransformComponent,
-  MiniMap,
-} from "../../../components";
+import { TransformWrapper, TransformComponent, MiniMap } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs, Controls } from "../../utils";
 import { Template } from "./example";
-
-import exampleImg from "../../assets/small-image.jpg";
 
 <Meta
   title="Components/Mini Map"
@@ -20,9 +12,10 @@ import exampleImg from "../../assets/small-image.jpg";
 
 # Mini Map
 
-<br />
-
-### Preview:
+A **miniature overview** that mirrors the main content and highlights the
+currently visible viewport. The `MiniMap` component renders a scaled-down
+duplicate of the content in a floating panel — useful for large canvases,
+documents, or maps where spatial awareness matters.
 
 <Canvas>
   <Story name="Mini Map">{(args) => <Template {...args} />}</Story>

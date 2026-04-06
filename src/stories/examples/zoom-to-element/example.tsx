@@ -11,89 +11,182 @@ const TargetIcon = () => (
   </svg>
 );
 
-const CurrentScale = () => {
-  return useTransformComponent(({ state }) => {
-    return <div>Current Scale: {state.scale}</div>;
-  });
-};
+function ScaleBadge() {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 10,
+        padding: "5px 12px",
+        borderRadius: 8,
+        background: "rgba(10, 10, 18, 0.78)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "rgba(255,255,255,0.7)",
+        fontSize: 11,
+        fontWeight: 600,
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        letterSpacing: "0.02em",
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      {state.scale.toFixed(2)}x
+    </div>
+  ));
+}
+
+const TARGETS = [
+  {
+    id: "element1",
+    label: "Alpha",
+    color: "#667eea",
+    gradient: "linear-gradient(135deg, #667eea, #764ba2)",
+    icon: "A",
+    desc: "Primary target zone",
+    top: 60,
+    left: 40,
+    width: 200,
+    height: 160,
+  },
+  {
+    id: "element2",
+    label: "Beta",
+    color: "#4facfe",
+    gradient: "linear-gradient(135deg, #4facfe, #00f2fe)",
+    icon: "B",
+    desc: "Secondary observation point",
+    top: 280,
+    left: 240,
+    width: 220,
+    height: 140,
+  },
+  {
+    id: "element3",
+    label: "Gamma",
+    color: "#43e97b",
+    gradient: "linear-gradient(135deg, #43e97b, #38f9d7)",
+    icon: "G",
+    desc: "Tertiary analysis region",
+    top: 160,
+    left: 520,
+    width: 180,
+    height: 180,
+  },
+];
 
 export const Example: React.FC<any> = (args: any) => {
   return (
-    <TransformWrapper
-      {...normalizeArgs(args)}
-      wrapperStyle={{
-        width: "400px",
-        height: "400px",
-        maxWidth: "70vw",
-        maxHeight: "70vh",
-      }}
-      contentStyle={{
-        width: "400px",
-        height: "400px",
-        maxWidth: "70vw",
-        maxHeight: "70vh",
-      }}
-    >
-      {(utils) => (
-        <>
-          <Controls
-            {...utils}
-            extraButtons={[
-              { label: "Element 1", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element1") },
-              { label: "Element 2", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element2") },
-              { label: "Element 3", icon: <TargetIcon />, onClick: () => utils.zoomToElement("element3") },
-            ]}
-          />
-          <TransformComponent
-            wrapperStyle={{
-              maxWidth: "100%",
-              maxHeight: "calc(100vh - 50px)",
-            }}
-          >
-            <CurrentScale />
-            <div
-              style={{
-                background: "#444",
-                color: "white",
-                padding: "50px",
-                minHeight: "300px",
-                width: "100%",
-              }}
-            >
-              <div
-                id="element1"
-                style={{ background: "red", width: "200px", height: "400px" }}
-              >
-                Zoom element 1
-              </div>
-              <div
-                id="element2"
-                style={{
-                  background: "blue",
-                  width: "250px",
-                  height: "150px",
-                  marginTop: "200px",
-                  marginLeft: "200px",
+    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <TransformWrapper {...normalizeArgs(args)}>
+        {(utils) => (
+          <>
+            <Controls
+              {...utils}
+              extraButtons={TARGETS.map((t) => ({
+                label: t.label,
+                icon: <TargetIcon />,
+                onClick: () => utils.zoomToElement(t.id),
+              }))}
+            />
+            <div style={{ position: "relative", display: "inline-block" }}>
+              <TransformComponent
+                wrapperStyle={{
+                  width: "500px",
+                  height: "500px",
+                  maxWidth: "80vw",
+                  maxHeight: "75vh",
+                  borderRadius: "12px",
+                  border: "2px solid rgba(255,255,255,0.08)",
+                  boxShadow:
+                    "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+                  background: "#0a0a14",
                 }}
               >
-                Zoom element 2
-              </div>
-              <div
-                id="element3"
-                style={{
-                  background: "green",
-                  width: "150px",
-                  height: "150px",
-                  marginTop: "200px",
-                  marginLeft: "500px",
-                }}
-              >
-                Zoom element 3
-              </div>
+                <div
+                  style={{
+                    position: "relative",
+                    width: 800,
+                    height: 600,
+                    backgroundImage:
+                      "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)",
+                    backgroundSize: "24px 24px",
+                  }}
+                >
+                  {TARGETS.map((target) => (
+                    <div
+                      key={target.id}
+                      id={target.id}
+                      style={{
+                        position: "absolute",
+                        top: target.top,
+                        left: target.left,
+                        width: target.width,
+                        height: target.height,
+                        borderRadius: 14,
+                        background: "rgba(255,255,255,0.03)",
+                        border: `1px solid ${target.color}33`,
+                        backdropFilter: "blur(8px)",
+                        WebkitBackdropFilter: "blur(8px)",
+                        padding: 20,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        cursor: "pointer",
+                        transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                      }}
+                      onClick={() => utils.zoomToElement(target.id)}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 8,
+                            background: target.gradient,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 14,
+                            fontWeight: 800,
+                            color: "#fff",
+                            boxShadow: `0 0 16px ${target.color}44`,
+                          }}
+                        >
+                          {target.icon}
+                        </div>
+                        <span
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.85)",
+                          }}
+                        >
+                          {target.label}
+                        </span>
+                      </div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.4)",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {target.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </TransformComponent>
+              <ScaleBadge />
             </div>
-          </TransformComponent>
-        </>
-      )}
-    </TransformWrapper>
+          </>
+        )}
+      </TransformWrapper>
+    </div>
   );
 };

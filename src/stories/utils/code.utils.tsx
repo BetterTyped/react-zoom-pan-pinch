@@ -1,31 +1,22 @@
-/* eslint-disable react/no-array-index-key */
 import React from "react";
-// import { Highlight, defaultProps, themes } from "prism-react-renderer";
 
 type Props = { code: string };
 
 export const Code: React.FC<Props> = ({ code }: Props) => (
-  <pre>
-    <code>{code}</code>
-  </pre>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // <Highlight
-  //   {...defaultProps}
-  //   code={code}
-  //   theme={themes.shadesOfPurple}
-  //   language="tsx"
-  // >
-  //   {({ className, style, tokens, getLineProps, getTokenProps }) => (
-  //     <pre className={className} style={style}>
-  //       {tokens.map((line, i) => (
-  //         <div key={i} {...getLineProps({ line, key: i })}>
-  //           {line.map((token, key) => (
-  //             <span key={key} {...getTokenProps({ token, key })} />
-  //           ))}
-  //         </div>
-  //       ))}
-  //     </pre>
-  //   )}
-  // </Highlight>
+  <code
+    style={{
+      display: "inline",
+      padding: "2px 7px",
+      borderRadius: 5,
+      background: "rgba(30, 30, 50, 0.7)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      fontFamily: "'SF Mono', 'Fira Code', 'Cascadia Code', monospace",
+      fontSize: 12,
+      color: "#e2e8f0",
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+    }}
+  >
+    {code}
+  </code>
 );

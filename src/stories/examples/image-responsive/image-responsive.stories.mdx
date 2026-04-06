@@ -1,5 +1,4 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
-import { action } from "@storybook/addon-actions";
 
 import { TransformComponent, TransformWrapper } from "../../../components/";
 import { argsTypes } from "../../types/args.types";
@@ -19,9 +18,19 @@ export const Template = (args) => (
 
 # Responsive Image
 
-<br />
+A **responsive** image viewer that automatically scales the image to fit its
+container. When the viewport resizes, the wrapper remounts with a recalculated
+`initialScale` so the image always fills the available space.
 
-### Preview:
+The component measures the container and the image's natural dimensions, then
+computes a fit scale (`Math.min(containerW / naturalW, containerH / naturalH)`).
+That scale becomes both `initialScale` and `minScale`, so the user can zoom in
+up to 8x but can never zoom out beyond the fitted view. The `key` prop on
+`TransformWrapper` forces a clean remount on resize — a simple pattern that
+guarantees correct centering after layout changes.
+
+The floating badge in the corner tracks the current scale in real time via
+`useTransformComponent`.
 
 <Canvas>
   <Story name="Responsive Image">{(args) => <Template {...args} />}</Story>

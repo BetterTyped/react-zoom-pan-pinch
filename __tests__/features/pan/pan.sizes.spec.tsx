@@ -17,10 +17,8 @@ describe("Pan [Sizes]", () => {
         disablePadding: true,
       });
 
-      pan({ x: -150, y: -150 });
-      expect(content.style.transform).toBe(
-        "translate(-100px, -100px) scale(1)",
-      );
+      pan({ x: 150, y: 150 });
+      expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");
     });
     it("should allow panning with velocity", async () => {
       jest.useFakeTimers();
@@ -33,7 +31,7 @@ describe("Pan [Sizes]", () => {
         velocityAnimation: { disabled: false },
       });
 
-      ref.current!.setTransform(0, 0, 2, 0);
+      ref.current!.setTransform(0, 0, 2);
       pan({ x: -10, y: -10, moveEventCount: 5 });
 
       const posAfterPan = ref.current!.instance.state.positionX;
@@ -75,7 +73,7 @@ describe("Pan [Sizes]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
     it("should not allow for panning with centering", async () => {
-      const { ref, pan } = renderApp({
+      const { content, pan } = renderApp({
         wrapperWidth: "100px",
         wrapperHeight: "100px",
         contentWidth: "50px",
@@ -84,9 +82,8 @@ describe("Pan [Sizes]", () => {
         disablePadding: true,
       });
 
-      const initialX = ref.current!.instance.state.positionX;
       pan({ x: 100, y: 100 });
-      expect(ref.current!.instance.state.positionX).toBe(initialX);
+      expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
     });
     it("should allow to move content around the wrapper body", async () => {
       const { content, pan } = renderApp({

@@ -19,7 +19,7 @@ interface RowDef {
   sections: [number, number, number];
 }
 
-const ROWS: RowDef[] = [
+export const ROWS: RowDef[] = [
   { label: "A", count: 10, y: 220, category: "premium", curve: 12, sections: [2, 6, 2] },
   { label: "B", count: 14, y: 268, category: "premium", curve: 10, sections: [3, 8, 3] },
   { label: "C", count: 16, y: 316, category: "standard", curve: 9, sections: [4, 8, 4] },
@@ -72,7 +72,7 @@ const OCCUPIED_STYLE = {
   glow: "none",
 };
 
-const OCCUPIED = new Set([
+export const OCCUPIED = new Set([
   "A-3",
   "A-7",
   "B-2",

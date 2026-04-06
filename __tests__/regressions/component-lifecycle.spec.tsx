@@ -72,9 +72,9 @@ describe("component lifecycle regressions", () => {
     const before = content.style.transform;
 
     userEvent.hover(content);
-    fireEvent.mouseDown(content, { clientX: 100, clientY: 100 });
-    fireEvent.mouseMove(content, { clientX: 140, clientY: 120 });
-    fireEvent.mouseMove(content, { clientX: 190, clientY: 145 });
+    fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
+    fireEvent.mouseMove(content, { clientX: 140, clientY: 120, buttons: 1 });
+    fireEvent.mouseMove(content, { clientX: 190, clientY: 145, buttons: 1 });
     fireEvent.mouseUp(content);
 
     expect(content.style.transform).not.toBe(before);

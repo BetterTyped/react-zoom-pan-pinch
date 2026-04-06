@@ -3,16 +3,23 @@ import userEvent from "@testing-library/user-event";
 
 import { renderApp } from "../../utils";
 
+const BUTTONS_WHILE_DOWN: Record<number, number> = {
+  0: 1,
+  1: 4,
+  2: 2,
+};
+
 function panWithButton(
   content: HTMLElement,
   button: number,
   x: number,
   y: number,
 ) {
+  const buttons = BUTTONS_WHILE_DOWN[button];
   userEvent.hover(content);
-  fireEvent.mouseDown(content, { clientX: 0, clientY: 0, button });
-  fireEvent.mouseMove(content, { clientX: x, clientY: y });
-  fireEvent.mouseUp(content, { button });
+  fireEvent.mouseDown(content, { clientX: 0, clientY: 0, button, buttons });
+  fireEvent.mouseMove(content, { clientX: x, clientY: y, buttons });
+  fireEvent.mouseUp(content, { button, buttons: 0 });
   fireEvent.blur(content);
 }
 

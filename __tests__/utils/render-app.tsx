@@ -389,6 +389,7 @@ export const renderApp = ({
     fireEvent.mouseDown(content, {
       clientX: from.clientX,
       clientY: from.clientY,
+      buttons: 1,
     });
 
     for (let i = 1; i <= moveEventCount; i++) {
@@ -397,6 +398,7 @@ export const renderApp = ({
       fireEvent.mouseMove(content, {
         clientX: from.clientX + x * progress,
         clientY: from.clientY + y * progress,
+        buttons: 1,
       });
     }
 

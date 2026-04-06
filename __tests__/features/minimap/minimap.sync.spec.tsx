@@ -94,8 +94,8 @@ describe("MiniMap [Sync]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
 
       userEvent.hover(content);
-      fireEvent.mouseDown(content, { clientX: 0, clientY: 0 });
-      fireEvent.mouseMove(content, { clientX: -100, clientY: -50 });
+      fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
+      fireEvent.mouseMove(content, { clientX: -100, clientY: -50, buttons: 1 });
       fireEvent.mouseUp(content);
 
       expect(content.style.transform).toBe(
@@ -115,8 +115,8 @@ describe("MiniMap [Sync]", () => {
       const initialHeight = minimapPreview.style.height;
 
       userEvent.hover(content);
-      fireEvent.mouseDown(content, { clientX: 0, clientY: 0 });
-      fireEvent.mouseMove(content, { clientX: -100, clientY: -100 });
+      fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
+      fireEvent.mouseMove(content, { clientX: -100, clientY: -100, buttons: 1 });
       fireEvent.mouseUp(content);
 
       expect(minimapPreview.style.width).toBe(initialWidth);

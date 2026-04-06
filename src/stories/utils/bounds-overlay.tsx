@@ -10,24 +10,42 @@ interface BoundsOverlayProps {
   maxX: number;
   minY: number;
   maxY: number;
+  wrapperWidth: number;
+  wrapperHeight: number;
 }
 
-export function BoundsOverlay({ minX, maxX, minY, maxY }: BoundsOverlayProps) {
+export function BoundsOverlay({
+  minX,
+  maxX,
+  minY,
+  maxY,
+  wrapperWidth,
+  wrapperHeight,
+}: BoundsOverlayProps) {
   const computeEdges = useCallback(
-    (state: { state: { positionX: number; positionY: number } }) => {
-      const { positionX, positionY } = state.state;
-      const rangeX = maxX - minX || 1;
-      const rangeY = maxY - minY || 1;
+    (state: {
+      state: { positionX: number; positionY: number; scale: number };
+    }) => {
+      const { positionX, positionY, scale } = state.state;
+
+      // Match the library's scaled bounds (see calculateBounds in bounds.utils.ts)
+      const sMinX = wrapperWidth * (1 - scale) + minX * scale;
+      const sMaxX = maxX * scale;
+      const sMinY = wrapperHeight * (1 - scale) + minY * scale;
+      const sMaxY = maxY * scale;
+
+      const rangeX = sMaxX - sMinX || 1;
+      const rangeY = sMaxY - sMinY || 1;
       const t = THRESHOLD;
 
       return {
-        left: Math.max(0, 1 - (maxX - positionX) / Math.min(t, rangeX)),
-        right: Math.max(0, 1 - (positionX - minX) / Math.min(t, rangeX)),
-        top: Math.max(0, 1 - (maxY - positionY) / Math.min(t, rangeY)),
-        bottom: Math.max(0, 1 - (positionY - minY) / Math.min(t, rangeY)),
+        left: Math.max(0, 1 - (sMaxX - positionX) / Math.min(t, rangeX)),
+        right: Math.max(0, 1 - (positionX - sMinX) / Math.min(t, rangeX)),
+        top: Math.max(0, 1 - (sMaxY - positionY) / Math.min(t, rangeY)),
+        bottom: Math.max(0, 1 - (positionY - sMinY) / Math.min(t, rangeY)),
       };
     },
-    [minX, maxX, minY, maxY],
+    [minX, maxX, minY, maxY, wrapperWidth, wrapperHeight],
   );
 
   const edges = useTransformComponent(computeEdges);

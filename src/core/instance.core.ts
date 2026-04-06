@@ -155,6 +155,7 @@ export class ZoomPanPinch {
     currentDocument?.addEventListener("mouseleave", this.clearPanning, passive);
     currentWindow?.addEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.addEventListener("keydown", this.setKeyPressed, passive);
+    currentWindow?.addEventListener("blur", this.handleWindowBlur);
   };
 
   cleanupWindowEvents = (): void => {
@@ -175,6 +176,7 @@ export class ZoomPanPinch {
     );
     currentWindow?.removeEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.removeEventListener("keydown", this.setKeyPressed, passive);
+    currentWindow?.removeEventListener("blur", this.handleWindowBlur);
     document.removeEventListener("mouseleave", this.clearPanning, passive);
     this.wrapperComponent?.removeEventListener(
       "wheel",
@@ -246,6 +248,8 @@ export class ZoomPanPinch {
     const { disabled } = this.setup;
     if (disabled) return;
 
+    this.syncModifierKeys(event);
+
     const isAllowed = isWheelAllowed(this, event);
     if (!isAllowed) return;
 
@@ -262,6 +266,8 @@ export class ZoomPanPinch {
     const { onPanning } = this.props;
     const { trackPadPanning } = this.setup;
     const { lockAxisX, lockAxisY } = trackPadPanning;
+
+    this.syncModifierKeys(event);
 
     const isAllowed = isWheelPanningAllowed(this, event);
 
@@ -303,6 +309,8 @@ export class ZoomPanPinch {
     const { onPanningStart } = this.props;
     if (disabled) return;
 
+    this.syncModifierKeys(event);
+
     const isAllowed = isPanningStartAllowed(this, event);
     if (!isAllowed) return;
 
@@ -326,6 +334,15 @@ export class ZoomPanPinch {
     const { onPanning } = this.props;
 
     if (disabled) return;
+
+    this.syncModifierKeys(event);
+
+    // Detect missed mouseup — e.g. when the mouse was released outside an
+    // iframe boundary where the host frame swallows the mouseup event.
+    if (this.isPanning && event.buttons === 0) {
+      this.clearPanning(event);
+      return;
+    }
 
     const isAllowed = isPanningAllowed(this);
     if (!isAllowed) return;
@@ -479,6 +496,30 @@ export class ZoomPanPinch {
     if (this.isPanning) {
       this.onPanningStop(event);
     }
+  };
+
+  // When the window loses focus (e.g. user clicks outside an iframe),
+  // keyup and mouseup events are swallowed by the parent frame. Clear all
+  // tracked state to prevent stale activation keys or ghost panning.
+  handleWindowBlur = (): void => {
+    this.pressedKeys = {};
+    if (this.isPanning) {
+      this.isPanning = false;
+      this.startCoords = null;
+    }
+  };
+
+  // Modifier keys (Ctrl, Meta/Cmd, Shift, Alt) are available on every
+  // mouse/wheel/touch event even when the window never received keydown
+  // (e.g. an unfocused iframe). Sync them into pressedKeys so that
+  // activationKeys checks work without requiring focus.
+  syncModifierKeys = (
+    event: MouseEvent | WheelEvent | TouchEvent,
+  ): void => {
+    this.pressedKeys["Control"] = event.ctrlKey;
+    this.pressedKeys["Meta"] = event.metaKey;
+    this.pressedKeys["Shift"] = event.shiftKey;
+    this.pressedKeys["Alt"] = event.altKey;
   };
 
   setKeyPressed = (e: KeyboardEvent): void => {

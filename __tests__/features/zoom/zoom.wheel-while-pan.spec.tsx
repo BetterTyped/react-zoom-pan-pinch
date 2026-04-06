@@ -10,8 +10,8 @@ describe("Zoom [Wheel while panning]", () => {
     });
 
     userEvent.hover(content);
-    fireEvent.mouseDown(content, { clientX: 100, clientY: 100 });
-    fireEvent.mouseMove(content, { clientX: 50, clientY: 50 });
+    fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
+    fireEvent.mouseMove(content, { clientX: 50, clientY: 50, buttons: 1 });
 
     fireEvent(
       content,
@@ -29,8 +29,8 @@ describe("Zoom [Wheel while panning]", () => {
     });
 
     userEvent.hover(content);
-    fireEvent.mouseDown(content, { clientX: 100, clientY: 100 });
-    fireEvent.mouseMove(content, { clientX: 50, clientY: 50 });
+    fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
+    fireEvent.mouseMove(content, { clientX: 50, clientY: 50, buttons: 1 });
 
     fireEvent(
       content,

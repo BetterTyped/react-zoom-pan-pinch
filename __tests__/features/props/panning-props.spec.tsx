@@ -60,8 +60,8 @@ describe("ReactZoomPanPinchProps.panning", () => {
       const { content } = renderApp({
         panning: { allowMiddleClickPan: true },
       });
-      fireEvent.mouseDown(content, { button: 1, clientX: 100, clientY: 100 });
-      fireEvent.mouseMove(content, { clientX: 50, clientY: 50 });
+      fireEvent.mouseDown(content, { button: 1, clientX: 100, clientY: 100, buttons: 4 });
+      fireEvent.mouseMove(content, { clientX: 50, clientY: 50, buttons: 4 });
       fireEvent.mouseUp(content);
       expect(content.style.transform).not.toBe(
         "translate(0px, 0px) scale(1)",
@@ -74,8 +74,8 @@ describe("ReactZoomPanPinchProps.panning", () => {
       const { content } = renderApp({
         panning: { allowRightClickPan: true },
       });
-      fireEvent.mouseDown(content, { button: 2, clientX: 100, clientY: 100 });
-      fireEvent.mouseMove(content, { clientX: 50, clientY: 50 });
+      fireEvent.mouseDown(content, { button: 2, clientX: 100, clientY: 100, buttons: 2 });
+      fireEvent.mouseMove(content, { clientX: 50, clientY: 50, buttons: 2 });
       fireEvent.mouseUp(content);
       expect(content.style.transform).not.toBe(
         "translate(0px, 0px) scale(1)",

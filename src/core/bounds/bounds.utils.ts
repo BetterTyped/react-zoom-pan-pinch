@@ -112,10 +112,22 @@ export const calculateBounds = (
     maxPositionY: propMaxY,
   } = contextInstance.setup;
 
-  if (propMinX != null) bounds.minPositionX = propMinX;
-  if (propMaxX != null) bounds.maxPositionX = propMaxX;
-  if (propMinY != null) bounds.minPositionY = propMinY;
-  if (propMaxY != null) bounds.maxPositionY = propMaxY;
+  // Explicit position props define content-space boundaries at scale=1.
+  // Scale them so the same content region stays reachable at every zoom level.
+  if (propMinX != null) {
+    bounds.minPositionX =
+      wrapperWidth * (1 - newScale) + propMinX * newScale;
+  }
+  if (propMaxX != null) {
+    bounds.maxPositionX = propMaxX * newScale;
+  }
+  if (propMinY != null) {
+    bounds.minPositionY =
+      wrapperHeight * (1 - newScale) + propMinY * newScale;
+  }
+  if (propMaxY != null) {
+    bounds.maxPositionY = propMaxY * newScale;
+  }
 
   return bounds;
 };

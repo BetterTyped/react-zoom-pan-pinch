@@ -514,18 +514,32 @@ export class ZoomPanPinch {
     }
   };
 
-  // Modifier keys (Ctrl, Meta/Cmd, Shift, Alt) are available on every
-  // mouse/wheel/touch event even when the window never received keydown
-  // (e.g. an unfocused iframe). Only SET keys here; clearing is handled
-  // by keyup and handleWindowBlur so that explicit keydown state is
-  // never overwritten by a gesture event that lacks modifier flags.
+  // Iframe focus problem (e.g. Storybook):
+  //
+  // When the library runs inside an iframe, keyboard events (keydown/keyup)
+  // only reach the iframe's window when it has focus. If the user navigates
+  // via the host UI (e.g. Storybook sidebar) the iframe never receives
+  // focus, so keydown never fires and activationKeys like Cmd/Ctrl are
+  // invisible to pressedKeys.
+  //
+  // Mouse and wheel events, however, DO reach the iframe regardless of
+  // focus — and they carry modifier flags (ctrlKey, metaKey, shiftKey,
+  // altKey) that always reflect the real physical key state at event time.
+  //
+  // We sync those flags into pressedKeys on every interaction event so
+  // that activationKeys checks work without requiring iframe focus.
+  // Both pressed (true) AND released (false) states must be written;
+  // writing only `true` would leave stale keys after release because
+  // keyup never fires in an unfocused iframe.
   syncModifierKeys = (
     event: MouseEvent | WheelEvent | TouchEvent,
   ): void => {
-    if (event.ctrlKey) this.pressedKeys["Control"] = true;
-    if (event.metaKey) this.pressedKeys["Meta"] = true;
-    if (event.shiftKey) this.pressedKeys["Shift"] = true;
-    if (event.altKey) this.pressedKeys["Alt"] = true;
+    const { ctrlKey, metaKey, shiftKey, altKey } = event;
+
+    if (typeof ctrlKey === "boolean") this.pressedKeys["Control"] = ctrlKey;
+    if (typeof metaKey === "boolean") this.pressedKeys["Meta"] = metaKey;
+    if (typeof shiftKey === "boolean") this.pressedKeys["Shift"] = shiftKey;
+    if (typeof altKey === "boolean") this.pressedKeys["Alt"] = altKey;
   };
 
   setKeyPressed = (e: KeyboardEvent): void => {
@@ -618,7 +632,11 @@ export class ZoomPanPinch {
       this.applyTransformation();
       const ctx = getContext(this);
       this.onChangeCallbacks.forEach((callback) => callback(ctx));
-      handleCallback(ctx, { scale, positionX, positionY }, onTransform);
+      handleCallback(
+        ctx,
+        { scale: this.state.scale, positionX, positionY },
+        onTransform,
+      );
     } else {
       console.error("Detected NaN set state values");
     }

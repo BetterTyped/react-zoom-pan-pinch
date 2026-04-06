@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
-import { Controls, normalizeArgs } from "../../utils";
+import { Controls, normalizeArgs, viewerChrome } from "../../utils";
 import { useTransformComponent } from "../../../hooks";
 
 import smallImg from "../../assets/small-image.jpg";
@@ -15,6 +15,7 @@ const SIZES = [
 ] as const;
 
 type SizeKey = (typeof SIZES)[number]["key"];
+
 
 function DimensionsBadge() {
   return useTransformComponent(({ state }) => (
@@ -54,45 +55,57 @@ export const Example: React.FC<any> = (args: any) => {
   }, []);
 
   return (
-    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      <TransformWrapper {...normalizeArgs(args)} key={activeSize}>
+    <div
+      style={{
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%",
+        minHeight: 0,
+        maxWidth: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      <TransformWrapper {...normalizeArgs(args)} key={activeSize} centerOnInit>
         {(utils) => (
-          <>
-            <Controls {...utils} />
+          <div
+            style={{
+              flex: 1,
+              minHeight: 0,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            <Controls {...utils} position="top-center" />
             <DimensionsBadge />
-            <div style={{ position: "relative", display: "inline-block" }}>
-              <TransformComponent
-                wrapperStyle={{
-                  width: "500px",
-                  height: "500px",
-                  maxWidth: "80vw",
-                  maxHeight: "75vh",
-                  borderRadius: "12px",
-                  border: "2px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                  background:
-                    "linear-gradient(135deg, #0a0a14 0%, #0f0f1e 50%, #0a0a14 100%)",
-                }}
-              >
-                <img
-                  src={activeEntry.src}
-                  alt={`${activeEntry.label} image`}
-                  style={{ display: "block" }}
-                />
-              </TransformComponent>
-            </div>
-          </>
+            <TransformComponent
+              wrapperStyle={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                ...viewerChrome,
+              }}
+            >
+              <img
+                src={activeEntry.src}
+                alt={`${activeEntry.label} image`}
+                style={{ display: "block" }}
+              />
+            </TransformComponent>
+          </div>
         )}
       </TransformWrapper>
 
-      {/* Tab switcher */}
       <div
         style={{
           display: "inline-flex",
           alignItems: "center",
+          alignSelf: "center",
           gap: 2,
-          marginTop: 16,
+          marginTop: 12,
+          flexShrink: 0,
           padding: 4,
           borderRadius: 12,
           background: "rgba(15, 15, 20, 0.72)",

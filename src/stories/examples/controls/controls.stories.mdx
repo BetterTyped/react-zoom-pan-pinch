@@ -2,7 +2,7 @@ import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs, Controls } from "../../utils";
+import { normalizeArgs, Controls, viewerChrome } from "../../utils";
 import { useTransformComponent } from "../../../hooks";
 
 import exampleImg from "../../assets/small-image.jpg";
@@ -45,15 +45,11 @@ export const Template = (args) => (
           <div style={{ position: "relative", display: "inline-block" }}>
             <TransformComponent
               wrapperStyle={{
+                ...viewerChrome,
                 width: "500px",
                 height: "500px",
                 maxWidth: "80vw",
                 maxHeight: "75vh",
-                borderRadius: "12px",
-                border: "2px solid rgba(255,255,255,0.08)",
-                boxShadow:
-                  "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                background: "#0c0c1d",
               }}
             >
               <div style={{ padding: 32 }}>

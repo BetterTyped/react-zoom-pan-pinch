@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
-import { Controls, normalizeArgs } from "../../utils";
+import { Controls, ToggleIcon, normalizeArgs, viewerChrome } from "../../utils";
 import { useTransformComponent } from "../../../hooks";
 import exampleImg from "../../assets/medium-image.jpg";
 
@@ -94,7 +94,8 @@ export const Example: React.FC<any> = (args: any) => {
               {...utils}
               extraButtons={[
                 {
-                  label: disablePadding ? "Enable Padding" : "Disable Padding",
+                  label: disablePadding ? "Enable padding" : "Disable padding",
+                  icon: <ToggleIcon />,
                   onClick: () => setDisablePadding((prev) => !prev),
                 },
               ]}
@@ -103,16 +104,11 @@ export const Example: React.FC<any> = (args: any) => {
             <div style={{ position: "relative", display: "inline-block" }}>
               <TransformComponent
                 wrapperStyle={{
+                  ...viewerChrome,
                   width: "500px",
                   height: "500px",
                   maxWidth: "80vw",
                   maxHeight: "75vh",
-                  borderRadius: "12px",
-                  border: "2px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                  background:
-                    "linear-gradient(135deg, #0a0a14 0%, #0f0f1e 50%, #0a0a14 100%)",
                 }}
               >
                 <img src={exampleImg} alt="" style={{ display: "block" }} />

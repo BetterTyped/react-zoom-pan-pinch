@@ -21,6 +21,12 @@ export type MiniMapProps = {
   width?: number;
   height?: number;
   borderColor?: string;
+  /** Merged onto the viewport indicator (`.rzpp-minimap-preview`). */
+  previewStyle?: React.CSSProperties;
+  /** Extra class name(s) appended to `.rzpp-minimap-wrapper`. */
+  wrapperClassName?: string;
+  /** Extra class name(s) appended to `.rzpp-minimap-preview`. */
+  previewClassName?: string;
   panning?: boolean;
 } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -43,6 +49,9 @@ export const MiniMap: React.FC<MiniMapProps> = ({
   width = 200,
   height = 200,
   borderColor = "red",
+  previewStyle,
+  wrapperClassName,
+  previewClassName,
   children,
   panning = true,
   ...rest
@@ -116,11 +125,14 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       // overflow: "hidden",
     } as const;
 
-    Object.keys(style).forEach((key) => {
-      if (wrapperRef.current) {
-        wrapperRef.current.style[key] = style[key];
-      }
-    });
+    if (wrapperRef.current) {
+      const el = wrapperRef.current.style;
+      el.transform = style.transform;
+      el.transformOrigin = style.transformOrigin;
+      el.position = style.position;
+      el.boxSizing = style.boxSizing;
+      el.zIndex = String(style.zIndex);
+    }
   };
 
   const transformMiniMap = () => {
@@ -261,20 +273,19 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       {...rest}
       ref={mainRef}
       style={wrapperStyle}
-      className={`rzpp-mini-map ${rest.className || ""}`}
+      className={`rzpp-mini-map ${rest.className || ""}`.trim()}
     >
       <div
-        {...rest}
         style={{ pointerEvents: "none" }}
         ref={wrapperRef}
-        className="rzpp-minimap-wrapper"
+        className={`rzpp-minimap-wrapper ${wrapperClassName || ""}`.trim()}
       >
         {children}
       </div>
       <div
-        className="rzpp-minimap-preview"
+        className={`rzpp-minimap-preview ${previewClassName || ""}`.trim()}
         ref={previewRef}
-        style={{ ...previewStyles, borderColor }}
+        style={{ ...previewStyles, borderColor, ...previewStyle }}
       />
     </div>
   );

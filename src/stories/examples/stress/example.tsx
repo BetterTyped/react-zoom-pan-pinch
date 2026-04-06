@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { Controls, normalizeArgs } from "../../utils";
+import { Controls, normalizeArgs, viewerChrome } from "../../utils";
 import exampleImg from "../../assets/small-image.jpg";
 
 import styles from "../../utils/styles.module.css";
@@ -40,13 +40,9 @@ export const Example: React.FC<any> = (args: any) => {
             </div>
             <TransformComponent
               wrapperStyle={{
+                ...viewerChrome,
                 width: "calc(100vw - 200px)",
                 height: "calc(100vh - 200px)",
-                borderRadius: "12px",
-                border: "2px solid rgba(255,255,255,0.08)",
-                boxShadow:
-                  "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                background: "#0a0a14",
               }}
             >
               <div className={styles.grid}>

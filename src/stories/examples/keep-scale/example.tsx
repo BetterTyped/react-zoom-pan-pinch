@@ -1,7 +1,7 @@
 import React from "react";
 
 import { TransformComponent, TransformWrapper, KeepScale } from "components";
-import { Controls, normalizeArgs } from "../../utils";
+import { Controls, normalizeArgs, viewerChrome } from "../../utils";
 import exampleImg from "../../assets/map.jpg";
 
 const MARKERS = [
@@ -73,15 +73,11 @@ export const Example: React.FC<any> = (args: any) => {
             <Controls {...utils} />
             <TransformComponent
               wrapperStyle={{
+                ...viewerChrome,
                 width: "500px",
                 height: "400px",
                 maxWidth: "80vw",
                 maxHeight: "75vh",
-                borderRadius: "12px",
-                border: "2px solid rgba(255,255,255,0.08)",
-                boxShadow:
-                  "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                background: "#0f0f1a",
               }}
             >
               <div style={{ position: "relative" }}>

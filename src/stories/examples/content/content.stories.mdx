@@ -2,7 +2,7 @@ import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs, Controls } from "../../utils";
+import { normalizeArgs, Controls, viewerChrome } from "../../utils";
 import { MixedContent } from "./mixed-content.data";
 
 export const Template = (args) => {
@@ -20,15 +20,11 @@ export const Template = (args) => {
           <Controls {...utils} />
           <TransformComponent
             wrapperStyle={{
+              ...viewerChrome,
               width: "600px",
               height: "520px",
               maxWidth: "85vw",
               maxHeight: "80vh",
-              borderRadius: "12px",
-              border: "2px solid rgba(255,255,255,0.08)",
-              boxShadow:
-                "0 12px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.03)",
-              background: "#0c0c1d",
             }}
             contentStyle={{
               width: "100%",

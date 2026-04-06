@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { Controls, normalizeArgs } from "stories/utils";
+import { Controls, normalizeArgs, viewerChrome } from "stories/utils";
 import { useTransformComponent } from "../../../hooks";
 import exampleImg from "../../assets/medium-image.jpg";
 
@@ -68,24 +68,33 @@ export const Example: React.FC<any> = (args: any) => {
     imageNaturalHeight,
   ]);
 
-  const handleResize = useCallback(() => {
-    if (container !== null) {
-      const rect = container.getBoundingClientRect();
-      setContainerWidth(rect.width);
-      setContainerHeight(rect.height);
-    } else {
-      setContainerWidth(0);
-      setContainerHeight(0);
-    }
-  }, [container]);
+  const applySize = useCallback((width: number, height: number) => {
+    setContainerWidth(width);
+    setContainerHeight(height);
+  }, []);
 
   useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    if (!container) return undefined;
+
+    const measure = () => {
+      const rect = container.getBoundingClientRect();
+      applySize(rect.width, rect.height);
     };
-  }, [handleResize]);
+
+    measure();
+
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0]?.contentRect;
+      if (cr) {
+        applySize(cr.width, cr.height);
+      }
+    });
+    ro.observe(container);
+
+    return () => {
+      ro.disconnect();
+    };
+  }, [container, applySize]);
 
   const handleImageOnLoad = (image: HTMLImageElement) => {
     setImageNaturalWidth(image.naturalWidth);
@@ -103,12 +112,9 @@ export const Example: React.FC<any> = (args: any) => {
       style={{
         width: "100%",
         height: "100%",
-        background:
-          "linear-gradient(135deg, #0a0a14 0%, #0f0f1e 50%, #0a0a14 100%)",
-        borderRadius: "12px",
-        border: "2px solid rgba(255,255,255,0.08)",
-        boxShadow:
-          "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+        minHeight: 0,
+        maxWidth: "100%",
+        boxSizing: "border-box",
         overflow: "hidden",
         position: "relative",
       }}
@@ -118,7 +124,7 @@ export const Example: React.FC<any> = (args: any) => {
         <TransformWrapper
           key={`${containerWidth}x${containerHeight}`}
           initialScale={imageScale}
-          minScale={imageScale}
+          minScale={imageScale * 0.5}
           maxScale={imageScale * zoomFactor}
           centerOnInit
           {...normalizeArgs(args)}
@@ -129,11 +135,12 @@ export const Example: React.FC<any> = (args: any) => {
               <ScaleBadge />
               <TransformComponent
                 wrapperStyle={{
+                  ...viewerChrome,
                   width: "100%",
                   height: "100%",
                 }}
               >
-                <img alt={alt} src={src} />
+                <img alt={alt} src={src} style={{ display: "block" }} />
               </TransformComponent>
             </>
           )}

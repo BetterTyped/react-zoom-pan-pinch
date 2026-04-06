@@ -1,0 +1,30 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Map"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Map
+
+An interactive **map viewer** with pinned markers that stay readable at every
+zoom level thanks to the `KeepScale` component. Zoom in to 100× and watch the
+pins remain crisp while the map image scales underneath.
+
+This is the same component shown under **Advanced / Keep Scale** — placed here
+as a real-world example of how zoom-pan-pinch powers map-style interfaces.
+
+<Canvas>
+  <Story name="Map">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Map" />

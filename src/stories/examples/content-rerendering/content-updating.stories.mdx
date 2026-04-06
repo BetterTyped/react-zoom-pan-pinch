@@ -15,12 +15,15 @@ export const Template = (args) => <Example {...args} />;
 # Rerendering
 
 Proves that **frequent React re-renders** inside `TransformComponent` do not
-disrupt the current zoom or pan state. Three content blocks update on
-independent timers (1 s, 3 s, 12 s) — zoom in, pan around, and watch the
-blocks toggle without resetting your viewport.
+disrupt the current zoom or pan state. Three regions update on independent
+timers (1 s, 3 s, 12 s). Each toggle is not a text swap — it **restructures the
+layout**: compact card vs three-column grid, sidebar split vs hero + stats +
+two-column dashboard, minimal strip vs tall stack with gallery, list rows, and
+footer. Total content height changes a lot between states.
 
-This is important for dashboards, live data feeds, or any UI where child
-components update independently of the user's zoom/pan interaction.
+Zoom in, pan around, and watch the layout reflow without resetting your
+viewport. This matters for dashboards, live data, and any UI where structure and
+size change under the user’s feet.
 
 <Canvas>
   <Story name="Rerendering">{(args) => <Template {...args} />}</Story>

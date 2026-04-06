@@ -1,0 +1,37 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Image annotations"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Image annotations
+
+A small **design-review** style app on top of the library: pan and zoom the
+photo, then drop **numbered pins** or **on-canvas labels** at the correct spot
+even while zoomed in.
+
+Clicks are converted from **viewport coordinates** into **content space** using
+the live `positionX`, `positionY`, and `scale` from the transform state
+(`translate` then `scale`, origin top-left), so markers stay glued to the image.
+
+Use **Navigate** vs **Pin / Label** to toggle panning — while placing notes,
+panning is disabled so the next click creates a draft. **Focus** in the thread
+calls **`zoomToElement`** on the marker’s wrapper.
+
+<Canvas>
+  <Story name="Image annotations">
+    {(args) => <Template {...args} />}
+  </Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Image annotations" />

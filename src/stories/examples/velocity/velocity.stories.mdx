@@ -1,0 +1,38 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Advanced/Velocity"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Pan velocity (inertia)
+
+After a fast pan, the library can apply **momentum** so the canvas keeps moving
+and **eases out** — similar to scrolling on mobile. That behavior lives under
+**`velocityAnimation`**.
+
+Set **`velocityAnimation.disabled`** to `true` to turn inertia **off**: when
+the user releases the pointer, motion stops immediately (aside from any
+bounds correction).
+
+Use the **Inertia on / off** buttons, then drag the field and release mid-gesture
+to feel the difference. Tune **`animationTime`**, **`maxAnimationTime`**, and
+**`inertia`** in the args table or in your app for snappier or floatier motion.
+
+Double-click zoom is disabled in this demo so a quick second click does not
+fight the pan experiment.
+
+<Canvas>
+  <Story name="Velocity">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Velocity" />

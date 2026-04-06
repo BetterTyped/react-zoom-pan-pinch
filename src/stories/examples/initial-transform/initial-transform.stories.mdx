@@ -1,0 +1,37 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Basic/Initial transform"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Initial transform
+
+Set the starting view with **`initialScale`**, **`initialPositionX`**, and
+**`initialPositionY`**. Positions are in the same **pixel space** as the
+transform state (`positionX` / `positionY`).
+
+If **`centerOnInit`** is `true` (the default in many apps), the library will
+**center** the content after mount and can override your initial translation.
+This story sets **`centerOnInit={false}`** so the initial scale and position
+stay exactly as configured.
+
+Try **Reset** or **Center** from the control bar to compare the default
+behavior helpers with your chosen initial view.
+
+<Canvas>
+  <Story name="Initial transform">
+    {(args) => <Template {...args} />}
+  </Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Initial transform" />

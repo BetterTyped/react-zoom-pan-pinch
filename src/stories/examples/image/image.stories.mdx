@@ -4,7 +4,19 @@ import { TransformWrapper } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
 import { Example } from "./example";
 
-export const Template = (args) => <Example {...args} />;
+export const Template = (args) => (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 640,
+      height: "min(420px, 52vh)",
+      margin: "0 auto",
+      boxSizing: "border-box",
+    }}
+  >
+    <Example {...args} />
+  </div>
+);
 
 <Meta
   title="Basic/Image"
@@ -15,10 +27,11 @@ export const Template = (args) => <Example {...args} />;
 # Image
 
 The most common use-case: wrap an **image** in `TransformWrapper` and
-`TransformComponent` to make it zoomable and pannable. Use the **tab switcher**
-below the viewport to swap between three image sizes and see how the library
-handles different content dimensions — from small thumbnails to high-resolution
-photos.
+`TransformComponent` to make it zoomable and pannable. The preview is sized like
+**Responsive Image** so it stays inside the Storybook canvas (`max-width` 640px,
+`height: min(420px, 52vh)`). The viewer fills that area; use the **tab switcher**
+below to swap between three image sizes and see how the library handles
+different content dimensions.
 
 Pan by dragging, zoom with the scroll wheel or pinch gesture, and use the
 floating controls to zoom in, zoom out, reset, or center the view. The scale

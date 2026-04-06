@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
-import { normalizeArgs, Controls } from "../../utils";
+import { normalizeArgs, Controls, CloseIcon, viewerChrome } from "../../utils";
 import {
   CinemaLayout,
   CATEGORY_STYLES,
@@ -48,16 +48,15 @@ export const Example: React.FC<any> = (args: any) => {
           apiRef.current = api;
           return (
             <>
-              <Controls {...api} extraButtons={selectedSeat ? [{ label: "Deselect", onClick: handleReset }] : []} />
+              <Controls {...api} extraButtons={selectedSeat ? [{ label: "Deselect seat", icon: <CloseIcon />, onClick: handleReset }] : []} />
               <SeatBadge seat={selectedSeat} />
               <TransformComponent
                 wrapperStyle={{
+                  ...viewerChrome,
                   width: "800px",
                   maxWidth: "100%",
                   height: "600px",
                   maxHeight: "70vh",
-                  borderRadius: "12px",
-                  background: "#060612",
                 }}
                 contentStyle={{
                   width: CANVAS_WIDTH,

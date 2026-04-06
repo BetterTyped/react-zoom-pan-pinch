@@ -1,7 +1,19 @@
 import React from "react";
 
 import { MiniMap, TransformComponent, TransformWrapper } from "components";
-import { Controls, normalizeArgs } from "stories/utils";
+import { Controls, normalizeArgs, viewerChrome } from "stories/utils";
+
+/** Storybook-only polish for the mini-map viewport frame (library default stays red / simple). */
+const storyMiniMapPreviewStyle: React.CSSProperties = {
+  borderRadius: "12px",
+  border: "2px solid rgba(147, 197, 253, 0.95)",
+  boxShadow: [
+    "0 0 0 1px rgba(255,255,255,0.22) inset",
+    "0 0 14px rgba(125,211,252,0.45)",
+    "0 0 28px rgba(56,189,248,0.22)",
+    "rgba(6,10,20,0.82) 0 0 0 10000000px",
+  ].join(", "),
+};
 
 const Content = () => (
   <div style={{ padding: 32 }}>
@@ -54,30 +66,30 @@ export const Template = (args: any) => {
               style={{
                 position: "absolute",
                 zIndex: 5,
-                top: 16,
-                right: 16,
-                borderRadius: 10,
+                top: 25,
+                right: 25,
+                borderRadius: 12,
                 overflow: "hidden",
-                background: "rgba(10, 10, 18, 0.82)",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                background: "rgba(10, 10, 18, 0.88)",
+                backdropFilter: "blur(14px) saturate(1.4)",
+                WebkitBackdropFilter: "blur(14px) saturate(1.4)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                boxShadow:
+                  "0 4px 24px rgba(0,0,0,0.45), 0 0 0 0.5px rgba(255,255,255,0.06) inset",
               }}
             >
-              <MiniMap width={160} height={120}>
+              <MiniMap
+                width={168}
+                height={126}
+                previewStyle={storyMiniMapPreviewStyle}
+                borderColor="rgba(147, 197, 253, 0.95)"
+              >
                 <Content />
               </MiniMap>
             </div>
             <Controls {...utils} />
             <TransformComponent
-              wrapperStyle={{
-                borderRadius: "12px",
-                border: "2px solid rgba(255,255,255,0.08)",
-                boxShadow:
-                  "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                background: "#0c0c1d",
-              }}
+              wrapperStyle={viewerChrome}
             >
               <Content />
             </TransformComponent>

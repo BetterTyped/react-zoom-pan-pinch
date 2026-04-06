@@ -62,11 +62,12 @@ describe("MiniMap [Rendering]", () => {
   });
 
   describe("preview styles", () => {
-    it("should have red border by default", () => {
+    it("should use default red border on preview", () => {
       renderMiniMap();
       const preview = document.querySelector(
         ".rzpp-minimap-preview",
       ) as HTMLElement;
+      expect(preview.style.border).toBe("3px solid red");
       expect(preview.style.borderColor).toBe("red");
     });
 
@@ -76,6 +77,17 @@ describe("MiniMap [Rendering]", () => {
         ".rzpp-minimap-preview",
       ) as HTMLElement;
       expect(preview.style.borderColor).toBe("blue");
+    });
+
+    it("should merge previewStyle after defaults", () => {
+      renderMiniMap({
+        previewStyle: { borderRadius: "8px", border: "1px solid lime" },
+      });
+      const preview = document.querySelector(
+        ".rzpp-minimap-preview",
+      ) as HTMLElement;
+      expect(preview.style.borderRadius).toBe("8px");
+      expect(preview.style.border).toBe("1px solid lime");
     });
 
     it("should have box-shadow for viewport dimming", () => {

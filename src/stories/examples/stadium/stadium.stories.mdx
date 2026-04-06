@@ -1,0 +1,32 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Stadium"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Stadium seating
+
+A **Ticketmaster-style** flow on a large top-down bowl: **zoom and pan** the
+map, **click an available seat** to animate straight to it with
+**`zoomToElement`**, then review **section, row, seat, fees, and total** in the
+glass panel. **Lock this seat** confirms the purchase (demo state).
+
+Unavailable seats are seeded deterministically from each id so the map stays
+stable between reloads. Club rows sit closest to the pitch; the outer ring is
+upper tier.
+
+<Canvas>
+  <Story name="Stadium">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Stadium" />

@@ -24,23 +24,29 @@
 }
 
 .controlsTopLeft {
-  top: 12px;
-  left: 12px;
+  top: 25px;
+  left: 25px;
+}
+
+.controlsTopCenter {
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .controlsTopRight {
-  top: 12px;
-  right: 12px;
+  top: 25px;
+  right: 25px;
 }
 
 .controlsBottomLeft {
-  bottom: 12px;
-  left: 12px;
+  bottom: 25px;
+  left: 25px;
 }
 
 .controlsBottomRight {
-  bottom: 12px;
-  right: 12px;
+  bottom: 25px;
+  right: 25px;
 }
 
 /* ── Button groups ───────────────────────────────────────────── */
@@ -63,6 +69,7 @@
 /* ── Icon button ─────────────────────────────────────────────── */
 
 .controlIcon {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,6 +84,12 @@
   transition:
     background 0.15s ease,
     color 0.15s ease;
+}
+
+.controlIconActive {
+  background: rgba(96, 165, 250, 0.2);
+  color: rgba(191, 219, 254, 0.95);
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.35) inset;
 }
 
 .controlIcon:hover {
@@ -95,9 +108,44 @@
   outline-offset: -1px;
 }
 
+/* ── Tooltip ─────────────────────────────────────────────────── */
+
+.controlIcon[data-tooltip]::after,
+.controlText[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(10, 10, 14, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #e4e4e7;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  z-index: 100;
+}
+
+.controlIcon[data-tooltip]:hover::after,
+.controlText[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
 /* ── Text button (for labels like "Zoom to X") ───────────────── */
 
 .controlText {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -15,6 +15,7 @@ const preview: Preview = {
         order: [
           "Docs",
           "Basic",
+          ["Image", "*"],
           "Advanced",
           "Components",
           "Examples",

@@ -1,15 +1,8 @@
 import React from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { Controls, normalizeArgs } from "../../utils";
+import { Controls, NumberedTargetIcon, normalizeArgs, viewerChrome } from "../../utils";
 import { useTransformComponent } from "../../../hooks";
-
-const TargetIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <rect x="3" y="3" width="10" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
-    <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-  </svg>
-);
 
 function ScaleBadge() {
   return useTransformComponent(({ state }) => (
@@ -68,13 +61,13 @@ const TARGETS = [
     id: "element3",
     label: "Gamma",
     color: "#43e97b",
-    gradient: "linear-gradient(135deg, #43e97b, #38f9d7)",
+    gradient: "linear-gradient(180deg, #43e97b, #38f9d7)",
     icon: "G",
-    desc: "Tertiary analysis region",
-    top: 160,
-    left: 520,
-    width: 180,
-    height: 180,
+    desc: "Tall narrow tower — great for testing vertical zoom-to-element framing.",
+    top: 48,
+    left: 658,
+    width: 96,
+    height: 480,
   },
 ];
 
@@ -86,24 +79,20 @@ export const Example: React.FC<any> = (args: any) => {
           <>
             <Controls
               {...utils}
-              extraButtons={TARGETS.map((t) => ({
-                label: t.label,
-                icon: <TargetIcon />,
+              extraButtons={TARGETS.map((t, i) => ({
+                label: `Focus ${t.label}`,
+                icon: <NumberedTargetIcon n={i + 1} />,
                 onClick: () => utils.zoomToElement(t.id),
               }))}
             />
             <div style={{ position: "relative", display: "inline-block" }}>
               <TransformComponent
                 wrapperStyle={{
+                  ...viewerChrome,
                   width: "500px",
                   height: "500px",
                   maxWidth: "80vw",
                   maxHeight: "75vh",
-                  borderRadius: "12px",
-                  border: "2px solid rgba(255,255,255,0.08)",
-                  boxShadow:
-                    "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
-                  background: "#0a0a14",
                 }}
               >
                 <div
@@ -116,70 +105,83 @@ export const Example: React.FC<any> = (args: any) => {
                     backgroundSize: "24px 24px",
                   }}
                 >
-                  {TARGETS.map((target) => (
-                    <div
-                      key={target.id}
-                      id={target.id}
-                      style={{
-                        position: "absolute",
-                        top: target.top,
-                        left: target.left,
-                        width: target.width,
-                        height: target.height,
-                        borderRadius: 14,
-                        background: "rgba(255,255,255,0.03)",
-                        border: `1px solid ${target.color}33`,
-                        backdropFilter: "blur(8px)",
-                        WebkitBackdropFilter: "blur(8px)",
-                        padding: 20,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        cursor: "pointer",
-                        transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-                      }}
-                      onClick={() => utils.zoomToElement(target.id)}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  {TARGETS.map((target) => {
+                    const narrow = target.width < 140;
+                    return (
+                      <div
+                        key={target.id}
+                        id={target.id}
+                        style={{
+                          position: "absolute",
+                          top: target.top,
+                          left: target.left,
+                          width: target.width,
+                          height: target.height,
+                          borderRadius: 14,
+                          background: "rgba(255,255,255,0.03)",
+                          border: `1px solid ${target.color}33`,
+                          backdropFilter: "blur(8px)",
+                          WebkitBackdropFilter: "blur(8px)",
+                          padding: narrow ? 14 : 20,
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
+                          cursor: "pointer",
+                          transition:
+                            "border-color 0.2s ease, box-shadow 0.2s ease",
+                        }}
+                        onClick={() => utils.zoomToElement(target.id)}
+                      >
                         <div
                           style={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: 8,
-                            background: target.gradient,
                             display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 14,
-                            fontWeight: 800,
-                            color: "#fff",
-                            boxShadow: `0 0 16px ${target.color}44`,
+                            flexDirection: narrow ? "column" : "row",
+                            alignItems: narrow ? "flex-start" : "center",
+                            gap: narrow ? 8 : 10,
                           }}
                         >
-                          {target.icon}
+                          <div
+                            style={{
+                              width: narrow ? 28 : 32,
+                              height: narrow ? 28 : 32,
+                              borderRadius: 8,
+                              background: target.gradient,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: narrow ? 12 : 14,
+                              fontWeight: 800,
+                              color: "#fff",
+                              boxShadow: `0 0 16px ${target.color}44`,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {target.icon}
+                          </div>
+                          <span
+                            style={{
+                              fontSize: narrow ? 12 : 14,
+                              fontWeight: 700,
+                              color: "rgba(255,255,255,0.85)",
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {target.label}
+                          </span>
                         </div>
-                        <span
+                        <p
                           style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: "rgba(255,255,255,0.85)",
+                            margin: 0,
+                            fontSize: narrow ? 10 : 11,
+                            color: "rgba(255,255,255,0.4)",
+                            lineHeight: 1.45,
                           }}
                         >
-                          {target.label}
-                        </span>
+                          {target.desc}
+                        </p>
                       </div>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: 11,
-                          color: "rgba(255,255,255,0.4)",
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {target.desc}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </TransformComponent>
               <ScaleBadge />

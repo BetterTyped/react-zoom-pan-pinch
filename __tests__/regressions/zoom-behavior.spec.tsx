@@ -145,7 +145,12 @@ describe("regressions: wheel and zoom behavior", () => {
   });
 
   describe("Ref #438", () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it("ctrl+wheel zoom-out respects minScale (Ref #438)", () => {
+      jest.useFakeTimers();
       const { content, ref } = renderApp({
         minScale: 0.5,
         smooth: false,
@@ -166,8 +171,17 @@ describe("regressions: wheel and zoom behavior", () => {
             ctrlKey: true,
           }),
         );
-        expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
       }
+
+      // During trackpad pinch the scale may temporarily overshoot below
+      // minScale (elastic rubberband). After the gesture the library
+      // animates back. Trigger the wheel-stop timer and flush animation.
+      act(() => {
+        jest.advanceTimersByTime(200);
+        flushAnimationFrames(60);
+      });
+
+      expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
     });
   });
 

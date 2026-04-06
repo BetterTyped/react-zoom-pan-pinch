@@ -17,8 +17,10 @@ describe("Pan [Sizes]", () => {
         disablePadding: true,
       });
 
-      pan({ x: 150, y: 150 });
-      expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");
+      pan({ x: -150, y: -150 });
+      expect(content.style.transform).toBe(
+        "translate(-100px, -100px) scale(1)",
+      );
     });
     it("should allow panning with velocity", async () => {
       jest.useFakeTimers();
@@ -83,7 +85,7 @@ describe("Pan [Sizes]", () => {
       });
 
       pan({ x: 100, y: 100 });
-      expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
+      expect(content.style.transform).toBe("translate(25px, 25px) scale(1)");
     });
     it("should allow to move content around the wrapper body", async () => {
       const { content, pan } = renderApp({

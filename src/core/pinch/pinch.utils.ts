@@ -1,5 +1,5 @@
 import { PositionType, ReactZoomPanPinchContext } from "../../models";
-import { isExcludedNode } from "../../utils";
+import { isExcludedNode, roundNumber } from "../../utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
 
 export const isPinchStartAllowed = (
@@ -59,13 +59,16 @@ export const getTouchDistance = (event: TouchEvent): number => {
   );
 };
 
+const DEFAULT_PINCH_STEP = 5;
+
 export const calculatePinchZoom = (
   contextInstance: ReactZoomPanPinchContext,
   currentDistance: number,
 ): number => {
   const { pinchStartScale, pinchStartDistance, setup } = contextInstance;
-  const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
+  const { maxScale, minScale, zoomAnimation, disablePadding, pinch } = setup;
   const { size, disabled } = zoomAnimation;
+  const { step } = pinch;
 
   if (!pinchStartScale || pinchStartDistance === null) {
     throw new Error("Pinch touches distance was not provided");
@@ -76,9 +79,12 @@ export const calculatePinchZoom = (
   }
 
   const touchProportion = currentDistance / pinchStartDistance;
-  const scaleDifference = touchProportion * pinchStartScale;
+  const rawScale = touchProportion * pinchStartScale;
+  const scaleDelta =
+    (rawScale - pinchStartScale) * (step / DEFAULT_PINCH_STEP);
+  const computed = pinchStartScale + scaleDelta;
 
-  const scale = scaleDifference === Infinity ? 0 : scaleDifference;
+  const scale = computed === Infinity ? 0 : roundNumber(computed, 10);
 
   return checkZoomBounds(
     scale,

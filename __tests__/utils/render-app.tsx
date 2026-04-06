@@ -57,6 +57,43 @@ import { Example } from "../examples/example";
  */
 export const DEFAULT_MS_PER_STEP = 16;
 
+// jsdom doesn't implement CSS layout so offsetWidth/Height are always 0.
+// This polyfill reads dimensions from inline styles, resolving percentages
+// against the parent element's dimension.
+let dimensionsPatched = false;
+function patchOffsetDimensions() {
+  if (dimensionsPatched) return;
+  dimensionsPatched = true;
+
+  function resolveDimension(
+    el: HTMLElement,
+    prop: "width" | "height",
+    parentProp: "offsetWidth" | "offsetHeight",
+  ): number {
+    const val = el.style?.[prop];
+    if (!val) return 0;
+    if (val.endsWith("%")) {
+      const pct = parseFloat(val) / 100;
+      const parent = el.parentElement as HTMLElement | null;
+      return parent ? Math.round(pct * parent[parentProp]) : 0;
+    }
+    return parseInt(val, 10) || 0;
+  }
+
+  Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+    configurable: true,
+    get() {
+      return resolveDimension(this, "width", "offsetWidth");
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    get() {
+      return resolveDimension(this, "height", "offsetHeight");
+    },
+  });
+}
+
 /** Options shared by pan-like gesture helpers. */
 export interface PanGestureOptions {
   /**
@@ -272,6 +309,11 @@ export const renderApp = ({
     },
   };
 
+  // jsdom doesn't implement CSS layout so offsetWidth/Height are always 0.
+  // Patch the prototype getter to derive dimensions from inline styles.
+  // This is idempotent and persists across renderApp calls.
+  patchOffsetDimensions();
+
   const view = render(
     <Example
       props={exampleProps}
@@ -297,7 +339,8 @@ export const renderApp = ({
     }
 
     const step = 1;
-    const isZoomIn = ref.current.instance.state.scale < value;
+    const scaleBefore = ref.current.instance.state.scale;
+    const isZoomIn = scaleBefore < value;
     const cx = center ? center[0] : 0;
     const cy = center ? center[1] : 0;
 
@@ -325,6 +368,19 @@ export const renderApp = ({
       } else {
         break;
       }
+    }
+
+    // Snap to exact target when close — wheel steps use floating-point
+    // arithmetic that may overshoot by a tiny amount. Only snap when the
+    // scale actually moved AND is close to the target (within 5%). A large
+    // gap means a limit (minScale/maxScale) was hit; don't override it.
+    const scaleNow = ref.current.instance.state.scale;
+    const scaleChanged = scaleNow !== scaleBefore;
+    const closeToTarget =
+      Math.abs(scaleNow - value) / Math.max(Math.abs(value), 1) < 0.05;
+    if (scaleChanged && scaleNow !== value && closeToTarget) {
+      const { positionX, positionY } = ref.current.instance.state;
+      ref.current.setTransform(positionX, positionY, value, 0);
     }
   };
 

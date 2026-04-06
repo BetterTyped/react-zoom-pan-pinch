@@ -21,6 +21,7 @@ export type ReactZoomPanPinchContextState = {
 
 export type ReactZoomPanPinchContentRef = {
   instance: ReactZoomPanPinchContext;
+  state: ReactZoomPanPinchState;
 } & ReactZoomPanPinchHandlers;
 
 export type ReactZoomPanPinchRef = ReactZoomPanPinchContextState &
@@ -48,8 +49,8 @@ export type ReactZoomPanPinchRefProps = {
 
 export type ReactZoomPanPinchProps = {
   children?:
-    | React.ReactNode
-    | ((ref: ReactZoomPanPinchContentRef) => React.ReactNode);
+  | React.ReactNode
+  | ((ref: ReactZoomPanPinchContentRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
   detached?: boolean;
   initialScale?: number;

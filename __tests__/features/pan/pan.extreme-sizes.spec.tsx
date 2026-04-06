@@ -130,6 +130,7 @@ describe("Pan [Extreme sizes]", () => {
       contentWidth: "3000px",
       contentHeight: "300px",
       disablePadding: true,
+      centerZoomedOut: true,
     } as const;
 
     it("should center content vertically when content height is less than wrapper", () => {
@@ -223,6 +224,7 @@ describe("Pan [Extreme sizes]", () => {
       contentWidth: "4000px",
       contentHeight: "200px",
       disablePadding: true,
+      centerZoomedOut: true,
     } as const;
 
     it("should allow wide horizontal pan and center vertical axis", () => {

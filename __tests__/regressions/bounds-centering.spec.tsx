@@ -1,6 +1,6 @@
-import { waitFor, fireEvent } from "@testing-library/react";
+import { waitFor, fireEvent, act } from "@testing-library/react";
 
-import { renderApp } from "../utils";
+import { renderApp, flushAnimationFrames } from "../utils";
 
 const NativeResizeObserver = global.ResizeObserver;
 
@@ -30,6 +30,7 @@ describe("bounds and centering regressions", () => {
   });
 
   it("touchpad zoom-out respects minScale / limitToBounds (Ref #396)", () => {
+    jest.useFakeTimers();
     const { content, ref } = renderApp({
       minScale: 0.5,
       limitToBounds: true,
@@ -48,7 +49,16 @@ describe("bounds and centering regressions", () => {
       );
     }
 
+    // During trackpad pinch the scale may temporarily overshoot below
+    // minScale (elastic rubberband). After the gesture ends the library
+    // animates back. Trigger the wheel-stop timer and flush the animation.
+    act(() => {
+      jest.advanceTimersByTime(200);
+      flushAnimationFrames(60);
+    });
+
     expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
+    jest.useRealTimers();
   });
 
   it("tall zoomed content can pan far enough upward (negative positionY) (Ref #524)", () => {

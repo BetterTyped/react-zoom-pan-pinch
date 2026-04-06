@@ -18,6 +18,7 @@ export const getControls = (
 ): ReactZoomPanPinchContentRef => {
   return {
     instance: contextInstance,
+    state: contextInstance.state,
     zoomIn: zoomIn(contextInstance),
     zoomOut: zoomOut(contextInstance),
     setTransform: setTransform(contextInstance),

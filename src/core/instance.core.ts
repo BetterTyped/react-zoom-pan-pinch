@@ -126,7 +126,9 @@ export class ZoomPanPinch {
 
   update = (newProps: ReactZoomPanPinchProps) => {
     this.props = newProps;
-    handleCalculateBounds(this, this.state.scale);
+    if (this.wrapperComponent && this.contentComponent) {
+      handleCalculateBounds(this, this.state.scale);
+    }
     this.setup = createSetup(newProps);
   };
 
@@ -459,7 +461,9 @@ export class ZoomPanPinch {
       const isAllowed = isPanningAllowed(this);
       if (!isAllowed) return;
 
-      event.preventDefault();
+      if (event.cancelable) {
+        event.preventDefault();
+      }
       event.stopPropagation();
 
       const touch = event.touches[0];
@@ -512,15 +516,16 @@ export class ZoomPanPinch {
 
   // Modifier keys (Ctrl, Meta/Cmd, Shift, Alt) are available on every
   // mouse/wheel/touch event even when the window never received keydown
-  // (e.g. an unfocused iframe). Sync them into pressedKeys so that
-  // activationKeys checks work without requiring focus.
+  // (e.g. an unfocused iframe). Only SET keys here; clearing is handled
+  // by keyup and handleWindowBlur so that explicit keydown state is
+  // never overwritten by a gesture event that lacks modifier flags.
   syncModifierKeys = (
     event: MouseEvent | WheelEvent | TouchEvent,
   ): void => {
-    this.pressedKeys["Control"] = event.ctrlKey;
-    this.pressedKeys["Meta"] = event.metaKey;
-    this.pressedKeys["Shift"] = event.shiftKey;
-    this.pressedKeys["Alt"] = event.altKey;
+    if (event.ctrlKey) this.pressedKeys["Control"] = true;
+    if (event.metaKey) this.pressedKeys["Meta"] = true;
+    if (event.shiftKey) this.pressedKeys["Shift"] = true;
+    if (event.altKey) this.pressedKeys["Alt"] = true;
   };
 
   setKeyPressed = (e: KeyboardEvent): void => {

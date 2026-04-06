@@ -9,25 +9,30 @@ import { boundLimiter } from "core/bounds/bounds.utils";
 export const createState = (
   props: ReactZoomPanPinchProps,
 ): ReactZoomPanPinchState => {
+  const minScale = props.minScale ?? initialSetup.minScale;
+  const maxScale = props.maxScale ?? initialSetup.maxScale;
+  const rawScale = props.initialScale ?? initialState.scale;
+  const scale = Math.min(Math.max(rawScale, minScale), maxScale);
+
+  const positionX = boundLimiter(
+    props.initialPositionX ?? initialState.positionX,
+    props.minPositionX ?? -Infinity,
+    props.maxPositionX ?? Infinity,
+    props.minPositionX != null || props.maxPositionX != null,
+  );
+
+  const positionY = boundLimiter(
+    props.initialPositionY ?? initialState.positionY,
+    props.minPositionY ?? -Infinity,
+    props.maxPositionY ?? Infinity,
+    props.minPositionY != null || props.maxPositionY != null,
+  );
+
   return {
-    previousScale: props.initialScale ?? initialState.scale,
-    scale: props.initialScale ?? initialState.scale,
-    positionX:
-      props.initialPositionX ??
-      boundLimiter(
-        initialState.positionX,
-        props.minPositionX ?? initialState.positionX,
-        props.maxPositionX ?? initialState.positionX,
-        true,
-      ),
-    positionY:
-      props.initialPositionY ??
-      boundLimiter(
-        initialState.positionY,
-        props.minPositionY ?? initialState.positionY,
-        props.maxPositionY ?? initialState.positionY,
-        true,
-      ),
+    previousScale: scale,
+    scale,
+    positionX,
+    positionY,
   };
 };
 

@@ -10,7 +10,7 @@ describe("Base [Resize]", () => {
         disablePadding: true,
       });
 
-      ref.current!.setTransform(-200, -200, 2);
+      ref.current!.setTransform(-200, -200, 2, 0);
       expect(ref.current!.instance.state.positionX).toBe(-200);
 
       wrapper.style.width = "300px";

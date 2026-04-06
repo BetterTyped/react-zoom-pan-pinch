@@ -41,13 +41,14 @@ export function handleAlignToScaleBounds(
 ): void {
   const { scale } = contextInstance.state;
   const { wrapperComponent } = contextInstance;
-  const { minScale, limitToBounds, zoomAnimation } = contextInstance.setup;
+  const { minScale, maxScale, limitToBounds, zoomAnimation } =
+    contextInstance.setup;
   const { disabled, animationTime, animationType } = zoomAnimation;
 
-  const isDisabled = disabled || scale >= minScale;
+  const isWithinBounds = scale >= minScale && scale <= maxScale;
+  const isDisabled = disabled || isWithinBounds;
 
   if (scale >= 1 || limitToBounds) {
-    // fire fit to bounds animation
     handleAlignToBounds(contextInstance);
   }
 
@@ -56,9 +57,10 @@ export function handleAlignToScaleBounds(
   const mouseX = mousePositionX || wrapperComponent.offsetWidth / 2;
   const mouseY = mousePositionY || wrapperComponent.offsetHeight / 2;
 
+  const targetScale = scale < minScale ? minScale : maxScale;
   const targetState = handleZoomToPoint(
     contextInstance,
-    minScale,
+    targetScale,
     mouseX,
     mouseY,
   );

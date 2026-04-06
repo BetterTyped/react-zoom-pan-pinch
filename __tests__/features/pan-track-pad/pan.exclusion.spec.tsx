@@ -30,6 +30,7 @@ describe("Pan TrackPad [Exclusion]", () => {
     });
     it("should allow panning on other elements", async () => {
       const { content, trackPadPan } = renderApp({
+        wheel: { disabled: true },
         trackPadPanning: { disabled: false, excluded: ["panningDisabled"] },
       });
 

@@ -8,7 +8,7 @@ describe("Positions [Min]", () => {
         limitToBounds: true,
         disablePadding: true,
       });
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: -500, y: 0 });
       expect(ref.current!.instance.state.positionX).toBeGreaterThanOrEqual(-30);
     });
@@ -18,7 +18,7 @@ describe("Positions [Min]", () => {
         limitToBounds: true,
         disablePadding: true,
       });
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: -50, y: 0 });
       expect(ref.current!.instance.state.positionX).toBe(-50);
     });
@@ -28,7 +28,7 @@ describe("Positions [Min]", () => {
         limitToBounds: true,
         disablePadding: true,
       });
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: 50, y: 0 });
       expect(ref.current!.instance.state.positionX).toBeGreaterThanOrEqual(0);
     });
@@ -41,7 +41,7 @@ describe("Positions [Min]", () => {
         limitToBounds: true,
         disablePadding: true,
       });
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: 0, y: -500 });
       expect(ref.current!.instance.state.positionY).toBeGreaterThanOrEqual(-30);
     });
@@ -51,7 +51,7 @@ describe("Positions [Min]", () => {
         limitToBounds: true,
         disablePadding: true,
       });
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: 0, y: -50 });
       expect(ref.current!.instance.state.positionY).toBe(-50);
     });
@@ -65,7 +65,7 @@ describe("Positions [Min]", () => {
         limitToBounds: true,
         disablePadding: true,
       });
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: -500, y: -500 });
       expect(ref.current!.instance.state.positionX).toBeGreaterThanOrEqual(-30);
       expect(ref.current!.instance.state.positionY).toBeGreaterThanOrEqual(-30);

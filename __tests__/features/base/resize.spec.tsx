@@ -23,7 +23,7 @@ describe("Base [Resize]", () => {
         limitToBounds: true,
       });
 
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: -2000, y: -2000 });
 
       expect(ref.current!.instance.state.scale).toBe(2);
@@ -40,7 +40,7 @@ describe("Base [Resize]", () => {
         contentHeight: "400px",
       });
 
-      ref.current!.setTransform(-50, -50, 1.5);
+      ref.current!.setTransform(-50, -50, 1.5, 0);
       expect(ref.current!.instance.state.scale).toBe(1.5);
       expect(ref.current!.instance.state.positionX).toBe(-50);
       expect(ref.current!.instance.state.positionY).toBe(-50);
@@ -48,10 +48,10 @@ describe("Base [Resize]", () => {
     it("should allow programmatic resetTransform", () => {
       const { ref } = renderApp();
 
-      ref.current!.setTransform(-100, -100, 2);
+      ref.current!.setTransform(-100, -100, 2, 0);
       expect(ref.current!.instance.state.scale).toBe(2);
 
-      ref.current!.resetTransform();
+      ref.current!.resetTransform(0);
       expect(ref.current!.instance.state.scale).toBe(1);
       expect(ref.current!.instance.state.positionX).toBe(0);
       expect(ref.current!.instance.state.positionY).toBe(0);

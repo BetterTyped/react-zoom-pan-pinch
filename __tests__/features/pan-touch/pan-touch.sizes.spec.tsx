@@ -13,8 +13,10 @@ describe("Pan Touch [Sizes]", () => {
         disablePadding: true,
       });
 
-      touchPan({ x: 150, y: 150 });
-      expect(content.style.transform).toBe("translate(100px, 100px) scale(1)");
+      touchPan({ x: -150, y: -150 });
+      expect(content.style.transform).toBe(
+        "translate(-100px, -100px) scale(1)",
+      );
     });
     it("should allow panning with velocity", async () => {
       const { ref, touchPan } = renderApp({
@@ -26,7 +28,7 @@ describe("Pan Touch [Sizes]", () => {
         velocityAnimation: { disabled: false },
       });
 
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       touchPan({ x: -10, y: -10, moveEventCount: 5 });
 
       const posAfterPan = ref.current!.instance.state.positionX;

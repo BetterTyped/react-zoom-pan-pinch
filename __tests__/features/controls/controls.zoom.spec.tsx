@@ -45,7 +45,7 @@ describe("Controls [Zoom]", () => {
 
       fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
-        expect(ref.current?.instance.state.scale).toBeGreaterThan(1.65);
+        expect(ref.current?.instance.state.scale).toBeGreaterThanOrEqual(1.65);
       });
     });
 

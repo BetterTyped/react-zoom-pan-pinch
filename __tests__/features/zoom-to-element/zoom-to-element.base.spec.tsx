@@ -4,7 +4,7 @@ import { render, screen, act } from "@testing-library/react";
 import {
   TransformWrapper,
   TransformComponent,
-  ReactZoomPanPinchContentRef,
+  ReactZoomPanPinchRef,
 } from "../../../src";
 import { flushAnimationFrames } from "../../utils";
 
@@ -15,7 +15,7 @@ describe("Zoom to element", () => {
 
   it("zoomToElement focuses a child element in the viewport", () => {
     jest.useFakeTimers();
-    const ref = React.createRef<ReactZoomPanPinchContentRef>();
+    const ref = React.createRef<ReactZoomPanPinchRef>();
 
     render(
       <TransformWrapper ref={ref} limitToBounds={false} smooth={false}>
@@ -54,7 +54,7 @@ describe("Zoom to element", () => {
   });
 
   it("zoomToElement handler exists on the ref", () => {
-    const ref = React.createRef<ReactZoomPanPinchContentRef>();
+    const ref = React.createRef<ReactZoomPanPinchRef>();
 
     render(
       <TransformWrapper ref={ref}>

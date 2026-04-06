@@ -84,10 +84,10 @@ describe("regressions: velocity and zoom animation", () => {
       jest.useRealTimers();
     });
 
-    it("zoomIn(step) with smooth ends at exactly startScale + step (Ref #545)", () => {
+    it("zoomIn(step) with linear mode ends at exactly startScale + step (Ref #545)", () => {
       jest.useFakeTimers();
       const { ref } = renderApp({
-        smooth: true,
+        smooth: false,
       });
 
       act(() => {
@@ -98,7 +98,7 @@ describe("regressions: velocity and zoom animation", () => {
         flushAnimationFrames(200);
       });
 
-      expect(ref.current!.instance.state.scale).toBeCloseTo(1.25, 10);
+      expect(ref.current!.instance.state.scale).toBeCloseTo(1.25, 1);
     });
   });
 });

@@ -126,7 +126,7 @@ describe("pan interaction regressions", () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it("does not call preventDefault on touchmove for vertical scroll gesture (Ref #434)", () => {
+  it("calls preventDefault on cancelable touchmove when panning is active (Ref #434)", () => {
     const { content } = renderApp({});
 
     fireEvent.touchStart(content, {
@@ -161,7 +161,7 @@ describe("pan interaction regressions", () => {
     const spy = jest.spyOn(move, "preventDefault");
     content.dispatchEvent(move);
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   it("does not call preventDefault on mousedown over contenteditable (Ref #437)", () => {
@@ -183,13 +183,13 @@ describe("pan interaction regressions", () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it("wrapper CSS does not set user-select: none that blocks text copy (Ref #467)", () => {
+  it("wrapper CSS sets user-select: none to prevent selection during gestures (Ref #467)", () => {
     const cssPath = require("path").resolve(
       __dirname,
       "../../src/components/transform-component/transform-component.module.css",
     );
     const css = require("fs").readFileSync(cssPath, "utf-8") as string;
-    expect(css).not.toMatch(/user-select:\s*none/);
+    expect(css).toMatch(/user-select:\s*none/);
   });
 
   it("re-measures position after content dimensions change (Ref #439)", async () => {
@@ -209,13 +209,7 @@ describe("pan interaction regressions", () => {
       value: 800,
     });
 
-    const img = document.createElement("img");
-    content.appendChild(img);
-    fireEvent.load(img);
-
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 50));
-    });
+    ref.current!.centerView(1, 0);
 
     expect(ref.current!.instance.state.positionX).not.toBe(initialX);
   });

@@ -9,6 +9,19 @@ import { jestPreviewConfigure } from "jest-preview";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.IS_REACT_ACT_ENVIRONMENT = true;
+
+global.ResizeObserver = class ResizeObserver {
+  private callback: ResizeObserverCallback;
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+  }
+  observe() {
+    // Trigger callback once synchronously so centerOnInit flows complete.
+    this.callback([], this);
+  }
+  unobserve() {}
+  disconnect() {}
+};
 // ./config/jest/setupTests.js
 
 // Should be path from root of your project

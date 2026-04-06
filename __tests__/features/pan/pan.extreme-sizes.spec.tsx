@@ -19,7 +19,7 @@ describe("Pan [Extreme sizes]", () => {
     it("should allow panning across the full content range", () => {
       const { ref, pan } = renderApp(huge);
 
-      ref.current!.setTransform(0, 0, 1);
+      ref.current!.setTransform(0, 0, 1, 0);
       pan({ x: -4500, y: -4500 });
       expect(ref.current!.instance.state.positionX).toBe(-4500);
       expect(ref.current!.instance.state.positionY).toBe(-4500);
@@ -62,7 +62,7 @@ describe("Pan [Extreme sizes]", () => {
         velocityAnimation: { disabled: false },
       });
 
-      ref.current!.setTransform(0, 0, 2);
+      ref.current!.setTransform(0, 0, 2, 0);
       pan({ x: -3000, y: -3000, moveEventCount: 10 });
 
       act(() => {

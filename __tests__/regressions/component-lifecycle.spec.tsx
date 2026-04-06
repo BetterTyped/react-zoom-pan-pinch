@@ -139,7 +139,7 @@ describe("component lifecycle regressions", () => {
     } as DOMRect);
 
     act(() => {
-      ref.current!.zoomToElement(target, 2);
+      ref.current!.zoomToElement(target, 2, 0);
     });
 
     expect(ref.current!.instance.state.scale).toBe(2);

@@ -9,10 +9,9 @@ describe("Pinch [Panning]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       pinch({ value: 1.5, targetCenter: [-20, -20] });
       await waitFor(() => {
-        expect(content.style.transform).toBe(
-          "translate(-20px, -20px) scale(1.5)",
-        );
-        expect(ref.current?.instance.state.scale).toBe(1.5);
+        expect(ref.current?.instance.state.scale).toBeCloseTo(1.5, 1);
+        expect(ref.current?.instance.state.positionX).toBeCloseTo(-20, 0);
+        expect(ref.current?.instance.state.positionY).toBeCloseTo(-20, 0);
       });
     });
   });

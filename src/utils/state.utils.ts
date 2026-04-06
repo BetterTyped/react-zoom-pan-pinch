@@ -9,25 +9,32 @@ import { boundLimiter } from "core/bounds/bounds.utils";
 export const createState = (
   props: ReactZoomPanPinchProps,
 ): ReactZoomPanPinchState => {
+  const minScale = props.minScale ?? initialSetup.minScale;
+  const maxScale = props.maxScale ?? initialSetup.maxScale;
+  const rawScale = props.initialScale ?? initialState.scale;
+  const clampedScale = Math.min(Math.max(rawScale, minScale), maxScale);
+  const rawPositionX = props.initialPositionX ?? initialState.positionX;
+  const rawPositionY = props.initialPositionY ?? initialState.positionY;
+  const hasMinMaxX =
+    props.minPositionX != null || props.maxPositionX != null;
+  const hasMinMaxY =
+    props.minPositionY != null || props.maxPositionY != null;
+
   return {
-    previousScale: props.initialScale ?? initialState.scale,
-    scale: props.initialScale ?? initialState.scale,
-    positionX:
-      props.initialPositionX ??
-      boundLimiter(
-        initialState.positionX,
-        props.minPositionX ?? initialState.positionX,
-        props.maxPositionX ?? initialState.positionX,
-        true,
-      ),
-    positionY:
-      props.initialPositionY ??
-      boundLimiter(
-        initialState.positionY,
-        props.minPositionY ?? initialState.positionY,
-        props.maxPositionY ?? initialState.positionY,
-        true,
-      ),
+    previousScale: clampedScale,
+    scale: clampedScale,
+    positionX: boundLimiter(
+      rawPositionX,
+      props.minPositionX ?? -Infinity,
+      props.maxPositionX ?? Infinity,
+      hasMinMaxX,
+    ),
+    positionY: boundLimiter(
+      rawPositionY,
+      props.minPositionY ?? -Infinity,
+      props.maxPositionY ?? Infinity,
+      hasMinMaxY,
+    ),
   };
 };
 

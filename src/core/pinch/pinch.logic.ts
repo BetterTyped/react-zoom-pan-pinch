@@ -10,6 +10,7 @@ import {
 import {
   getMouseBoundedPosition,
   handleCalculateBounds,
+  hasExplicitPositionBounds,
 } from "../bounds/bounds.utils";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 import { getPaddingValue } from "core/pan/panning.utils";
@@ -91,7 +92,9 @@ export const handlePinchZoom = (
   const bounds = handleCalculateBounds(contextInstance, newScale);
 
   const isPaddingDisabled = disabled || size === 0 || centerZoomedOut;
-  const isLimitedToBounds = limitToBounds && isPaddingDisabled;
+  const isLimitedToBounds =
+    (limitToBounds && isPaddingDisabled) ||
+    hasExplicitPositionBounds(contextInstance.setup);
   const { x, y } = handleCalculateZoomPositions(
     contextInstance,
     midPoint.x,

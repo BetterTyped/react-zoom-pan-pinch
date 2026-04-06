@@ -23,7 +23,7 @@ describe("bounds and centering regressions", () => {
       limitToBounds: true,
       disablePadding: true,
     });
-    ref.current!.setTransform(0, 0, 2);
+    ref.current!.setTransform(0, 0, 2, 0);
     pan({ x: 200, y: 0 });
     expect(ref.current!.instance.state.positionX).toBeLessThanOrEqual(50);
   });
@@ -57,7 +57,7 @@ describe("bounds and centering regressions", () => {
       limitToBounds: true,
       disablePadding: true,
     });
-    ref.current!.setTransform(0, 0, 2);
+    ref.current!.setTransform(0, 0, 2, 0);
     pan({ x: 0, y: -600 });
     expect(ref.current!.instance.state.positionY).toBeLessThan(-1);
   });
@@ -75,28 +75,20 @@ describe("bounds and centering regressions", () => {
     });
   });
 
-  it("centering accounts for wrapper offset from viewport (Ref #462)", () => {
-    const { ref, wrapper } = renderApp({
-      centerOnInit: true,
+  it("centerView centers content within wrapper dimensions (Ref #462)", () => {
+    const { ref } = renderApp({
+      wrapperWidth: "500px",
+      wrapperHeight: "500px",
+      contentWidth: "300px",
+      contentHeight: "300px",
       limitToBounds: false,
     });
-
-    jest.spyOn(wrapper, "getBoundingClientRect").mockReturnValue({
-      width: 500,
-      height: 500,
-      top: 200,
-      left: 150,
-      bottom: 700,
-      right: 650,
-      x: 150,
-      y: 200,
-      toJSON: () => ({}),
-    } as DOMRect);
 
     ref.current!.centerView(1, 0);
 
     const { positionX, positionY } = ref.current!.instance.state;
-    expect(positionX !== 0 || positionY !== 0).toBe(true);
+    expect(positionX).toBe(100);
+    expect(positionY).toBe(100);
   });
 
   it("panning resumes after hitting bounds and reversing direction (Ref #316)", () => {
@@ -104,7 +96,7 @@ describe("bounds and centering regressions", () => {
       limitToBounds: true,
       disablePadding: true,
     });
-    ref.current!.setTransform(0, 0, 2);
+    ref.current!.setTransform(0, 0, 2, 0);
     pan({ x: 1000, y: 0 });
     const posAfterRight = ref.current!.instance.state.positionX;
 

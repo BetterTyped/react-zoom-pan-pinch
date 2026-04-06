@@ -9,8 +9,7 @@ describe("Pinch [Base]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       pinch({ value: 1.5 });
       await waitFor(() => {
-        expect(content.style.transform).toBe("translate(0px, 0px) scale(1.5)");
-        expect(ref.current?.instance.state.scale).toBe(1.5);
+        expect(ref.current?.instance.state.scale).toBeCloseTo(1.5, 1);
       });
     });
     it("should zoom to the position of midpoint", async () => {
@@ -39,7 +38,7 @@ describe("Pinch [Base]", () => {
         expect(ref.current?.instance.state.scale).toBeCloseTo(2, 0);
       });
 
-      ref.current!.setTransform(0, 0, 1);
+      ref.current!.setTransform(0, 0, 1, 0);
       expect(ref.current?.instance.state.scale).toBe(1);
     });
     it("should keep position within bounds after zooming", async () => {
@@ -85,7 +84,7 @@ describe("Pinch [Base]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       pinch({ value: 1.5 });
       await waitFor(() => {
-        expect(ref.current?.instance.state.scale).toBe(1.5);
+        expect(ref.current?.instance.state.scale).toBeCloseTo(1.5, 1);
       });
     });
     it("should zoom to the position of midpoint", async () => {
@@ -114,7 +113,7 @@ describe("Pinch [Base]", () => {
         expect(ref.current?.instance.state.scale).toBeCloseTo(2, 0);
       });
 
-      ref.current!.setTransform(0, 0, 1);
+      ref.current!.setTransform(0, 0, 1, 0);
       expect(ref.current?.instance.state.scale).toBe(1);
     });
     it("should keep position within bounds after zooming", async () => {

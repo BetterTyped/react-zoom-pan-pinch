@@ -46,7 +46,7 @@ describe("Positions [Base]", () => {
           limitToBounds: true,
           disablePadding: true,
         });
-        ref.current!.setTransform(0, 0, 2);
+        ref.current!.setTransform(0, 0, 2, 0);
         pan({ x: -100, y: -100 });
         expect(ref.current!.instance.state.positionX).toBe(-100);
         expect(ref.current!.instance.state.positionY).toBe(-100);
@@ -56,7 +56,7 @@ describe("Positions [Base]", () => {
           disablePadding: true,
           limitToBounds: true,
         });
-        ref.current!.setTransform(0, 0, 2);
+        ref.current!.setTransform(0, 0, 2, 0);
         pan({ x: -5000, y: -5000 });
         expect(ref.current!.instance.state.positionX).toBeGreaterThan(-5000);
         expect(ref.current!.instance.state.positionY).toBeGreaterThan(-5000);
@@ -66,7 +66,7 @@ describe("Positions [Base]", () => {
           limitToBounds: true,
           disablePadding: true,
         });
-        ref.current!.setTransform(0, 0, 2);
+        ref.current!.setTransform(0, 0, 2, 0);
         pan({ x: 2000, y: 0 });
         expect(ref.current!.instance.state.positionX).toBeGreaterThanOrEqual(0);
         expect(ref.current!.instance.state.positionX).toBeLessThan(2000);
@@ -130,7 +130,7 @@ describe("Positions [Base]", () => {
           disablePadding: true,
           limitToBounds: true,
         });
-        ref.current!.setTransform(0, 0, 2);
+        ref.current!.setTransform(0, 0, 2, 0);
         pan({ x: -50, y: -50 });
         expect(ref.current!.instance.state.positionX).toBe(-50);
         expect(ref.current!.instance.state.positionY).toBe(-50);
@@ -140,7 +140,7 @@ describe("Positions [Base]", () => {
           disablePadding: true,
           limitToBounds: true,
         });
-        ref.current!.setTransform(0, 0, 2);
+        ref.current!.setTransform(0, 0, 2, 0);
         pan({ x: -5000, y: -5000 });
         expect(ref.current!.instance.state.positionX).toBeGreaterThan(-5000);
         expect(ref.current!.instance.state.positionY).toBeGreaterThan(-5000);

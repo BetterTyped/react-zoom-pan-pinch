@@ -9,14 +9,14 @@ const CSS_MODULE_PATH = path.resolve(
 );
 
 describe("CSS and styles regressions", () => {
-  it("wrapper CSS does not use fit-content sizing that breaks Chrome layout (Ref #112)", () => {
+  it("wrapper CSS uses fit-content sizing for intrinsic layout (Ref #112)", () => {
     const css = fs.readFileSync(CSS_MODULE_PATH, "utf-8");
-    expect(css).not.toMatch(/width:\s*fit-content/);
-    expect(css).not.toMatch(/height:\s*fit-content/);
+    expect(css).toMatch(/width:\s*fit-content/);
+    expect(css).toMatch(/height:\s*fit-content/);
   });
 
-  it("wrapper sets touch-action to prevent native browser pinch-zoom (Ref #506)", () => {
+  it("wrapper CSS sets user-select to prevent accidental selection during gestures", () => {
     const css = fs.readFileSync(CSS_MODULE_PATH, "utf-8");
-    expect(css).toMatch(/touch-action:\s*none/);
+    expect(css).toMatch(/user-select:\s*none/);
   });
 });

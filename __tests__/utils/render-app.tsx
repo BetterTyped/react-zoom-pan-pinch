@@ -298,6 +298,8 @@ export const renderApp = ({
 
     const step = 1;
     const isZoomIn = ref.current.instance.state.scale < value;
+    const cx = center ? center[0] : 0;
+    const cy = center ? center[1] : 0;
 
     const startTime = Date.now();
     while (Date.now() - startTime < 1000) {
@@ -316,6 +318,8 @@ export const renderApp = ({
           new WheelEvent("wheel", {
             bubbles: true,
             deltaY: isZoomIn ? -newStep : newStep,
+            clientX: cx,
+            clientY: cy,
           }),
         );
       } else {

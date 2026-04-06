@@ -43,10 +43,11 @@ const fixedSpreadPinch = (
 
 describe("pinch regressions", () => {
   it("different pinch.step values change scale proportionally for the same finger movement (Ref #418)", () => {
-    const stepLow = 2;
-    const stepHigh = 10;
+    const stepLow = 1;
+    const stepHigh = 2;
     const { content: c1, ref: r1, unmount: u1 } = renderApp({
       pinch: { step: stepLow },
+      maxScale: 100,
       limitToBounds: false,
     });
     fixedSpreadPinch(c1, 30, 90);
@@ -55,6 +56,7 @@ describe("pinch regressions", () => {
 
     const { content: c2, ref: r2 } = renderApp({
       pinch: { step: stepHigh },
+      maxScale: 100,
       limitToBounds: false,
     });
     fixedSpreadPinch(c2, 30, 90);

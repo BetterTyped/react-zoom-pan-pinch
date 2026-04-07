@@ -29,6 +29,7 @@ jobs:
 
   tests:
     name: Run tests
+    needs: prepare-environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

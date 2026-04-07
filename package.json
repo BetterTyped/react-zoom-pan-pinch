@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "build:docs": "yarn storybook build",
+    "build:docs": "storybook build",
     "start": "cross-env DISABLE_ESLINT_PLUGIN=true yarn storybook dev -p 6006",
     "test": "jest",
     "test:debug": "jest-preview",

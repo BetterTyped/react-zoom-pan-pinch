@@ -38,8 +38,8 @@
 
 #### Sources
 
-- [Demo](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/examples-big-image--big-image)
-- [Docs](https://BetterTyped.github.io/react-zoom-pan-pinch/?path=/story/docs-props--page)
+- [Demo](https://bettertyped.github.io/react-zoom-pan-pinch/?path=/story/basic-image--image)
+- [Docs](https://bettertyped.github.io/react-zoom-pan-pinch/?path=/docs/docs-props--docs)
 
 <p align="center">
 	<a href="https://github.com/sponsors/prc5?tier=platinum">

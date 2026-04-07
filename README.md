@@ -36,6 +36,11 @@
   </a>
 </p>
 
+## 🏢 Using this library in production?
+
+If your application depends on react-zoom-pan-pinch, I offer paid support to
+help you resolve issues quickly and avoid blocking releases.
+
 #### Sources
 
 - [Demo](https://bettertyped.github.io/react-zoom-pan-pinch/?path=/story/basic-image--image)
@@ -125,8 +130,6 @@ const Example = () => {
 or
 
 ```jsx
-import React, { Component } from "react";
-
 import {
   TransformWrapper,
   TransformComponent,
@@ -138,9 +141,15 @@ const Controls = () => {
 
   return (
     <div className="tools">
-      <button onClick={() => zoomIn()}>+</button>
-      <button onClick={() => zoomOut()}>-</button>
-      <button onClick={() => resetTransform()}>x</button>
+      <button type="button" onClick={() => zoomIn()}>
+        +
+      </button>
+      <button type="button" onClick={() => zoomOut()}>
+        -
+      </button>
+      <button type="button" onClick={() => resetTransform()}>
+        x
+      </button>
     </div>
   );
 };
@@ -152,15 +161,11 @@ const Example = () => {
       initialPositionX={200}
       initialPositionY={100}
     >
-      {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-        <>
-          <Controls />
-          <TransformComponent>
-            <img src="image.jpg" alt="test" />
-            <div>Example text</div>
-          </TransformComponent>
-        </>
-      )}
+      <Controls />
+      <TransformComponent>
+        <img src="image.jpg" alt="test" />
+        <div>Example text</div>
+      </TransformComponent>
     </TransformWrapper>
   );
 };
@@ -197,3 +202,15 @@ MIT © [prc5](https://github.com/prc5)
 		<img src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/other/sponsorkit/sponsors.svg?raw=true" alt="My Sponsors" />
 	</a>
 </p>
+
+## 🏢 Commercial Support
+
+If you're using this library in production, I offer paid support:
+
+- Priority issue resolution
+- Help with debugging production issues
+- Direct contact with the maintainer
+
+Plans start at $400/month.
+
+📩 Contact: maciekpyrc@gmail.com

@@ -93,7 +93,6 @@ preview below is a single link to GitHub.
           <p>
           Fetching and realtime data exchange framework.
           </p>
-          <br />
           <b>View on GitHub →</b>
         </td>
       </tr>

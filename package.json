@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "build:docs": "STORYBOOK_BASE=/react-zoom-pan-pinch/ storybook build",
+    "build:docs": "STORYBOOK_BASE=/react-zoom-pan-pinch/ storybook build && touch storybook-static/.nojekyll",
     "start": "cross-env DISABLE_ESLINT_PLUGIN=true yarn storybook dev -p 6006",
     "test": "jest",
     "test:debug": "jest-preview",
@@ -24,7 +24,7 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "predeploy": "yarn run build:docs",
-    "deploy": "gh-pages -d storybook-static",
+    "deploy": "gh-pages -t -d storybook-static",
     "release": "yarn semantic-release",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build"

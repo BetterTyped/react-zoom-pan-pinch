@@ -1,0 +1,44 @@
+---
+description:
+  What react-zoom-pan-pinch is—CSS-first transforms, fluid UX, mobile and web,
+  zoom-to-element canvas use cases
+alwaysApply: true
+---
+
+# React Zoom Pan Pinch — library context
+
+[react-zoom-pan-pinch](https://github.com/BetterTyped/react-zoom-pan-pinch) is
+an open-source React library for **zoom, pan, and pinch** on HTML elements
+(images, divs, seating maps, etc.). The public surface is built around
+**`TransformWrapper`**, **`TransformComponent`**, and hooks such as
+**`useControls`**—a small API with a light footprint.
+
+## How it should feel
+
+- **Animations** should stay **refined and fluid**, not janky or overshooting
+  without intent.
+- **Platforms**: interactions must remain solid on **touch (mobile)** and
+  **mouse / trackpad (web)**.
+
+## Technical pillar
+
+Smooth interaction comes from **driving `transform` (and related) CSS on the
+wrapper/content layer**, instead of thrashing large React subtrees for every
+gesture. Prefer updates that keep this model; if you change it, document the
+tradeoff.
+
+## Zoom-to-element (“canvas” framing)
+
+The library can **focus a target inside a larger canvas** so it lands in the
+**viewport** at an appropriate scale—e.g. **selecting a seat** on a venue map
+and animating that seat into view. APIs and tests around **`zoomToElement`** and
+related handlers should preserve this **“frame the target in view”** mental
+model.
+
+## Other project rules
+
+Workflow and quality live elsewhere:
+**`.cursor/rules/testing-regressions.mdc`**, **`github-issues-triage.mdc`**,
+**`library-changes-consult-docs.mdc`**, plus issue logs under **`docs/bugs/`**
+and **`docs/feature-requests/`** when those exist. This file is **what the
+product is**; those are **how we ship and verify**.

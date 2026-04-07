@@ -1,25 +1,105 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta } from "@storybook/blocks";
+
+import { DocTable } from "../docs/DocTable.tsx";
 
 <Meta title="Hooks/useTransformInit" />
 
 # useTransformInit
 
-Triggered when components are initialized.
+Run a callback **once** when the `TransformWrapper` content and wrapper DOM
+elements are ready. If the components are already mounted when the hook runs,
+the callback fires immediately. Otherwise, it waits for the internal `onInit`
+event.
 
-### Example
+## Signature
+
+```ts
+function useTransformInit(
+  callback: (state: ReactZoomPanPinchContextState) => void | (() => void),
+): void
+```
+
+**`state`** contains:
+
+```ts
+{
+  state: { previousScale, scale, positionX, positionY };
+  instance: ReactZoomPanPinchContext;
+}
+```
+
+The callback can return a **cleanup function** that runs on unmount.
+
+## When to Use
+
+- **Initial measurements** — read wrapper/content dimensions after mount
+- **One-time setup** — configure external systems that depend on viewport size
+- **Initial state logging** — record the starting transform values
+
+For reacting to **every** transform change, use `useTransformEffect` instead.
+This hook fires only once.
+
+## Examples
+
+### Read Initial Dimensions
 
 ```tsx
-const App = () => {
-  // It will trigger every time you interact with transform-component
-  // At the same time it will not cause rerendering so you can control it on your own
+import { useTransformInit } from "react-zoom-pan-pinch";
+
+function Setup() {
+  useTransformInit(({ instance }) => {
+    const wrapper = instance.wrapperComponent;
+    if (wrapper) {
+      console.log("Viewport:", wrapper.offsetWidth, "x", wrapper.offsetHeight);
+    }
+  });
+
+  return null;
+}
+```
+
+### External System Setup
+
+```tsx
+function CanvasSetup() {
   useTransformInit(({ state, instance }) => {
-    console.log(state); // { previousScale: 1, scale: 1, positionX: 0, positionY: 0 }
+    const canvas = initExternalCanvas({
+      width: instance.wrapperComponent?.offsetWidth ?? 0,
+      height: instance.wrapperComponent?.offsetHeight ?? 0,
+      initialScale: state.scale,
+    });
 
     return () => {
-      // unmount
+      canvas.destroy();
     };
   });
 
-  return (...)
-};
+  return null;
+}
 ```
+
+## Key Differences
+
+<DocTable
+  columns={[
+    { header: "" },
+    { header: "useTransformInit", style: "type" },
+    { header: "useTransformEffect", style: "text" },
+  ]}
+  rows={[
+    ["Fires", "Once (on mount)", "On every transform change"],
+    ["Purpose", "Setup / measurements", "Ongoing side-effects"],
+    ["Deps", "[] (captured once)", "[callback, context]"],
+  ]}
+/>
+
+## Caveat
+
+The dependency array is **empty** internally (`[]`), so the callback is
+captured once at mount time. If your callback references props or state that
+change over time, those values will be stale. For dynamic callbacks, use
+`useTransformEffect`.
+
+## Requirements
+
+Must be called inside a descendant of `TransformWrapper`.

@@ -1,0 +1,84 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper, TransformComponent, Virtualize } from "../../../components";
+import { argsTypes } from "../../types/args.types";
+import { DocTable } from "../../docs/DocTable.tsx";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Components/Virtualize"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Virtualize
+
+Mount and unmount children **based on viewport visibility**. `Virtualize` wraps
+content positioned inside the transformed canvas and only renders its children
+when the declared bounding box overlaps the viewport. This is ideal for large
+canvases with many elements — seat maps, tile grids, node graphs — where keeping
+every item in the DOM would hurt performance.
+
+## How it works
+
+Each `Virtualize` component declares its content-space position and size via
+`x`, `y`, `width`, and `height` props. On every transform change (pan, zoom,
+pinch) the component checks whether the scaled and translated bounding box
+intersects the viewport. When it does, children are mounted; when it doesn't,
+children are removed from the DOM.
+
+## Quick start
+
+```tsx
+<TransformWrapper>
+  <TransformComponent>
+    <div style={{ position: "relative", width: 4000, height: 4000 }}>
+      <Virtualize x={100} y={200} width={300} height={150} margin={50}>
+        <MyExpensiveWidget />
+      </Virtualize>
+    </div>
+  </TransformComponent>
+</TransformWrapper>
+```
+
+## Props
+
+<DocTable
+  columns={[
+    { header: "Prop" },
+    { header: "Type", style: "type" },
+    { header: "Default", style: "default" },
+    { header: "Description", style: "text" },
+  ]}
+  rows={[
+    ["x", "number", "—", "Horizontal position in content (unscaled) space."],
+    ["y", "number", "—", "Vertical position in content (unscaled) space."],
+    ["width", "number", "—", "Width in content space."],
+    ["height", "number", "—", "Height in content space."],
+    ["margin", "number", "0", "Extra pixels around the viewport that count as visible. Acts like IntersectionObserver's rootMargin."],
+    ["threshold", "number", "0", "Fraction (0–1) of the element area that must overlap the viewport. 0 = any overlap, 1 = fully visible."],
+    ["placeholder", "ReactNode", "null", "Rendered when the element is outside the viewport."],
+    ["onShow", "() => void", "—", "Called when children are mounted (element enters viewport)."],
+    ["onHide", "() => void", "—", "Called when children are unmounted (element leaves viewport)."],
+    ["className", "string", "—", "CSS class forwarded to the wrapper div."],
+    ["style", "CSSProperties", "—", "Inline styles forwarded to the wrapper div."],
+    ["ref", "Ref<HTMLDivElement>", "—", "Ref forwarded to the wrapper div."],
+  ]}
+/>
+
+## Demo
+
+The demo below renders a 10 &times; 10 grid of tiles (100 total) on a large
+canvas. Only tiles overlapping the viewport are mounted — watch the counter
+update in real time as you pan and zoom. Toggle **Margin** and **Threshold** via
+the control bar to experiment with appearing rules.
+
+<Canvas>
+  <Story name="Virtualize">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Virtualize" />

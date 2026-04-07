@@ -1,0 +1,35 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Basic/Axis lock"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Axis lock
+
+Use **`panning.lockAxisX`** and **`panning.lockAxisY`** when the viewport should
+only move along one axis — for example a **timeline** (horizontal only) or a
+**tall document strip** (vertical only).
+
+- **`lockAxisX: true`** — horizontal panning is disabled; drag and trackpad pan
+  move the content **vertically** only.
+- **`lockAxisY: true`** — vertical panning is disabled; movement is **horizontal**
+  only.
+
+The buttons above the canvas switch the demo between **free** panning and each
+locked mode. Use the control bar to reset or re-center if you get lost.
+
+<Canvas>
+  <Story name="Axis lock">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Axis lock" />

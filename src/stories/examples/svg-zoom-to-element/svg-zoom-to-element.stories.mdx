@@ -1,5 +1,4 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -8,16 +7,17 @@ import { Example } from "./example";
 export const Template = (args) => <Example {...args} />;
 
 <Meta
-  title="Examples/SVG Zoom To Element"
+  title="Advanced/SVG Zoom To Element"
   component={TransformWrapper}
   argTypes={argsTypes}
 />
 
 # SVG Zoom To Element
 
-<br />
-
-### Preview:
+Target elements **inside an SVG** by their `id` attribute. The control bar
+buttons zoom to three different paths within the illustration. This works the
+same way as HTML element targeting — `zoomToElement` finds the element by its
+`id` and calculates the bounding box to frame it in view.
 
 <Canvas>
   <Story name="SVG Zoom To Element">{(args) => <Template {...args} />}</Story>

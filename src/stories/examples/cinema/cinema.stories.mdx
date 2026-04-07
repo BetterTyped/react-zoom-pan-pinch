@@ -1,0 +1,30 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Cinema"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Cinema
+
+Zoom, pan, and click on any available seat to focus on it. Use the controls or
+pinch / scroll to navigate the hall.
+
+<br />
+
+### Preview:
+
+<Canvas>
+  <Story name="Cinema">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Cinema" />

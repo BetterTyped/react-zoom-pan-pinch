@@ -1,27 +1,46 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
-import { TransformComponent, TransformWrapper } from "components";
+import { TransformComponent, TransformWrapper } from "../../../components/";
 import { argsTypes } from "../../types/args.types";
 import { Example } from "./example";
 
 export const Template = (args) => (
-  <div style={{ width: "80vw", height: "80vh" }}>
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 640,
+      height: "min(420px, 52vh)",
+      margin: "0 auto",
+      boxSizing: "border-box",
+    }}
+  >
     <Example {...args} />
   </div>
 );
 
 <Meta
-  title="Examples/Responsive Image"
+  title="Basic/Responsive Image"
   component={TransformWrapper}
   argTypes={argsTypes}
 />
 
 # Responsive Image
 
-<br />
+A **responsive** image viewer that automatically scales the image to fit its
+container. The preview is sized to stay inside the Storybook canvas (`max-width`
+640px, `height: min(420px, 52vh)`). A **`ResizeObserver`** on the outer frame
+remeasures when the preview area changes, so the fit scale stays correct without
+relying only on `window` resize.
 
-### Preview:
+The component measures the container and the image's natural dimensions, then
+computes a fit scale (`Math.min(containerW / naturalW, containerH / naturalH)`).
+That scale becomes both `initialScale` and `minScale`, so the user can zoom in
+up to 8x but can never zoom out beyond the fitted view. The `key` prop on
+`TransformWrapper` forces a clean remount when the measured size changes — a
+simple pattern that keeps centering correct after layout changes.
+
+The floating badge in the corner tracks the current scale in real time via
+`useTransformComponent`.
 
 <Canvas>
   <Story name="Responsive Image">{(args) => <Template {...args} />}</Story>

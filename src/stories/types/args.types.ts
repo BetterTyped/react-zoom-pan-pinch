@@ -16,16 +16,6 @@ export const argsTypes = {
       defaultValue: { summary: "0" },
     },
   },
-  "wheel.smoothStep": {
-    defaultValue: initialSetup.wheel.smoothStep,
-    control: {
-      type: "number",
-      min: 0,
-    },
-    table: {
-      defaultValue: { summary: "0" },
-    },
-  },
   "wheel.disabled": {
     defaultValue: initialSetup.wheel.disabled,
     control: { type: "boolean" },
@@ -71,24 +61,8 @@ export const argsTypes = {
       disable: true,
     },
   },
-  "panning.wheelPanning": {
-    defaultValue: initialSetup.panning.wheelPanning,
-    control: { type: "boolean" },
-    table: {
-      defaultValue: { summary: "false" },
-      type: { summary: "boolean" },
-    },
-  },
   "panning.disabled": {
     defaultValue: initialSetup.panning.disabled,
-    control: { type: "boolean" },
-    table: {
-      defaultValue: { summary: "false" },
-      type: { summary: "boolean" },
-    },
-  },
-  "panning.velocityDisabled": {
-    defaultValue: initialSetup.panning.velocityDisabled,
     control: { type: "boolean" },
     table: {
       defaultValue: { summary: "false" },
@@ -204,7 +178,7 @@ export const argsTypes = {
 //   animationTime: 200,
 //   animationType: "easeOut",
 // },
-// alignmentAnimation: {
+// autoAlignment: {
 //   disabled: false,
 //   size: 30,
 //   animationTime: 200,
@@ -215,5 +189,4 @@ export const argsTypes = {
 //   sensitivity: 1,
 //   animationTime: 600,
 //   animationType: "easeOut",
-//   equalToMove: true,
 // },

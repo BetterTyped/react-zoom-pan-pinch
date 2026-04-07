@@ -27,7 +27,7 @@ export const isPinchAllowed = (
   const { disabled } = contextInstance.setup.pinch;
   const { isInitialized, pinchStartDistance } = contextInstance;
 
-  const isAllowed = isInitialized && !disabled && pinchStartDistance;
+  const isAllowed = isInitialized && !disabled && pinchStartDistance !== null;
 
   if (!isAllowed) return false;
 
@@ -41,10 +41,10 @@ export const calculateTouchMidPoint = (
 ): PositionType => {
   const contentRect = contentComponent.getBoundingClientRect();
   const { touches } = event;
-  const firstPointX = roundNumber(touches[0].clientX - contentRect.left, 5);
-  const firstPointY = roundNumber(touches[0].clientY - contentRect.top, 5);
-  const secondPointX = roundNumber(touches[1].clientX - contentRect.left, 5);
-  const secondPointY = roundNumber(touches[1].clientY - contentRect.top, 5);
+  const firstPointX = touches[0].clientX - contentRect.left;
+  const firstPointY = touches[0].clientY - contentRect.top;
+  const secondPointX = touches[1].clientX - contentRect.left;
+  const secondPointY = touches[1].clientY - contentRect.top;
 
   return {
     x: (firstPointX + secondPointX) / 2 / scale,
@@ -59,27 +59,34 @@ export const getTouchDistance = (event: TouchEvent): number => {
   );
 };
 
+const DEFAULT_PINCH_STEP = 5;
+
 export const calculatePinchZoom = (
   contextInstance: ReactZoomPanPinchContext,
   currentDistance: number,
 ): number => {
   const { pinchStartScale, pinchStartDistance, setup } = contextInstance;
-  const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
+  const { maxScale, minScale, zoomAnimation, disablePadding, pinch } = setup;
   const { size, disabled } = zoomAnimation;
+  const { step } = pinch;
 
-  if (!pinchStartScale || pinchStartDistance === null || !currentDistance) {
+  if (!pinchStartScale || pinchStartDistance === null) {
     throw new Error("Pinch touches distance was not provided");
   }
 
   if (currentDistance < 0) {
-    return contextInstance.transformState.scale;
+    return contextInstance.state.scale;
   }
 
   const touchProportion = currentDistance / pinchStartDistance;
-  const scaleDifference = touchProportion * pinchStartScale;
+  const rawScale = touchProportion * pinchStartScale;
+  const scaleDelta = (rawScale - pinchStartScale) * (step / DEFAULT_PINCH_STEP);
+  const computed = pinchStartScale + scaleDelta;
+
+  const scale = computed === Infinity ? 0 : roundNumber(computed, 10);
 
   return checkZoomBounds(
-    roundNumber(scaleDifference, 2),
+    scale,
     minScale,
     maxScale,
     size,

@@ -1,66 +1,115 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs, Controls } from "../../utils";
+import { normalizeArgs, Controls, viewerChrome } from "../../utils";
+import { useTransformComponent } from "../../../hooks";
 
 import exampleImg from "../../assets/small-image.jpg";
 
+export const StateBadge = () => {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 10,
+        padding: "8px 14px",
+        borderRadius: 10,
+        background: "rgba(10, 10, 18, 0.85)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        fontFamily: "'SF Mono', 'Fira Code', monospace",
+        fontSize: 11,
+        color: "rgba(255,255,255,0.6)",
+        lineHeight: 1.7,
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      <div><span style={{ color: "#667eea" }}>scale</span>: {state.scale.toFixed(3)}</div>
+      <div><span style={{ color: "#43e97b" }}>posX</span>: {state.positionX.toFixed(1)}</div>
+      <div><span style={{ color: "#f093fb" }}>posY</span>: {state.positionY.toFixed(1)}</div>
+    </div>
+  ));
+};
+
 export const Template = (args) => (
-  <TransformWrapper {...normalizeArgs(args)}>
-    {(utils) => (
-      <div>
-        <Controls {...utils} />
-        <TransformComponent
-          wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
-        >
-          <div style={{ background: "#444", color: "white", padding: "50px" }}>
-            {JSON.stringify(utils.state, null, 4)}
-            <h1>No scrollbars needed</h1>
-            <h2>Use mouse or gestures to move around</h2>
-            <button
-              onClick={() => alert("You can still interact with click events!")}
+  <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <TransformWrapper {...normalizeArgs(args)}>
+      {(utils) => (
+        <>
+          <Controls {...utils} />
+          <div style={{ position: "relative", display: "inline-block" }}>
+            <TransformComponent
+              wrapperStyle={{
+                ...viewerChrome,
+                width: "500px",
+                height: "500px",
+                maxWidth: "80vw",
+                maxHeight: "75vh",
+              }}
             >
-              Click me!
-            </button>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum
-            </p>
-            <img src={exampleImg} alt="" />
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum
-            </p>
+              <div style={{ padding: 32 }}>
+                <h2 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.9)" }}>
+                  Interactive Content
+                </h2>
+                <p style={{ margin: "0 0 16px", fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.5)" }}>
+                  Pan and zoom this panel using mouse, trackpad, or touch gestures.
+                  The floating controls provide programmatic zoom, reset, and center actions.
+                  The state badge in the corner shows real-time transform values.
+                </p>
+                <div
+                  style={{
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    marginBottom: 16,
+                  }}
+                >
+                  <img src={exampleImg} alt="" style={{ display: "block", width: "100%" }} />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => alert("Click events work inside transformed content!")}
+                  style={{
+                    padding: "8px 20px",
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    background: "rgba(255,255,255,0.06)",
+                    color: "rgba(255,255,255,0.7)",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Click me
+                </button>
+              </div>
+            </TransformComponent>
+            <StateBadge />
           </div>
-        </TransformComponent>
-      </div>
-    )}
-  </TransformWrapper>
+        </>
+      )}
+    </TransformWrapper>
+  </div>
 );
 
 <Meta
-  title="Examples/Controls"
+  title="Components/Controls"
   component={TransformWrapper}
   argTypes={argsTypes}
 />
 
 # Controls
 
-<br />
-
-### Preview:
+The **Controls** component provides a floating toolbar with zoom in, zoom out,
+reset, and center actions. It uses the render-props pattern to access the
+transform API. The state badge demonstrates `useTransformComponent` for
+real-time state display.
 
 <Canvas>
   <Story name="Controls">{(args) => <Template {...args} />}</Story>

@@ -18,7 +18,7 @@ export const handleCancelAnimation = (
   if (!contextInstance.mounted) return;
   handleCancelAnimationFrame(contextInstance.animation);
   // Clear animation state
-  contextInstance.animate = false;
+  contextInstance.isAnimating = false;
   contextInstance.animation = null;
   contextInstance.velocity = null;
 };
@@ -44,7 +44,7 @@ export function handleSetupAnimation(
 
     const frameTime = new Date().getTime() - startTime;
     const animationProgress = frameTime / animationTime;
-    const animationType = animations[animationName];
+    const animationType = animations[animationName as keyof typeof animations];
 
     const step = animationType(animationProgress);
 
@@ -83,19 +83,15 @@ export function animate(
   const isValid = isValidTargetState(targetState);
   if (!contextInstance.mounted || !isValid) return;
 
-  const { setTransformState } = contextInstance;
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { setState } = contextInstance;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   const scaleDiff = targetState.scale - scale;
   const positionXDiff = targetState.positionX - positionX;
   const positionYDiff = targetState.positionY - positionY;
 
   if (animationTime === 0) {
-    setTransformState(
-      targetState.scale,
-      targetState.positionX,
-      targetState.positionY,
-    );
+    setState(targetState.scale, targetState.positionX, targetState.positionY);
   } else {
     // animation start timestamp
     handleSetupAnimation(
@@ -103,11 +99,16 @@ export function animate(
       animationName,
       animationTime,
       (step: number) => {
+        if (step !== 1) {
+          contextInstance.isAnimating = true;
+        } else {
+          contextInstance.isAnimating = false;
+        }
         const newScale = scale + scaleDiff * step;
         const newPositionX = positionX + positionXDiff * step;
         const newPositionY = positionY + positionYDiff * step;
 
-        setTransformState(newScale, newPositionX, newPositionY);
+        setState(newScale, newPositionX, newPositionY);
       },
     );
   }

@@ -1,0 +1,31 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta title="Examples/Miro" component={TransformWrapper} argTypes={argsTypes} />
+
+# Miro
+
+A **Miro-style** canvas interaction: hold `Cmd` (or `Ctrl`) and scroll to
+zoom, or use the trackpad freely to pan. The `activationKeys` option accepts
+a function that receives the currently held keys, letting you create
+conditional gesture activation.
+
+The board below is built with HTML/CSS (sticky notes, frames, flow steps, and a
+light dot grid) on a **large infinite-style canvas** so zoom and pan feel like a
+real whiteboard tool.
+
+This pattern separates zoom from scroll — ideal for infinite canvas apps
+where the default scroll behavior should pan, not zoom.
+
+<Canvas>
+  <Story name="Miro">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Miro" />

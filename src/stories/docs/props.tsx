@@ -171,6 +171,12 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "Enable smooth scrolling by multiplying the scroll delta with the smooth step factor.",
   },
+  detached: {
+    type: ["boolean"],
+    defaultValue: String(initialSetup.smooth),
+    description:
+      "Allows to prevent CSS being applied to content element. It allows to add the functionality to canvas with some custom transforming logic.",
+  },
   wheel: {
     wheel: {
       type: [""],
@@ -181,12 +187,6 @@ export const wrapperPropsTable: ComponentProps = {
       type: ["number"],
       defaultValue: String(initialSetup.wheel.step),
       description: "The sensitivity of zooming with the wheel/touchpad.",
-    },
-    smoothStep: {
-      type: ["number"],
-      defaultValue: String(initialSetup.wheel.smoothStep),
-      description:
-        "The sensitivity multiplier of zooming with the wheel/touchpad used, instead of the step value, when smooth scrolling is enabled.",
     },
     disabled: {
       type: ["boolean"],
@@ -229,17 +229,6 @@ export const wrapperPropsTable: ComponentProps = {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.disabled),
       description: "Disable the panning feature.",
-    },
-    wheelPanning: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.panning.wheelPanning),
-      description: "Enable wheel/trackpad panning.",
-    },
-    velocityDisabled: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.panning.velocityDisabled),
-      description:
-        "Disable the panning velocity feature. It's triggered when you release the mouse button so the content is still moving after it and slowing down with calculated time.",
     },
     lockAxisX: {
       type: ["boolean"],
@@ -301,6 +290,42 @@ export const wrapperPropsTable: ComponentProps = {
     excluded: {
       type: ["string[]"],
       defaultValue: String(initialSetup.pinch.excluded),
+      description:
+        "List of the class names or tags that should not activate this feature. (E.g. ['my-custom-class-name', 'div', 'a'])",
+    },
+  },
+  trackPadPanning: {
+    trackPadPanning: {
+      type: [""],
+      defaultValue: "",
+      description: "",
+    },
+    disabled: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.disabled),
+      description: "Disable the panning feature.",
+    },
+    lockAxisX: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.lockAxisX),
+      description:
+        "Disable the panning feature for the X axis (prevents horizontal panning).",
+    },
+    lockAxisY: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.lockAxisY),
+      description:
+        "Disable the panning feature for the Y axis (prevents vertical panning).",
+    },
+    activationKeys: {
+      type: ["string[]"],
+      defaultValue: String(initialSetup.panning.activationKeys),
+      description:
+        "List of keys which, when held down, should activate this feature.",
+    },
+    excluded: {
+      type: ["string[]"],
+      defaultValue: String(initialSetup.panning.excluded),
       description:
         "List of the class names or tags that should not activate this feature. (E.g. ['my-custom-class-name', 'div', 'a'])",
     },
@@ -373,43 +398,43 @@ export const wrapperPropsTable: ComponentProps = {
       description: "Animations types to choose from.",
     },
   },
-  alignmentAnimation: {
-    alignmentAnimation: {
+  autoAlignment: {
+    autoAlignment: {
       type: [""],
       defaultValue: "",
       description: "",
     },
     disabled: {
       type: ["boolean"],
-      defaultValue: String(initialSetup.alignmentAnimation.disabled),
+      defaultValue: String(initialSetup.autoAlignment.disabled),
       description: "Disable the double click feature.",
     },
     sizeX: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.sizeX),
+      defaultValue: String(initialSetup.autoAlignment.sizeX),
       description:
         "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
     },
     sizeY: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.sizeY),
+      defaultValue: String(initialSetup.autoAlignment.sizeY),
       description:
         "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
     },
     velocityAlignmentTime: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.animationTime),
+      defaultValue: String(initialSetup.autoAlignment.animationTime),
       description:
         "Time of the velocity alignment animation. It is fired when acceleration begins when we are outside the wrapper limits (in the area defined by the above prop size)",
     },
     animationTime: {
       type: ["number"],
-      defaultValue: String(initialSetup.alignmentAnimation.animationTime),
+      defaultValue: String(initialSetup.autoAlignment.animationTime),
       description: "Time of the alignment animation.",
     },
     animationType: {
       type: Object.keys(animations),
-      defaultValue: String(initialSetup.alignmentAnimation.animationType),
+      defaultValue: String(initialSetup.autoAlignment.animationType),
       description: "Animations types to choose from.",
     },
   },
@@ -430,21 +455,39 @@ export const wrapperPropsTable: ComponentProps = {
       description:
         "Additional variable that allows you to control the sensitivity of panning velocity",
     },
+    maxStrengthMouse: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxStrengthMouse),
+      description:
+        "The maximum strength of the velocity animation. The higher the value, the faster the animation will be allowed. Affecting only mouse/trackpad interactions.",
+    },
+    maxStrengthTouch: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxStrengthTouch),
+      description:
+        "The maximum strength of the velocity animation. The higher the value, the faster the animation will be allowed. Affecting only touch interactions.",
+    },
+    inertia: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.inertia),
+      description:
+        "Allows for defining longer animation time which is equal to the panning move we made. Setting it to '0' disables the inertia effect.",
+    },
     animationTime: {
       type: ["number"],
       defaultValue: String(initialSetup.velocityAnimation.animationTime),
-      description: "Time of the triggered double click animation.",
+      description:
+        "Time of the animation when the velocity is triggered. It could be longer depending on the enabled inertia effect.",
+    },
+    maxAnimationTime: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.maxAnimationTime),
+      description: "Maximum animation time including inertia effect.",
     },
     animationType: {
       type: Object.keys(animations),
       defaultValue: String(initialSetup.velocityAnimation.animationType),
       description: "Animations types to choose from.",
-    },
-    equalToMove: {
-      type: ["boolean"],
-      defaultValue: String(initialSetup.velocityAnimation.equalToMove),
-      description:
-        "The calculation of the velocity animation duration is adjusted to the length of the mouse movement",
     },
   },
   onWheelStart: {
@@ -477,17 +520,17 @@ export const wrapperPropsTable: ComponentProps = {
     defaultValue: "undefined",
     description: "Callback fired when panning event has finished",
   },
-  onPinchingStart: {
+  onPinchStart: {
     type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event has started",
   },
-  onPinching: {
+  onPinch: {
     type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event is ongoing",
   },
-  onPinchingStop: {
+  onPinchStop: {
     type: ["(ref: ReactZoomPanPinchRef, event) => void"],
     defaultValue: "undefined",
     description: "Callback fired when pinch event has finished",
@@ -510,7 +553,7 @@ export const wrapperPropsTable: ComponentProps = {
     description:
       "Callback fired when any of zoom events are finished (wheel/touchpad/pinch)",
   },
-  onTransformed: {
+  onTransform: {
     type: [
       "(ref: ReactZoomPanPinchRef, state: { scale: number; positionX: number; positionY: number } ) => void",
     ],

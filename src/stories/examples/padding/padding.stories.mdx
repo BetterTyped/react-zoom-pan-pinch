@@ -1,0 +1,35 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Basic/Padding"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Padding
+
+The **padding** effect controls what happens when the user zooms past the
+content boundaries. By default (`disablePadding: false`), the library allows a
+small elastic overscroll — the content stretches slightly beyond the limit, then
+snaps back with a smooth animation. This gives a natural, tactile feel similar
+to iOS scroll bounce.
+
+When `disablePadding` is set to `true`, the zoom is strictly clamped: the
+content stops exactly at the boundary with no overscroll or snap-back animation.
+
+Use the **toggle button** in the control bar to switch between the two modes in
+real time and feel the difference. The status badge shows the current mode.
+
+<Canvas>
+  <Story name="Padding">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Padding" />

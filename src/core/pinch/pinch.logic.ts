@@ -12,7 +12,7 @@ import {
   handleCalculateBounds,
 } from "../bounds/bounds.utils";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
-import { getPaddingValue } from "../pan/panning.utils";
+import { getPaddingValue } from "core/pan/panning.utils";
 
 const getTouchCenter = (event: TouchEvent) => {
   let totalX = 0;
@@ -35,15 +35,13 @@ export const handlePinchStart = (
   event: TouchEvent,
 ): void => {
   const distance = getTouchDistance(event);
-
   contextInstance.pinchStartDistance = distance;
   contextInstance.lastDistance = distance;
-  contextInstance.pinchStartScale = contextInstance.transformState.scale;
+  contextInstance.pinchStartScale = contextInstance.state.scale;
   contextInstance.isPanning = false;
+  contextInstance.isPinching = true;
 
-  const center = getTouchCenter(event);
-  contextInstance.pinchLastCenterX = center.x;
-  contextInstance.pinchLastCenterY = center.y;
+  contextInstance.pinchPreviousCenter = getTouchCenter(event);
 
   handleCancelAnimation(contextInstance);
 };
@@ -52,39 +50,48 @@ export const handlePinchZoom = (
   contextInstance: ReactZoomPanPinchContext,
   event: TouchEvent,
 ): void => {
-  const { contentComponent, pinchStartDistance, wrapperComponent } =
-    contextInstance;
-  const { scale } = contextInstance.transformState;
-  const { limitToBounds, centerZoomedOut, zoomAnimation, alignmentAnimation } =
-    contextInstance.setup;
+  const {
+    contentComponent,
+    pinchStartDistance,
+    wrapperComponent,
+    pinchPreviousCenter,
+  } = contextInstance;
+  const { scale } = contextInstance.state;
+  const {
+    limitToBounds,
+    centerZoomedOut,
+    zoomAnimation,
+    autoAlignment,
+    pinch,
+    panning,
+  } = contextInstance.setup;
   const { disabled, size } = zoomAnimation;
+  const { allowPanning } = pinch;
 
   // if one finger starts from outside of wrapper
   if (pinchStartDistance === null || !contentComponent) return;
-
   const midPoint = calculateTouchMidPoint(event, scale, contentComponent);
-
   // if touches goes off of the wrapper element
   if (!Number.isFinite(midPoint.x) || !Number.isFinite(midPoint.y)) return;
-
   const currentDistance = getTouchDistance(event);
   const newScale = calculatePinchZoom(contextInstance, currentDistance);
 
   const center = getTouchCenter(event);
+
   // pan should be scale invariant.
-  const panX = center.x - (contextInstance.pinchLastCenterX || 0);
-  const panY = center.y - (contextInstance.pinchLastCenterY || 0);
+  const scaleDiff = scale / newScale;
+
+  const panX = (center.x - (pinchPreviousCenter?.x || 0)) * scaleDiff;
+  const panY = (center.y - (pinchPreviousCenter?.y || 0)) * scaleDiff;
 
   if (newScale === scale && panX === 0 && panY === 0) return;
 
-  contextInstance.pinchLastCenterX = center.x;
-  contextInstance.pinchLastCenterY = center.y;
+  contextInstance.pinchPreviousCenter = center;
 
   const bounds = handleCalculateBounds(contextInstance, newScale);
 
   const isPaddingDisabled = disabled || size === 0 || centerZoomedOut;
   const isLimitedToBounds = limitToBounds && isPaddingDisabled;
-
   const { x, y } = handleCalculateZoomPositions(
     contextInstance,
     midPoint.x,
@@ -93,38 +100,40 @@ export const handlePinchZoom = (
     bounds,
     isLimitedToBounds,
   );
-
   contextInstance.pinchMidpoint = midPoint;
   contextInstance.lastDistance = currentDistance;
 
-  const { sizeX, sizeY } = alignmentAnimation;
-  const paddingValueX = getPaddingValue(contextInstance, sizeX);
-  const paddingValueY = getPaddingValue(contextInstance, sizeY);
+  if (panning.disabled || !allowPanning) {
+    contextInstance.setState(newScale, x, y);
+  } else {
+    const { sizeX, sizeY } = autoAlignment;
+    const paddingValueX = getPaddingValue(contextInstance, sizeX, newScale);
+    const paddingValueY = getPaddingValue(contextInstance, sizeY, newScale);
 
-  const newPositionX = x + panX;
-  const newPositionY = y + panY;
-  const { x: finalX, y: finalY } = getMouseBoundedPosition(
-    newPositionX,
-    newPositionY,
-    bounds,
-    limitToBounds,
-    paddingValueX,
-    paddingValueY,
-    wrapperComponent,
-  );
-
-  contextInstance.setTransformState(newScale, finalX, finalY);
+    const newPositionX = x + panX;
+    const newPositionY = y + panY;
+    const { x: finalX, y: finalY } = getMouseBoundedPosition(
+      newPositionX,
+      newPositionY,
+      bounds,
+      limitToBounds,
+      paddingValueX,
+      paddingValueY,
+      wrapperComponent,
+    );
+    contextInstance.setState(newScale, finalX, finalY);
+  }
 };
 
 export const handlePinchStop = (
   contextInstance: ReactZoomPanPinchContext,
 ): void => {
   const { pinchMidpoint } = contextInstance;
-
   contextInstance.velocity = null;
   contextInstance.lastDistance = null;
   contextInstance.pinchMidpoint = null;
   contextInstance.pinchStartScale = null;
   contextInstance.pinchStartDistance = null;
+  contextInstance.isPinching = false;
   handleAlignToScaleBounds(contextInstance, pinchMidpoint?.x, pinchMidpoint?.y);
 };

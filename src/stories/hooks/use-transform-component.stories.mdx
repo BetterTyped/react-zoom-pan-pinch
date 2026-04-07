@@ -1,27 +1,108 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta } from "@storybook/blocks";
+
+import { DocTable } from "../docs/DocTable.tsx";
 
 <Meta title="Hooks/useTransformComponent" />
 
 # useTransformComponent
 
-This hooks allows to easily connect with lifecycle into the Zoom-Pan-Pinch state
-for rendering a component. It will trigger the provided callback every time the
-transform state is changed.
+Subscribe to every transform change and **return a value** — typically JSX —
+that updates in real time. This hook is the primary way to build UI that
+reflects the current zoom, pan, or scale state without manual event wiring.
 
-It will not affect rerendering so you can control the way you use received data.
+## Signature
 
-### Example
+```ts
+function useTransformComponent<T>(
+  callback: (state: ReactZoomPanPinchContextState) => T,
+): T
+```
+
+**`state`** contains:
+
+```ts
+{
+  state: {
+    previousScale: number;
+    scale: number;
+    positionX: number;
+    positionY: number;
+  };
+  instance: ReactZoomPanPinchContext;
+}
+```
+
+## How It Works
+
+Internally, `useTransformComponent` subscribes to the library's `onChange`
+event and calls your callback on every transform update. The return value is
+stored in React state (`useState`), so the consuming component re-renders
+whenever the transform changes.
+
+## When to Use
+
+- **Scale badges** — show the current zoom level (`state.scale`)
+- **Coordinate displays** — show positionX / positionY
+- **Conditional rendering** — show/hide elements based on zoom level
+- Any UI element that should **visually update** on every transform tick
+
+## Examples
+
+### Scale Indicator
 
 ```tsx
-const App = () => {
-  // It will trigger every time you interact with transform-component
-  // At the same time it will not cause rerendering so you can control it on your own
-  const transformedComponent = useTransformComponent(({ state, instance }) => {
-    console.log(state); // { previousScale: 1, scale: 1, positionX: 0, positionY: 0 }
-
-    return <div>Current scale: {state.scale}</div>;
-  });
-
-  return transformedComponent;
-};
+function ScaleBadge() {
+  return useTransformComponent(({ state }) => (
+    <div className="badge">{state.scale.toFixed(2)}x</div>
+  ));
+}
 ```
+
+### Zoom Percentage
+
+```tsx
+function ZoomPercent() {
+  return useTransformComponent(({ state }) => (
+    <span>{Math.round(state.scale * 100)}%</span>
+  ));
+}
+```
+
+### Coordinates
+
+```tsx
+function Coords() {
+  return useTransformComponent(({ state }) => (
+    <div>
+      X: {state.positionX.toFixed(0)}, Y: {state.positionY.toFixed(0)}
+    </div>
+  ));
+}
+```
+
+## Performance
+
+The callback fires on **every** transform event — every mouse move during a
+pan, every wheel tick, every pinch frame. Keep the callback lightweight.
+Avoid expensive computations or large JSX trees inside it. If you only need
+to run side-effects (not render UI), use `useTransformEffect` instead.
+
+## vs Other Hooks
+
+<DocTable
+  columns={[
+    { header: "Hook", style: "name" },
+    { header: "Purpose", style: "type" },
+    { header: "Re-renders?", style: "text" },
+  ]}
+  rows={[
+    ["useTransformComponent", "Render UI from state", "Yes"],
+    ["useTransformEffect", "Side-effects on change", "No"],
+    ["useControls", "Trigger actions", "No"],
+    ["useTransformContext", "Raw instance access", "No"],
+  ]}
+/>
+
+## Requirements
+
+Must be called inside a descendant of `TransformWrapper`.

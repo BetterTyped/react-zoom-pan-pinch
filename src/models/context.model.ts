@@ -21,6 +21,7 @@ export type ReactZoomPanPinchContextState = {
 
 export type ReactZoomPanPinchContentRef = {
   instance: ReactZoomPanPinchContext;
+  state: ReactZoomPanPinchState;
 } & ReactZoomPanPinchHandlers;
 
 export type ReactZoomPanPinchRef = ReactZoomPanPinchContextState &
@@ -51,6 +52,7 @@ export type ReactZoomPanPinchProps = {
     | React.ReactNode
     | ((ref: ReactZoomPanPinchContentRef) => React.ReactNode);
   ref?: React.Ref<ReactZoomPanPinchRef>;
+  detached?: boolean;
   initialScale?: number;
   initialPositionX?: number;
   initialPositionY?: number;
@@ -69,11 +71,10 @@ export type ReactZoomPanPinchProps = {
   smooth?: boolean;
   wheel?: {
     step?: number;
-    smoothStep?: number;
     disabled?: boolean;
     wheelDisabled?: boolean;
     touchPadDisabled?: boolean;
-    activationKeys?: string[];
+    activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
   };
   panning?: {
@@ -84,13 +85,21 @@ export type ReactZoomPanPinchProps = {
     allowLeftClickPan?: boolean;
     allowMiddleClickPan?: boolean;
     allowRightClickPan?: boolean;
-    activationKeys?: string[];
+    activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
-    wheelPanning?: boolean;
   };
   pinch?: {
     step?: number;
     disabled?: boolean;
+    allowPanning?: boolean;
+    excluded?: string[];
+  };
+  trackPadPanning?: {
+    disabled?: boolean;
+    velocityDisabled?: boolean;
+    lockAxisX?: boolean;
+    lockAxisY?: boolean;
+    activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
   };
   doubleClick?: {
@@ -107,7 +116,7 @@ export type ReactZoomPanPinchProps = {
     animationTime?: number;
     animationType?: keyof typeof animations;
   };
-  alignmentAnimation?: {
+  autoAlignment?: {
     disabled?: boolean;
     sizeX?: number;
     sizeY?: number;
@@ -117,10 +126,14 @@ export type ReactZoomPanPinchProps = {
   };
   velocityAnimation?: {
     disabled?: boolean;
-    sensitivity?: number;
+    sensitivityTouch?: number;
+    sensitivityMouse?: number;
+    maxStrengthMouse?: number;
+    maxStrengthTouch?: number;
+    inertia?: number;
     animationTime?: number;
+    maxAnimationTime?: number;
     animationType?: keyof typeof animations;
-    equalToMove?: boolean;
   };
   onWheelStart?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
   onWheel?: (ref: ReactZoomPanPinchRef, event: WheelEvent) => void;
@@ -137,9 +150,9 @@ export type ReactZoomPanPinchProps = {
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
   ) => void;
-  onPinchingStart?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
-  onPinching?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
-  onPinchingStop?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinchStart?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinch?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
+  onPinchStop?: (ref: ReactZoomPanPinchRef, event: TouchEvent) => void;
   onZoomStart?: (
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
@@ -149,7 +162,7 @@ export type ReactZoomPanPinchProps = {
     ref: ReactZoomPanPinchRef,
     event: TouchEvent | MouseEvent,
   ) => void;
-  onTransformed?: (
+  onTransform?: (
     ref: ReactZoomPanPinchRef,
     state: { scale: number; positionX: number; positionY: number },
   ) => void;
@@ -187,13 +200,13 @@ export type LibrarySetup = Pick<
       | "onPanningStart"
       | "onPanning"
       | "onPanningStop"
-      | "onPinchingStart"
-      | "onPinching"
-      | "onPinchingStop"
+      | "onPinchStart"
+      | "onPinch"
+      | "onPinchStop"
       | "onZoomStart"
       | "onZoom"
       | "onZoomStop"
-      | "onTransformed"
+      | "onTransform"
       | "onInit"
       | "customTransform"
     >

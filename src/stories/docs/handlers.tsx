@@ -77,31 +77,35 @@ export const handlersTable: ComponentProps = {
 };
 
 export const getHandlersTable = (): ControlsFnOptionsType[] => {
-  return Object.keys(handlersTable).reduce<ControlsFnOptionsType[]>(
-    (acc, key) => {
-      if (Array.isArray(handlersTable[key]?.type)) {
+  return (Object.keys(handlersTable) as (keyof ComponentProps)[]).reduce<
+    ControlsFnOptionsType[]
+  >((acc, key) => {
+    const entry = handlersTable[key];
+    if ("type" in entry && Array.isArray(entry.type)) {
+      acc.push({
+        ...(entry as Omit<ControlsFnOptionsType, "name" | "isObjectRow">),
+        name: key,
+      });
+    } else {
+      const nested = entry as Record<
+        string,
+        Omit<ControlsFnOptionsType, "name" | "isObjectRow">
+      >;
+      Object.keys(nested).forEach((prop) => {
         acc.push({
-          ...handlersTable[key],
-          name: key,
+          ...nested[prop],
+          isObjectRow: key === prop,
+          name:
+            key === prop ? (
+              <b>{prop}</b>
+            ) : (
+              <>
+                {key}.<b>{prop}</b>
+              </>
+            ),
         });
-      } else {
-        Object.keys(handlersTable[key]).forEach((prop) => {
-          acc.push({
-            ...handlersTable[key][prop],
-            isObjectRow: key === prop,
-            name:
-              key === prop ? (
-                <b>{prop}</b>
-              ) : (
-                <>
-                  {key}.<b>{prop}</b>
-                </>
-              ),
-          });
-        });
-      }
-      return acc;
-    },
-    [],
-  );
+      });
+    }
+    return acc;
+  }, []);
 };

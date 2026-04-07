@@ -35,6 +35,14 @@ export const isPanningStartAllowed = (
 
   if (isExcluded) return false;
 
+  if (
+    target.getAttribute("draggable") === "true" ||
+    target.getAttribute("contenteditable") === "true" ||
+    target.isContentEditable
+  ) {
+    return false;
+  }
+
   return true;
 };
 
@@ -55,7 +63,7 @@ export const handlePanningSetup = (
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent,
 ): void => {
-  const { positionX, positionY } = contextInstance.transformState;
+  const { positionX, positionY } = contextInstance.state;
 
   contextInstance.isPanning = true;
 
@@ -64,7 +72,6 @@ export const handlePanningSetup = (
   const y = event.clientY;
 
   contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-  contextInstance.clientCoords = {x: x, y:  y};
 };
 
 export const handleTouchPanningSetup = (
@@ -72,7 +79,7 @@ export const handleTouchPanningSetup = (
   event: TouchEvent,
 ): void => {
   const { touches } = event;
-  const { positionX, positionY } = contextInstance.transformState;
+  const { positionX, positionY } = contextInstance.state;
 
   contextInstance.isPanning = true;
 
@@ -82,13 +89,12 @@ export const handleTouchPanningSetup = (
     const x = touches[0].clientX;
     const y = touches[0].clientY;
     contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-    contextInstance.clientCoords = {x: x, y:  y};
   }
 };
 export function handlePanToBounds(
   contextInstance: ReactZoomPanPinchContext,
 ): Omit<ReactZoomPanPinchState, "previousScale"> | undefined {
-  const { positionX, positionY, scale } = contextInstance.transformState;
+  const { positionX, positionY, scale } = contextInstance.state;
   const { disabled, limitToBounds, centerZoomedOut } = contextInstance.setup;
   const { wrapperComponent } = contextInstance;
 
@@ -130,12 +136,12 @@ export function handlePaddingAnimation(
   positionX: number,
   positionY: number,
 ): void {
-  const { scale } = contextInstance.transformState;
-  const { sizeX, sizeY } = contextInstance.setup.alignmentAnimation;
+  const { scale } = contextInstance.state;
+  const { sizeX, sizeY } = contextInstance.setup.autoAlignment;
 
   if (!sizeX && !sizeY) return;
 
-  contextInstance.setTransformState(scale, positionX, positionY);
+  contextInstance.setState(scale, positionX, positionY);
 }
 
 export function handleNewPosition(
@@ -147,7 +153,7 @@ export function handleNewPosition(
 ): void {
   const { limitToBounds } = contextInstance.setup;
   const { wrapperComponent, bounds } = contextInstance;
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   if (
     wrapperComponent === null ||
@@ -167,7 +173,7 @@ export function handleNewPosition(
     wrapperComponent,
   );
 
-  contextInstance.setTransformState(scale, x, y);
+  contextInstance.setState(scale, x, y);
 }
 
 export const getPanningClientPosition = (
@@ -175,10 +181,10 @@ export const getPanningClientPosition = (
   clientX: number,
   clientY: number,
 ): PositionType => {
-  const { startCoords, transformState } = contextInstance;
+  const { startCoords, state } = contextInstance;
   const { panning } = contextInstance.setup;
   const { lockAxisX, lockAxisY } = panning;
-  const { positionX, positionY } = transformState;
+  const { positionX, positionY } = state;
 
   if (!startCoords) {
     return { x: positionX, y: positionY };
@@ -195,12 +201,14 @@ export const getPanningClientPosition = (
 export const getPaddingValue = (
   contextInstance: ReactZoomPanPinchContext,
   size: number,
+  explicitScale?: number,
 ): number => {
-  const { setup, transformState } = contextInstance;
-  const { scale } = transformState;
-  const { minScale, disablePadding } = setup;
+  const { setup, state } = contextInstance;
+  const { minScale, disablePadding, centerZoomedOut } = setup;
 
-  if (size > 0 && scale >= minScale && !disablePadding) {
+  const scale = explicitScale ?? state.scale;
+
+  if (size > 0 && scale >= minScale && !disablePadding && !centerZoomedOut) {
     return size;
   }
 

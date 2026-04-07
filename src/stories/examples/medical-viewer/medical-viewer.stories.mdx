@@ -1,0 +1,49 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Medical viewer"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Medical viewer
+
+A **radiology workstation**-style viewer built on top of the library: zoom deep
+into the X-ray, double-click to quick-zoom, and pan across a chest PA film.
+
+## What this demonstrates
+
+| Feature | Library concept |
+|---|---|
+| **Deep zoom** (up to 10×) | `minScale` / `maxScale` |
+| **Double-click quick-zoom** | `doubleClick.step` |
+| **No bounds lock** | `limitToBounds={false}` for free panning |
+| **Overlay annotations** | Absolute-positioned content inside `TransformComponent` |
+
+## Viewer controls
+
+- **Window presets** — simulate DICOM windowing (brightness + contrast via CSS
+  filters): Lung, Bone, Soft tissue, Mediastinum.
+- **Invert** — flips to negative (standard radiology toggle).
+- **Findings** — toggleable markers on the image with severity badges (normal /
+  mild / significant). Click a marker or chip to show the detail popover.
+- **Ruler** — pixel ruler along left and top edges.
+
+DICOM-style metadata overlays are rendered in the four corners (patient, study,
+series, window values). They stay pinned while the image transforms underneath.
+
+<Canvas>
+  <Story name="Medical viewer">
+    {(args) => <Template {...args} />}
+  </Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Medical viewer" />

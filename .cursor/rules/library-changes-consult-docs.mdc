@@ -1,0 +1,26 @@
+---
+description:
+  When editing library code, consult tracked bugs and feature requests under
+  docs/
+globs: src/**/*
+alwaysApply: false
+---
+
+# Library changes and docs/
+
+Before or while editing files under src/:
+
+1. Skim **docs/bugs/** for issues tied to the same area (pan, wheel, pinch,
+   bounds, etc.) so you do not reintroduce a fixed bug; if your change relates
+   to an open bug file, update that file's resolution log and version when
+   closing.
+2. Skim **docs/feature-requests/** so you do not accidentally half-ship a FR
+   without updating its status log (or explicitly defer).
+3. If a change fixes a bug, ensure **regression test** exists (see
+   `.cursor/rules/testing-regressions.mdc`) and the bug markdown lists the **fix
+   version** and spec path.
+4. If tests fail after your change, assume **library regression** first; only
+   relax or rewrite a test when the expectation was wrong—document why.
+
+Do not rename public library APIs without maintainer decision; docs track
+user-visible outcomes.

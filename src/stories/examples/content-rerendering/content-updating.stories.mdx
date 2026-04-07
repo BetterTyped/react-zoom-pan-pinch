@@ -1,5 +1,4 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -8,38 +7,28 @@ import { Example } from "./example";
 export const Template = (args) => <Example {...args} />;
 
 <Meta
-  title="Examples/Rerendering content"
+  title="Basic/Rerendering"
   component={TransformWrapper}
-  argTypes={{
-    ...argsTypes,
-    "wheel.excluded": {
-      ...argsTypes["wheel.excluded"],
-      defaultValue: ["wheelDisabled"],
-    },
-    "panning.excluded": {
-      ...argsTypes["panning.excluded"],
-      defaultValue: ["panningDisabled"],
-    },
-    "pinch.excluded": {
-      ...argsTypes["pinch.excluded"],
-      defaultValue: ["pinchDisabled"],
-    },
-    centerOnInit: {
-      defaultValue: true,
-    },
-  }}
+  argTypes={argsTypes}
 />
 
-# Rerendering content
+# Rerendering
 
-<br />
+Proves that **frequent React re-renders** inside `TransformComponent` do not
+disrupt the current zoom or pan state. Three regions update on independent
+timers (1 s, 3 s, 12 s). Each toggle is not a text swap — it **restructures the
+layout**: compact card vs three-column grid, sidebar split vs hero + stats +
+two-column dashboard, minimal strip vs tall stack with gallery, list rows, and
+footer. Total content height changes a lot between states.
 
-### Preview:
+Zoom in, pan around, and watch the layout reflow without resetting your
+viewport. This matters for dashboards, live data, and any UI where structure and
+size change under the user’s feet.
 
 <Canvas>
-  <Story name="Rerendering content">{(args) => <Template {...args} />}</Story>
+  <Story name="Rerendering">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
 ## Component API
 
-<ArgsTable story="Rerendering content" />
+<ArgsTable story="Rerendering" />

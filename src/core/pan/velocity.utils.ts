@@ -4,16 +4,21 @@ import { boundLimiter } from "../bounds/bounds.utils";
 export const isVelocityCalculationAllowed = (
   contextInstance: ReactZoomPanPinchContext,
 ): boolean => {
-  const { mounted } = contextInstance;
-  const { disabled, velocityAnimation } = contextInstance.setup;
-  const { scale } = contextInstance.transformState;
+  const { mounted, wrapperComponent, contentComponent } = contextInstance;
+  const { disabled, velocityAnimation, limitToBounds } = contextInstance.setup;
+  const { scale } = contextInstance.state;
   const { disabled: disabledVelocity } = velocityAnimation;
 
-  const isAllowed = !disabledVelocity || scale > 1 || !disabled || mounted;
+  if (disabledVelocity || disabled || !mounted) return false;
+  if (!wrapperComponent || !contentComponent) return false;
 
-  if (!isAllowed) return false;
+  if (!limitToBounds) return true;
 
-  return true;
+  const contentOverflows =
+    wrapperComponent.offsetWidth < contentComponent.offsetWidth * scale ||
+    wrapperComponent.offsetHeight < contentComponent.offsetHeight * scale;
+
+  return contentOverflows;
 };
 
 export const isVelocityAllowed = (
@@ -21,10 +26,9 @@ export const isVelocityAllowed = (
 ): boolean => {
   const { mounted, velocity, bounds } = contextInstance;
   const { disabled, velocityAnimation } = contextInstance.setup;
-  const { scale } = contextInstance.transformState;
   const { disabled: disabledVelocity } = velocityAnimation;
 
-  const isAllowed = !disabledVelocity || scale > 1 || !disabled || mounted;
+  const isAllowed = !disabledVelocity && !disabled && mounted;
 
   if (!isAllowed) return false;
   if (!velocity || !bounds) return false;
@@ -37,12 +41,12 @@ export function getVelocityMoveTime(
   velocity: number,
 ): number {
   const { velocityAnimation } = contextInstance.setup;
-  const { equalToMove, animationTime, sensitivity } = velocityAnimation;
+  const { animationTime, maxAnimationTime, inertia } = velocityAnimation;
 
-  if (equalToMove) {
-    return animationTime * velocity * sensitivity;
-  }
-  return animationTime;
+  return Math.min(
+    animationTime * Math.max(1, Math.abs(velocity / inertia)),
+    maxAnimationTime,
+  );
 }
 
 export function getVelocityPosition(

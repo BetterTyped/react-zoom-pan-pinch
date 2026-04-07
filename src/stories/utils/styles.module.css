@@ -1,9 +1,196 @@
+.wrapper {
+  width: calc(100vw - 200px);
+  height: calc(100vh - 200px);
+}
+
+/* ── Control bar (glassmorphism toolbar) ─────────────────────── */
+
+.controlBar {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(15, 15, 20, 0.72);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 0 0.5px rgba(255, 255, 255, 0.04) inset;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.controlsTopLeft {
+  top: 25px;
+  left: 25px;
+}
+
+.controlsTopCenter {
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.controlsTopRight {
+  top: 25px;
+  right: 25px;
+}
+
+.controlsBottomLeft {
+  bottom: 25px;
+  left: 25px;
+}
+
+.controlsBottomRight {
+  bottom: 25px;
+  right: 25px;
+}
+
+/* ── Button groups ───────────────────────────────────────────── */
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.controlDivider {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* ── Icon button ─────────────────────────────────────────────── */
+
+.controlIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.controlIconActive {
+  background: rgba(96, 165, 250, 0.2);
+  color: rgba(191, 219, 254, 0.95);
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.35) inset;
+}
+
+.controlIcon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.controlIcon:active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  transform: scale(0.94);
+}
+
+.controlIcon:focus-visible {
+  outline: 2px solid rgba(100, 160, 255, 0.6);
+  outline-offset: -1px;
+}
+
+/* ── Tooltip ─────────────────────────────────────────────────── */
+
+.controlIcon[data-tooltip]::after,
+.controlText[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(10, 10, 14, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #e4e4e7;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  z-index: 100;
+}
+
+.controlIcon[data-tooltip]:hover::after,
+.controlText[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ── Text button (for labels like "Zoom to X") ───────────────── */
+
+.controlText {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.controlText:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.controlText:active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  transform: scale(0.97);
+}
+
+.controlText:focus-visible {
+  outline: 2px solid rgba(100, 160, 255, 0.6);
+  outline-offset: -1px;
+}
+
+/* ── Legacy single button (kept for stories still using it) ─── */
+
 .controlPanel {
   position: absolute;
   z-index: 2;
   transform: translate(10px, 10px);
-  max-width: calc(100% - 20px);
+  max-width: calc(100vw - 20px);
 }
+
 .controlBtn {
   padding: 6px 12px;
   background: white;
@@ -27,6 +214,8 @@
 .controlBtn:active {
   opacity: 0.9;
 }
+
+/* ── Stress-test grid ────────────────────────────────────────── */
 
 .grid {
   display: grid;

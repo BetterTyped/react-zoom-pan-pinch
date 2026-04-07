@@ -1,0 +1,99 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper, TransformComponent } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs, BoundsOverlay, viewerChrome } from "../../utils";
+import { BoundsContent, contentSize } from "./bounds.data";
+
+export const minX = -(contentSize - 500);
+export const maxX = 0;
+export const minY = -(contentSize - 500);
+export const maxY = 0;
+
+export const Template = (args) => (
+  <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <TransformWrapper
+      {...normalizeArgs(args)}
+      minPositionX={minX}
+      maxPositionX={maxX}
+      minPositionY={minY}
+      maxPositionY={maxY}
+    >
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <TransformComponent
+          wrapperStyle={{
+            ...viewerChrome,
+            width: "500px",
+            height: "500px",
+            maxWidth: "80vw",
+            maxHeight: "80vh",
+          }}
+        >
+          <BoundsContent />
+        </TransformComponent>
+        <BoundsOverlay minX={minX} maxX={maxX} minY={minY} maxY={maxY} wrapperWidth={500} wrapperHeight={500} />
+      </div>
+    </TransformWrapper>
+    <p
+      style={{
+        fontSize: "13px",
+        color: "#888",
+        marginTop: "12px",
+        maxWidth: "500px",
+        lineHeight: 1.5,
+      }}
+    >
+      Pan around the map. As you approach a boundary, a shadow and
+      &ldquo;Limit&rdquo; label fade in on that edge. The content is locked
+      within the position bounds — you cannot pan beyond them.
+    </p>
+  </div>
+);
+
+<Meta
+  title="Basic/Bounds"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Bounds
+
+**Position bounds** clamp the transform’s translation: `positionX` and `positionY`
+stay within the ranges you set. They apply while panning, during pinch or wheel
+zoom, and when inertia or animations run—anything that would move the content
+past a limit is stopped or corrected at that edge.
+
+Use these props when you need a **custom panning window** (for example a large
+map or canvas where you do not want users to drag content completely away, or
+where min/max should **not** match the wrapper edges). For the common case
+“keep the scaled content inside the viewport,” use **`limitToBounds`** (see the
+controls below): the library derives limits from the wrapper, content size, and
+current scale. When you pass a given `minPosition*` / `maxPosition*` value, it
+**replaces** the auto-calculated bound on that axis; this story sets all four,
+so the pan range is defined entirely by those numbers.
+
+## What this story shows
+
+The viewport is a fixed **500×500px** frame. The map (`BoundsContent` in
+`bounds.data.tsx`) is much larger, so you can pan in both directions. The
+min/max values are chosen so you can explore the map but **cannot** pan past
+the configured limits—try dragging toward each edge until motion stops.
+
+The **fog and “Limit” labels** are implemented by `BoundsOverlay` in the
+story utilities (`useTransformComponent` + edge proximity). They are **not**
+part of the published library; they only illustrate how you might reflect
+“near a bound” in your own UI.
+
+## Try it
+
+<Canvas>
+  <Story name="Bounds">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+Use the table for global behavior (panning, wheel, zoom limits, **`limitToBounds`**, etc.).
+Position bounds are always set in **pixels** on `TransformWrapper`, consistent
+with `positionX` / `positionY` in the transform state.
+
+<ArgsTable story="Bounds" />

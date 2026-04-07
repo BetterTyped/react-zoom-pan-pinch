@@ -24,12 +24,20 @@ export const initialSetup: LibrarySetup = {
   centerOnInit: false,
   disablePadding: false,
   smooth: true,
+  detached: false,
   wheel: {
-    step: 0.2,
+    step: 0.015,
     disabled: false,
-    smoothStep: 0.001,
     wheelDisabled: false,
     touchPadDisabled: false,
+    activationKeys: [],
+    excluded: [],
+  },
+  trackPadPanning: {
+    disabled: true,
+    velocityDisabled: false,
+    lockAxisX: false,
+    lockAxisY: false,
     activationKeys: [],
     excluded: [],
   },
@@ -41,13 +49,13 @@ export const initialSetup: LibrarySetup = {
     allowLeftClickPan: true,
     allowMiddleClickPan: true,
     allowRightClickPan: true,
-    wheelPanning: false,
     activationKeys: [],
     excluded: [],
   },
   pinch: {
     step: 5,
     disabled: false,
+    allowPanning: true,
     excluded: [],
   },
   doubleClick: {
@@ -64,7 +72,7 @@ export const initialSetup: LibrarySetup = {
     animationTime: 200,
     animationType: "easeOut",
   },
-  alignmentAnimation: {
+  autoAlignment: {
     disabled: false,
     sizeX: 100,
     sizeY: 100,
@@ -74,10 +82,14 @@ export const initialSetup: LibrarySetup = {
   },
   velocityAnimation: {
     disabled: false,
-    sensitivity: 1,
-    animationTime: 400,
+    sensitivityMouse: 1,
+    sensitivityTouch: 1.2,
+    maxStrengthMouse: 20,
+    maxStrengthTouch: 40,
+    inertia: 1,
+    animationTime: 300,
+    maxAnimationTime: 800,
     animationType: "easeOut",
-    equalToMove: true,
   },
 };
 

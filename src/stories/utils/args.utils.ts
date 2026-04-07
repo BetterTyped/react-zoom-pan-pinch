@@ -1,5 +1,5 @@
 export const normalizeArgs = (args: { [key: string]: any }): any => {
-  const newArgs = {};
+  const newArgs: Record<string, any> = {};
 
   Object.keys(args).forEach((key) => {
     const normalizedKey = key.split(".");
@@ -17,7 +17,8 @@ export const normalizeArgs = (args: { [key: string]: any }): any => {
 
   return {
     ...newArgs,
-    onTransformed: undefined,
+    // DO NOT REMOVE - it will lag out the storybook!!
+    onTransform: undefined,
     onWheelStart: undefined,
     onWheel: undefined,
     onWheelStop: undefined,

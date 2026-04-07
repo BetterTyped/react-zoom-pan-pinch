@@ -49,7 +49,7 @@ export const setTransform =
     animationTime = 300,
     animationType: keyof typeof animations = "easeOut",
   ): void => {
-    const { positionX, positionY, scale } = contextInstance.transformState;
+    const { positionX, positionY, scale } = contextInstance.state;
     const { wrapperComponent, contentComponent } = contextInstance;
     const { disabled } = contextInstance.setup;
 
@@ -80,11 +80,10 @@ export const centerView =
     animationTime = 200,
     animationType: keyof typeof animations = "easeOut",
   ): void => {
-    const { transformState, wrapperComponent, contentComponent } =
-      contextInstance;
+    const { state, wrapperComponent, contentComponent } = contextInstance;
     if (wrapperComponent && contentComponent) {
       const targetState = getCenterPosition(
-        scale || transformState.scale,
+        scale || state.scale,
         wrapperComponent,
         contentComponent,
       );

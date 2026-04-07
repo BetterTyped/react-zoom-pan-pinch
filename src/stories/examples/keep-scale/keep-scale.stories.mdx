@@ -1,5 +1,4 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -8,38 +7,24 @@ import { Example } from "./example";
 export const Template = (args) => <Example {...args} />;
 
 <Meta
-  title="Examples/Keep scale"
+  title="Components/Keep Scale"
   component={TransformWrapper}
-  argTypes={{
-    ...argsTypes,
-    "wheel.excluded": {
-      ...argsTypes["wheel.excluded"],
-      defaultValue: ["wheelDisabled"],
-    },
-    "panning.excluded": {
-      ...argsTypes["panning.excluded"],
-      defaultValue: ["panningDisabled"],
-    },
-    "pinch.excluded": {
-      ...argsTypes["pinch.excluded"],
-      defaultValue: ["pinchDisabled"],
-    },
-    centerOnInit: {
-      defaultValue: true,
-    },
-  }}
+  argTypes={argsTypes}
 />
 
-# Keep scale
+# Keep Scale
 
-<br />
+The `KeepScale` component wraps child elements so they **maintain their visual
+size** regardless of the current zoom level. As you zoom into the map, the
+pin markers stay the same size on screen while the terrain scales normally.
 
-### Preview:
+Click any **marker on the map** or a **location card** below to zoom in.
+The pins remain crisp and legible at every zoom level — even at 100×.
 
 <Canvas>
-  <Story name="Keep scale">{(args) => <Template {...args} />}</Story>
+  <Story name="Keep Scale">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
 ## Component API
 
-<ArgsTable story="Keep scale" />
+<ArgsTable story="Keep Scale" />

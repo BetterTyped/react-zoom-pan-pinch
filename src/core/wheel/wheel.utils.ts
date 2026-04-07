@@ -1,5 +1,5 @@
 import { ReactZoomPanPinchContext, PositionType } from "../../models";
-import { checkIsNumber, isExcludedNode, roundNumber } from "../../utils";
+import { checkIsNumber, isExcludedNode } from "../../utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
 
 export const isWheelAllowed = (
@@ -21,6 +21,41 @@ export const isWheelAllowed = (
   const isExcluded = isExcludedNode(target, excluded);
 
   if (isExcluded) return false;
+
+  const keysPressed = contextInstance.isPressingKeys(
+    contextInstance.setup.wheel.activationKeys,
+  );
+
+  if (!keysPressed) return false;
+
+  return true;
+};
+
+export const isWheelPanningAllowed = (
+  contextInstance: ReactZoomPanPinchContext,
+  event: WheelEvent,
+): boolean => {
+  const { disabled, trackPadPanning } = contextInstance.setup;
+  const { activationKeys, excluded } = trackPadPanning;
+
+  if (!contextInstance.wrapperComponent || !contextInstance.contentComponent) {
+    return false;
+  }
+
+  if (disabled || trackPadPanning.disabled || event.ctrlKey) {
+    return false;
+  }
+
+  const isAllowed = isWheelAllowed(contextInstance, event);
+  // Cannot execute at the same time as wheel zoom
+  if (isAllowed) return false;
+
+  const target = event.target as HTMLElement;
+  const isExcluded = isExcludedNode(target, excluded);
+  if (isExcluded) return false;
+
+  const keysPressed = contextInstance.isPressingKeys(activationKeys);
+  if (!keysPressed) return false;
 
   return true;
 };
@@ -77,7 +112,7 @@ export const handleCalculateWheelZoom = (
   disable: boolean,
   getTarget?: boolean,
 ): number => {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { wrapperComponent, setup } = contextInstance;
   const { maxScale, minScale, zoomAnimation, disablePadding } = setup;
   const { size, disabled } = zoomAnimation;
@@ -91,7 +126,7 @@ export const handleCalculateWheelZoom = (
   if (getTarget) return targetScale;
   const paddingEnabled = disable ? false : !disabled;
   const newScale = checkZoomBounds(
-    roundNumber(targetScale, 3),
+    targetScale,
     minScale,
     maxScale,
     size,
@@ -105,7 +140,7 @@ export const handleWheelZoomStop = (
   event: WheelEvent,
 ): boolean => {
   const { previousWheelEvent } = contextInstance;
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { maxScale, minScale } = contextInstance.setup;
 
   if (!previousWheelEvent) return false;

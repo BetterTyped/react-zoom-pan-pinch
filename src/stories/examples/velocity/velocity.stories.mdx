@@ -1,0 +1,35 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Advanced/Velocity"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Pan velocity (inertia)
+
+After a fast pan the library applies **momentum** so the canvas keeps
+moving and **eases out** — the same physics you feel when scrolling on
+mobile. Toggle **Momentum / Locked**, adjust **Sensitivity** and
+**Friction**, then fling the starfield to feel the difference.
+
+| Prop | Effect |
+|---|---|
+| `velocityAnimation.disabled` | Turn inertia on/off |
+| `velocityAnimation.sensitivityMouse` | How much initial speed is captured (higher = faster fling) |
+| `velocityAnimation.inertia` | Decay coefficient — higher = longer glide |
+| `velocityAnimation.animationTime` | Base animation duration in ms |
+
+<Canvas>
+  <Story name="Velocity">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Velocity" />

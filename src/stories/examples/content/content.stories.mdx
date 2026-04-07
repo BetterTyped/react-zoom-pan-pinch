@@ -1,96 +1,45 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
-import { normalizeArgs } from "../../utils";
-
-import exampleImg from "../../assets/small-image.jpg";
-import { useTransformComponent } from "../../../hooks";
+import { normalizeArgs, Controls, viewerChrome } from "../../utils";
+import { DocTable } from "../../docs/DocTable.tsx";
+import { MixedContent } from "./mixed-content.data";
 
 export const Template = (args) => {
+  const normalized = normalizeArgs(args);
   return (
-    <TransformWrapper {...normalizeArgs(args)}>
-      <TransformComponent
-        wrapperStyle={{ maxWidth: "100%", maxHeight: "calc(100vh - 50px)" }}
-      >
-        <div style={{ background: "#444", color: "white", padding: "50px" }}>
-          <h1>No scrollbars needed</h1>
-          <h2>Use mouse or gestures to move around</h2>
-          <button
-            onClick={() => alert("You can still interact with click events!")}
-          >
-            Click me!
-          </button>
-          <div
-            style={{
-              display: "flex",
-              overflow: "auto",
-              maxWidth: "100%",
-              padding: "10px",
+    <TransformWrapper
+      {...normalized}
+      panning={{ excluded: ["panningDisabled"], ...normalized.panning }}
+      wheel={{ excluded: ["wheelDisabled"], ...normalized.wheel }}
+      pinch={{ excluded: ["pinchDisabled"], ...normalized.pinch }}
+    >
+      {(utils) => (
+        <div style={{ fontFamily: "system-ui, -apple-system, sans-serif", position: "relative" }}>
+          <Controls {...utils} position="bottom-left" />
+          <TransformComponent
+            wrapperStyle={{
+              ...viewerChrome,
+              width: "600px",
+              height: "520px",
+              maxWidth: "85vw",
+              maxHeight: "80vh",
+            }}
+            contentStyle={{
+              width: "100%",
             }}
           >
-            <div
-              style={{
-                width: "100px",
-                height: "100px",
-                padding: "10px",
-                background: "red",
-              }}
-              className="panningDisabled"
-            >
-              Panning is DISABLED on this element
-            </div>
-            <div
-              style={{
-                width: "100px",
-                height: "100px",
-                padding: "10px",
-                background: "blue",
-              }}
-              className="wheelDisabled"
-            >
-              Wheel is DISABLED on this element
-            </div>
-            <div
-              style={{
-                width: "100px",
-                height: "100px",
-                padding: "10px",
-                background: "green",
-              }}
-              className="pinchDisabled"
-            >
-              Pinch is DISABLED on this element
-            </div>
-          </div>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum
-          </p>
-          <img src={exampleImg} alt="" />
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum
-          </p>
+            <MixedContent />
+          </TransformComponent>
         </div>
-      </TransformComponent>
+      )}
     </TransformWrapper>
   );
 };
 
 <Meta
-  title="Examples/Mixed Content"
+  title="Basic/Mixed Content"
   component={TransformWrapper}
   argTypes={{
     ...argsTypes,
@@ -111,14 +60,113 @@ export const Template = (args) => {
 
 # Mixed Content
 
-<br />
+Real-world zoomable interfaces rarely contain a single image—they hold
+**dashboards, text, charts, buttons, scrollable lists**, and other interactive
+widgets. This story proves the library handles them all, including **gesture
+exclusion zones** that let parts of the content opt out of specific
+interactions.
 
-### Preview:
+## Why exclusion zones matter
+
+When your transformed content contains scrollable areas, clickable controls,
+or embedded widgets, you often need to **prevent certain gestures from
+reaching the library** on specific elements. Without exclusion, a user trying
+to scroll a list would instead pan the entire canvas—or a pinch to zoom an
+embedded map would zoom the outer viewport.
+
+The library solves this with the **`excluded` array** available on `panning`,
+`wheel`, `pinch`, and `doubleClick` options. Pass one or more **CSS class
+names**; any event that originates on (or inside) an element carrying that
+class is silently ignored by that gesture handler.
+
+## How it works
+
+```tsx
+<TransformWrapper
+  panning={{ excluded: ["panningDisabled"] }}
+  wheel={{ excluded: ["wheelDisabled"] }}
+  pinch={{ excluded: ["pinchDisabled"] }}
+>
+  <TransformComponent>
+    <div className="panningDisabled">
+      {/* Drag here does NOT pan the canvas */}
+      <ScrollableList />
+    </div>
+    <div className="wheelDisabled">
+      {/* Mouse wheel here does NOT zoom */}
+      <SomeWidget />
+    </div>
+    <div className="pinchDisabled">
+      {/* Touch pinch here does NOT zoom */}
+      <EmbeddedMap />
+    </div>
+    <p>Normal content — all gestures work here</p>
+  </TransformComponent>
+</TransformWrapper>
+```
+
+<DocTable
+  columns={[
+    { header: "Prop" },
+    { header: "Gesture blocked", style: "type" },
+    { header: "Typical use case", style: "text" },
+  ]}
+  rows={[
+    ["panning.excluded", "Click-and-drag", "Scrollable lists, text selection, draggable widgets"],
+    ["wheel.excluded", "Mouse wheel / trackpad scroll", "Dropdowns, inner scroll containers, code editors"],
+    ["pinch.excluded", "Two-finger pinch", "Embedded maps, multi-touch canvases, sliders"],
+    ["doubleClick.excluded", "Double-click zoom", "Editable text, buttons that need double-click"],
+  ]}
+/>
+
+> **No JavaScript wiring required.** Add the CSS class to the element (or a
+> parent), and the library reads it from the event target's class list at
+> interaction time. Classes are checked via `classList.contains()`, so they
+> work on any depth of nesting.
+
+## Try it
+
+Pan, zoom, and pinch the dashboard below. Then interact with the **dashed
+exclusion zones** — notice how the specific gesture is suppressed inside each
+one while everything else still works normally. Use the controls to zoom in
+and out programmatically.
 
 <Canvas>
   <Story name="Mixed Content">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
+## Combining exclusions
+
+You can stack multiple exclusion classes on a single element to block several
+gestures at once:
+
+```tsx
+<div className="panningDisabled wheelDisabled">
+  {/* Both panning AND wheel zoom are blocked here */}
+</div>
+```
+
+The exclusion is **per-gesture**, so unrelated gestures still pass through.
+For example, an element with `panningDisabled` still responds to wheel zoom
+and pinch zoom.
+
+## Common patterns
+
+**Scrollable sidebar inside a zoomable canvas** — wrap the sidebar in a
+`panningDisabled wheelDisabled` container so vertical scrolling and wheel
+events stay local.
+
+**Interactive form controls** — add `panningDisabled` to the form wrapper so
+users can click inputs, drag sliders, and select text without moving the
+canvas.
+
+**Nested zoomable region** — add `pinchDisabled wheelDisabled` to the inner
+region and attach a second `TransformWrapper` inside it for independent zoom
+control.
+
 ## Component API
+
+Use the controls below to toggle individual gesture settings and see how they
+affect interaction with the dashboard.
 
 <ArgsTable story="Mixed Content" />

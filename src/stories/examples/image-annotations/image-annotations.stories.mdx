@@ -1,0 +1,39 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Image annotations"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Image annotations
+
+An **image labeling tool** built on the library: pan and zoom the photo, then
+draw **bounding boxes** (Rectangle mode) or drop **numbered pins** (Pin mode)
+directly on the image — even while zoomed in.
+
+In **Rectangle** mode, click and drag to draw a bounding box for object
+detection. In **Pin** mode, click to place a point marker. After placing, fill
+in a **title**, **description**, and choose a **label category** with
+color-coded presets. Click any annotation on the canvas to see its full details
+in a popup.
+
+Coordinates are converted from **viewport space** to **content space** using the
+live transform state, so markers stay glued to the image at all zoom levels.
+**Focus** in the sidebar calls **`zoomToElement`** on the annotation.
+
+<Canvas>
+  <Story name="Image annotations">
+    {(args) => <Template {...args} />}
+  </Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Image annotations" />

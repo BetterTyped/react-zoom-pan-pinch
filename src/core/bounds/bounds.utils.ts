@@ -44,11 +44,11 @@ export const getBounds = (
 ): BoundsType => {
   const scaleWidthFactor =
     wrapperWidth > newContentWidth
-      ? diffWidth * (centerZoomedOut ? 1 : 0.5)
+      ? diffWidth * (centerZoomedOut ? 0.5 : 1)
       : 0;
   const scaleHeightFactor =
     wrapperHeight > newContentHeight
-      ? diffHeight * (centerZoomedOut ? 1 : 0.5)
+      ? diffHeight * (centerZoomedOut ? 0.5 : 1)
       : 0;
 
   const minPositionX = wrapperWidth - newContentWidth - scaleWidthFactor;
@@ -56,7 +56,14 @@ export const getBounds = (
   const minPositionY = wrapperHeight - newContentHeight - scaleHeightFactor;
   const maxPositionY = scaleHeightFactor;
 
-  return { minPositionX, maxPositionX, minPositionY, maxPositionY };
+  return {
+    minPositionX,
+    maxPositionX,
+    minPositionY,
+    maxPositionY,
+    scaleWidthFactor,
+    scaleHeightFactor,
+  };
 };
 
 export const calculateBounds = (
@@ -64,7 +71,7 @@ export const calculateBounds = (
   newScale: number,
 ): BoundsType => {
   const { wrapperComponent, contentComponent } = contextInstance;
-  const { centerZoomedOut } = contextInstance.setup;
+  const { centerZoomedOut, disablePadding } = contextInstance.setup;
 
   if (!wrapperComponent || !contentComponent) {
     throw new Error("Components are not mounted");
@@ -74,8 +81,8 @@ export const calculateBounds = (
     wrapperWidth,
     wrapperHeight,
     newContentWidth,
-    newDiffWidth,
     newContentHeight,
+    newDiffWidth,
     newDiffHeight,
   } = getComponentsSizes(wrapperComponent, contentComponent, newScale);
 
@@ -88,6 +95,38 @@ export const calculateBounds = (
     newDiffHeight,
     Boolean(centerZoomedOut),
   );
+
+  const contentFitsCompletely =
+    wrapperWidth >= newContentWidth && wrapperHeight >= newContentHeight;
+  if (disablePadding && contentFitsCompletely && !centerZoomedOut) {
+    bounds.minPositionX = 0;
+    bounds.maxPositionX = 0;
+    bounds.minPositionY = 0;
+    bounds.maxPositionY = 0;
+  }
+
+  const {
+    minPositionX: propMinX,
+    maxPositionX: propMaxX,
+    minPositionY: propMinY,
+    maxPositionY: propMaxY,
+  } = contextInstance.setup;
+
+  // Explicit position props define content-space boundaries at scale=1.
+  // Scale them so the same content region stays reachable at every zoom level.
+  if (propMinX != null) {
+    bounds.minPositionX = wrapperWidth * (1 - newScale) + propMinX * newScale;
+  }
+  if (propMaxX != null) {
+    bounds.maxPositionX = propMaxX * newScale;
+  }
+  if (propMinY != null) {
+    bounds.minPositionY = wrapperHeight * (1 - newScale) + propMinY * newScale;
+  }
+  if (propMaxY != null) {
+    bounds.maxPositionY = propMaxY * newScale;
+  }
+
   return bounds;
 };
 

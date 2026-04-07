@@ -1,13 +1,41 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { normalizeArgs } from "stories/utils";
+import { Controls, normalizeArgs, viewerChrome } from "stories/utils";
+import { useTransformComponent } from "../../../hooks";
 import exampleImg from "../../assets/medium-image.jpg";
+
+function ScaleBadge() {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 10,
+        padding: "5px 12px",
+        borderRadius: 8,
+        background: "rgba(10, 10, 18, 0.78)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "rgba(255,255,255,0.7)",
+        fontSize: 11,
+        fontWeight: 600,
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        letterSpacing: "0.02em",
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      {state.scale.toFixed(2)}x
+    </div>
+  ));
+}
 
 export const Example: React.FC<any> = (args: any) => {
   const src = exampleImg;
   const alt = "example";
-  const backgroundColor = "black";
   const scaleUp = true;
   const zoomFactor = 8;
 
@@ -40,24 +68,33 @@ export const Example: React.FC<any> = (args: any) => {
     imageNaturalHeight,
   ]);
 
-  const handleResize = useCallback(() => {
-    if (container !== null) {
-      const rect = container.getBoundingClientRect();
-      setContainerWidth(rect.width);
-      setContainerHeight(rect.height);
-    } else {
-      setContainerWidth(0);
-      setContainerHeight(0);
-    }
-  }, [container]);
+  const applySize = useCallback((width: number, height: number) => {
+    setContainerWidth(width);
+    setContainerHeight(height);
+  }, []);
 
   useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    if (!container) return undefined;
+
+    const measure = () => {
+      const rect = container.getBoundingClientRect();
+      applySize(rect.width, rect.height);
     };
-  }, [handleResize]);
+
+    measure();
+
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0]?.contentRect;
+      if (cr) {
+        applySize(cr.width, cr.height);
+      }
+    });
+    ro.observe(container);
+
+    return () => {
+      ro.disconnect();
+    };
+  }, [container, applySize]);
 
   const handleImageOnLoad = (image: HTMLImageElement) => {
     setImageNaturalWidth(image.naturalWidth);
@@ -75,27 +112,39 @@ export const Example: React.FC<any> = (args: any) => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor,
+        minHeight: 0,
+        maxWidth: "100%",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        position: "relative",
       }}
       ref={(el: HTMLDivElement | null) => setContainer(el)}
     >
       {imageScale > 0 && (
         <TransformWrapper
+          {...normalizeArgs(args)}
           key={`${containerWidth}x${containerHeight}`}
           initialScale={imageScale}
-          minScale={imageScale}
+          minScale={imageScale * 0.5}
           maxScale={imageScale * zoomFactor}
           centerOnInit
-          {...normalizeArgs(args)}
+          centerZoomedOut
         >
-          <TransformComponent
-            wrapperStyle={{
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <img alt={alt} src={src} />
-          </TransformComponent>
+          {(utils) => (
+            <>
+              <Controls {...utils} />
+              <ScaleBadge />
+              <TransformComponent
+                wrapperStyle={{
+                  ...viewerChrome,
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <img alt={alt} src={src} style={{ display: "block" }} />
+              </TransformComponent>
+            </>
+          )}
         </TransformWrapper>
       )}
     </div>

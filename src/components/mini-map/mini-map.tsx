@@ -14,12 +14,20 @@ import {
 } from "hooks";
 import { useResize } from "./use-resize.hook";
 import { ReactZoomPanPinchRef } from "models";
+import { boundLimiter } from "core/bounds/bounds.utils";
 
 export type MiniMapProps = {
   children: React.ReactNode;
   width?: number;
   height?: number;
   borderColor?: string;
+  /** Merged onto the viewport indicator (`.rzpp-minimap-preview`). */
+  previewStyle?: React.CSSProperties;
+  /** Extra class name(s) appended to `.rzpp-minimap-wrapper`. */
+  wrapperClassName?: string;
+  /** Extra class name(s) appended to `.rzpp-minimap-preview`. */
+  previewClassName?: string;
+  panning?: boolean;
 } & React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
@@ -34,17 +42,23 @@ const previewStyles = {
   border: "3px solid red",
   transformOrigin: "0% 0%",
   boxShadow: "rgba(0,0,0,0.2) 0 0 0 10000000px",
+  pointerEvents: "none",
 } as const;
 
 export const MiniMap: React.FC<MiniMapProps> = ({
   width = 200,
   height = 200,
   borderColor = "red",
+  previewStyle,
+  wrapperClassName,
+  previewClassName,
   children,
+  panning = true,
   ...rest
 }) => {
   const [initialized, setInitialized] = useState(false);
   const instance = useTransformContext();
+  const [isDown, setIsDown] = useState(false);
   const miniMapInstance = useRef<ReactZoomPanPinchRef>(null);
 
   const mainRef = useRef<HTMLDivElement | null>(null);
@@ -71,15 +85,15 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       const rect = instance.contentComponent.getBoundingClientRect();
 
       return {
-        width: rect.width / instance.transformState.scale,
-        height: rect.height / instance.transformState.scale,
+        width: rect.width / instance.state.scale,
+        height: rect.height / instance.state.scale,
       };
     }
     return {
       width: 0,
       height: 0,
     };
-  }, [instance.contentComponent, instance.transformState.scale]);
+  }, [instance.contentComponent, instance.state.scale]);
 
   const computeMiniMapScale = useCallback(() => {
     const contentSize = getContentSize();
@@ -108,14 +122,17 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       position: "absolute",
       boxSizing: "border-box",
       zIndex: 1,
-      overflow: "hidden",
+      // overflow: "hidden",
     } as const;
 
-    Object.keys(style).forEach((key) => {
-      if (wrapperRef.current) {
-        wrapperRef.current.style[key] = style[key];
-      }
-    });
+    if (wrapperRef.current) {
+      const el = wrapperRef.current.style;
+      el.transform = style.transform;
+      el.transformOrigin = style.transformOrigin;
+      el.position = style.position;
+      el.boxSizing = style.boxSizing;
+      el.zIndex = String(style.zIndex);
+    }
   };
 
   const transformMiniMap = () => {
@@ -133,10 +150,10 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     if (previewRef.current) {
       const size = getViewportSize();
       const scale = computeMiniMapScale();
-      const previewScale = scale * (1 / instance.transformState.scale);
+      const previewScale = scale * (1 / instance.state.scale);
       const transform = instance.handleTransformStyles(
-        -instance.transformState.positionX * previewScale,
-        -instance.transformState.positionY * previewScale,
+        -instance.state.positionX * previewScale,
+        -instance.state.positionY * previewScale,
         1,
       );
 
@@ -165,21 +182,89 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     return instance.onChange((zpp) => {
       const scale = computeMiniMapScale();
       if (miniMapInstance.current) {
-        miniMapInstance.current.instance.transformState.scale =
-          zpp.instance.transformState.scale;
-        miniMapInstance.current.instance.transformState.positionX =
-          zpp.instance.transformState.positionX * scale;
-        miniMapInstance.current.instance.transformState.positionY =
-          zpp.instance.transformState.positionY * scale;
+        miniMapInstance.current.instance.state.scale = zpp.instance.state.scale;
+        miniMapInstance.current.instance.state.positionX =
+          zpp.instance.state.positionX * scale;
+        miniMapInstance.current.instance.state.positionY =
+          zpp.instance.state.positionY * scale;
       }
     });
   }, [computeMiniMapScale, instance, miniMapInstance]);
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      if (
+        panning &&
+        isDown &&
+        instance.contentComponent &&
+        previewRef.current &&
+        mainRef.current
+      ) {
+        const scale = computeMiniMapScale();
+        const previewRect = previewRef.current.getBoundingClientRect();
+        const mainRect = mainRef.current.getBoundingClientRect();
+
+        const relativeX = (e.clientX - mainRect.left) / scale;
+        const relativeY = (e.clientY - mainRect.top) / scale;
+
+        const x = relativeX - previewRect.width / 2;
+        const y = relativeY - previewRect.height / 2;
+
+        const instanceWidth =
+          (instance.wrapperComponent?.offsetWidth || 0) * instance.state.scale;
+        const instanceHeight =
+          (instance.wrapperComponent?.offsetHeight || 0) * instance.state.scale;
+
+        const limitWidth =
+          instanceWidth - previewRect.width * 2 * instance.state.scale;
+        const limitHeight =
+          instanceHeight - previewRect.height * 2 * instance.state.scale;
+
+        const boundedX = boundLimiter(
+          x * instance.state.scale,
+          0,
+          limitWidth,
+          true,
+        );
+
+        const boundedY = boundLimiter(
+          y * instance.state.scale,
+          0,
+          limitHeight,
+          true,
+        );
+
+        instance.setState(instance.state.scale, -boundedX, -boundedY);
+      }
+    };
+
+    const setDown = (e: MouseEvent) => {
+      if (
+        mainRef.current?.contains(e.target as Node) ||
+        e.target === mainRef.current
+      ) {
+        move(e);
+        setIsDown(true);
+      }
+    };
+    const setUp = () => {
+      setIsDown(false);
+    };
+    document.addEventListener("mousedown", setDown);
+    document.addEventListener("mouseup", setUp);
+    document.addEventListener("mousemove", move);
+    return () => {
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", setUp);
+    };
+  });
 
   const wrapperStyle = useMemo(() => {
     return {
       position: "relative",
       zIndex: 2,
-      overflow: "hidden",
+      // overflow: "hidden",
+      userSelect: "none",
     } as const;
   }, []);
 
@@ -188,15 +273,19 @@ export const MiniMap: React.FC<MiniMapProps> = ({
       {...rest}
       ref={mainRef}
       style={wrapperStyle}
-      className={`rzpp-mini-map ${rest.className || ""}`}
+      className={`rzpp-mini-map ${rest.className || ""}`.trim()}
     >
-      <div {...rest} ref={wrapperRef} className="rzpp-wrapper">
+      <div
+        style={{ pointerEvents: "none" }}
+        ref={wrapperRef}
+        className={`rzpp-minimap-wrapper ${wrapperClassName || ""}`.trim()}
+      >
         {children}
       </div>
       <div
-        className="rzpp-preview"
+        className={`rzpp-minimap-preview ${previewClassName || ""}`.trim()}
         ref={previewRef}
-        style={{ ...previewStyles, borderColor }}
+        style={{ ...previewStyles, borderColor, ...previewStyle }}
       />
     </div>
   );

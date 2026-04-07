@@ -4,7 +4,12 @@ import { handleZoomToPoint } from "../zoom/zoom.logic";
 import { animate } from "../animations/animations.utils";
 import { createState } from "../../utils/state.utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
-import { roundNumber } from "../../utils";
+import {
+  getContext,
+  getCenterPosition,
+  handleCallback,
+  roundNumber,
+} from "../../utils";
 import {
   calculateBounds,
   getMouseBoundedPosition,
@@ -15,7 +20,7 @@ export const handleCalculateButtonZoom = (
   delta: number,
   step: number,
 ): number => {
-  const { scale } = contextInstance.transformState;
+  const { scale } = contextInstance.state;
   const { wrapperComponent, setup } = contextInstance;
   const { maxScale, minScale, zoomAnimation, smooth } = setup;
   const { size } = zoomAnimation;
@@ -46,9 +51,12 @@ export function handleZoomToViewCenter(
   animationType: keyof typeof animations,
 ): void {
   const { wrapperComponent } = contextInstance;
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.state;
+  const { zoomAnimation } = contextInstance.setup;
 
   if (!wrapperComponent) return console.error("No WrapperComponent found");
+
+  const effectiveAnimationTime = zoomAnimation.disabled ? 0 : animationTime;
 
   const wrapperWidth = wrapperComponent.offsetWidth;
   const wrapperHeight = wrapperComponent.offsetHeight;
@@ -70,7 +78,21 @@ export function handleZoomToViewCenter(
     );
   }
 
-  animate(contextInstance, targetState, animationTime, animationType);
+  const { onZoomStart, onZoom, onZoomStop } = contextInstance.props;
+  const event = new MouseEvent("mousemove", { bubbles: true });
+  const ctx = getContext(contextInstance);
+  handleCallback(ctx, event, onZoomStart);
+  handleCallback(ctx, event, onZoom);
+  animate(contextInstance, targetState, effectiveAnimationTime, animationType);
+  const win =
+    wrapperComponent.ownerDocument?.defaultView ??
+    (typeof window !== "undefined" ? window : null);
+  if (win) {
+    win.setTimeout(() => {
+      if (!contextInstance.mounted) return;
+      handleCallback(getContext(contextInstance), event, onZoomStop);
+    }, effectiveAnimationTime);
+  }
 }
 
 export function resetTransformations(
@@ -79,12 +101,25 @@ export function resetTransformations(
   animationType: keyof typeof animations,
   onResetTransformation?: () => void,
 ): void {
-  const { setup, wrapperComponent } = contextInstance;
-  const { limitToBounds } = setup;
+  const { setup, wrapperComponent, contentComponent } = contextInstance;
+  const { limitToBounds, centerOnInit } = setup;
   const initialTransformation = createState(contextInstance.props);
-  const { scale, positionX, positionY } = contextInstance.transformState;
+  const { scale, positionX, positionY } = contextInstance.state;
 
   if (!wrapperComponent) return;
+
+  let targetPositionX = initialTransformation.positionX;
+  let targetPositionY = initialTransformation.positionY;
+
+  if (centerOnInit && contentComponent) {
+    const centered = getCenterPosition(
+      initialTransformation.scale,
+      wrapperComponent,
+      contentComponent,
+    );
+    targetPositionX = centered.positionX;
+    targetPositionY = centered.positionY;
+  }
 
   const newBounds = calculateBounds(
     contextInstance,
@@ -92,8 +127,8 @@ export function resetTransformations(
   );
 
   const boundedPositions = getMouseBoundedPosition(
-    initialTransformation.positionX,
-    initialTransformation.positionY,
+    targetPositionX,
+    targetPositionY,
     newBounds,
     limitToBounds,
     0,
@@ -116,7 +151,22 @@ export function resetTransformations(
   }
 
   onResetTransformation?.();
+
+  const { onZoomStart, onZoom, onZoomStop } = contextInstance.props;
+  const event = new MouseEvent("mousemove", { bubbles: true });
+  const ctx = getContext(contextInstance);
+  handleCallback(ctx, event, onZoomStart);
+  handleCallback(ctx, event, onZoom);
   animate(contextInstance, newState, animationTime, animationType);
+  const win =
+    wrapperComponent.ownerDocument?.defaultView ??
+    (typeof window !== "undefined" ? window : null);
+  if (win) {
+    win.setTimeout(() => {
+      if (!contextInstance.mounted) return;
+      handleCallback(getContext(contextInstance), event, onZoomStop);
+    }, animationTime);
+  }
 }
 
 export function getOffset(
@@ -145,24 +195,18 @@ export function calculateZoomToNode(
   customOffsetX = 0,
   customOffsetY = 0,
 ): { positionX: number; positionY: number; scale: number } {
-  const { wrapperComponent, contentComponent, transformState } =
-    contextInstance;
+  const { wrapperComponent, contentComponent, state } = contextInstance;
   const { limitToBounds, minScale, maxScale } = contextInstance.setup;
-  if (!wrapperComponent || !contentComponent) return transformState;
+  if (!wrapperComponent || !contentComponent) return state;
 
   const wrapperRect = wrapperComponent.getBoundingClientRect();
   const nodeRect = node.getBoundingClientRect();
-  const nodeOffset = getOffset(
-    node,
-    wrapperComponent,
-    contentComponent,
-    transformState,
-  );
+  const nodeOffset = getOffset(node, wrapperComponent, contentComponent, state);
 
   const nodeLeft = nodeOffset.x;
   const nodeTop = nodeOffset.y;
-  const nodeWidth = nodeRect.width / transformState.scale;
-  const nodeHeight = nodeRect.height / transformState.scale;
+  const nodeWidth = nodeRect.width / state.scale;
+  const nodeHeight = nodeRect.height / state.scale;
 
   const scaleX = wrapperComponent.offsetWidth / nodeWidth;
   const scaleY = wrapperComponent.offsetHeight / nodeHeight;

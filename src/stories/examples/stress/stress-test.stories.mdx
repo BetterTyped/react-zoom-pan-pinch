@@ -1,5 +1,4 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
-import { action } from "@storybook/addon-actions";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types";
@@ -8,21 +7,22 @@ import { Example } from "./example";
 export const Template = (args) => <Example {...args} />;
 
 <Meta
-  title="Examples/Stress test"
+  title="Advanced/Stress Test"
   component={TransformWrapper}
   argTypes={argsTypes}
 />
 
-# Stress test
+# Stress Test
 
-<br />
-
-### Preview:
+A **1,000-image grid** (100 columns) to verify the library handles large DOM
+trees without performance degradation. Pan and zoom remain smooth because the
+library applies a single CSS `transform` on the container — individual child
+elements are never touched during interactions.
 
 <Canvas>
-  <Story name="Stress test">{(args) => <Template {...args} />}</Story>
+  <Story name="Stress Test">{(args) => <Template {...args} />}</Story>
 </Canvas>
 
 ## Component API
 
-<ArgsTable story="Stress test" />
+<ArgsTable story="Stress Test" />

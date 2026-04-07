@@ -52,11 +52,11 @@ const easeInQuint = (t: number): number => {
   return t * t * t * t * t;
 };
 // decelerating to zero velocity
-const easeOutQuint = function (t: number): number {
+const easeOutQuint = (t: number): number => {
   return 1 + --t * t * t * t * t;
 };
 // acceleration until halfway, then deceleration
-const easeInOutQuint = function (t: number): number {
+const easeInOutQuint = (t: number): number => {
   return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
 };
 

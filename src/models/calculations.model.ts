@@ -21,6 +21,14 @@ export type BoundsType = {
   maxPositionX: number;
   minPositionY: number;
   maxPositionY: number;
+  scaleWidthFactor: number;
+  scaleHeightFactor: number;
 };
 
 export type AnimationType = () => void | number;
+
+export enum DeviceType {
+  TRACK_PAD = "track_pad",
+  MOUSE = "mouse",
+  TOUCH = "touch",
+}

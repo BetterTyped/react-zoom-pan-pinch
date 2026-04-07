@@ -1,0 +1,40 @@
+---
+description:
+  Classify GitHub issues as bug vs feature; maintain docs/bugs and
+  docs/feature-requests
+globs: docs/**/*
+alwaysApply: false
+---
+
+# GitHub issues → docs
+
+## Classification
+
+- Decide **bug** (broken behavior / crash / wrong output) vs **feature request**
+  (new behavior or API). When unclear, default to **feature request** and note
+  uncertainty in the doc.
+- **Do not implement feature requests** under the bug-fix stabilization track
+  unless the user explicitly expands scope. Still create/update
+  docs/feature-requests/\*.md.
+
+## File layout
+
+- One markdown file per **unique** bug: docs/bugs/NNN-short-slug.md (primary
+  GitHub number).
+- One markdown file per **unique** feature:
+  docs/feature-requests/NNN-short-slug.md; merge duplicate issues into one file
+  and list every #.
+- Keep docs/open-issues-inventory.md as an **index** linking to those files with
+  a **type** column.
+
+## Bug doc content
+
+- Always record **reported-against version** (npm or git); mark unverified if
+  unknown.
+- Sections: user report, confirmed repro (or not), resolution changelog with
+  **dates** and **fix version**, regression spec path or N/A.
+
+## Feature doc content
+
+- User ask, deduped issue numbers, status log; when implemented, add
+  **Implemented in vX.Y.Z** with date.

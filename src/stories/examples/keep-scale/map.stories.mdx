@@ -1,0 +1,28 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Map"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Map
+
+An interactive **island map** with points of interest that stay readable at
+every zoom level thanks to `KeepScale`. Click any **pin** or pick a
+**location card** from the bar below to fly to that spot. Zoom out to see the
+full archipelago, zoom in for street-level detail.
+
+<Canvas>
+  <Story name="Map">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Map" />

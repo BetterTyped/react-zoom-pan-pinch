@@ -77,7 +77,7 @@ help you resolve issues quickly and avoid blocking releases.
 Do you like this library? Try out other projects
 
 <a href="https://github.com/BetterTyped/hyper-fetch">
-  <img width="200px" src="https://raw.githubusercontent.com/BetterTyped/hyper-fetch/main/.github/assets/readme.png" alt="Hyper Fetch" />
+  <img width="100px" src="./.github/assets/hyper-fetch.svg" alt="Hyper Fetch" />
 </a>
 
 **[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and

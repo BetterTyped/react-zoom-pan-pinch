@@ -89,8 +89,7 @@ preview below is a single link to GitHub.
           />
         </td>
         <td align="left" valign="middle">
-          <strong>⚡ Hyper Fetch</strong>
-          <br />
+          <h3>⚡ Hyper Fetch</h3>
           Fetching and realtime data exchange framework.
           <br />
           <br />

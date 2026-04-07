@@ -90,8 +90,9 @@ preview below is a single link to GitHub.
         </td>
         <td align="left" valign="middle">
           <h3>⚡ Hyper Fetch</h3>
+          <p>
           Fetching and realtime data exchange framework.
-          <br />
+          </p>
           <br />
           <b>View on GitHub →</b>
         </td>

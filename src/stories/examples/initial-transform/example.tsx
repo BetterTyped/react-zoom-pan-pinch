@@ -107,6 +107,19 @@ function StateBadge() {
   ));
 }
 
+function getChipBackground(active: boolean, lit: boolean): string {
+  if (active)
+    return "linear-gradient(135deg, rgba(99,102,241,0.22), rgba(129,140,248,0.10))";
+  if (lit) return "rgba(255,255,255,0.06)";
+  return "transparent";
+}
+
+function getChipColor(active: boolean, lit: boolean): string {
+  if (active) return "#c7d2fe";
+  if (lit) return "#d4d4d8";
+  return "rgba(255,255,255,0.50)";
+}
+
 function PresetButton({
   preset,
   icon,
@@ -137,12 +150,8 @@ function PresetButton({
         border: active
           ? "1px solid rgba(129, 140, 248, 0.45)"
           : "1px solid rgba(255,255,255,0.07)",
-        background: active
-          ? "linear-gradient(135deg, rgba(99,102,241,0.22), rgba(129,140,248,0.10))"
-          : lit
-            ? "rgba(255,255,255,0.06)"
-            : "transparent",
-        color: active ? "#c7d2fe" : lit ? "#d4d4d8" : "rgba(255,255,255,0.50)",
+        background: getChipBackground(active, lit),
+        color: getChipColor(active, lit),
         fontSize: 12,
         fontWeight: 600,
         fontFamily: "inherit",

@@ -10,7 +10,6 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
     "ignoreDeprecations": "5.0",
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",

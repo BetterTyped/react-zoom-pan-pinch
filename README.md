@@ -94,6 +94,7 @@ preview below is a single link to GitHub.
           Fetching and realtime data exchange framework.
           </p>
           <b>View on GitHub →</b>
+          </br>
         </td>
       </tr>
     </table>

@@ -1,5 +1,5 @@
 export const normalizeArgs = (args: { [key: string]: any }): any => {
-  const newArgs = {};
+  const newArgs: Record<string, any> = {};
 
   Object.keys(args).forEach((key) => {
     const normalizedKey = key.split(".");

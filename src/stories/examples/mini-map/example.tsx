@@ -68,7 +68,7 @@ const Content = () => (
 
 export const Template = (args: any) => {
   return (
-    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif", paddingTop: 70 }}>
       <TransformWrapper
         {...normalizeArgs(args)}
         wrapperStyle={{

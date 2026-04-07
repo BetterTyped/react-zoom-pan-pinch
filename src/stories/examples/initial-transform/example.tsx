@@ -67,6 +67,8 @@ const PRESETS: Preset[] = [
   },
 ];
 
+const PRESET_ICONS = ["◎", "⊟", "◤", "◈", "◢"];
+
 function StateBadge() {
   return useTransformComponent(({ state }) => (
     <div
@@ -105,60 +107,120 @@ function StateBadge() {
   ));
 }
 
+function PresetButton({
+  preset,
+  icon,
+  active,
+  onClick,
+}: {
+  preset: Preset;
+  icon: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const lit = active || hovered;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        gap: 7,
+        padding: "7px 13px 7px 10px",
+        borderRadius: 10,
+        border: active
+          ? "1px solid rgba(129, 140, 248, 0.45)"
+          : "1px solid rgba(255,255,255,0.07)",
+        background: active
+          ? "linear-gradient(135deg, rgba(99,102,241,0.22), rgba(129,140,248,0.10))"
+          : lit
+            ? "rgba(255,255,255,0.06)"
+            : "transparent",
+        color: active ? "#c7d2fe" : lit ? "#d4d4d8" : "rgba(255,255,255,0.50)",
+        fontSize: 12,
+        fontWeight: 600,
+        fontFamily: "inherit",
+        cursor: "pointer",
+        transition:
+          "all 0.2s cubic-bezier(.4,0,.2,1)",
+        boxShadow: active
+          ? "0 0 12px rgba(99,102,241,0.15), 0 0 0 0.5px rgba(129,140,248,0.12) inset"
+          : "none",
+      }}
+    >
+      <span
+        style={{
+          fontSize: 13,
+          opacity: active ? 1 : 0.5,
+          transition: "opacity 0.2s ease",
+        }}
+      >
+        {icon}
+      </span>
+      {preset.label}
+    </button>
+  );
+}
+
 export const Example: React.FC<Record<string, unknown>> = (args) => {
   const normalized = normalizeArgs(args);
   const [presetIdx, setPresetIdx] = useState(0);
   const preset = PRESETS[presetIdx];
 
   return (
-    <div style={{ fontFamily: font }}>
+    <div
+      style={{
+        fontFamily: font,
+        padding: 20,
+        borderRadius: 16,
+        background:
+          "linear-gradient(160deg, #0c0c18 0%, #101020 40%, #0e0e1c 100%)",
+        border: "1px solid rgba(255,255,255,0.06)",
+        maxWidth: 660,
+      }}
+    >
       {/* Preset selector */}
       <div
         style={{
           display: "flex",
-          flexWrap: "wrap",
+          alignItems: "center",
           gap: 6,
-          marginBottom: 14,
+          marginBottom: 12,
+          padding: "6px 6px",
+          borderRadius: 14,
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.05)",
+          flexWrap: "wrap",
         }}
       >
-        {PRESETS.map((p, i) => {
-          const on = presetIdx === i;
-          return (
-            <button
-              key={p.label}
-              type="button"
-              onClick={() => setPresetIdx(i)}
-              style={{
-                padding: "8px 14px",
-                borderRadius: 10,
-                border: on
-                  ? "1px solid rgba(129, 140, 248, 0.5)"
-                  : "1px solid rgba(255,255,255,0.1)",
-                background: on
-                  ? "rgba(99, 102, 241, 0.18)"
-                  : "rgba(255,255,255,0.04)",
-                color: on ? "#c7d2fe" : "rgba(255,255,255,0.55)",
-                fontSize: 12,
-                fontWeight: 600,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                transition: "background 0.15s ease, border-color 0.15s ease",
-              }}
-            >
-              {p.label}
-            </button>
-          );
-        })}
+        {PRESETS.map((p, i) => (
+          <PresetButton
+            key={p.label}
+            preset={p}
+            icon={PRESET_ICONS[i]}
+            active={presetIdx === i}
+            onClick={() => setPresetIdx(i)}
+          />
+        ))}
       </div>
 
       {/* Config display */}
       <div
         style={{
           marginBottom: 14,
-          padding: "10px 14px",
-          borderRadius: 10,
-          background: "rgba(15, 15, 20, 0.6)",
+          padding: "10px 16px",
+          borderRadius: 12,
+          background:
+            "linear-gradient(135deg, rgba(15,15,25,0.85), rgba(20,20,35,0.65))",
           border: "1px solid rgba(255,255,255,0.06)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
           display: "flex",
           flexWrap: "wrap",
           gap: "6px 20px",
@@ -168,22 +230,52 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
         <span
           style={{
             fontSize: 12,
-            color: "rgba(255,255,255,0.4)",
-            fontFamily: "ui-monospace, monospace",
+            color: "rgba(255,255,255,0.45)",
+            fontFamily: "'SF Mono', 'Fira Code', ui-monospace, monospace",
+            letterSpacing: "0.01em",
           }}
         >
           {preset.description}
         </span>
         <span style={{ flex: 1 }} />
-        <code
+        <span
           style={{
-            fontSize: 11,
-            color: preset.centerOnInit ? "#34d399" : "#f87171",
-            fontFamily: "ui-monospace, monospace",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "3px 10px",
+            borderRadius: 6,
+            background: preset.centerOnInit
+              ? "rgba(52,211,153,0.08)"
+              : "rgba(248,113,113,0.08)",
+            border: preset.centerOnInit
+              ? "1px solid rgba(52,211,153,0.18)"
+              : "1px solid rgba(248,113,113,0.18)",
           }}
         >
-          centerOnInit: {preset.centerOnInit ? "true" : "false"}
-        </code>
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: preset.centerOnInit ? "#34d399" : "#f87171",
+              boxShadow: preset.centerOnInit
+                ? "0 0 6px rgba(52,211,153,0.5)"
+                : "0 0 6px rgba(248,113,113,0.5)",
+            }}
+          />
+          <code
+            style={{
+              fontSize: 11,
+              color: preset.centerOnInit
+                ? "rgba(52,211,153,0.9)"
+                : "rgba(248,113,113,0.9)",
+              fontFamily: "'SF Mono', 'Fira Code', ui-monospace, monospace",
+            }}
+          >
+            centerOnInit: {preset.centerOnInit ? "true" : "false"}
+          </code>
+        </span>
       </div>
 
       {/* Viewer — key forces remount on preset change */}
@@ -214,19 +306,41 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
 
       <p
         style={{
-          margin: "14px 0 0",
+          margin: "16px 0 0",
           fontSize: 12,
-          color: "rgba(148, 163, 184, 0.8)",
-          lineHeight: 1.6,
+          color: "rgba(148, 163, 184, 0.6)",
+          lineHeight: 1.7,
           maxWidth: 600,
+          letterSpacing: "0.01em",
         }}
       >
         Switch presets above to remount the wrapper with different{" "}
-        <code style={{ color: "#c7d2fe" }}>initialScale</code> and{" "}
-        <code style={{ color: "#c7d2fe" }}>initialPositionX/Y</code> values. The
-        state badge shows live transform values. Use{" "}
-        <strong style={{ color: "#d4d4d8" }}>Reset</strong> to return to the
-        initial configuration.
+        <code
+          style={{
+            color: "#a5b4fc",
+            padding: "1px 5px",
+            borderRadius: 4,
+            background: "rgba(99,102,241,0.1)",
+            fontSize: 11,
+          }}
+        >
+          initialScale
+        </code>{" "}
+        and{" "}
+        <code
+          style={{
+            color: "#a5b4fc",
+            padding: "1px 5px",
+            borderRadius: 4,
+            background: "rgba(99,102,241,0.1)",
+            fontSize: 11,
+          }}
+        >
+          initialPositionX/Y
+        </code>{" "}
+        values. The state badge shows live transform values. Use{" "}
+        <strong style={{ color: "#d4d4d8", fontWeight: 600 }}>Reset</strong> to
+        return to the initial configuration.
       </p>
     </div>
   );

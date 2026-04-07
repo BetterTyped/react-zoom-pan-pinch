@@ -26,14 +26,20 @@ export default [
     plugins: [
       external(),
       babel({
+        babelHelpers: "bundled",
         exclude: "node_modules/**",
       }),
       del({ targets: ["dist/*"] }),
-      typescript({ sourceMap: false, declaration: false }),
+      typescript({ declaration: false }),
       postcss({
         modules: true,
       }),
     ],
+    onwarn(error, warn) {
+      if (error.code !== "CIRCULAR_DEPENDENCY") {
+        warn(error);
+      }
+    },
     external: Object.keys(pkg.peerDependencies || {}),
   },
   {

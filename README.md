@@ -74,14 +74,32 @@ help you resolve issues quickly and avoid blocking releases.
 
 ## Try other BetterTyped projects
 
-Do you like this library? Try out other projects
+Do you like this library? Here is another **BetterTyped** project — the whole
+preview below is a single link to GitHub.
 
-<a href="https://github.com/BetterTyped/hyper-fetch">
-  <img width="100px" src="./.github/assets/hyper-fetch.svg" alt="Hyper Fetch" />
-</a>
-
-**[⚡Hyper Fetch](https://github.com/BetterTyped/hyper-fetch)** - Fetching and
-realtime data exchange framework.
+<div align="center">
+  <a href="https://github.com/BetterTyped/hyper-fetch">
+    <table>
+      <tr>
+        <td align="center" valign="middle" width="140">
+          <img
+            src="./.github/assets/hyper-fetch.svg"
+            width="112"
+            alt="Hyper Fetch logo"
+          />
+        </td>
+        <td align="left" valign="middle">
+          <strong>⚡ Hyper Fetch</strong>
+          <br />
+          Fetching and realtime data exchange framework.
+          <br />
+          <br />
+          <b>View on GitHub →</b>
+        </td>
+      </tr>
+    </table>
+  </a>
+</div>
 
 ---
 

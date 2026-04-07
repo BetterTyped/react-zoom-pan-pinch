@@ -3,21 +3,20 @@ import React, { useState } from "react";
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { normalizeArgs } from "../../utils";
 
-const productImg =
-  "https://images.pexels.com/photos/29306504/pexels-photo-29306504.jpeg";
+const productImg = "https://images.pexels.com/photos/29306504/pexels-photo-29306504.jpeg";
 
 const font = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
 /* ── Data ──────────────────────────────────────────────────── */
 
-const COLORS = [
-  { name: "Midnight", value: "#1e293b" },
-  { name: "Stone", value: "#78716c" },
-  { name: "Ivory", value: "#fefce8" },
-  { name: "Ocean", value: "#0284c7" },
+const SAUCES = [
+  { name: "Garlic", value: "#fefce8" },
+  { name: "Spicy", value: "#dc2626" },
+  { name: "Yogurt", value: "#e2e8f0" },
+  { name: "BBQ", value: "#78350f" },
 ];
 
-const SIZES = ["XS", "S", "M", "L", "XL"] as const;
+const PORTIONS = ["S", "M", "L", "XL"] as const;
 
 /* ── Icons ─────────────────────────────────────────────────── */
 
@@ -152,7 +151,7 @@ function ImageViewer({ args }: { args: Record<string, unknown> }) {
             >
               <img
                 src={productImg}
-                alt="Product"
+                alt="Döner Kebab"
                 draggable={false}
                 style={{
                   width: "100%",
@@ -316,7 +315,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
               marginBottom: 12,
             }}
           >
-            New arrival
+            Best Seller
           </span>
 
           {/* Title */}
@@ -330,7 +329,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
               lineHeight: 1.2,
             }}
           >
-            Premium Canvas Jacket
+            Signature Döner Kebab
           </h2>
 
           {/* Rating */}
@@ -344,7 +343,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
           >
             <div style={{ display: "flex", gap: 2 }}>
               {[1, 2, 3, 4, 5].map((n) => (
-                <StarIcon key={n} full={n <= 4} />
+                <StarIcon key={n} full={n <= 5} />
               ))}
             </div>
             <span
@@ -354,7 +353,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 fontWeight: 500,
               }}
             >
-              4.0 · 128 reviews
+              4.8 · 342 reviews
             </span>
           </div>
 
@@ -375,7 +374,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 letterSpacing: "-0.02em",
               }}
             >
-              $189
+              $12.99
             </span>
             <span
               style={{
@@ -385,7 +384,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 fontWeight: 500,
               }}
             >
-              $249
+              $15.99
             </span>
             <span
               style={{
@@ -397,7 +396,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 color: "rgba(248, 113, 113, 0.9)",
               }}
             >
-              -24%
+              -19%
             </span>
           </div>
 
@@ -410,13 +409,13 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
               color: "rgba(255,255,255,0.45)",
             }}
           >
-            Crafted from premium organic cotton canvas with a water-resistant
-            finish. Features a relaxed fit, hidden snap closures, and interior
-            pockets. Zoom into the image to inspect fabric texture and stitching
-            detail.
+            Tender slices of seasoned lamb and chicken, slow-roasted on a
+            vertical spit, wrapped in warm handmade flatbread with crisp
+            lettuce, tomatoes, onions, and your choice of sauce. Zoom into
+            the image to see every juicy detail up close.
           </p>
 
-          {/* Color selector */}
+          {/* Sauce selector */}
           <div style={{ marginBottom: 18 }}>
             <div
               style={{
@@ -426,32 +425,32 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 marginBottom: 8,
               }}
             >
-              Color ·{" "}
+              Sauce ·{" "}
               <span style={{ color: "rgba(255,255,255,0.8)" }}>
-                {COLORS[selectedColor].name}
+                {SAUCES[selectedSauce].name}
               </span>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              {COLORS.map((c, i) => (
+              {SAUCES.map((s, i) => (
                 <button
-                  key={c.name}
+                  key={s.name}
                   type="button"
-                  onClick={() => setSelectedColor(i)}
-                  title={c.name}
-                  aria-label={`Select color ${c.name}`}
+                  onClick={() => setSelectedSauce(i)}
+                  title={s.name}
+                  aria-label={`Select sauce ${s.name}`}
                   style={{
                     width: 32,
                     height: 32,
                     borderRadius: "50%",
                     border:
-                      selectedColor === i
+                      selectedSauce === i
                         ? "2px solid rgba(255,255,255,0.7)"
                         : "2px solid rgba(255,255,255,0.1)",
-                    background: c.value,
+                    background: s.value,
                     cursor: "pointer",
                     padding: 0,
                     boxShadow:
-                      selectedColor === i
+                      selectedSauce === i
                         ? "0 0 0 3px rgba(99, 102, 241, 0.35)"
                         : "none",
                     transition: "border-color 0.15s, box-shadow 0.15s",
@@ -461,7 +460,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
             </div>
           </div>
 
-          {/* Size selector */}
+          {/* Portion selector */}
           <div style={{ marginBottom: 24 }}>
             <div
               style={{
@@ -471,31 +470,31 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 marginBottom: 8,
               }}
             >
-              Size ·{" "}
+              Portion ·{" "}
               <span style={{ color: "rgba(255,255,255,0.8)" }}>
-                {SIZES[selectedSize]}
+                {PORTIONS[selectedPortion]}
               </span>
             </div>
             <div style={{ display: "flex", gap: 6 }}>
-              {SIZES.map((s, i) => (
+              {PORTIONS.map((p, i) => (
                 <button
-                  key={s}
+                  key={p}
                   type="button"
-                  onClick={() => setSelectedSize(i)}
+                  onClick={() => setSelectedPortion(i)}
                   style={{
                     width: 42,
                     height: 42,
                     borderRadius: 10,
                     border:
-                      selectedSize === i
+                      selectedPortion === i
                         ? "1.5px solid rgba(99, 102, 241, 0.6)"
                         : "1.5px solid rgba(255,255,255,0.08)",
                     background:
-                      selectedSize === i
+                      selectedPortion === i
                         ? "rgba(99, 102, 241, 0.15)"
                         : "rgba(255,255,255,0.03)",
                     color:
-                      selectedSize === i
+                      selectedPortion === i
                         ? "rgba(165, 180, 252, 0.95)"
                         : "rgba(255,255,255,0.5)",
                     fontSize: 13,
@@ -507,7 +506,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                       "border-color 0.15s, background 0.15s, color 0.15s",
                   }}
                 >
-                  {s}
+                  {p}
                 </button>
               ))}
             </div>
@@ -533,13 +532,13 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                 letterSpacing: "-0.01em",
               }}
             >
-              Add to Cart
+              Add to Order
             </button>
             <button
               type="button"
               onClick={() => setWishlisted(!wishlisted)}
               aria-label={
-                wishlisted ? "Remove from wishlist" : "Add to wishlist"
+                wishlisted ? "Remove from favorites" : "Add to favorites"
               }
               style={{
                 width: 48,
@@ -568,7 +567,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
             </button>
           </div>
 
-          {/* Shipping info */}
+          {/* Delivery info */}
           <div
             style={{
               marginTop: 18,
@@ -583,9 +582,9 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
               fontWeight: 500,
             }}
           >
-            <span>✈ Free shipping</span>
-            <span>↻ 30-day returns</span>
-            <span>✓ In stock</span>
+            <span>🕐 25-35 min delivery</span>
+            <span>🔥 Made fresh to order</span>
+            <span>✓ Available now</span>
           </div>
         </div>
       </div>

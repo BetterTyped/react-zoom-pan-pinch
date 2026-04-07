@@ -80,8 +80,7 @@ export const calculatePinchZoom = (
 
   const touchProportion = currentDistance / pinchStartDistance;
   const rawScale = touchProportion * pinchStartScale;
-  const scaleDelta =
-    (rawScale - pinchStartScale) * (step / DEFAULT_PINCH_STEP);
+  const scaleDelta = (rawScale - pinchStartScale) * (step / DEFAULT_PINCH_STEP);
   const computed = pinchStartScale + scaleDelta;
 
   const scale = computed === Infinity ? 0 : roundNumber(computed, 10);

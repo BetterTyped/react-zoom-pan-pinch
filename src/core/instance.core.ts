@@ -213,11 +213,21 @@ export class ZoomPanPinch {
 
   handleInitialize = (contentComponent: HTMLDivElement): void => {
     const { centerOnInit } = this.setup;
+
+    if (centerOnInit && this.wrapperComponent) {
+      const targetState = getCenterPosition(
+        this.state.scale,
+        this.wrapperComponent,
+        contentComponent,
+      );
+      this.state.positionX = targetState.positionX;
+      this.state.positionY = targetState.positionY;
+    }
+
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
 
     if (centerOnInit) {
-      this.setCenter();
       this.observer = new ResizeObserver(() => {
         const currentWidth = contentComponent.offsetWidth;
         const currentHeight = contentComponent.offsetHeight;
@@ -531,15 +541,13 @@ export class ZoomPanPinch {
   // Both pressed (true) AND released (false) states must be written;
   // writing only `true` would leave stale keys after release because
   // keyup never fires in an unfocused iframe.
-  syncModifierKeys = (
-    event: MouseEvent | WheelEvent | TouchEvent,
-  ): void => {
+  syncModifierKeys = (event: MouseEvent | WheelEvent | TouchEvent): void => {
     const { ctrlKey, metaKey, shiftKey, altKey } = event;
 
-    if (typeof ctrlKey === "boolean") this.pressedKeys["Control"] = ctrlKey;
-    if (typeof metaKey === "boolean") this.pressedKeys["Meta"] = metaKey;
-    if (typeof shiftKey === "boolean") this.pressedKeys["Shift"] = shiftKey;
-    if (typeof altKey === "boolean") this.pressedKeys["Alt"] = altKey;
+    if (typeof ctrlKey === "boolean") this.pressedKeys.Control = ctrlKey;
+    if (typeof metaKey === "boolean") this.pressedKeys.Meta = metaKey;
+    if (typeof shiftKey === "boolean") this.pressedKeys.Shift = shiftKey;
+    if (typeof altKey === "boolean") this.pressedKeys.Alt = altKey;
   };
 
   setKeyPressed = (e: KeyboardEvent): void => {
@@ -621,9 +629,11 @@ export class ZoomPanPinch {
       !Number.isNaN(positionX) &&
       !Number.isNaN(positionY)
     ) {
-      if (scale !== this.state.scale) {
+      const safeScale = Math.max(scale, 1e-7);
+
+      if (safeScale !== this.state.scale) {
         this.state.previousScale = this.state.scale;
-        this.state.scale = scale;
+        this.state.scale = safeScale;
       }
 
       this.state.positionX = positionX;

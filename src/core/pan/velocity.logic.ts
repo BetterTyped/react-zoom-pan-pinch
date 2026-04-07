@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { DeviceType, PositionType } from "../../models";
 import { ReactZoomPanPinchContext } from "../../models/context.model";
-import { getContext, handleCallback } from "../../utils";
+import { getContext } from "../../utils";
 import { animations } from "../animations/animations.constants";
 import { handleSetupAnimation } from "../animations/animations.utils";
 import { getPaddingValue } from "./panning.utils";

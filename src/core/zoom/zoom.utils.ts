@@ -41,6 +41,8 @@ export function handleCalculateZoomPositions(
   return newPositions;
 }
 
+const MIN_SAFE_SCALE = 1e-7;
+
 export function checkZoomBounds(
   zoom: number,
   minScale: number,
@@ -49,12 +51,12 @@ export function checkZoomBounds(
   enablePadding: boolean,
 ): number {
   const scalePadding = enablePadding ? zoomPadding : 0;
-  const minScaleWithPadding = minScale - scalePadding;
+  const minScaleWithPadding = Math.max(minScale - scalePadding, MIN_SAFE_SCALE);
   const maxScaleWithPadding = maxScale + scalePadding;
 
   if (!Number.isNaN(maxScale) && zoom >= maxScaleWithPadding)
     return maxScaleWithPadding;
   if (!Number.isNaN(minScale) && zoom <= minScaleWithPadding)
     return minScaleWithPadding;
-  return zoom;
+  return Math.max(zoom, MIN_SAFE_SCALE);
 }

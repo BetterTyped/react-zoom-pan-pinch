@@ -4,7 +4,12 @@ import { handleZoomToPoint } from "../zoom/zoom.logic";
 import { animate } from "../animations/animations.utils";
 import { createState } from "../../utils/state.utils";
 import { checkZoomBounds } from "../zoom/zoom.utils";
-import { getContext, handleCallback, roundNumber } from "../../utils";
+import {
+  getContext,
+  getCenterPosition,
+  handleCallback,
+  roundNumber,
+} from "../../utils";
 import {
   calculateBounds,
   getMouseBoundedPosition,
@@ -96,12 +101,25 @@ export function resetTransformations(
   animationType: keyof typeof animations,
   onResetTransformation?: () => void,
 ): void {
-  const { setup, wrapperComponent } = contextInstance;
-  const { limitToBounds } = setup;
+  const { setup, wrapperComponent, contentComponent } = contextInstance;
+  const { limitToBounds, centerOnInit } = setup;
   const initialTransformation = createState(contextInstance.props);
   const { scale, positionX, positionY } = contextInstance.state;
 
   if (!wrapperComponent) return;
+
+  let targetPositionX = initialTransformation.positionX;
+  let targetPositionY = initialTransformation.positionY;
+
+  if (centerOnInit && contentComponent) {
+    const centered = getCenterPosition(
+      initialTransformation.scale,
+      wrapperComponent,
+      contentComponent,
+    );
+    targetPositionX = centered.positionX;
+    targetPositionY = centered.positionY;
+  }
 
   const newBounds = calculateBounds(
     contextInstance,
@@ -109,8 +127,8 @@ export function resetTransformations(
   );
 
   const boundedPositions = getMouseBoundedPosition(
-    initialTransformation.positionX,
-    initialTransformation.positionY,
+    targetPositionX,
+    targetPositionY,
     newBounds,
     limitToBounds,
     0,

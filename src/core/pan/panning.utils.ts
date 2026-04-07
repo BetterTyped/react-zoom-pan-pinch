@@ -19,12 +19,12 @@ export const isPanningStartAllowed = (
   const targetIsShadowDom = "shadowRoot" in target && "composedPath" in event;
   const isWrapperChild = targetIsShadowDom
     ? event.composedPath().some((el) => {
-      if (!(el instanceof Element)) {
-        return false;
-      }
+        if (!(el instanceof Element)) {
+          return false;
+        }
 
-      return wrapperComponent?.contains(el);
-    })
+        return wrapperComponent?.contains(el);
+      })
     : wrapperComponent?.contains(target);
 
   const isAllowed = isInitialized && target && isWrapperChild;

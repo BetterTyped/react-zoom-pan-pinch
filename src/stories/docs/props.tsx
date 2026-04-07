@@ -49,6 +49,11 @@ export const componentPropsTable: Record<
   string,
   Omit<ControlsOptionsType, "name">
 > = {
+  children: {
+    type: ["React.ReactNode"],
+    defaultValue: "required",
+    description: "Content rendered inside the transformable area.",
+  },
   wrapperClass: {
     type: ["string"],
     defaultValue: "''",
@@ -60,18 +65,47 @@ export const componentPropsTable: Record<
     description: "Content element class",
   },
   wrapperStyle: {
-    type: ["ReactCSSProperties"],
+    type: ["React.CSSProperties"],
     defaultValue: "undefined",
     description: "Wrapper element style object",
   },
   contentStyle: {
-    type: ["ReactCSSProperties"],
+    type: ["React.CSSProperties"],
     defaultValue: "undefined",
     description: "Content element style object",
   },
+  wrapperProps: {
+    type: ["React.HTMLAttributes<HTMLDivElement>"],
+    defaultValue: "{}",
+    description: "Additional props spread onto the wrapper element.",
+  },
+  contentProps: {
+    type: ["React.HTMLAttributes<HTMLDivElement>"],
+    defaultValue: "{}",
+    description: "Additional props spread onto the content element.",
+  },
+  infinite: {
+    type: ["boolean"],
+    defaultValue: "false",
+    description:
+      "Render the infinite dot-grid background behind the content so it pans and scales with the transform.",
+  },
 };
 
-export const wrapperPropsTable: ComponentProps = {
+export const wrapperPropsTable: Record<
+  string,
+  | Omit<ControlsOptionsType, "name" | "isObjectRow">
+  | Record<string, Omit<ControlsOptionsType, "name" | "isObjectRow">>
+> = {
+  children: {
+    type: [
+      "React.ReactNode",
+      "((ref: ReactZoomPanPinchContentRef) => React.ReactNode)",
+    ],
+    defaultValue: "undefined",
+    description:
+      "Wrapper content. Can be regular React nodes or a render function receiving controls and instance access.",
+  },
   ref: {
     type: ["React.Ref<ReactZoomPanPinchRef>"],
     defaultValue: "undefined",
@@ -102,26 +136,26 @@ export const wrapperPropsTable: ComponentProps = {
       "This is 'global' disable props. Setting it as a 'true' value blocks all functionalities of library. For disabling parts of it like panning, zooming, pinch - checkout the dedicated sections below.",
   },
   minPositionX: {
-    type: ["number"],
+    type: ["number", "null"],
     defaultValue: String(initialSetup.minPositionX),
     description:
       "Bounding position which will limit the transformation to given value. Value should be provided in px.",
   },
   maxPositionX: {
-    type: ["number"],
+    type: ["number", "null"],
     defaultValue: String(initialSetup.maxPositionX),
     description:
       "Bounding position which will limit the transformation to given value. Value should be provided in px.",
   },
   minPositionY: {
-    type: ["number"],
+    type: ["number", "null"],
     defaultValue: String(initialSetup.minPositionY),
     description:
       "Bounding position which will limit the transformation to given value. Value should be provided in px.",
   },
   maxPositionY: {
-    type: ["number"],
-    defaultValue: String(initialSetup.minPositionY),
+    type: ["number", "null"],
+    defaultValue: String(initialSetup.maxPositionY),
     description:
       "Bounding position which will limit the transformation to given value. Value should be provided in px.",
   },
@@ -160,7 +194,7 @@ export const wrapperPropsTable: ComponentProps = {
       "Used to disable panning, zooming boundary padding effect. By enabling this option, you will not be able to zoom outside the image area.",
   },
   customTransform: {
-    type: ["function"],
+    type: ["(x: number, y: number, scale: number) => string"],
     defaultValue: "undefined",
     description:
       "We can provide custom transform function to provide different way of handling our transform logic. If we need performance we can import getMatrixTransformStyles functions and replace default one. WARNING: default transform prevents svg blur on the safari.",
@@ -173,7 +207,7 @@ export const wrapperPropsTable: ComponentProps = {
   },
   detached: {
     type: ["boolean"],
-    defaultValue: String(initialSetup.smooth),
+    defaultValue: String(initialSetup.detached),
     description:
       "Allows to prevent CSS being applied to content element. It allows to add the functionality to canvas with some custom transforming logic.",
   },
@@ -207,7 +241,7 @@ export const wrapperPropsTable: ComponentProps = {
         "Disable only touchpad zooming functionality, it will NOT affect pinching and mouse wheel.",
     },
     activationKeys: {
-      type: ["string[]"],
+      type: ["string[]", "((keys: string[]) => boolean)"],
       defaultValue: String(initialSetup.wheel.activationKeys),
       description:
         "List of keys which, when held down, should activate this feature.",
@@ -229,6 +263,12 @@ export const wrapperPropsTable: ComponentProps = {
       type: ["boolean"],
       defaultValue: String(initialSetup.panning.disabled),
       description: "Disable the panning feature.",
+    },
+    velocityDisabled: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.velocityDisabled),
+      description:
+        "Disable inertia and velocity-based continuation after panning ends.",
     },
     lockAxisX: {
       type: ["boolean"],
@@ -258,7 +298,7 @@ export const wrapperPropsTable: ComponentProps = {
       description: "Allow right click to initiate panning",
     },
     activationKeys: {
-      type: ["string[]"],
+      type: ["string[]", "((keys: string[]) => boolean)"],
       defaultValue: String(initialSetup.panning.activationKeys),
       description:
         "List of keys which, when held down, should activate this feature.",
@@ -287,6 +327,12 @@ export const wrapperPropsTable: ComponentProps = {
       description:
         "Disable the pinching zoom functionality, it will NOT affect mouse wheel/touchpad zooming.",
     },
+    allowPanning: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.pinch.allowPanning),
+      description:
+        "Allow moving the content while pinching. When false, pinch only changes scale.",
+    },
     excluded: {
       type: ["string[]"],
       defaultValue: String(initialSetup.pinch.excluded),
@@ -302,30 +348,36 @@ export const wrapperPropsTable: ComponentProps = {
     },
     disabled: {
       type: ["boolean"],
-      defaultValue: String(initialSetup.panning.disabled),
-      description: "Disable the panning feature.",
+      defaultValue: String(initialSetup.trackPadPanning.disabled),
+      description: "Disable the trackpad panning feature.",
+    },
+    velocityDisabled: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.trackPadPanning.velocityDisabled),
+      description:
+        "Disable inertia and velocity-based continuation after trackpad panning ends.",
     },
     lockAxisX: {
       type: ["boolean"],
-      defaultValue: String(initialSetup.panning.lockAxisX),
+      defaultValue: String(initialSetup.trackPadPanning.lockAxisX),
       description:
-        "Disable the panning feature for the X axis (prevents horizontal panning).",
+        "Disable the trackpad panning feature for the X axis (prevents horizontal panning).",
     },
     lockAxisY: {
       type: ["boolean"],
-      defaultValue: String(initialSetup.panning.lockAxisY),
+      defaultValue: String(initialSetup.trackPadPanning.lockAxisY),
       description:
-        "Disable the panning feature for the Y axis (prevents vertical panning).",
+        "Disable the trackpad panning feature for the Y axis (prevents vertical panning).",
     },
     activationKeys: {
-      type: ["string[]"],
-      defaultValue: String(initialSetup.panning.activationKeys),
+      type: ["string[]", "((keys: string[]) => boolean)"],
+      defaultValue: String(initialSetup.trackPadPanning.activationKeys),
       description:
         "List of keys which, when held down, should activate this feature.",
     },
     excluded: {
       type: ["string[]"],
-      defaultValue: String(initialSetup.panning.excluded),
+      defaultValue: String(initialSetup.trackPadPanning.excluded),
       description:
         "List of the class names or tags that should not activate this feature. (E.g. ['my-custom-class-name', 'div', 'a'])",
     },
@@ -379,7 +431,7 @@ export const wrapperPropsTable: ComponentProps = {
     disabled: {
       type: ["boolean"],
       defaultValue: String(initialSetup.zoomAnimation.disabled),
-      description: "Disable the double click feature.",
+      description: "Disable animated zoom alignment after zoom interactions.",
     },
     size: {
       type: ["number"],
@@ -407,7 +459,7 @@ export const wrapperPropsTable: ComponentProps = {
     disabled: {
       type: ["boolean"],
       defaultValue: String(initialSetup.autoAlignment.disabled),
-      description: "Disable the double click feature.",
+      description: "Disable automatic alignment back toward the allowed bounds.",
     },
     sizeX: {
       type: ["number"],
@@ -423,7 +475,7 @@ export const wrapperPropsTable: ComponentProps = {
     },
     velocityAlignmentTime: {
       type: ["number"],
-      defaultValue: String(initialSetup.autoAlignment.animationTime),
+      defaultValue: String(initialSetup.autoAlignment.velocityAlignmentTime),
       description:
         "Time of the velocity alignment animation. It is fired when acceleration begins when we are outside the wrapper limits (in the area defined by the above prop size)",
     },
@@ -447,13 +499,19 @@ export const wrapperPropsTable: ComponentProps = {
     disabled: {
       type: ["boolean"],
       defaultValue: String(initialSetup.velocityAnimation.disabled),
-      description: "Disable the double click feature.",
+      description: "Disable velocity-based panning continuation and inertia.",
     },
-    sensitivity: {
+    sensitivityTouch: {
       type: ["number"],
-      defaultValue: String(initialSetup.velocityAnimation.animationTime),
+      defaultValue: String(initialSetup.velocityAnimation.sensitivityTouch),
       description:
-        "Additional variable that allows you to control the sensitivity of panning velocity",
+        "Controls how strongly touch interactions contribute to velocity.",
+    },
+    sensitivityMouse: {
+      type: ["number"],
+      defaultValue: String(initialSetup.velocityAnimation.sensitivityMouse),
+      description:
+        "Controls how strongly mouse and trackpad interactions contribute to velocity.",
     },
     maxStrengthMouse: {
       type: ["number"],

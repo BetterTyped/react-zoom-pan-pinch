@@ -11,7 +11,8 @@
  * mousedown→mouseup as a real pan gesture.
  */
 import { act, fireEvent } from "@testing-library/react";
-import { renderApp, flushAnimationFrames, DEFAULT_MS_PER_STEP } from "../utils/render-app";
+
+import { renderApp, flushAnimationFrames } from "../utils/render-app";
 
 function mockDimensions(el: HTMLElement, width: number, height: number): void {
   Object.defineProperty(el, "offsetWidth", {
@@ -45,7 +46,7 @@ describe("click-after-zoom snap regression", () => {
   });
 
   it("tiny mouse movement during click must not trigger velocity panning", () => {
-    const { content, wrapper, zoom, ref } = renderApp({
+    const { content, wrapper, zoom } = renderApp({
       limitToBounds: true,
       doubleClick: { disabled: true },
       velocityAnimation: { disabled: false },

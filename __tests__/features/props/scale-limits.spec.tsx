@@ -10,7 +10,7 @@ describe("ReactZoomPanPinchProps.minScale", () => {
       smooth: false,
     });
     userEvent.hover(content);
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i += 1) {
       fireEvent(
         content,
         new WheelEvent("wheel", { bubbles: true, deltaY: 20 }),
@@ -25,7 +25,7 @@ describe("ReactZoomPanPinchProps.minScale", () => {
       smooth: false,
     });
     userEvent.hover(content);
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 30; i += 1) {
       fireEvent(
         content,
         new WheelEvent("wheel", { bubbles: true, deltaY: 10 }),
@@ -43,7 +43,7 @@ describe("ReactZoomPanPinchProps.maxScale", () => {
       smooth: false,
     });
     userEvent.hover(content);
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 100; i += 1) {
       fireEvent(
         content,
         new WheelEvent("wheel", { bubbles: true, deltaY: -10 }),
@@ -58,7 +58,7 @@ describe("ReactZoomPanPinchProps.maxScale", () => {
       smooth: false,
     });
     userEvent.hover(content);
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i += 1) {
       fireEvent(
         content,
         new WheelEvent("wheel", { bubbles: true, deltaY: -10 }),

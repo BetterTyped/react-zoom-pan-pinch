@@ -12,13 +12,13 @@ describe("ReactZoomPanPinchProps.wheel", () => {
           wheel: { step },
         });
         userEvent.hover(content);
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i += 1) {
           fireEvent(
             content,
             new WheelEvent("wheel", { bubbles: true, deltaY: -8 }),
           );
         }
-        const scale = ref.current!.instance.state.scale;
+        const { scale } = ref.current!.instance.state;
         unmount();
         return scale;
       };

@@ -43,7 +43,6 @@ import {
   fireEvent,
   render,
   screen,
-  act,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -273,14 +272,11 @@ function getPinchTouches(
  * const { pan, content } = renderApp({ velocityAnimation: { disabled: false } });
  * pan({ x: -100, y: 0, moveEventCount: 10 });
  * await act(async () => { flushAnimationFrames(); });
- * expect(content.style.transform).toBe(/* settled position *​/);
+ * expect(content.style.transform).toBe(/* settled position * /);
  * ```
  */
-export function flushAnimationFrames(
-  maxFrames = 120,
-  frameMs = 16,
-): void {
-  for (let i = 0; i < maxFrames; i++) {
+export function flushAnimationFrames(maxFrames = 120, frameMs = 16): void {
+  for (let i = 0; i < maxFrames; i += 1) {
     maybeAdvanceTimers(frameMs);
     jest.runAllTicks();
     try {
@@ -433,9 +429,7 @@ export const renderApp = ({
         break;
       }
       if (
-        isZoomIn
-          ? currentScale < value - 1e-5
-          : currentScale > value + 1e-5
+        isZoomIn ? currentScale < value - 1e-5 : currentScale > value + 1e-5
       ) {
         const scaleDifference = Math.abs(currentScale - value);
         const isNearScale = scaleDifference < 0.1;
@@ -479,7 +473,7 @@ export const renderApp = ({
       ...modifiers,
     });
 
-    for (let i = 1; i <= moveEventCount; i++) {
+    for (let i = 1; i <= moveEventCount; i += 1) {
       maybeAdvanceTimers(msPerStep);
       const progress = i / moveEventCount;
       fireEvent.mouseMove(content, {
@@ -515,7 +509,7 @@ export const renderApp = ({
       ],
     });
 
-    for (let i = 1; i <= moveEventCount; i++) {
+    for (let i = 1; i <= moveEventCount; i += 1) {
       maybeAdvanceTimers(msPerStep);
       const progress = i / moveEventCount;
       const cx = from.clientX + x * progress;
@@ -570,7 +564,7 @@ export const renderApp = ({
     const deltaXPerEvent = -x / moveEventCount;
     const deltaYPerEvent = -y / moveEventCount;
 
-    for (let i = 0; i < moveEventCount; i++) {
+    for (let i = 0; i < moveEventCount; i += 1) {
       maybeAdvanceTimers(msPerStep);
       fireEvent(
         content,

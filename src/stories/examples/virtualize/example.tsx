@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key, no-nested-ternary */
 import React, { useCallback, useState } from "react";
 
 import {

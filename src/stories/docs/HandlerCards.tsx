@@ -1,5 +1,8 @@
+/* eslint-disable react/no-array-index-key */
 import React from "react";
+
 import type { ControlsFnOptionsType } from "./handlers";
+
 import styles from "./docs.module.css";
 
 function parseParam(raw: string) {
@@ -22,11 +25,7 @@ function parseParam(raw: string) {
   return { name, type, def };
 }
 
-export function HandlerCards({
-  rows,
-}: {
-  rows: ControlsFnOptionsType[];
-}) {
+export function HandlerCards({ rows }: { rows: ControlsFnOptionsType[] }) {
   return (
     <div className={styles.container}>
       <div className={styles.sectionTitle}>
@@ -36,9 +35,8 @@ export function HandlerCards({
       <p className={styles.handlersIntro}>
         Methods available via <strong>render props</strong>,{" "}
         <strong>ref</strong>, or the{" "}
-        <span className={styles.handlersIntroHook}>useControls</span>{" "}
-        hook. Each handler triggers an animated transition on the
-        transform state.
+        <span className={styles.handlersIntroHook}>useControls</span> hook. Each
+        handler triggers an animated transition on the transform state.
       </p>
 
       <div className={styles.handlerGrid}>
@@ -46,8 +44,7 @@ export function HandlerCards({
           <div key={i} className={styles.handlerCard}>
             <div className={styles.handlerCardHeader}>
               <span className={styles.handlerName}>
-                {row.name}
-                {"("}
+                {row.name}(
                 {row.parameters && row.parameters.length > 0 && (
                   <span className={styles.handlerNameParams}>
                     {"{ "}
@@ -57,16 +54,14 @@ export function HandlerCards({
                     {" }"}
                   </span>
                 )}
-                {")"}
+                )
               </span>
               <span className={styles.handlerBadge}>Method</span>
             </div>
 
             <div className={styles.handlerCardBody}>
               {row.description && (
-                <p className={styles.handlerDescription}>
-                  {row.description}
-                </p>
+                <p className={styles.handlerDescription}>{row.description}</p>
               )}
 
               {row.parameters && row.parameters.length > 0 && (

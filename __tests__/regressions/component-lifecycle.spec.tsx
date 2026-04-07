@@ -11,7 +11,6 @@ import userEvent from "@testing-library/user-event";
 import {
   TransformWrapper,
   TransformComponent,
-  ReactZoomPanPinchRef,
   ReactZoomPanPinchContentRef,
 } from "../../src";
 import { renderApp } from "../utils";
@@ -20,11 +19,7 @@ function DeferredMount() {
   const [show, setShow] = useState(false);
   return (
     <TransformWrapper>
-      <button
-        type="button"
-        data-testid="toggle"
-        onClick={() => setShow(true)}
-      >
+      <button type="button" data-testid="toggle" onClick={() => setShow(true)}>
         Show
       </button>
       {show && (
@@ -149,11 +144,13 @@ describe("component lifecycle regressions", () => {
 
   it("handles zero dimensions without crashing when mounted in hidden container (Ref #479)", () => {
     const origRO = global.ResizeObserver;
+    /* eslint-disable class-methods-use-this */
     global.ResizeObserver = class {
       observe() {}
       disconnect() {}
       unobserve() {}
     } as unknown as typeof ResizeObserver;
+    /* eslint-enable class-methods-use-this */
 
     const { ref, wrapper, content } = renderApp({
       centerOnInit: true,

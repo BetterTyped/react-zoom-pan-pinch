@@ -1,20 +1,12 @@
 import { act } from "@testing-library/react";
 
-import {
-  renderApp,
-  flushAnimationFrames,
-  DEFAULT_MS_PER_STEP,
-} from "../utils";
+import { renderApp, flushAnimationFrames, DEFAULT_MS_PER_STEP } from "../utils";
 
 /**
  * Helper to mock offsetWidth/offsetHeight on a DOM element.
  * jsdom does not compute layout, so dimensions are 0 by default.
  */
-function mockDimensions(
-  el: HTMLElement,
-  width: number,
-  height: number,
-): void {
+function mockDimensions(el: HTMLElement, width: number, height: number): void {
   Object.defineProperty(el, "offsetWidth", {
     value: width,
     configurable: true,
@@ -38,7 +30,12 @@ describe("regressions: velocity and zoom animation", () => {
         limitToBounds: false,
       });
 
-      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      pan({
+        x: -120,
+        y: 0,
+        moveEventCount: 10,
+        msPerStep: DEFAULT_MS_PER_STEP,
+      });
       const xAfterPan = ref.current!.instance.state.positionX;
 
       act(() => {
@@ -59,7 +56,12 @@ describe("regressions: velocity and zoom animation", () => {
       mockDimensions(wrapper, 400, 400);
       mockDimensions(content, 800, 600);
 
-      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      pan({
+        x: -120,
+        y: 0,
+        moveEventCount: 10,
+        msPerStep: DEFAULT_MS_PER_STEP,
+      });
       const xAfterPan = ref.current!.instance.state.positionX;
 
       act(() => {
@@ -94,7 +96,12 @@ describe("regressions: velocity and zoom animation", () => {
 
       expect(ref.current!.instance.state.scale).toBe(1);
 
-      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      pan({
+        x: -120,
+        y: 0,
+        moveEventCount: 10,
+        msPerStep: DEFAULT_MS_PER_STEP,
+      });
       const xAfterPan = ref.current!.instance.state.positionX;
 
       act(() => {
@@ -114,7 +121,12 @@ describe("regressions: velocity and zoom animation", () => {
       mockDimensions(wrapper, 400, 400);
       mockDimensions(content, 200, 200);
 
-      pan({ x: -120, y: 0, moveEventCount: 10, msPerStep: DEFAULT_MS_PER_STEP });
+      pan({
+        x: -120,
+        y: 0,
+        moveEventCount: 10,
+        msPerStep: DEFAULT_MS_PER_STEP,
+      });
       const xAfterPan = ref.current!.instance.state.positionX;
 
       act(() => {

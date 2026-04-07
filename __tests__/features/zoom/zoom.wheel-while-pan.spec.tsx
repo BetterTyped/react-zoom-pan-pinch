@@ -13,10 +13,7 @@ describe("Zoom [Wheel while panning]", () => {
     fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
     fireEvent.mouseMove(content, { clientX: 50, clientY: 50, buttons: 1 });
 
-    fireEvent(
-      content,
-      new WheelEvent("wheel", { bubbles: true, deltaY: -10 }),
-    );
+    fireEvent(content, new WheelEvent("wheel", { bubbles: true, deltaY: -10 }));
 
     fireEvent.mouseUp(content);
 
@@ -32,10 +29,7 @@ describe("Zoom [Wheel while panning]", () => {
     fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
     fireEvent.mouseMove(content, { clientX: 50, clientY: 50, buttons: 1 });
 
-    fireEvent(
-      content,
-      new WheelEvent("wheel", { bubbles: true, deltaY: -10 }),
-    );
+    fireEvent(content, new WheelEvent("wheel", { bubbles: true, deltaY: -10 }));
 
     fireEvent.mouseUp(content);
 
@@ -68,10 +62,7 @@ describe("Zoom [Keyboard]", () => {
     });
 
     userEvent.hover(content);
-    fireEvent(
-      content,
-      new WheelEvent("wheel", { bubbles: true, deltaY: -5 }),
-    );
+    fireEvent(content, new WheelEvent("wheel", { bubbles: true, deltaY: -5 }));
     expect(ref.current!.instance.state.scale).toBe(1);
 
     fireEvent(

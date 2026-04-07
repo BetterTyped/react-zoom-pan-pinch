@@ -7,7 +7,7 @@ describe("Controls [Limits]", () => {
     it("should not exceed maxScale", async () => {
       const { ref, zoomInBtn } = renderApp({ maxScale: 2 });
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
       }
 
@@ -25,7 +25,7 @@ describe("Controls [Limits]", () => {
         minScale: 0.5,
       });
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         fireEvent(zoomOutBtn, new MouseEvent("click", { bubbles: true }));
       }
 
@@ -38,7 +38,7 @@ describe("Controls [Limits]", () => {
     it("should not go below default minScale of 1", async () => {
       const { ref, zoomOutBtn } = renderApp({ initialScale: 2 });
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         fireEvent(zoomOutBtn, new MouseEvent("click", { bubbles: true }));
       }
 

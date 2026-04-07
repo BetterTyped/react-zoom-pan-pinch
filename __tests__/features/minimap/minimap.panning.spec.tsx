@@ -67,9 +67,7 @@ describe("MiniMap [Panning]", () => {
         });
       });
 
-      expect(content.style.transform).not.toBe(
-        "translate(0px, 0px) scale(1)",
-      );
+      expect(content.style.transform).not.toBe("translate(0px, 0px) scale(1)");
     });
 
     it("should stop updating position after mouseup", () => {

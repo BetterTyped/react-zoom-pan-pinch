@@ -41,18 +41,30 @@ export const createSetup = (props: ReactZoomPanPinchProps): LibrarySetup => {
 
   Object.keys(props).forEach((key: string) => {
     const k = key as keyof ReactZoomPanPinchProps & keyof LibrarySetup;
-    const validValue = typeof (props as Record<string, unknown>)[k] !== "undefined";
-    const validParameter = typeof (initialSetup as Record<string, unknown>)[k] !== "undefined";
+    const validValue =
+      typeof (props as Record<string, unknown>)[k] !== "undefined";
+    const validParameter =
+      typeof (initialSetup as Record<string, unknown>)[k] !== "undefined";
     if (validParameter && validValue) {
-      const dataType = Object.prototype.toString.call((initialSetup as Record<string, unknown>)[k]);
+      const dataType = Object.prototype.toString.call(
+        (initialSetup as Record<string, unknown>)[k],
+      );
       const isObject = dataType === "[object Object]";
       const isArray = dataType === "[object Array]";
       if (isObject) {
-        (newSetup as Record<string, unknown>)[k] = { ...(initialSetup as Record<string, unknown>)[k] as object, ...(props as Record<string, unknown>)[k] as object };
+        (newSetup as Record<string, unknown>)[k] = {
+          ...((initialSetup as Record<string, unknown>)[k] as object),
+          ...((props as Record<string, unknown>)[k] as object),
+        };
       } else if (isArray) {
-        (newSetup as Record<string, unknown>)[k] = [...(initialSetup as Record<string, unknown>)[k] as unknown[], ...(props as Record<string, unknown>)[k] as unknown[]];
+        (newSetup as Record<string, unknown>)[k] = [
+          ...((initialSetup as Record<string, unknown>)[k] as unknown[]),
+          ...((props as Record<string, unknown>)[k] as unknown[]),
+        ];
       } else {
-        (newSetup as Record<string, unknown>)[k] = (props as Record<string, unknown>)[k];
+        (newSetup as Record<string, unknown>)[k] = (
+          props as Record<string, unknown>
+        )[k];
       }
     }
   });

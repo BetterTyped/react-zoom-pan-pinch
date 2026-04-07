@@ -22,10 +22,7 @@ describe("ReactZoomPanPinchProps.smooth", () => {
       smooth: false,
     });
     userEvent.hover(content);
-    fireEvent(
-      content,
-      new WheelEvent("wheel", { bubbles: true, deltaY: -10 }),
-    );
+    fireEvent(content, new WheelEvent("wheel", { bubbles: true, deltaY: -10 }));
     expect(ref.current!.instance.state.scale).toBeGreaterThan(1);
   });
 });

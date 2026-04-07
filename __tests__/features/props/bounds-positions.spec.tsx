@@ -5,11 +5,13 @@ import { renderApp } from "../../utils";
 const NativeResizeObserver = global.ResizeObserver;
 
 beforeAll(() => {
+  /* eslint-disable class-methods-use-this */
   global.ResizeObserver = class {
     observe() {}
     disconnect() {}
     unobserve() {}
   } as unknown as typeof ResizeObserver;
+  /* eslint-enable class-methods-use-this */
 });
 
 afterAll(() => {
@@ -86,9 +88,7 @@ describe("ReactZoomPanPinchProps.limitToBounds", () => {
       limitToBounds: false,
     });
     pan({ x: -200, y: -200 });
-    expect(content.style.transform).toBe(
-      "translate(-200px, -200px) scale(1)",
-    );
+    expect(content.style.transform).toBe("translate(-200px, -200px) scale(1)");
   });
 });
 
@@ -135,8 +135,6 @@ describe("ReactZoomPanPinchProps.disablePadding", () => {
       disablePadding: false,
     });
     pan({ x: -100, y: -100 });
-    expect(content.style.transform).toBe(
-      "translate(-100px, -100px) scale(1)",
-    );
+    expect(content.style.transform).toBe("translate(-100px, -100px) scale(1)");
   });
 });

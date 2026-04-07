@@ -1,8 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { renderApp } from "../utils";
-
 const CSS_MODULE_PATH = path.resolve(
   __dirname,
   "../../src/components/transform-component/transform-component.module.css",

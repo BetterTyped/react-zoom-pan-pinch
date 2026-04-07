@@ -3,12 +3,8 @@ import userEvent from "@testing-library/user-event";
 
 import { renderApp, flushAnimationFrames } from "../../utils";
 
-function fireTrackpadWheel(
-  target: HTMLElement,
-  deltaY: number,
-  count: number,
-) {
-  for (let i = 0; i < count; i++) {
+function fireTrackpadWheel(target: HTMLElement, deltaY: number, count: number) {
+  for (let i = 0; i < count; i += 1) {
     fireEvent(
       target,
       new WheelEvent("wheel", {
@@ -20,12 +16,8 @@ function fireTrackpadWheel(
   }
 }
 
-function fireMouseWheel(
-  target: HTMLElement,
-  deltaY: number,
-  count: number,
-) {
-  for (let i = 0; i < count; i++) {
+function fireMouseWheel(target: HTMLElement, deltaY: number, count: number) {
+  for (let i = 0; i < count; i += 1) {
     fireEvent(
       target,
       new WheelEvent("wheel", {
@@ -121,7 +113,7 @@ describe("Zoom [Elastic bounds / rubberband]", () => {
       userEvent.hover(content);
       fireTrackpadWheel(content, 50, 100);
 
-      const scale = ref.current!.instance.state.scale;
+      const { scale } = ref.current!.instance.state;
       expect(scale).toBeGreaterThanOrEqual(1 - zoomPadding);
     });
   });
@@ -134,7 +126,7 @@ describe("Zoom [Elastic bounds / rubberband]", () => {
       });
 
       userEvent.hover(content);
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 30; i += 1) {
         fireMouseWheel(content, 50, 1);
         expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
       }
@@ -147,7 +139,7 @@ describe("Zoom [Elastic bounds / rubberband]", () => {
       });
 
       userEvent.hover(content);
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 30; i += 1) {
         fireMouseWheel(content, -50, 1);
         expect(ref.current!.instance.state.scale).toBeLessThanOrEqual(3);
       }
@@ -163,7 +155,7 @@ describe("Zoom [Elastic bounds / rubberband]", () => {
       });
 
       userEvent.hover(content);
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 30; i += 1) {
         fireTrackpadWheel(content, 50, 1);
         expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
       }
@@ -177,7 +169,7 @@ describe("Zoom [Elastic bounds / rubberband]", () => {
       });
 
       userEvent.hover(content);
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 30; i += 1) {
         fireTrackpadWheel(content, -50, 1);
         expect(ref.current!.instance.state.scale).toBeLessThanOrEqual(3);
       }
@@ -193,7 +185,7 @@ describe("Zoom [Elastic bounds / rubberband]", () => {
       });
 
       userEvent.hover(content);
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 30; i += 1) {
         fireTrackpadWheel(content, 50, 1);
         expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
       }

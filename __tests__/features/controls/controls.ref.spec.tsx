@@ -12,9 +12,7 @@ describe("Controls [Ref]", () => {
       });
 
       await waitFor(() => {
-        expect(content.style.transform).toBe(
-          "translate(100px, 50px) scale(2)",
-        );
+        expect(content.style.transform).toBe("translate(100px, 50px) scale(2)");
       });
     });
 

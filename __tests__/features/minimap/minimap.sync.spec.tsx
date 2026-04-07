@@ -98,9 +98,7 @@ describe("MiniMap [Sync]", () => {
       fireEvent.mouseMove(content, { clientX: -100, clientY: -50, buttons: 1 });
       fireEvent.mouseUp(content);
 
-      expect(content.style.transform).toBe(
-        "translate(-100px, -50px) scale(1)",
-      );
+      expect(content.style.transform).toBe("translate(-100px, -50px) scale(1)");
 
       // previewScale = 0.2, x = -(-100) * 0.2 = 20, y = -(-50) * 0.2 = 10
       expect(minimapPreview.style.transform).toBe(
@@ -116,7 +114,11 @@ describe("MiniMap [Sync]", () => {
 
       userEvent.hover(content);
       fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
-      fireEvent.mouseMove(content, { clientX: -100, clientY: -100, buttons: 1 });
+      fireEvent.mouseMove(content, {
+        clientX: -100,
+        clientY: -100,
+        buttons: 1,
+      });
       fireEvent.mouseUp(content);
 
       expect(minimapPreview.style.width).toBe(initialWidth);
@@ -133,7 +135,7 @@ describe("MiniMap [Sync]", () => {
 
       userEvent.hover(content);
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         fireEvent(
           content,
           new WheelEvent("wheel", { bubbles: true, deltaY: -1 }),
@@ -150,7 +152,7 @@ describe("MiniMap [Sync]", () => {
       userEvent.hover(content);
 
       // Zoom in first
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         fireEvent(
           content,
           new WheelEvent("wheel", { bubbles: true, deltaY: -1 }),
@@ -160,7 +162,7 @@ describe("MiniMap [Sync]", () => {
       const zoomedInWidth = parseFloat(minimapPreview.style.width);
 
       // Zoom back out
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         fireEvent(
           content,
           new WheelEvent("wheel", { bubbles: true, deltaY: 1 }),

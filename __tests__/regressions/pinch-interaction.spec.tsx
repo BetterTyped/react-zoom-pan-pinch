@@ -45,7 +45,11 @@ describe("pinch regressions", () => {
   it("different pinch.step values change scale proportionally for the same finger movement (Ref #418)", () => {
     const stepLow = 1;
     const stepHigh = 2;
-    const { content: c1, ref: r1, unmount: u1 } = renderApp({
+    const {
+      content: c1,
+      ref: r1,
+      unmount: u1,
+    } = renderApp({
       pinch: { step: stepLow },
       maxScale: 100,
       limitToBounds: false,

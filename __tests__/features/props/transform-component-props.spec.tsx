@@ -51,7 +51,11 @@ describe("TransformComponent props", () => {
         <TransformWrapper>
           <TransformComponent
             wrapperStyle={{ backgroundColor: "red" }}
-            wrapperProps={{ "data-testid": "styled-wrapper" } as React.HTMLAttributes<HTMLDivElement>}
+            wrapperProps={
+              {
+                "data-testid": "styled-wrapper",
+              } as React.HTMLAttributes<HTMLDivElement>
+            }
           >
             <div>content</div>
           </TransformComponent>
@@ -68,7 +72,11 @@ describe("TransformComponent props", () => {
         <TransformWrapper>
           <TransformComponent
             contentStyle={{ backgroundColor: "blue" }}
-            contentProps={{ "data-testid": "styled-content" } as React.HTMLAttributes<HTMLDivElement>}
+            contentProps={
+              {
+                "data-testid": "styled-content",
+              } as React.HTMLAttributes<HTMLDivElement>
+            }
           >
             <div>content</div>
           </TransformComponent>
@@ -84,10 +92,12 @@ describe("TransformComponent props", () => {
       render(
         <TransformWrapper>
           <TransformComponent
-            wrapperProps={{
-              "data-testid": "wrapper-props",
-              "aria-label": "zoom area",
-            } as React.HTMLAttributes<HTMLDivElement>}
+            wrapperProps={
+              {
+                "data-testid": "wrapper-props",
+                "aria-label": "zoom area",
+              } as React.HTMLAttributes<HTMLDivElement>
+            }
           >
             <div>content</div>
           </TransformComponent>
@@ -103,10 +113,12 @@ describe("TransformComponent props", () => {
       render(
         <TransformWrapper>
           <TransformComponent
-            contentProps={{
-              "data-testid": "content-props",
-              role: "img",
-            } as React.HTMLAttributes<HTMLDivElement>}
+            contentProps={
+              {
+                "data-testid": "content-props",
+                role: "img",
+              } as React.HTMLAttributes<HTMLDivElement>
+            }
           >
             <div>content</div>
           </TransformComponent>

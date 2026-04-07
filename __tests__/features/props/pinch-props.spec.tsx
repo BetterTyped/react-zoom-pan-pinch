@@ -10,7 +10,7 @@ describe("ReactZoomPanPinchProps.pinch", () => {
           pinch: { step },
         });
         pinch({ value: 2, center: [250, 250] });
-        const scale = ref.current!.instance.state.scale;
+        const { scale } = ref.current!.instance.state;
         unmount();
         return scale;
       };
@@ -58,14 +58,32 @@ describe("ReactZoomPanPinchProps.pinch", () => {
 
       fireEvent.touchStart(excluded!, {
         touches: [
-          { clientX: 100, clientY: 100, pageX: 100, pageY: 100, target: excluded },
-          { clientX: 200, clientY: 200, pageX: 200, pageY: 200, target: excluded },
+          {
+            clientX: 100,
+            clientY: 100,
+            pageX: 100,
+            pageY: 100,
+            target: excluded,
+          },
+          {
+            clientX: 200,
+            clientY: 200,
+            pageX: 200,
+            pageY: 200,
+            target: excluded,
+          },
         ],
       });
       fireEvent.touchMove(excluded!, {
         touches: [
           { clientX: 50, clientY: 50, pageX: 50, pageY: 50, target: excluded },
-          { clientX: 250, clientY: 250, pageX: 250, pageY: 250, target: excluded },
+          {
+            clientX: 250,
+            clientY: 250,
+            pageX: 250,
+            pageY: 250,
+            target: excluded,
+          },
         ],
       });
       fireEvent.touchEnd(excluded!, { touches: [] });

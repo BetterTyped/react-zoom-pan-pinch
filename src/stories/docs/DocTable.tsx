@@ -1,4 +1,6 @@
+/* eslint-disable react/no-array-index-key, no-nested-ternary */
 import React from "react";
+
 import styles from "./docs.module.css";
 
 export type DocTableColumn = {
@@ -33,7 +35,8 @@ export function DocTable({
             }
           >
             {row.map((cell, ci) => {
-              const colStyle = columns[ci]?.style ?? (ci === 0 ? "name" : "text");
+              const colStyle =
+                columns[ci]?.style ?? (ci === 0 ? "name" : "text");
               const cls =
                 colStyle === "name"
                   ? styles.docTableCellName

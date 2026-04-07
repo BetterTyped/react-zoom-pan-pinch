@@ -5,11 +5,13 @@ import { renderApp, flushAnimationFrames } from "../utils";
 const NativeResizeObserver = global.ResizeObserver;
 
 beforeAll(() => {
+  /* eslint-disable class-methods-use-this */
   global.ResizeObserver = class {
     observe() {}
     disconnect() {}
     unobserve() {}
   } as unknown as typeof ResizeObserver;
+  /* eslint-enable class-methods-use-this */
 });
 
 afterAll(() => {
@@ -37,7 +39,7 @@ describe("bounds and centering regressions", () => {
       smooth: false,
     });
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i += 1) {
       fireEvent(
         content,
         new WheelEvent("wheel", {
@@ -183,8 +185,7 @@ describe("bounds and centering regressions", () => {
     const leftEdgeS3 = -ref.current!.instance.state.positionX / 3;
 
     pan({ x: -60000, y: 0, from: { clientX: 250, clientY: 250 } });
-    const rightEdgeS3 =
-      (W - ref.current!.instance.state.positionX) / 3;
+    const rightEdgeS3 = (W - ref.current!.instance.state.positionX) / 3;
 
     expect(leftEdgeS3).toBeCloseTo(leftEdgeS1, 0);
     expect(rightEdgeS3).toBeCloseTo(rightEdgeS1, 0);
@@ -216,8 +217,7 @@ describe("bounds and centering regressions", () => {
     const topEdgeS2 = -ref.current!.instance.state.positionY / 2;
 
     pan({ x: 0, y: -40000, from: { clientX: 250, clientY: 250 } });
-    const bottomEdgeS2 =
-      (H - ref.current!.instance.state.positionY) / 2;
+    const bottomEdgeS2 = (H - ref.current!.instance.state.positionY) / 2;
 
     expect(topEdgeS2).toBeCloseTo(topEdgeS1, 0);
     expect(bottomEdgeS2).toBeCloseTo(bottomEdgeS1, 0);

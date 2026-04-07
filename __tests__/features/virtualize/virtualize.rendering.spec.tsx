@@ -29,8 +29,8 @@ function renderVirtualize(
         wrapperStyle={{ width: "500px", height: "500px" }}
         contentStyle={{ width: "2000px", height: "2000px" }}
       >
-        {virtualizeProps.map((vProps, i) => (
-          <Virtualize key={i} {...vProps} />
+        {virtualizeProps.map((vProps) => (
+          <Virtualize key={`${vProps.x}-${vProps.y}`} {...vProps} />
         ))}
       </TransformComponent>
     </TransformWrapper>,

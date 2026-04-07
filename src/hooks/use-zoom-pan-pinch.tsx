@@ -20,18 +20,20 @@ export const useZoomPanPinch = (props?: ReactZoomPanPinchProps) => {
   >(() => {});
 
   useLayoutEffect(() => {
+    const inst = instance.current;
     if (contentRef.current && wrapperRef.current) {
-      instance.current.init(wrapperRef.current, contentRef.current);
+      inst.init(wrapperRef.current, contentRef.current);
     }
-    const unmount = instance.current.onTransform((data) => {
+    const unmount = inst.onTransform((data) => {
       useTransformCallback.current(data);
     });
 
     return () => {
-      instance.current.cleanupWindowEvents();
+      inst.cleanupWindowEvents();
       unmount();
     };
-  }, [contentRef.current, wrapperRef.current]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const useTransform = (callback: typeof useTransformCallback.current) => {
     useTransformCallback.current = callback;

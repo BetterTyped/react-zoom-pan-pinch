@@ -11,7 +11,7 @@ describe("Base [Interactions]", () => {
       render(
         <TransformWrapper>
           <TransformComponent>
-            <button data-testid="nested-btn" onClick={onClick}>
+            <button type="button" data-testid="nested-btn" onClick={onClick}>
               Click me
             </button>
           </TransformComponent>
@@ -27,7 +27,7 @@ describe("Base [Interactions]", () => {
       render(
         <TransformWrapper>
           <TransformComponent>
-            <button data-testid="nested-btn" onClick={onClick}>
+            <button type="button" data-testid="nested-btn" onClick={onClick}>
               Click me
             </button>
           </TransformComponent>
@@ -68,7 +68,7 @@ describe("Base [Interactions]", () => {
     });
     it("should trigger onZoom callback on zoom out button click", async () => {
       const onZoom = jest.fn();
-      const { zoomOutBtn, ref } = renderApp({ onZoom, initialScale: 2 });
+      const { zoomOutBtn } = renderApp({ onZoom, initialScale: 2 });
 
       fireEvent(zoomOutBtn, new MouseEvent("click", { bubbles: true }));
       expect(onZoom).toHaveBeenCalled();

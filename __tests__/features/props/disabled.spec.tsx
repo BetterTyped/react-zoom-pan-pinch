@@ -14,10 +14,7 @@ describe("ReactZoomPanPinchProps.disabled", () => {
   it("blocks wheel zoom when disabled is true", () => {
     const { content, ref } = renderApp({ disabled: true });
     userEvent.hover(content);
-    fireEvent(
-      content,
-      new WheelEvent("wheel", { bubbles: true, deltaY: -10 }),
-    );
+    fireEvent(content, new WheelEvent("wheel", { bubbles: true, deltaY: -10 }));
     expect(ref.current!.instance.state.scale).toBe(1);
   });
 
@@ -30,8 +27,6 @@ describe("ReactZoomPanPinchProps.disabled", () => {
   it("allows interactions when disabled is false", () => {
     const { content, pan } = renderApp({ disabled: false });
     pan({ x: -100, y: -100 });
-    expect(content.style.transform).toBe(
-      "translate(-100px, -100px) scale(1)",
-    );
+    expect(content.style.transform).toBe("translate(-100px, -100px) scale(1)");
   });
 });

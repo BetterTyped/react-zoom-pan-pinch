@@ -21,7 +21,7 @@ describe("ReactZoomPanPinchProps.trackPadPanning", () => {
         velocityAnimation: { disabled: false },
       });
       trackPadPan({ x: -100, y: -100 });
-      const transform = content.style.transform;
+      const { transform } = content.style;
       expect(transform).toContain("translate(");
     });
   });

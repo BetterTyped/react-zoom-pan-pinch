@@ -25,9 +25,7 @@ describe("ReactZoomPanPinchProps.autoAlignment", () => {
         "translate(-100px, -100px) scale(1)",
       );
       await waitFor(() => {
-        expect(content.style.transform).toBe(
-          "translate(0px, 0px) scale(1)",
-        );
+        expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       });
     });
   });

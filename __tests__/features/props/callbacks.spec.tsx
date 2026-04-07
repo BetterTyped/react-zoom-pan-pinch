@@ -1,7 +1,7 @@
-import { act, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { renderApp, flushAnimationFrames } from "../../utils";
+import { renderApp } from "../../utils";
 
 describe("ReactZoomPanPinchProps callbacks", () => {
   describe("onInit", () => {
@@ -155,7 +155,8 @@ describe("ReactZoomPanPinchProps callbacks", () => {
       const { pan } = renderApp({ onTransform });
       pan({ x: -50, y: -50 });
       expect(onTransform).toHaveBeenCalled();
-      const lastCall = onTransform.mock.calls[onTransform.mock.calls.length - 1];
+      const lastCall =
+        onTransform.mock.calls[onTransform.mock.calls.length - 1];
       expect(lastCall[1]).toHaveProperty("scale");
       expect(lastCall[1]).toHaveProperty("positionX");
       expect(lastCall[1]).toHaveProperty("positionY");

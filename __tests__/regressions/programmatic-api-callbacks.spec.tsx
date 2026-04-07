@@ -55,7 +55,12 @@ describe("programmatic API callbacks regressions", () => {
     content.appendChild(col);
 
     onPanning.mockClear();
-    pan({ x: 40, y: 20, moveEventCount: 4, from: { clientX: 50, clientY: 50 } });
+    pan({
+      x: 40,
+      y: 20,
+      moveEventCount: 4,
+      from: { clientX: 50, clientY: 50 },
+    });
 
     expect(onPanning).toHaveBeenCalled();
   });

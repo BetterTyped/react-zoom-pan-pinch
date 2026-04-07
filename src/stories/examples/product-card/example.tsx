@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { normalizeArgs } from "../../utils";
 
-const productImg = "https://images.pexels.com/photos/29306504/pexels-photo-29306504.jpeg";
+const productImg =
+  "https://images.pexels.com/photos/29306504/pexels-photo-29306504.jpeg";
 
 const font = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
@@ -411,8 +412,8 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
           >
             Tender slices of seasoned lamb and chicken, slow-roasted on a
             vertical spit, wrapped in warm handmade flatbread with crisp
-            lettuce, tomatoes, onions, and your choice of sauce. Zoom into
-            the image to see every juicy detail up close.
+            lettuce, tomatoes, onions, and your choice of sauce. Zoom into the
+            image to see every juicy detail up close.
           </p>
 
           {/* Sauce selector */}

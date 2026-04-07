@@ -72,7 +72,6 @@ export const handlePanningSetup = (
   const y = event.clientY;
 
   contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-  contextInstance.clientCoords = {x: x, y:  y};
 };
 
 export const handleTouchPanningSetup = (
@@ -90,7 +89,6 @@ export const handleTouchPanningSetup = (
     const x = touches[0].clientX;
     const y = touches[0].clientY;
     contextInstance.startCoords = { x: x - positionX, y: y - positionY };
-    contextInstance.clientCoords = {x: x, y:  y};
   }
 };
 export function handlePanToBounds(

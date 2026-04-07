@@ -161,7 +161,7 @@ describe("regressions: wheel and zoom behavior", () => {
         content,
         new WheelEvent("wheel", { bubbles: true, deltaY: -20, ctrlKey: true }),
       );
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 40; i += 1) {
         fireEvent(
           content,
           new WheelEvent("wheel", {
@@ -244,13 +244,13 @@ describe("regressions: wheel and zoom behavior", () => {
           wheel: { step },
         });
         userEvent.hover(content);
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 6; i += 1) {
           fireEvent(
             content,
             new WheelEvent("wheel", { bubbles: true, deltaY: -8 }),
           );
         }
-        const scale = ref.current!.instance.state.scale;
+        const { scale } = ref.current!.instance.state;
         unmount();
         return scale;
       };

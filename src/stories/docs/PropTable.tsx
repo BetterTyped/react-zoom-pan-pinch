@@ -1,5 +1,8 @@
+/* eslint-disable react/no-array-index-key, no-nested-ternary, no-plusplus */
 import React from "react";
+
 import type { ControlsOptionsType } from "./props";
+
 import styles from "./docs.module.css";
 
 type Group = {
@@ -69,8 +72,7 @@ export function PropTable({
 
             {group.children.map((row, ri) => {
               const isNested = !!group.header;
-              const propName =
-                typeof row.name === "string" ? row.name : null;
+              const propName = typeof row.name === "string" ? row.name : null;
               const isAlt = rowIndex++ % 2 === 1;
 
               const rowClass = isNested
@@ -84,9 +86,7 @@ export function PropTable({
               return (
                 <div key={ri} className={rowClass}>
                   <span className={styles.propName}>
-                    {isNested && (
-                      <span className={styles.nestDot}>.</span>
-                    )}
+                    {isNested && <span className={styles.nestDot}>.</span>}
                     {propName ?? row.name}
                   </span>
 
@@ -104,9 +104,7 @@ export function PropTable({
                     )}
                   </span>
 
-                  <span className={styles.description}>
-                    {row.description}
-                  </span>
+                  <span className={styles.description}>{row.description}</span>
                 </div>
               );
             })}

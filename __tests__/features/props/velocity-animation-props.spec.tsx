@@ -27,7 +27,9 @@ describe("ReactZoomPanPinchProps.velocityAnimation", () => {
         flushAnimationFrames(60);
       });
 
-      const match = content.style.transform.match(/translate\((-?\d+(?:\.\d+)?)px/);
+      const match = content.style.transform.match(
+        /translate\((-?\d+(?:\.\d+)?)px/,
+      );
       expect(match).toBeTruthy();
     });
   });

@@ -7,8 +7,12 @@ function renderWithMiniMap(miniMapProps: Record<string, unknown> = {}) {
   return render(
     <TransformWrapper>
       <TransformComponent
-        wrapperProps={{ "data-testid": "wrapper" } as React.HTMLAttributes<HTMLDivElement>}
-        contentProps={{ "data-testid": "content" } as React.HTMLAttributes<HTMLDivElement>}
+        wrapperProps={
+          { "data-testid": "wrapper" } as React.HTMLAttributes<HTMLDivElement>
+        }
+        contentProps={
+          { "data-testid": "content" } as React.HTMLAttributes<HTMLDivElement>
+        }
         wrapperStyle={{ width: "500px", height: "500px" }}
         contentStyle={{ width: "100%", height: "100%" }}
       >

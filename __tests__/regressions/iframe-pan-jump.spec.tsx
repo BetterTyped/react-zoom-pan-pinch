@@ -20,7 +20,7 @@ import { parseTransform } from "../utils/parsing";
  */
 describe("iframe pan jump regression", () => {
   it("resets panning when mousemove arrives with no buttons pressed (missed mouseup)", () => {
-    const { content, wrapper } = renderApp({});
+    const { content } = renderApp({});
 
     // Start a pan gesture
     fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
@@ -124,8 +124,18 @@ describe("iframe keyboard state regression", () => {
     // Pan with Shift held — mouse events carry shiftKey: true (matching
     // real browser behavior when the key is physically held)
     userEvent.hover(content);
-    fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1, shiftKey: true });
-    fireEvent.mouseMove(content, { clientX: -50, clientY: -50, buttons: 1, shiftKey: true });
+    fireEvent.mouseDown(content, {
+      clientX: 0,
+      clientY: 0,
+      buttons: 1,
+      shiftKey: true,
+    });
+    fireEvent.mouseMove(content, {
+      clientX: -50,
+      clientY: -50,
+      buttons: 1,
+      shiftKey: true,
+    });
     fireEvent.mouseUp(content);
     expect(content.style.transform).toBe("translate(-50px, -50px) scale(1)");
 
@@ -133,7 +143,7 @@ describe("iframe keyboard state regression", () => {
     fireEvent(window, new Event("blur"));
 
     // Shift should no longer be considered pressed
-    expect(ref.current!.instance.pressedKeys["Shift"]).toBeFalsy();
+    expect(ref.current!.instance.pressedKeys.Shift).toBeFalsy();
 
     // Pan without Shift — should be blocked
     fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
@@ -164,8 +174,18 @@ describe("iframe keyboard state regression", () => {
     });
 
     userEvent.hover(content);
-    fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1, shiftKey: true });
-    fireEvent.mouseMove(content, { clientX: -30, clientY: -30, buttons: 1, shiftKey: true });
+    fireEvent.mouseDown(content, {
+      clientX: 0,
+      clientY: 0,
+      buttons: 1,
+      shiftKey: true,
+    });
+    fireEvent.mouseMove(content, {
+      clientX: -30,
+      clientY: -30,
+      buttons: 1,
+      shiftKey: true,
+    });
     fireEvent.mouseUp(content);
     expect(content.style.transform).toBe("translate(-30px, -30px) scale(1)");
 
@@ -173,8 +193,18 @@ describe("iframe keyboard state regression", () => {
     fireEvent(window, new Event("blur"));
 
     // Re-hold Shift — panning should work again
-    fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1, shiftKey: true });
-    fireEvent.mouseMove(content, { clientX: -20, clientY: -20, buttons: 1, shiftKey: true });
+    fireEvent.mouseDown(content, {
+      clientX: 0,
+      clientY: 0,
+      buttons: 1,
+      shiftKey: true,
+    });
+    fireEvent.mouseMove(content, {
+      clientX: -20,
+      clientY: -20,
+      buttons: 1,
+      shiftKey: true,
+    });
     fireEvent.mouseUp(content);
     expect(content.style.transform).toBe("translate(-50px, -50px) scale(1)");
   });

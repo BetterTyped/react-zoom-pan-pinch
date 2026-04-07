@@ -1,3 +1,5 @@
+import * as fs from "fs";
+import * as path from "path";
 import { fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -51,7 +53,7 @@ describe("pan interaction regressions", () => {
       act(() => {
         flushAnimationFrames();
       });
-      const transform = content.style.transform;
+      const { transform } = content.style;
       unmount();
       return transform;
     };
@@ -184,11 +186,11 @@ describe("pan interaction regressions", () => {
   });
 
   it("wrapper CSS sets user-select: none to prevent selection during gestures (Ref #467)", () => {
-    const cssPath = require("path").resolve(
+    const cssPath = path.resolve(
       __dirname,
       "../../src/components/transform-component/transform-component.module.css",
     );
-    const css = require("fs").readFileSync(cssPath, "utf-8") as string;
+    const css = fs.readFileSync(cssPath, "utf-8");
     expect(css).toMatch(/user-select:\s*none/);
   });
 

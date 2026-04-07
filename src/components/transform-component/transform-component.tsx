@@ -46,10 +46,10 @@ export const TransformComponent: React.FC<Props> = ({
     if (wrapper !== null && content !== null && init) {
       init?.(wrapper, content);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
       cleanupWindowEvents?.();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

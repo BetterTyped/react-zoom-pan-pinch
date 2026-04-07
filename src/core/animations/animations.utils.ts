@@ -44,8 +44,7 @@ export function handleSetupAnimation(
 
     const frameTime = new Date().getTime() - startTime;
     const animationProgress = frameTime / animationTime;
-    const animationType =
-      animations[animationName as keyof typeof animations];
+    const animationType = animations[animationName as keyof typeof animations];
 
     const step = animationType(animationProgress);
 

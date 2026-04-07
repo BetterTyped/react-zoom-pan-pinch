@@ -26,7 +26,11 @@ describe("KeepScale props", () => {
       render(
         <TransformWrapper>
           <TransformComponent>
-            <KeepScale data-testid="ks" aria-label="marker" className="my-marker">
+            <KeepScale
+              data-testid="ks"
+              aria-label="marker"
+              className="my-marker"
+            >
               <span>pin</span>
             </KeepScale>
           </TransformComponent>

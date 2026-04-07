@@ -46,7 +46,7 @@ describe("ReactZoomPanPinchProps.doubleClick", () => {
         act(() => {
           flushAnimationFrames(40);
         });
-        const scale = ref.current!.instance.state.scale;
+        const { scale } = ref.current!.instance.state;
         unmount();
         return scale;
       };
@@ -58,7 +58,12 @@ describe("ReactZoomPanPinchProps.doubleClick", () => {
     it("mode 'zoomIn' zooms in on double-click", () => {
       jest.useFakeTimers();
       const { content, ref } = renderApp({
-        doubleClick: { disabled: false, mode: "zoomIn", step: 0.5, animationTime: 50 },
+        doubleClick: {
+          disabled: false,
+          mode: "zoomIn",
+          step: 0.5,
+          animationTime: 50,
+        },
         smooth: false,
       });
       act(() => {
@@ -73,7 +78,12 @@ describe("ReactZoomPanPinchProps.doubleClick", () => {
     it("mode 'zoomOut' zooms out on double-click", () => {
       jest.useFakeTimers();
       const { content, ref } = renderApp({
-        doubleClick: { disabled: false, mode: "zoomOut", step: 0.3, animationTime: 50 },
+        doubleClick: {
+          disabled: false,
+          mode: "zoomOut",
+          step: 0.3,
+          animationTime: 50,
+        },
         smooth: false,
         minScale: 0.2,
       });
@@ -107,7 +117,12 @@ describe("ReactZoomPanPinchProps.doubleClick", () => {
     it("mode 'toggle' toggles between zoom in and reset", () => {
       jest.useFakeTimers();
       const { content, ref } = renderApp({
-        doubleClick: { disabled: false, mode: "toggle", step: 0.7, animationTime: 80 },
+        doubleClick: {
+          disabled: false,
+          mode: "toggle",
+          step: 0.7,
+          animationTime: 80,
+        },
         smooth: false,
       });
 

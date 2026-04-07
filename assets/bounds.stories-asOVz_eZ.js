@@ -1,0 +1,33 @@
+import{M as v,C as T,b as z,A as B}from"./index-ZmmeiwmS.js";import{T as l,n as S,a as C,B as X,b as g}from"./controls.utils-PCfDE2Y6.js";import{v as P}from"./viewer.styles-iQDzDPfG.js";import{a as i,j as e,F as k}from"./jsx-runtime-5BUNAZ9W.js";import{useMDXComponents as d}from"./index-_VGcpBFS.js";import"./iframe-E6EszBkI.js";import"../sb-preview/runtime.js";import"./index-4g5l5LRQ.js";import"./_commonjsHelpers-4gQjN7DL.js";import"./index-jmm5gWkb.js";import"./index-ogXoivrg.js";import"./index-MI7UZ4bI.js";import"./index-PPLHz8o0.js";import"./animations.constants-3GwGogm_.js";const s=1200,x=s;function o({x:t,y:n,color:r,size:c,label:w}){return e("div",{style:{position:"absolute",left:t,top:n,width:c,height:c,borderRadius:"16px",background:`linear-gradient(135deg, ${r}, ${r}88)`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 0 30px ${r}44`,userSelect:"none"},children:e("span",{style:{color:"#fff",fontSize:"11px",fontWeight:600,fontFamily:"system-ui, -apple-system, sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.5)",letterSpacing:"0.5px"},children:w})})}function Y(){return i("div",{style:{position:"relative",width:s+300,height:s+300,margin:-150,background:"linear-gradient(135deg, #1a1a3e 0%, #0f2027 40%, #203a43 70%, #2c5364 100%)",overflow:"hidden"},children:[e("div",{style:{position:"absolute",inset:"150px",backgroundImage:`
+            linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+          `,backgroundSize:"60px 60px"}}),e(o,{x:230,y:230,color:"#667eea",size:100,label:"Start"}),e(o,{x:450,y:300,color:"#43e97b",size:80,label:"Park"}),e(o,{x:300,y:500,color:"#4facfe",size:90,label:"Lake"}),e(o,{x:650,y:250,color:"#f093fb",size:70,label:"Shops"}),e(o,{x:550,y:550,color:"#fa709a",size:110,label:"Plaza"}),e(o,{x:850,y:350,color:"#f6d365",size:85,label:"Market"}),e(o,{x:350,y:750,color:"#a18cd1",size:75,label:"Museum"}),e(o,{x:750,y:700,color:"#0acffe",size:95,label:"Arena"}),e(o,{x:1e3,y:550,color:"#ff9a9e",size:80,label:"Tower"}),e(o,{x:1050,y:850,color:"#fccb90",size:90,label:"Harbor"}),e(o,{x:500,y:950,color:"#c471f5",size:85,label:"Temple"}),e(o,{x:850,y:1e3,color:"#48c6ef",size:70,label:"Bridge"}),e(o,{x:1150,y:300,color:"#30cfd0",size:75,label:"North"}),e(o,{x:1150,y:750,color:"#e0c3fc",size:80,label:"East"}),e(o,{x:300,y:1100,color:"#89f7fe",size:70,label:"South"}),e(o,{x:1100,y:1100,color:"#feada6",size:90,label:"Corner"})]})}const h=-(x-500),p=0,m=-(x-500),u=0,b=t=>{const n=Object.assign({div:"div",p:"p"},d());return i(n.div,{style:{fontFamily:"system-ui, -apple-system, sans-serif"},children:[e(l,{...S(t),minPositionX:h,maxPositionX:p,minPositionY:m,maxPositionY:u,children:i(n.div,{style:{position:"relative",display:"inline-block"},children:[e(C,{wrapperStyle:{...P,width:"500px",height:"500px",maxWidth:"80vw",maxHeight:"80vh"},children:e(Y,{})}),e(X,{minX:h,maxX:p,minY:m,maxY:u,wrapperWidth:500,wrapperHeight:500})]})}),e(n.p,{style:{fontSize:"13px",color:"#888",marginTop:"12px",maxWidth:"500px",lineHeight:1.5},children:"Pan around the map. As you approach a boundary, a shadow and “Limit” label fade in on that edge. The content is locked within the position bounds — you cannot pan beyond them."})]})};function y(t){const n=Object.assign({h1:"h1",p:"p",strong:"strong",code:"code",h2:"h2"},d(),t.components);return i(k,{children:[e(v,{title:"Basic/Bounds",component:l,argTypes:g}),`
+`,e(n.h1,{id:"bounds",children:"Bounds"}),`
+`,i(n.p,{children:[e(n.strong,{children:"Position bounds"})," clamp the transform’s translation: ",e(n.code,{children:"positionX"})," and ",e(n.code,{children:"positionY"}),`
+stay within the ranges you set. They apply while panning, during pinch or wheel
+zoom, and when inertia or animations run—anything that would move the content
+past a limit is stopped or corrected at that edge.`]}),`
+`,i(n.p,{children:["Use these props when you need a ",e(n.strong,{children:"custom panning window"}),` (for example a large
+map or canvas where you do not want users to drag content completely away, or
+where min/max should `,e(n.strong,{children:"not"}),` match the wrapper edges). For the common case
+“keep the scaled content inside the viewport,” use `,e(n.strong,{children:e(n.code,{children:"limitToBounds"})}),` (see the
+controls below): the library derives limits from the wrapper, content size, and
+current scale. When you pass a given `,e(n.code,{children:"minPosition*"})," / ",e(n.code,{children:"maxPosition*"}),` value, it
+`,e(n.strong,{children:"replaces"}),` the auto-calculated bound on that axis; this story sets all four,
+so the pan range is defined entirely by those numbers.`]}),`
+`,e(n.h2,{id:"what-this-story-shows",children:"What this story shows"}),`
+`,i(n.p,{children:["The viewport is a fixed ",e(n.strong,{children:"500×500px"})," frame. The map (",e(n.code,{children:"BoundsContent"}),` in
+`,e(n.code,{children:"bounds.data.tsx"}),`) is much larger, so you can pan in both directions. The
+min/max values are chosen so you can explore the map but `,e(n.strong,{children:"cannot"}),` pan past
+the configured limits—try dragging toward each edge until motion stops.`]}),`
+`,i(n.p,{children:["The ",e(n.strong,{children:"fog and “Limit” labels"})," are implemented by ",e(n.code,{children:"BoundsOverlay"}),` in the
+story utilities (`,e(n.code,{children:"useTransformComponent"})," + edge proximity). They are ",e(n.strong,{children:"not"}),`
+part of the published library; they only illustrate how you might reflect
+“near a bound” in your own UI.`]}),`
+`,e(n.h2,{id:"try-it",children:"Try it"}),`
+`,e(T,{children:e(z,{name:"Bounds",children:r=>e(b,{...r})})}),`
+`,e(n.h2,{id:"component-api",children:"Component API"}),`
+`,i(n.p,{children:["Use the table for global behavior (panning, wheel, zoom limits, ",e(n.strong,{children:e(n.code,{children:"limitToBounds"})}),`, etc.).
+Position bounds are always set in `,e(n.strong,{children:"pixels"})," on ",e(n.code,{children:"TransformWrapper"}),`, consistent
+with `,e(n.code,{children:"positionX"})," / ",e(n.code,{children:"positionY"})," in the transform state."]}),`
+`,e(B,{story:"Bounds"})]})}function M(t={}){const{wrapper:n}=Object.assign({},d(),t.components);return n?e(n,{...t,children:e(y,{...t})}):y(t)}const f=t=>e(b,{...t});f.storyName="Bounds";f.parameters={storySource:{source:"args => <Template {...args} />"}};const a={title:"Basic/Bounds",component:l,argTypes:g,tags:["stories-mdx"],includeStories:["bounds"]};a.parameters=a.parameters||{};a.parameters.docs={...a.parameters.docs||{},page:M};const R=["minX","maxX","minY","maxY","Template","bounds"];export{b as Template,R as __namedExportsOrder,f as bounds,a as default,p as maxX,u as maxY,h as minX,m as minY};

@@ -19,8 +19,8 @@ global.ResizeObserver = class ResizeObserver {
     // Trigger callback once synchronously so centerOnInit flows complete.
     this.callback([], this);
   }
-  unobserve() {}
-  disconnect() {}
+  unobserve() { }
+  disconnect() { }
 };
 // ./config/jest/setupTests.js
 

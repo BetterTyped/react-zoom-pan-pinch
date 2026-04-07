@@ -34,6 +34,7 @@ export function handlePanningStart(
 
 export function handleAlignToBounds(
   contextInstance: ReactZoomPanPinchContext,
+  customAnimationTime?: number,
 ): void {
   const { scale } = contextInstance.state;
   const { minScale, autoAlignment } = contextInstance.setup;
@@ -47,7 +48,12 @@ export function handleAlignToBounds(
   const targetState = handlePanToBounds(contextInstance);
 
   if (targetState) {
-    animate(contextInstance, targetState, animationTime, animationType);
+    animate(
+      contextInstance,
+      targetState,
+      customAnimationTime ?? animationTime,
+      animationType,
+    );
   }
 }
 

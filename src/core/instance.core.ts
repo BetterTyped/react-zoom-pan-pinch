@@ -213,21 +213,11 @@ export class ZoomPanPinch {
 
   handleInitialize = (contentComponent: HTMLDivElement): void => {
     const { centerOnInit } = this.setup;
-
-    if (centerOnInit && this.wrapperComponent) {
-      const targetState = getCenterPosition(
-        this.state.scale,
-        this.wrapperComponent,
-        contentComponent,
-      );
-      this.state.positionX = targetState.positionX;
-      this.state.positionY = targetState.positionY;
-    }
-
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
 
     if (centerOnInit) {
+      this.setCenter();
       this.observer = new ResizeObserver(() => {
         const currentWidth = contentComponent.offsetWidth;
         const currentHeight = contentComponent.offsetHeight;

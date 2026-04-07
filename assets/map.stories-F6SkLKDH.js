@@ -1,9 +1,0 @@
-import{M as d,C as h,b as g,A as f}from"./index-KmnHMH_U.js";import{T as s,b as p}from"./controls.utils-PCfDE2Y6.js";import{E as M}from"./example-48D387tt.js";import{j as e,a,F as u}from"./jsx-runtime-5BUNAZ9W.js";import{useMDXComponents as m}from"./index-_VGcpBFS.js";import"./iframe-EbPgrFct.js";import"../sb-preview/runtime.js";import"./index-4g5l5LRQ.js";import"./_commonjsHelpers-4gQjN7DL.js";import"./index-jmm5gWkb.js";import"./index-ogXoivrg.js";import"./index-MI7UZ4bI.js";import"./index-PPLHz8o0.js";import"./animations.constants-3GwGogm_.js";import"./viewer.styles-iQDzDPfG.js";const i=t=>e(M,{...t});function n(t){const o=Object.assign({h1:"h1",p:"p",strong:"strong",code:"code",h2:"h2"},m(),t.components);return a(u,{children:[e(d,{title:"Examples/Map",component:s,argTypes:p}),`
-`,e(o.h1,{id:"map",children:"Map"}),`
-`,a(o.p,{children:["An interactive ",e(o.strong,{children:"island map"}),` with points of interest that stay readable at
-every zoom level thanks to `,e(o.code,{children:"KeepScale"}),". Click any ",e(o.strong,{children:"pin"}),` or pick a
-`,e(o.strong,{children:"location card"}),` from the bar below to fly to that spot. Zoom out to see the
-full archipelago, zoom in for street-level detail.`]}),`
-`,e(h,{children:e(g,{name:"Map",children:l=>e(i,{...l})})}),`
-`,e(o.h2,{id:"component-api",children:"Component API"}),`
-`,e(f,{story:"Map"})]})}function y(t={}){const{wrapper:o}=Object.assign({},m(),t.components);return o?e(o,{...t,children:e(n,{...t})}):n(t)}const c=t=>e(i,{...t});c.storyName="Map";c.parameters={storySource:{source:"args => <Template {...args} />"}};const r={title:"Examples/Map",component:s,argTypes:p,tags:["stories-mdx"],includeStories:["map"]};r.parameters=r.parameters||{};r.parameters.docs={...r.parameters.docs||{},page:y};const z=["Template","map"];export{i as Template,z as __namedExportsOrder,r as default,c as map};

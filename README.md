@@ -204,10 +204,6 @@ const Example = () => {
 	</a>
 </p>
 
-## License
-
-MIT © [prc5](https://github.com/prc5)
-
 ## Help me keep working on this project ❤️
 
 - [Become a Sponsor on GitHub](https://github.com/sponsors/prc5)
@@ -231,3 +227,7 @@ If you're using this library in production, I offer paid support:
 Plans start at $400/month.
 
 📩 Contact: maciekpyrc@gmail.com
+
+## License
+
+MIT © [prc5](https://github.com/prc5)

@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "build:docs": "storybook build",
+    "build:docs": "STORYBOOK_BASE=/react-zoom-pan-pinch/ storybook build",
     "start": "cross-env DISABLE_ESLINT_PLUGIN=true yarn storybook dev -p 6006",
     "test": "jest",
     "test:debug": "jest-preview",

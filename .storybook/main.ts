@@ -18,8 +18,8 @@ const config: StorybookConfig = {
     autodocs: "tag",
   },
   async viteFinal(config) {
-    // return the customized config
     return mergeConfig(config, {
+      base: process.env.STORYBOOK_BASE || "/",
       plugins: [
         tsconfigPaths(),
         svgr({

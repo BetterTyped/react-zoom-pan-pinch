@@ -1,0 +1,31 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Basic/Text Selection"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Text Selection
+
+Allow users to **select and copy text** inside zoomable content. By default,
+click-and-drag triggers panning, which prevents native text selection. Adding
+a CSS class to the `panning.excluded` array tells the library to ignore
+pointer events on that element — restoring normal browser text selection.
+
+Try it: **click and drag** over the article text below to select it. Scroll
+to zoom in, then select zoomed-in text — it works at every scale.
+
+<Canvas>
+  <Story name="Text Selection">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Text Selection" />

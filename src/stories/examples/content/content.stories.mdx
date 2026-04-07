@@ -3,6 +3,7 @@ import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
 import { normalizeArgs, Controls, viewerChrome } from "../../utils";
+import { DocTable } from "../../docs/DocTable.tsx";
 import { MixedContent } from "./mixed-content.data";
 
 export const Template = (args) => {
@@ -10,14 +11,13 @@ export const Template = (args) => {
   return (
     <TransformWrapper
       {...normalized}
-      centerOnInit
       panning={{ excluded: ["panningDisabled"], ...normalized.panning }}
       wheel={{ excluded: ["wheelDisabled"], ...normalized.wheel }}
       pinch={{ excluded: ["pinchDisabled"], ...normalized.pinch }}
     >
       {(utils) => (
-        <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-          <Controls {...utils} />
+        <div style={{ fontFamily: "system-ui, -apple-system, sans-serif", position: "relative" }}>
+          <Controls {...utils} position="bottom-left" />
           <TransformComponent
             wrapperStyle={{
               ...viewerChrome,
@@ -105,12 +105,19 @@ class is silently ignored by that gesture handler.
 </TransformWrapper>
 ```
 
-| Prop | Gesture blocked | Typical use case |
-|---|---|---|
-| `panning.excluded` | Click-and-drag | Scrollable lists, text selection, draggable widgets |
-| `wheel.excluded` | Mouse wheel / trackpad scroll | Dropdowns, inner scroll containers, code editors |
-| `pinch.excluded` | Two-finger pinch | Embedded maps, multi-touch canvases, sliders |
-| `doubleClick.excluded` | Double-click zoom | Editable text, buttons that need double-click |
+<DocTable
+  columns={[
+    { header: "Prop" },
+    { header: "Gesture blocked", style: "type" },
+    { header: "Typical use case", style: "text" },
+  ]}
+  rows={[
+    ["panning.excluded", "Click-and-drag", "Scrollable lists, text selection, draggable widgets"],
+    ["wheel.excluded", "Mouse wheel / trackpad scroll", "Dropdowns, inner scroll containers, code editors"],
+    ["pinch.excluded", "Two-finger pinch", "Embedded maps, multi-touch canvases, sliders"],
+    ["doubleClick.excluded", "Double-click zoom", "Editable text, buttons that need double-click"],
+  ]}
+/>
 
 > **No JavaScript wiring required.** Add the CSS class to the element (or a
 > parent), and the library reads it from the event target's class list at

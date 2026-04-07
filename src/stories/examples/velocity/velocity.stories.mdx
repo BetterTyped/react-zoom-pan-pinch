@@ -14,20 +14,17 @@ export const Template = (args) => <Example {...args} />;
 
 # Pan velocity (inertia)
 
-After a fast pan, the library can apply **momentum** so the canvas keeps moving
-and **eases out** — similar to scrolling on mobile. That behavior lives under
-**`velocityAnimation`**.
+After a fast pan the library applies **momentum** so the canvas keeps
+moving and **eases out** — the same physics you feel when scrolling on
+mobile. Toggle **Momentum / Locked**, adjust **Sensitivity** and
+**Friction**, then fling the starfield to feel the difference.
 
-Set **`velocityAnimation.disabled`** to `true` to turn inertia **off**: when
-the user releases the pointer, motion stops immediately (aside from any
-bounds correction).
-
-Use the **Inertia on / off** buttons, then drag the field and release mid-gesture
-to feel the difference. Tune **`animationTime`**, **`maxAnimationTime`**, and
-**`inertia`** in the args table or in your app for snappier or floatier motion.
-
-Double-click zoom is disabled in this demo so a quick second click does not
-fight the pan experiment.
+| Prop | Effect |
+|---|---|
+| `velocityAnimation.disabled` | Turn inertia on/off |
+| `velocityAnimation.sensitivityMouse` | How much initial speed is captured (higher = faster fling) |
+| `velocityAnimation.inertia` | Decay coefficient — higher = longer glide |
+| `velocityAnimation.animationTime` | Base animation duration in ms |
 
 <Canvas>
   <Story name="Velocity">{(args) => <Template {...args} />}</Story>

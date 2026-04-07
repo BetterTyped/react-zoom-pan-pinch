@@ -21,8 +21,7 @@ export const checkerboard: React.CSSProperties = {
 export const viewerFrame: React.CSSProperties = {
   borderRadius: "12px",
   border: "2px solid rgba(255,255,255,0.08)",
-  boxShadow:
-    "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
 };
 
 /**

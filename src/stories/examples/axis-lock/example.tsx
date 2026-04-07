@@ -42,10 +42,7 @@ function GridCanvas() {
         gridTemplateColumns: "repeat(8, 1fr)",
         gridTemplateRows: "repeat(6, 1fr)",
         gap: 3,
-        padding: 24,
         boxSizing: "border-box",
-        background:
-          "linear-gradient(145deg, #12122a 0%, #0d1528 40%, #0a1020 100%)",
       }}
     >
       {cells.map(({ key, row, col }) => (
@@ -71,15 +68,8 @@ function GridCanvas() {
   );
 }
 
-function axisButtons(
-  mode: AxisMode,
-  setMode: (m: AxisMode) => void,
-) {
-  const btn = (
-    id: AxisMode,
-    label: string,
-    Icon: React.FC,
-  ) => ({
+function axisButtons(mode: AxisMode, setMode: (m: AxisMode) => void) {
+  const btn = (id: AxisMode, label: string, Icon: React.FC) => ({
     label,
     icon: <Icon />,
     onClick: () => setMode(mode === id ? "free" : id),
@@ -109,10 +99,7 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
       <TransformWrapper {...normalized} centerOnInit panning={panning}>
         {(utils) => (
           <div style={{ position: "relative", display: "inline-block" }}>
-            <Controls
-              {...utils}
-              extraButtons={axisButtons(mode, setMode)}
-            />
+            <Controls {...utils} extraButtons={axisButtons(mode, setMode)} />
             <TransformComponent
               wrapperStyle={viewer}
               contentStyle={{ width: 1400, height: 900 }}

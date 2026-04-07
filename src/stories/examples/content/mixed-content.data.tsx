@@ -23,13 +23,7 @@ const palette = {
   pinchZoneBorder: "rgba(67,233,123,0.25)",
 };
 
-function ZoneBadge({
-  color,
-  label,
-}: {
-  color: string;
-  label: string;
-}) {
+function ZoneBadge({ color, label }: { color: string; label: string }) {
   return (
     <span
       style={{
@@ -264,9 +258,9 @@ function MiniBarChart() {
         padding: "12px 0 0",
       }}
     >
-      {bars.map((v, i) => (
+      {bars.map((v) => (
         <div
-          key={i}
+          key={v}
           style={{
             flex: "1 1 0",
             height: `${(v / 100) * maxH}px`,
@@ -394,10 +388,100 @@ export function MixedContent() {
             lineHeight: 1.5,
           }}
         >
-          Pan, zoom, and pinch this entire canvas.
-          Colored zones below disable specific gestures — try interacting with
-          each one.
+          Pan, zoom, and pinch this entire canvas. Colored zones below disable
+          specific gestures — try interacting with each one.
         </p>
+      </div>
+
+      {/* Exclusion zones */}
+      <SectionTitle>Exclusion Zones</SectionTitle>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "14px",
+          marginBottom: "24px",
+        }}
+      >
+        {/* Panning disabled */}
+        <ExclusionZone
+          className="panningDisabled"
+          color={palette.panZone}
+          bgColor={palette.panZoneBg}
+          borderColor={palette.panZoneBorder}
+          label="Panning Disabled"
+          description={
+            'This zone has the CSS class "panningDisabled" — clicking and dragging inside here will NOT pan the canvas. Useful for scrollable lists, text selection areas, or embedded interactive widgets.'
+          }
+        >
+          <ScrollableList />
+        </ExclusionZone>
+
+        {/* Wheel disabled */}
+        <ExclusionZone
+          className="wheelDisabled"
+          color={palette.wheelZone}
+          bgColor={palette.wheelZoneBg}
+          borderColor={palette.wheelZoneBorder}
+          label="Wheel Disabled"
+          description={
+            'This zone has the CSS class "wheelDisabled" — scrolling the mouse wheel here will NOT zoom the canvas. Perfect for scrollable content inside the transform viewport.'
+          }
+        >
+          <InteractiveButtons />
+        </ExclusionZone>
+
+        {/* Pinch disabled */}
+        <ExclusionZone
+          className="pinchDisabled"
+          color={palette.pinchZone}
+          bgColor={palette.pinchZoneBg}
+          borderColor={palette.pinchZoneBorder}
+          label="Pinch Disabled"
+          description={
+            'This zone has the CSS class "pinchDisabled" — pinch gestures on touch devices will NOT zoom the canvas. Ideal for embedded maps, canvases, or multi-touch widgets.'
+          }
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "8px",
+            }}
+          >
+            {[
+              { label: "Scale X", val: "1.00" },
+              { label: "Scale Y", val: "1.00" },
+              { label: "Rotation", val: "0°" },
+              { label: "Opacity", val: "100%" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: "8px",
+                  background: palette.surface,
+                  border: `1px solid ${palette.border}`,
+                  fontSize: "11px",
+                  fontFamily: FONT,
+                }}
+              >
+                <div
+                  style={{
+                    color: palette.textMuted,
+                    marginBottom: "3px",
+                    fontWeight: 500,
+                  }}
+                >
+                  {item.label}
+                </div>
+                <div style={{ color: palette.text, fontWeight: 700 }}>
+                  {item.val}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ExclusionZone>
       </div>
 
       {/* Stat cards */}
@@ -488,86 +572,6 @@ export function MixedContent() {
           <span>06:00</span>
           <span>12:00</span>
         </div>
-      </div>
-
-      {/* Exclusion zones */}
-      <SectionTitle>Exclusion Zones</SectionTitle>
-      <div
-        style={{ display: "flex", flexDirection: "column", gap: "14px" }}
-      >
-        {/* Panning disabled */}
-        <ExclusionZone
-          className="panningDisabled"
-          color={palette.panZone}
-          bgColor={palette.panZoneBg}
-          borderColor={palette.panZoneBorder}
-          label="Panning Disabled"
-          description={'This zone has the CSS class "panningDisabled" — clicking and dragging inside here will NOT pan the canvas. Useful for scrollable lists, text selection areas, or embedded interactive widgets.'}
-        >
-          <ScrollableList />
-        </ExclusionZone>
-
-        {/* Wheel disabled */}
-        <ExclusionZone
-          className="wheelDisabled"
-          color={palette.wheelZone}
-          bgColor={palette.wheelZoneBg}
-          borderColor={palette.wheelZoneBorder}
-          label="Wheel Disabled"
-          description={'This zone has the CSS class "wheelDisabled" — scrolling the mouse wheel here will NOT zoom the canvas. Perfect for scrollable content inside the transform viewport.'}
-        >
-          <InteractiveButtons />
-        </ExclusionZone>
-
-        {/* Pinch disabled */}
-        <ExclusionZone
-          className="pinchDisabled"
-          color={palette.pinchZone}
-          bgColor={palette.pinchZoneBg}
-          borderColor={palette.pinchZoneBorder}
-          label="Pinch Disabled"
-          description={'This zone has the CSS class "pinchDisabled" — pinch gestures on touch devices will NOT zoom the canvas. Ideal for embedded maps, canvases, or multi-touch widgets.'}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "8px",
-            }}
-          >
-            {[
-              { label: "Scale X", val: "1.00" },
-              { label: "Scale Y", val: "1.00" },
-              { label: "Rotation", val: "0°" },
-              { label: "Opacity", val: "100%" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: "8px",
-                  background: palette.surface,
-                  border: `1px solid ${palette.border}`,
-                  fontSize: "11px",
-                  fontFamily: FONT,
-                }}
-              >
-                <div
-                  style={{
-                    color: palette.textMuted,
-                    marginBottom: "3px",
-                    fontWeight: 500,
-                  }}
-                >
-                  {item.label}
-                </div>
-                <div style={{ color: palette.text, fontWeight: 700 }}>
-                  {item.val}
-                </div>
-              </div>
-            ))}
-          </div>
-        </ExclusionZone>
       </div>
 
       {/* Footer note */}

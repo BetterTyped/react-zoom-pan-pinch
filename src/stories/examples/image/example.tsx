@@ -3,7 +3,6 @@ import React, { useState, useCallback } from "react";
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { Controls, normalizeArgs, viewerChrome } from "../../utils";
 import { useTransformComponent } from "../../../hooks";
-
 import smallImg from "../../assets/small-image.jpg";
 import mediumImg from "../../assets/medium-image.jpg";
 import bigImg from "../../assets/big-image.jpeg";
@@ -15,7 +14,6 @@ const SIZES = [
 ] as const;
 
 type SizeKey = (typeof SIZES)[number]["key"];
-
 
 function DimensionsBadge() {
   return useTransformComponent(({ state }) => (
@@ -90,7 +88,7 @@ export const Example: React.FC<any> = (args: any) => {
             >
               <img
                 src={activeEntry.src}
-                alt={`${activeEntry.label} image`}
+                alt={`${activeEntry.label} preview`}
                 style={{ display: "block" }}
               />
             </TransformComponent>
@@ -131,9 +129,7 @@ export const Example: React.FC<any> = (args: any) => {
                 padding: "0 16px",
                 border: "none",
                 borderRadius: 8,
-                background: isActive
-                  ? "rgba(255,255,255,0.12)"
-                  : "transparent",
+                background: isActive ? "rgba(255,255,255,0.12)" : "transparent",
                 color: isActive ? "#fff" : "rgba(255,255,255,0.5)",
                 fontSize: 12,
                 fontWeight: 600,

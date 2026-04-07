@@ -3,7 +3,6 @@ import React, { useCallback, useState } from "react";
 import { TransformWrapper, TransformComponent } from "../../../components";
 import { useTransformComponent } from "../../../hooks";
 import { Controls, normalizeArgs } from "../../utils";
-
 import { ChestXray, XRAY_W, XRAY_H } from "./chest-xray";
 
 const font =
@@ -75,207 +74,15 @@ const SEV_COLORS: Record<Finding["severity"], string> = {
   significant: "#ef4444",
 };
 
-function ScaleBadge() {
-  return useTransformComponent(({ state }) => (
-    <div
-      style={{
-        position: "absolute",
-        bottom: 16,
-        right: 16,
-        zIndex: 10,
-        padding: "4px 10px",
-        borderRadius: 6,
-        background: "rgba(0, 0, 0, 0.7)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        color: "#aaa",
-        fontSize: 11,
-        fontWeight: 600,
-        fontFamily: mono,
-        pointerEvents: "none",
-        userSelect: "none",
-      }}
-    >
-      {(state.scale * 100).toFixed(0)}%
-    </div>
-  ));
-}
-
-export const Example: React.FC<Record<string, unknown>> = (args) => {
-  const normalized = normalizeArgs(args);
-  const [activePreset, setActivePreset] = useState<string>("default");
-  const [inverted, setInverted] = useState(false);
-  const [showFindings, setShowFindings] = useState(true);
-  const [showRuler, setShowRuler] = useState(false);
-  const [activeFinding, setActiveFinding] = useState<string | null>(null);
-
-  const preset = PRESETS.find((p) => p.id === activePreset)!;
-
-  const imageFilter = [
-    `brightness(${preset.brightness})`,
-    `contrast(${preset.contrast})`,
-    inverted ? "invert(1)" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const toggleFinding = useCallback((id: string) => {
-    setActiveFinding((prev) => (prev === id ? null : id));
-  }, []);
-
-  return (
-    <div
-      style={{
-        fontFamily: font,
-        background: "#000",
-        borderRadius: 14,
-        overflow: "hidden",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* Toolbar */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 6,
-          padding: "10px 16px",
-          borderBottom: "1px solid #1a1a1a",
-          background: "#0a0a0a",
-          alignItems: "center",
-        }}
-      >
-        {/* Presets */}
-        <ToolbarGroup label="Window">
-          {PRESETS.map((p) => (
-            <ToolbarButton
-              key={p.id}
-              label={p.label}
-              active={activePreset === p.id}
-              onClick={() => setActivePreset(p.id)}
-            />
-          ))}
-        </ToolbarGroup>
-
-        <ToolbarDivider />
-
-        <ToolbarGroup label="Display">
-          <ToolbarButton
-            label="Invert"
-            active={inverted}
-            onClick={() => setInverted((v) => !v)}
-            accent="#60a5fa"
-          />
-          <ToolbarButton
-            label="Findings"
-            active={showFindings}
-            onClick={() => {
-              setShowFindings((v) => !v);
-              if (showFindings) setActiveFinding(null);
-            }}
-            accent="#a78bfa"
-          />
-          <ToolbarButton
-            label="Ruler"
-            active={showRuler}
-            onClick={() => setShowRuler((v) => !v)}
-            accent="#34d399"
-          />
-        </ToolbarGroup>
-      </div>
-
-      <div style={{ position: "relative" }}>
-        {/* DICOM corner overlays */}
-        <DicomOverlayTL />
-        <DicomOverlayTR preset={preset} inverted={inverted} />
-        <DicomOverlayBL />
-
-        <TransformWrapper
-          {...normalized}
-          centerOnInit
-          limitToBounds={false}
-          minScale={0.25}
-          maxScale={10}
-          doubleClick={{ step: 1.8 }}
-        >
-          {(utils) => (
-            <>
-              <Controls {...utils} position="bottom-right" />
-              <ScaleBadge />
-              <TransformComponent
-                wrapperStyle={{
-                  width: "min(1020px, 100%)",
-                  height: "min(640px, 72vh)",
-                  minHeight: 420,
-                  background: "#000",
-                }}
-                contentStyle={{
-                  width: XRAY_W,
-                  height: XRAY_H,
-                }}
-              >
-                <div style={{ position: "relative" }}>
-                  <div style={{ filter: imageFilter, transition: "filter 0.25s ease" }}>
-                    <ChestXray />
-                  </div>
-
-                  {showRuler && <RulerOverlay />}
-
-                  {showFindings &&
-                    FINDINGS.map((f) => (
-                      <FindingMarker
-                        key={f.id}
-                        finding={f}
-                        active={activeFinding === f.id}
-                        onToggle={() => toggleFinding(f.id)}
-                      />
-                    ))}
-                </div>
-              </TransformComponent>
-            </>
-          )}
-        </TransformWrapper>
-      </div>
-
-      {/* Findings panel */}
-      {showFindings && (
-        <div
-          style={{
-            borderTop: "1px solid #1a1a1a",
-            background: "#0a0a0a",
-            padding: "12px 16px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "#555",
-              marginBottom: 10,
-            }}
-          >
-            Findings ({FINDINGS.length})
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {FINDINGS.map((f) => (
-              <FindingChip
-                key={f.id}
-                finding={f}
-                active={activeFinding === f.id}
-                onToggle={() => toggleFinding(f.id)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
 /* ── Toolbar primitives ─────────────────────────────────────── */
 
-function ToolbarGroup(props: { label: string; children: React.ReactNode }) {
+function ToolbarGroup({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
       <span
@@ -289,20 +96,24 @@ function ToolbarGroup(props: { label: string; children: React.ReactNode }) {
           whiteSpace: "nowrap",
         }}
       >
-        {props.label}
+        {label}
       </span>
-      {props.children}
+      {children}
     </div>
   );
 }
 
-function ToolbarButton(props: {
+function ToolbarButton({
+  label,
+  active,
+  onClick,
+  accent,
+}: {
   label: string;
   active: boolean;
   onClick: () => void;
-  accent?: string;
+  accent: string;
 }) {
-  const { label, active, onClick, accent = "#e2e8f0" } = props;
   return (
     <button
       type="button"
@@ -368,16 +179,22 @@ function DicomOverlayTL() {
   );
 }
 
-function DicomOverlayTR(props: { preset: WindowPreset; inverted: boolean }) {
+function DicomOverlayTR({
+  preset,
+  inverted,
+}: {
+  preset: WindowPreset;
+  inverted: boolean;
+}) {
   return (
     <div style={{ ...overlayBase, top: 16, right: 16, textAlign: "right" }}>
       <div>CR · PA Chest</div>
       <div>2024-12-08 14:32</div>
       <div style={{ marginTop: 6 }}>
-        W: {(props.preset.contrast * 400).toFixed(0)} L:{" "}
-        {(props.preset.brightness * 40).toFixed(0)}
+        W: {(preset.contrast * 400).toFixed(0)} L:{" "}
+        {(preset.brightness * 40).toFixed(0)}
       </div>
-      {props.inverted && <div style={{ color: "#60a5fa" }}>INVERTED</div>}
+      {inverted && <div style={{ color: "#60a5fa" }}>INVERTED</div>}
     </div>
   );
 }
@@ -386,19 +203,24 @@ function DicomOverlayBL() {
   return (
     <div style={{ ...overlayBase, bottom: 50, left: 16 }}>
       <div>Series: 1 · Image: 1/1</div>
-      <div>Matrix: {XRAY_W} × {XRAY_H}</div>
+      <div>
+        Matrix: {XRAY_W} × {XRAY_H}
+      </div>
     </div>
   );
 }
 
 /* ── Finding marker on image ────────────────────────────────── */
 
-function FindingMarker(props: {
+function FindingMarker({
+  finding: f,
+  active,
+  onToggle,
+}: {
   finding: Finding;
   active: boolean;
   onToggle: () => void;
 }) {
-  const { finding: f, active, onToggle } = props;
   const color = SEV_COLORS[f.severity];
 
   return (
@@ -406,6 +228,7 @@ function FindingMarker(props: {
       <button
         type="button"
         id={`finding-${f.id}`}
+        aria-label={f.label}
         onClick={(e) => {
           e.stopPropagation();
           onToggle();
@@ -507,12 +330,15 @@ function FindingMarker(props: {
 
 /* ── Finding chip in bottom panel ───────────────────────────── */
 
-function FindingChip(props: {
+function FindingChip({
+  finding: f,
+  active,
+  onToggle,
+}: {
   finding: Finding;
   active: boolean;
   onToggle: () => void;
 }) {
-  const { finding: f, active, onToggle } = props;
   const color = SEV_COLORS[f.severity];
   return (
     <button
@@ -654,3 +480,211 @@ function RulerOverlay() {
     </div>
   );
 }
+
+/* ── Scale badge ────────────────────────────────────────────── */
+
+function ScaleBadge() {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 10,
+        padding: "4px 10px",
+        borderRadius: 6,
+        background: "rgba(0, 0, 0, 0.7)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "#aaa",
+        fontSize: 11,
+        fontWeight: 600,
+        fontFamily: mono,
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    >
+      {(state.scale * 100).toFixed(0)}%
+    </div>
+  ));
+}
+
+/* ── Main component ─────────────────────────────────────────── */
+
+export const Example: React.FC<Record<string, unknown>> = (args) => {
+  const normalized = normalizeArgs(args);
+  const [activePreset, setActivePreset] = useState<string>("default");
+  const [inverted, setInverted] = useState(false);
+  const [showFindings, setShowFindings] = useState(true);
+  const [showRuler, setShowRuler] = useState(false);
+  const [activeFinding, setActiveFinding] = useState<string | null>(null);
+
+  const preset = PRESETS.find((p) => p.id === activePreset)!;
+
+  const imageFilter = [
+    `brightness(${preset.brightness})`,
+    `contrast(${preset.contrast})`,
+    inverted ? "invert(1)" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const toggleFinding = useCallback((id: string) => {
+    setActiveFinding((prev) => (prev === id ? null : id));
+  }, []);
+
+  return (
+    <div
+      style={{
+        fontFamily: font,
+        background: "#000",
+        borderRadius: 14,
+        overflow: "hidden",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Toolbar */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 6,
+          padding: "10px 16px",
+          borderBottom: "1px solid #1a1a1a",
+          background: "#0a0a0a",
+          alignItems: "center",
+        }}
+      >
+        {/* Presets */}
+        <ToolbarGroup label="Window">
+          {PRESETS.map((p) => (
+            <ToolbarButton
+              key={p.id}
+              label={p.label}
+              active={activePreset === p.id}
+              onClick={() => setActivePreset(p.id)}
+              accent="#e2e8f0"
+            />
+          ))}
+        </ToolbarGroup>
+
+        <ToolbarDivider />
+
+        <ToolbarGroup label="Display">
+          <ToolbarButton
+            label="Invert"
+            active={inverted}
+            onClick={() => setInverted((v) => !v)}
+            accent="#60a5fa"
+          />
+          <ToolbarButton
+            label="Findings"
+            active={showFindings}
+            onClick={() => {
+              setShowFindings((v) => !v);
+              if (showFindings) setActiveFinding(null);
+            }}
+            accent="#a78bfa"
+          />
+          <ToolbarButton
+            label="Ruler"
+            active={showRuler}
+            onClick={() => setShowRuler((v) => !v)}
+            accent="#34d399"
+          />
+        </ToolbarGroup>
+      </div>
+
+      <div style={{ position: "relative" }}>
+        {/* DICOM corner overlays */}
+        <DicomOverlayTL />
+        <DicomOverlayTR preset={preset} inverted={inverted} />
+        <DicomOverlayBL />
+
+        <TransformWrapper
+          {...normalized}
+          centerOnInit
+          centerZoomedOut
+          minScale={0.25}
+          maxScale={10}
+          doubleClick={{ step: 1.8 }}
+        >
+          {(utils) => (
+            <>
+              <Controls {...utils} position="bottom-right" />
+              <ScaleBadge />
+              <TransformComponent
+                wrapperStyle={{
+                  width: "100%",
+                  height: "min(640px, 72vh)",
+                  minHeight: 420,
+                  background: "#000",
+                }}
+                contentStyle={{
+                  width: XRAY_W,
+                  height: XRAY_H,
+                }}
+              >
+                <div style={{ position: "relative" }}>
+                  <div
+                    style={{
+                      filter: imageFilter,
+                      transition: "filter 0.25s ease",
+                    }}
+                  >
+                    <ChestXray />
+                  </div>
+
+                  {showRuler && <RulerOverlay />}
+
+                  {showFindings &&
+                    FINDINGS.map((f) => (
+                      <FindingMarker
+                        key={f.id}
+                        finding={f}
+                        active={activeFinding === f.id}
+                        onToggle={() => toggleFinding(f.id)}
+                      />
+                    ))}
+                </div>
+              </TransformComponent>
+            </>
+          )}
+        </TransformWrapper>
+      </div>
+
+      {/* Findings panel */}
+      {showFindings && (
+        <div
+          style={{
+            borderTop: "1px solid #1a1a1a",
+            background: "#0a0a0a",
+            padding: "12px 16px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "#555",
+              marginBottom: 10,
+            }}
+          >
+            Findings ({FINDINGS.length})
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {FINDINGS.map((f) => (
+              <FindingChip
+                key={f.id}
+                finding={f}
+                active={activeFinding === f.id}
+                onToggle={() => toggleFinding(f.id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

@@ -36,7 +36,7 @@ export const Example: React.FC<any> = (args: any) => {
                 pointerEvents: "none",
               }}
             >
-              1,000 images
+              10,000 images
             </div>
             <TransformComponent
               wrapperStyle={{
@@ -46,7 +46,7 @@ export const Example: React.FC<any> = (args: any) => {
               }}
             >
               <div className={styles.grid}>
-                {Array.from(Array(1000).keys()).map((key) => (
+                {Array.from(Array(10000).keys()).map((key) => (
                   <img key={key} src={exampleImg} alt="" />
                 ))}
               </div>

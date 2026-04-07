@@ -137,8 +137,8 @@ export const Example: React.FC<any> = (args: any) => {
           <>
             <strong>Padding is ON</strong> (default). When zooming past the
             content boundaries, you get an elastic &ldquo;overscroll&rdquo;
-            effect — the content stretches slightly beyond the limit, then
-            snaps back with a smooth animation.
+            effect — the content stretches slightly beyond the limit, then snaps
+            back with a smooth animation.
           </>
         )}
       </p>

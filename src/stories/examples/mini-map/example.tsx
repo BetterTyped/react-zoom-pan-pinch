@@ -3,9 +3,8 @@ import React from "react";
 import { MiniMap, TransformComponent, TransformWrapper } from "components";
 import { Controls, normalizeArgs, viewerChrome } from "stories/utils";
 
-/** Storybook-only polish for the mini-map viewport frame (library default stays red / simple). */
 const storyMiniMapPreviewStyle: React.CSSProperties = {
-  borderRadius: "12px",
+  borderRadius: 4,
   border: "2px solid rgba(147, 197, 253, 0.95)",
   boxShadow: [
     "0 0 0 1px rgba(255,255,255,0.22) inset",
@@ -17,7 +16,15 @@ const storyMiniMapPreviewStyle: React.CSSProperties = {
 
 const Content = () => (
   <div style={{ padding: 32 }}>
-    <h2 style={{ margin: "0 0 16px", fontSize: 18, fontWeight: 700, color: "rgba(255,255,255,0.9)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <h2
+      style={{
+        margin: "0 0 16px",
+        fontSize: 18,
+        fontWeight: 700,
+        color: "rgba(255,255,255,0.9)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
       Scrollable Document
     </h2>
     {[1, 2, 3].map((i) => (
@@ -31,13 +38,28 @@ const Content = () => (
           borderLeft: `3px solid ${["#667eea", "#43e97b", "#f093fb"][i - 1]}`,
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 700, color: ["#667eea", "#43e97b", "#f093fb"][i - 1], fontFamily: "system-ui, -apple-system, sans-serif" }}>
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: ["#667eea", "#43e97b", "#f093fb"][i - 1],
+            fontFamily: "system-ui, -apple-system, sans-serif",
+          }}
+        >
           Section {i}
         </span>
-        <p style={{ margin: "8px 0 0", fontSize: 13, lineHeight: 1.6, color: "rgba(255,255,255,0.5)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+        <p
+          style={{
+            margin: "8px 0 0",
+            fontSize: 13,
+            lineHeight: 1.6,
+            color: "rgba(255,255,255,0.5)",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+          }}
+        >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-          ad minim veniam, quis nostrud exercitation ullamco laboris.
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris.
         </p>
       </div>
     ))}
@@ -68,9 +90,10 @@ export const Template = (args: any) => {
                 zIndex: 5,
                 top: 25,
                 right: 25,
-                borderRadius: 12,
+                borderRadius: 6,
                 overflow: "hidden",
-                background: "rgba(10, 10, 18, 0.88)",
+                background:
+                  "linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(10, 10, 24, 0.95))",
                 backdropFilter: "blur(14px) saturate(1.4)",
                 WebkitBackdropFilter: "blur(14px) saturate(1.4)",
                 border: "1px solid rgba(255,255,255,0.12)",
@@ -88,9 +111,7 @@ export const Template = (args: any) => {
               </MiniMap>
             </div>
             <Controls {...utils} />
-            <TransformComponent
-              wrapperStyle={viewerChrome}
-            >
+            <TransformComponent wrapperStyle={viewerChrome}>
               <Content />
             </TransformComponent>
           </>

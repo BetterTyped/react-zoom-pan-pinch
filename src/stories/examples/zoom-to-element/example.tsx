@@ -1,7 +1,12 @@
 import React from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { Controls, NumberedTargetIcon, normalizeArgs, viewerChrome } from "../../utils";
+import {
+  Controls,
+  NumberedTargetIcon,
+  normalizeArgs,
+  viewerChrome,
+} from "../../utils";
 import { useTransformComponent } from "../../../hooks";
 
 function ScaleBadge() {
@@ -74,7 +79,16 @@ const TARGETS = [
 export const Example: React.FC<any> = (args: any) => {
   return (
     <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      <TransformWrapper {...normalizeArgs(args)}>
+      <style>{`
+        .zoom-target {
+          transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .zoom-target:hover {
+          background: rgba(255,255,255,0.07) !important;
+          box-shadow: 0 0 24px var(--target-glow), 0 0 0 1px var(--target-color);
+        }
+      `}</style>
+      <TransformWrapper {...normalizeArgs(args)} centerOnInit>
         {(utils) => (
           <>
             <Controls
@@ -111,26 +125,37 @@ export const Example: React.FC<any> = (args: any) => {
                       <div
                         key={target.id}
                         id={target.id}
-                        style={{
-                          position: "absolute",
-                          top: target.top,
-                          left: target.left,
-                          width: target.width,
-                          height: target.height,
-                          borderRadius: 14,
-                          background: "rgba(255,255,255,0.03)",
-                          border: `1px solid ${target.color}33`,
-                          backdropFilter: "blur(8px)",
-                          WebkitBackdropFilter: "blur(8px)",
-                          padding: narrow ? 14 : 20,
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                          cursor: "pointer",
-                          transition:
-                            "border-color 0.2s ease, box-shadow 0.2s ease",
-                        }}
+                        className="zoom-target"
+                        role="button"
+                        tabIndex={0}
+                        style={
+                          {
+                            position: "absolute",
+                            top: target.top,
+                            left: target.left,
+                            width: target.width,
+                            height: target.height,
+                            borderRadius: 14,
+                            background: "rgba(255,255,255,0.03)",
+                            border: `1px solid ${target.color}33`,
+                            backdropFilter: "blur(8px)",
+                            WebkitBackdropFilter: "blur(8px)",
+                            padding: narrow ? 14 : 20,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            cursor: "pointer",
+                            "--target-color": `${target.color}66`,
+                            "--target-glow": `${target.color}33`,
+                          } as React.CSSProperties
+                        }
                         onClick={() => utils.zoomToElement(target.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            utils.zoomToElement(target.id);
+                          }
+                        }}
                       >
                         <div
                           style={{

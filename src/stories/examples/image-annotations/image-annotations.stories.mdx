@@ -14,17 +14,19 @@ export const Template = (args) => <Example {...args} />;
 
 # Image annotations
 
-A small **design-review** style app on top of the library: pan and zoom the
-photo, then drop **numbered pins** or **on-canvas labels** at the correct spot
-even while zoomed in.
+An **image labeling tool** built on the library: pan and zoom the photo, then
+draw **bounding boxes** (Rectangle mode) or drop **numbered pins** (Pin mode)
+directly on the image — even while zoomed in.
 
-Clicks are converted from **viewport coordinates** into **content space** using
-the live `positionX`, `positionY`, and `scale` from the transform state
-(`translate` then `scale`, origin top-left), so markers stay glued to the image.
+In **Rectangle** mode, click and drag to draw a bounding box for object
+detection. In **Pin** mode, click to place a point marker. After placing, fill
+in a **title**, **description**, and choose a **label category** with
+color-coded presets. Click any annotation on the canvas to see its full details
+in a popup.
 
-Use **Navigate** vs **Pin / Label** to toggle panning — while placing notes,
-panning is disabled so the next click creates a draft. **Focus** in the thread
-calls **`zoomToElement`** on the marker’s wrapper.
+Coordinates are converted from **viewport space** to **content space** using the
+live transform state, so markers stay glued to the image at all zoom levels.
+**Focus** in the sidebar calls **`zoomToElement`** on the annotation.
 
 <Canvas>
   <Story name="Image annotations">

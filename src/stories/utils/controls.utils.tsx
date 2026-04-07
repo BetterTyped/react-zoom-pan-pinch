@@ -9,16 +9,36 @@ import styles from "./styles.module.css";
 const ZoomInIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.5" />
-    <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M7 5V9M5 7H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path
+      d="M11 11L14 14"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M7 5V9M5 7H9"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const ZoomOutIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.5" />
-    <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M5 7H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path
+      d="M11 11L14 14"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M5 7H9"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -44,7 +64,12 @@ const ResetIcon = () => (
 const CenterIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" />
-    <path d="M8 2V5M8 11V14M2 8H5M11 8H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path
+      d="M8 2V5M8 11V14M2 8H5M11 8H14"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -55,14 +80,27 @@ export const TargetIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <circle cx="8" cy="8" r="5" stroke="currentColor" strokeWidth="1.5" />
     <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-    <path d="M8 1.5V4M8 12V14.5M1.5 8H4M12 8H14.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <path
+      d="M8 1.5V4M8 12V14.5M1.5 8H4M12 8H14.5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 /** Toggle switch — enable/disable a feature */
 export const ToggleIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <rect x="1.5" y="4.5" width="13" height="7" rx="3.5" stroke="currentColor" strokeWidth="1.4" />
+    <rect
+      x="1.5"
+      y="4.5"
+      width="13"
+      height="7"
+      rx="3.5"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    />
     <circle cx="11" cy="8" r="2.2" fill="currentColor" />
   </svg>
 );
@@ -70,36 +108,104 @@ export const ToggleIcon = () => (
 /** Lock to vertical axis (arrows up/down) */
 export const LockVerticalIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M8 2L8 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M5 4.5L8 2L11 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M5 11.5L8 14L11 11.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M8 2L8 14"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M5 4.5L8 2L11 4.5"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M5 11.5L8 14L11 11.5"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 /** Lock to horizontal axis (arrows left/right) */
 export const LockHorizontalIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M2 8L14 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M4.5 5L2 8L4.5 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M11.5 5L14 8L11.5 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M2 8L14 8"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4.5 5L2 8L4.5 11"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M11.5 5L14 8L11.5 11"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 /** Free movement (4-direction arrows) */
 export const FreeMovementIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M8 2V14M2 8H14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-    <path d="M6.5 3.5L8 2L9.5 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M6.5 12.5L8 14L9.5 12.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M3.5 6.5L2 8L3.5 9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M12.5 6.5L14 8L12.5 9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M8 2V14M2 8H14"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+    />
+    <path
+      d="M6.5 3.5L8 2L9.5 3.5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.5 12.5L8 14L9.5 12.5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.5 6.5L2 8L3.5 9.5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12.5 6.5L14 8L12.5 9.5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
 /** X / close / deselect */
 export const CloseIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path
+      d="M4 4L12 12M12 4L4 12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -141,6 +247,14 @@ type ControlsProps = ReactZoomPanPinchContentRef & {
     | "bottom-right";
 };
 
+const POSITION_CLASS_MAP: Record<string, string> = {
+  "top-center": styles.controlsTopCenter,
+  "top-right": styles.controlsTopRight,
+  "bottom-left": styles.controlsBottomLeft,
+  "bottom-right": styles.controlsBottomRight,
+  "top-left": styles.controlsTopLeft,
+};
+
 /* ── Component ──────────────────────────────────────────────── */
 
 export const Controls: React.FC<ControlsProps> = ({
@@ -148,19 +262,10 @@ export const Controls: React.FC<ControlsProps> = ({
   zoomOut,
   resetTransform,
   centerView,
-  extraButtons,
+  extraButtons = [],
   position = "top-left",
 }) => {
-  const positionClass =
-    position === "top-center"
-      ? styles.controlsTopCenter
-      : position === "top-right"
-        ? styles.controlsTopRight
-        : position === "bottom-left"
-          ? styles.controlsBottomLeft
-          : position === "bottom-right"
-            ? styles.controlsBottomRight
-            : styles.controlsTopLeft;
+  const positionClass = POSITION_CLASS_MAP[position] || styles.controlsTopLeft;
 
   return (
     <div className={`${styles.controlBar} ${positionClass}`}>
@@ -170,6 +275,7 @@ export const Controls: React.FC<ControlsProps> = ({
           className={styles.controlIcon}
           onClick={() => zoomIn()}
           data-tooltip="Zoom in"
+          aria-label="Zoom in"
         >
           <ZoomInIcon />
         </button>
@@ -178,6 +284,7 @@ export const Controls: React.FC<ControlsProps> = ({
           className={styles.controlIcon}
           onClick={() => zoomOut()}
           data-tooltip="Zoom out"
+          aria-label="Zoom out"
         >
           <ZoomOutIcon />
         </button>
@@ -191,6 +298,7 @@ export const Controls: React.FC<ControlsProps> = ({
           className={styles.controlIcon}
           onClick={() => resetTransform()}
           data-tooltip="Reset"
+          aria-label="Reset"
         >
           <ResetIcon />
         </button>
@@ -199,6 +307,7 @@ export const Controls: React.FC<ControlsProps> = ({
           className={styles.controlIcon}
           onClick={() => centerView()}
           data-tooltip="Center"
+          aria-label="Center"
         >
           <CenterIcon />
         </button>
@@ -230,4 +339,9 @@ export const Controls: React.FC<ControlsProps> = ({
       )}
     </div>
   );
+};
+
+Controls.defaultProps = {
+  extraButtons: [],
+  position: "top-left",
 };

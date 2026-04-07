@@ -1,5 +1,7 @@
 import { Meta } from "@storybook/blocks";
 
+import { DocTable } from "../docs/DocTable.tsx";
+
 <Meta title="Hooks/useTransformEffect" />
 
 # useTransformEffect
@@ -93,12 +95,19 @@ function Overlay() {
 
 ## Key Differences
 
-| | `useTransformEffect` | `useTransformComponent` |
-|---|---|---|
-| Purpose | Side-effects | Render UI |
-| Returns | `void` | `T` (your callback's return) |
-| Re-renders? | No | Yes |
-| Use case | Logging, syncing, DOM | Badges, labels, indicators |
+<DocTable
+  columns={[
+    { header: "" },
+    { header: "useTransformEffect", style: "type" },
+    { header: "useTransformComponent", style: "text" },
+  ]}
+  rows={[
+    ["Purpose", "Side-effects", "Render UI"],
+    ["Returns", "void", "T (your callback's return)"],
+    ["Re-renders?", "No", "Yes"],
+    ["Use case", "Logging, syncing, DOM", "Badges, labels, indicators"],
+  ]}
+/>
 
 ## Requirements
 

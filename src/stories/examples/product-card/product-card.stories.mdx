@@ -1,0 +1,29 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Examples/Product card"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Product Card
+
+A realistic **food delivery product card** with an interactive image zoom viewer.
+Scroll, pinch, or double-click the product image to zoom in and see
+the juicy meat, fresh vegetables, and sauce details up close. The card includes
+sauce/portion selectors, pricing, and an order flow — a common real-world
+use case for `react-zoom-pan-pinch`.
+
+<Canvas>
+  <Story name="Product card">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Product card" />

@@ -41,13 +41,13 @@ export const ChestXray: React.FC = () => (
       </linearGradient>
 
       <filter id="film-grain">
-        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" result="noise" />
-        <feColorMatrix
-          type="saturate"
-          values="0"
-          in="noise"
-          result="mono"
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.65"
+          numOctaves="3"
+          result="noise"
         />
+        <feColorMatrix type="saturate" values="0" in="noise" result="mono" />
         <feBlend in="SourceGraphic" in2="mono" mode="multiply" />
       </filter>
     </defs>
@@ -70,8 +70,22 @@ export const ChestXray: React.FC = () => (
     />
 
     {/* Mediastinum / heart shadow */}
-    <ellipse cx={CX + 20} cy={580} rx={140} ry={160} fill="url(#heart-g)" opacity={0.9} />
-    <ellipse cx={CX - 10} cy={520} rx={50} ry={80} fill="#383838" opacity={0.5} />
+    <ellipse
+      cx={CX + 20}
+      cy={580}
+      rx={140}
+      ry={160}
+      fill="url(#heart-g)"
+      opacity={0.9}
+    />
+    <ellipse
+      cx={CX - 10}
+      cy={520}
+      rx={50}
+      ry={80}
+      fill="#383838"
+      opacity={0.5}
+    />
 
     {/* Trachea + bronchi */}
     <path

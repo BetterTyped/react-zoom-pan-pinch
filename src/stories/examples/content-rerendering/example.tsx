@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { Controls, normalizeArgs, viewerChrome } from "../../utils";
+import { Controls, normalizeArgs } from "../../utils";
+import { viewerFrame } from "../../utils/viewer.styles";
 
 const BLOCKS = [
   { interval: 1000, label: "Block A", color: "#667eea", desc: "1 s cycle" },
@@ -306,7 +307,13 @@ function BlockB({ expanded }: { expanded: boolean }) {
             border: "1px solid rgba(255,255,255,0.05)",
           }}
         >
-          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginBottom: 8 }}>
+          <div
+            style={{
+              fontSize: 10,
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 8,
+            }}
+          >
             Left column
           </div>
           <div
@@ -327,12 +334,18 @@ function BlockB({ expanded }: { expanded: boolean }) {
             border: "1px solid rgba(255,255,255,0.05)",
           }}
         >
-          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", marginBottom: 8 }}>
+          <div
+            style={{
+              fontSize: 10,
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 8,
+            }}
+          >
             Right column
           </div>
-          {[40, 55, 35, 70].map((w, idx) => (
+          {[40, 55, 35, 70].map((w) => (
             <div
-              key={idx}
+              key={w}
               style={{
                 height: 10,
                 marginBottom: 6,
@@ -430,50 +443,52 @@ function BlockC({ expanded }: { expanded: boolean }) {
           marginBottom: 14,
         }}
       >
-        {["Item alpha", "Item beta", "Item gamma", "Item delta"].map((label, i) => (
-          <div
-            key={label}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "10px 12px",
-              borderRadius: 8,
-              background: "rgba(0,0,0,0.22)",
-              border: "1px solid rgba(255,255,255,0.05)",
-            }}
-          >
+        {["Item alpha", "Item beta", "Item gamma", "Item delta"].map(
+          (label, i) => (
             <div
+              key={label}
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: 6,
-                background: `rgba(67, 233, 123, ${0.15 + i * 0.08})`,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "10px 12px",
+                borderRadius: 8,
+                background: "rgba(0,0,0,0.22)",
+                border: "1px solid rgba(255,255,255,0.05)",
               }}
-            />
-            <div style={{ flex: 1 }}>
+            >
               <div
                 style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.75)",
+                  width: 28,
+                  height: 28,
+                  borderRadius: 6,
+                  background: `rgba(67, 233, 123, ${0.15 + i * 0.08})`,
                 }}
-              >
-                {label}
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  color: "rgba(255,255,255,0.35)",
-                  marginTop: 2,
-                }}
-              >
-                Extra rows push total content height way up — good stress for
-                layout reflow under zoom.
+              />
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.75)",
+                  }}
+                >
+                  {label}
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: "rgba(255,255,255,0.35)",
+                    marginTop: 2,
+                  }}
+                >
+                  Extra rows push total content height way up — good stress for
+                  layout reflow under zoom.
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ),
+        )}
       </div>
       <div
         style={{
@@ -516,11 +531,13 @@ export const Example: React.FC<any> = (args: any) => {
     <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
       <TransformWrapper {...normalizeArgs(args)} centerOnInit>
         {(utils) => (
-          <>
-            <Controls {...utils} />
+          <div style={{ position: "relative" }}>
+            <Controls {...utils} position="bottom-left" />
             <TransformComponent
               wrapperStyle={{
-                ...viewerChrome,
+                ...viewerFrame,
+                background:
+                  "linear-gradient(145deg, #0c1029 0%, #111827 40%, #0a0f1e 100%)",
                 width: "500px",
                 height: "500px",
                 maxWidth: "80vw",
@@ -606,7 +623,7 @@ export const Example: React.FC<any> = (args: any) => {
                 </div>
               </div>
             </TransformComponent>
-          </>
+          </div>
         )}
       </TransformWrapper>
     </div>

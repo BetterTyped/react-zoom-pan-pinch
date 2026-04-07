@@ -76,9 +76,9 @@ interface ArcStand {
 
 const STANDS: ArcStand[] = [
   { section: "North", angle0: -Math.PI * 0.72, angle1: -Math.PI * 0.28 },
-  { section: "East", angle0: -Math.PI * 0.20, angle1: Math.PI * 0.20 },
+  { section: "East", angle0: -Math.PI * 0.2, angle1: Math.PI * 0.2 },
   { section: "South", angle0: Math.PI * 0.28, angle1: Math.PI * 0.72 },
-  { section: "West", angle0: Math.PI * 0.80, angle1: Math.PI * 1.20 },
+  { section: "West", angle0: Math.PI * 0.8, angle1: Math.PI * 1.2 },
 ];
 
 export const SECTION_LABELS: { section: string; x: number; y: number }[] =
@@ -93,10 +93,26 @@ export const SECTION_LABELS: { section: string; x: number; y: number }[] =
   });
 
 export const GATE_POSITIONS: { label: string; x: number; y: number }[] = [
-  { label: "NE", x: CX + 520 * Math.cos(-Math.PI * 0.24), y: CY + 520 * Math.sin(-Math.PI * 0.24) },
-  { label: "SE", x: CX + 520 * Math.cos(Math.PI * 0.24), y: CY + 520 * Math.sin(Math.PI * 0.24) },
-  { label: "SW", x: CX + 520 * Math.cos(Math.PI * 0.76), y: CY + 520 * Math.sin(Math.PI * 0.76) },
-  { label: "NW", x: CX + 520 * Math.cos(Math.PI * 1.24), y: CY + 520 * Math.sin(Math.PI * 1.24) },
+  {
+    label: "NE",
+    x: CX + 520 * Math.cos(-Math.PI * 0.24),
+    y: CY + 520 * Math.sin(-Math.PI * 0.24),
+  },
+  {
+    label: "SE",
+    x: CX + 520 * Math.cos(Math.PI * 0.24),
+    y: CY + 520 * Math.sin(Math.PI * 0.24),
+  },
+  {
+    label: "SW",
+    x: CX + 520 * Math.cos(Math.PI * 0.76),
+    y: CY + 520 * Math.sin(Math.PI * 0.76),
+  },
+  {
+    label: "NW",
+    x: CX + 520 * Math.cos(Math.PI * 1.24),
+    y: CY + 520 * Math.sin(Math.PI * 1.24),
+  },
 ];
 
 const TOTAL_ROWS = 9;
@@ -114,7 +130,9 @@ function tierIndex(rowIndex: number): number {
 }
 
 function rowRadiusOffset(rowIndex: number): number {
-  return FIRST_ROW_OFFSET + rowIndex * ROW_GAP + tierIndex(rowIndex) * CONCOURSE_GAP;
+  return (
+    FIRST_ROW_OFFSET + rowIndex * ROW_GAP + tierIndex(rowIndex) * CONCOURSE_GAP
+  );
 }
 
 /** Concourse ring radii (between tiers) for SVG rendering. */
@@ -126,8 +144,8 @@ export const CONCOURSE_RINGS = [
 function pitchRadiusAtAngle(ang: number): number {
   const c = Math.cos(ang);
   const s = Math.sin(ang);
-  return (PITCH_RX * PITCH_RY) / Math.sqrt(
-    (PITCH_RY * c) ** 2 + (PITCH_RX * s) ** 2,
+  return (
+    (PITCH_RX * PITCH_RY) / Math.sqrt((PITCH_RY * c) ** 2 + (PITCH_RX * s) ** 2)
   );
 }
 
@@ -145,7 +163,7 @@ export function isOccupied(seatId: string): boolean {
 function generateSeats(): StadiumSeat[] {
   const out: StadiumSeat[] = [];
 
-  for (const stand of STANDS) {
+  STANDS.forEach((stand) => {
     const { section, angle0, angle1 } = stand;
     const span = angle1 - angle0;
 
@@ -157,7 +175,10 @@ function generateSeats(): StadiumSeat[] {
       const midAng = (angle0 + angle1) / 2;
       const midR = pitchRadiusAtAngle(midAng) + rOffset;
       const arcLen = midR * Math.abs(span);
-      const count = Math.max(6, Math.min(20, Math.floor(arcLen / SEAT_SPACING)));
+      const count = Math.max(
+        6,
+        Math.min(20, Math.floor(arcLen / SEAT_SPACING)),
+      );
 
       for (let s = 0; s < count; s += 1) {
         const t = (s + 0.5) / count;
@@ -179,14 +200,20 @@ function generateSeats(): StadiumSeat[] {
         const domId = `stadium-seat-${id.replace(/[^a-zA-Z0-9]+/g, "-")}`;
 
         out.push({
-          id, domId, section,
-          row: row + 1, number,
-          x, y, rotation,
-          category, price,
+          id,
+          domId,
+          section,
+          row: row + 1,
+          number,
+          x,
+          y,
+          rotation,
+          category,
+          price,
         });
       }
     }
-  }
+  });
 
   return out;
 }

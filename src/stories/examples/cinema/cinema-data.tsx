@@ -20,17 +20,94 @@ interface RowDef {
 }
 
 export const ROWS: RowDef[] = [
-  { label: "A", count: 10, y: 220, category: "premium", curve: 12, sections: [2, 6, 2] },
-  { label: "B", count: 14, y: 268, category: "premium", curve: 10, sections: [3, 8, 3] },
-  { label: "C", count: 16, y: 316, category: "standard", curve: 9, sections: [4, 8, 4] },
-  { label: "D", count: 18, y: 364, category: "standard", curve: 8, sections: [4, 10, 4] },
-  { label: "E", count: 20, y: 412, category: "standard", curve: 7, sections: [5, 10, 5] },
-  { label: "F", count: 22, y: 460, category: "standard", curve: 6, sections: [5, 12, 5] },
-  { label: "G", count: 22, y: 510, category: "standard", curve: 5, sections: [5, 12, 5] },
-  { label: "H", count: 24, y: 568, category: "vip", curve: 4, sections: [6, 12, 6] },
-  { label: "I", count: 24, y: 616, category: "vip", curve: 3.5, sections: [6, 12, 6] },
-  { label: "J", count: 22, y: 674, category: "standard", curve: 3, sections: [5, 12, 5] },
-  { label: "K", count: 20, y: 722, category: "standard", curve: 2.5, sections: [5, 10, 5] },
+  {
+    label: "A",
+    count: 10,
+    y: 220,
+    category: "premium",
+    curve: 12,
+    sections: [2, 6, 2],
+  },
+  {
+    label: "B",
+    count: 14,
+    y: 268,
+    category: "premium",
+    curve: 10,
+    sections: [3, 8, 3],
+  },
+  {
+    label: "C",
+    count: 16,
+    y: 316,
+    category: "standard",
+    curve: 9,
+    sections: [4, 8, 4],
+  },
+  {
+    label: "D",
+    count: 18,
+    y: 364,
+    category: "standard",
+    curve: 8,
+    sections: [4, 10, 4],
+  },
+  {
+    label: "E",
+    count: 20,
+    y: 412,
+    category: "standard",
+    curve: 7,
+    sections: [5, 10, 5],
+  },
+  {
+    label: "F",
+    count: 22,
+    y: 460,
+    category: "standard",
+    curve: 6,
+    sections: [5, 12, 5],
+  },
+  {
+    label: "G",
+    count: 22,
+    y: 510,
+    category: "standard",
+    curve: 5,
+    sections: [5, 12, 5],
+  },
+  {
+    label: "H",
+    count: 24,
+    y: 568,
+    category: "vip",
+    curve: 4,
+    sections: [6, 12, 6],
+  },
+  {
+    label: "I",
+    count: 24,
+    y: 616,
+    category: "vip",
+    curve: 3.5,
+    sections: [6, 12, 6],
+  },
+  {
+    label: "J",
+    count: 22,
+    y: 674,
+    category: "standard",
+    curve: 3,
+    sections: [5, 12, 5],
+  },
+  {
+    label: "K",
+    count: 20,
+    y: 722,
+    category: "standard",
+    curve: 2.5,
+    sections: [5, 10, 5],
+  },
 ];
 
 export const CATEGORY_STYLES: Record<
@@ -143,19 +220,19 @@ function computeRowPositions(
   let cx = startX;
   let num = 1;
 
-  for (let i = 0; i < left; i++, num++) {
+  for (let i = 0; i < left; i += 1, num += 1) {
     positions.push({ x: cx, y: row.y, seatNum: num });
     cx += step;
   }
   cx += AISLE_GAP;
 
-  for (let i = 0; i < center; i++, num++) {
+  for (let i = 0; i < center; i += 1, num += 1) {
     positions.push({ x: cx, y: row.y, seatNum: num });
     cx += step;
   }
   cx += AISLE_GAP;
 
-  for (let i = 0; i < right; i++, num++) {
+  for (let i = 0; i < right; i += 1, num += 1) {
     positions.push({ x: cx, y: row.y, seatNum: num });
     cx += step;
   }
@@ -165,6 +242,246 @@ function computeRowPositions(
     const norm = (p.x + SEAT_SIZE / 2 - CX) / (halfWidth || 1);
     return { ...p, y: p.y + row.curve * norm * norm };
   });
+}
+
+function Screen() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: 55,
+        left: "50%",
+        transform: "translateX(-50%)",
+      }}
+    >
+      <svg
+        width="660"
+        height="65"
+        viewBox="0 0 660 65"
+        style={{ display: "block" }}
+      >
+        <defs>
+          <linearGradient id="scr-g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#d0ddff" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#5a7cba" stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 30 52 Q 330 2 630 52"
+          fill="none"
+          stroke="url(#scr-g)"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      <span
+        style={{
+          position: "absolute",
+          bottom: -22,
+          left: "50%",
+          transform: "translateX(-50%)",
+          color: "rgba(255,255,255,0.25)",
+          fontSize: 12,
+          fontWeight: 600,
+          letterSpacing: "10px",
+          textTransform: "uppercase",
+          userSelect: "none",
+          pointerEvents: "none",
+        }}
+      >
+        Screen
+      </span>
+    </div>
+  );
+}
+
+function getSeatStyle(
+  selected: boolean,
+  occupied: boolean,
+  category: Category,
+) {
+  if (selected) return SELECTED_STYLE;
+  if (occupied) return OCCUPIED_STYLE;
+  return CATEGORY_STYLES[category];
+}
+
+function SeatEl({
+  id,
+  x,
+  y,
+  seatNum,
+  category,
+  occupied,
+  selected,
+  onClick,
+}: {
+  id: string;
+  x: number;
+  y: number;
+  seatNum: number;
+  category: Category;
+  occupied: boolean;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  const sty = getSeatStyle(selected, occupied, category);
+
+  return (
+    <div
+      id={id}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        width: SEAT_SIZE,
+        height: SEAT_SIZE,
+        borderRadius: "8px 8px 4px 4px",
+        background: sty.bg,
+        border: `1.5px solid ${sty.border}`,
+        cursor: occupied ? "default" : "pointer",
+        boxShadow: selected
+          ? `0 0 18px ${sty.glow}, 0 0 6px ${sty.glow}`
+          : undefined,
+        opacity: occupied ? 0.35 : 1,
+        zIndex: selected ? 5 : 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <span
+        style={{
+          color: occupied ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.65)",
+          fontSize: 9,
+          fontWeight: 700,
+          userSelect: "none",
+          pointerEvents: "none",
+          fontFamily: "system-ui, sans-serif",
+        }}
+      >
+        {seatNum}
+      </span>
+    </div>
+  );
+}
+
+function Legend() {
+  const items: { cat?: Category; label: string; occupied?: boolean }[] = [
+    { cat: "standard", label: `Standard — $15` },
+    { cat: "premium", label: `Premium — $25` },
+    { cat: "vip", label: `VIP — $40` },
+    { label: "Occupied", occupied: true },
+  ];
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: 28,
+        right: 36,
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+      }}
+    >
+      {items.map((item) => {
+        const sty = item.occupied ? OCCUPIED_STYLE : CATEGORY_STYLES[item.cat!];
+        return (
+          <div
+            key={item.label}
+            style={{ display: "flex", alignItems: "center", gap: 8 }}
+          >
+            <div
+              style={{
+                width: 14,
+                height: 14,
+                borderRadius: 4,
+                background: sty.bg,
+                border: `1px solid ${sty.border}`,
+                opacity: item.occupied ? 0.35 : 1,
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                color: item.occupied
+                  ? "rgba(255,255,255,0.3)"
+                  : "rgba(255,255,255,0.5)",
+                fontSize: 11,
+                fontWeight: 500,
+                whiteSpace: "nowrap",
+                userSelect: "none",
+              }}
+            >
+              {item.label}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ExitSign({ x, y }: { x: number; y: number }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        display: "flex",
+        alignItems: "center",
+        gap: 4,
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    >
+      <div
+        style={{
+          width: 18,
+          height: 18,
+          borderRadius: 3,
+          background: "rgba(16, 185, 129, 0.15)",
+          border: "1px solid rgba(16, 185, 129, 0.3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span
+          style={{
+            color: "rgba(16, 185, 129, 0.6)",
+            fontSize: 8,
+            fontWeight: 800,
+            letterSpacing: "0.5px",
+          }}
+        >
+          ➜
+        </span>
+      </div>
+      <span
+        style={{
+          color: "rgba(16, 185, 129, 0.35)",
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: "2px",
+          textTransform: "uppercase",
+        }}
+      >
+        Exit
+      </span>
+    </div>
+  );
 }
 
 export function CinemaLayout({ selectedSeat, onSeatClick }: CinemaLayoutProps) {
@@ -255,236 +572,6 @@ export function CinemaLayout({ selectedSeat, onSeatClick }: CinemaLayoutProps) {
         }}
       >
         Grand Cinema Hall
-      </span>
-    </div>
-  );
-}
-
-function Screen() {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 55,
-        left: "50%",
-        transform: "translateX(-50%)",
-      }}
-    >
-      <svg
-        width="660"
-        height="65"
-        viewBox="0 0 660 65"
-        style={{ display: "block" }}
-      >
-        <defs>
-          <linearGradient id="scr-g" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#d0ddff" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#5a7cba" stopOpacity="0.3" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M 30 52 Q 330 2 630 52"
-          fill="none"
-          stroke="url(#scr-g)"
-          strokeWidth="5"
-          strokeLinecap="round"
-        />
-      </svg>
-
-      <span
-        style={{
-          position: "absolute",
-          bottom: -22,
-          left: "50%",
-          transform: "translateX(-50%)",
-          color: "rgba(255,255,255,0.25)",
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: "10px",
-          textTransform: "uppercase",
-          userSelect: "none",
-          pointerEvents: "none",
-        }}
-      >
-        Screen
-      </span>
-    </div>
-  );
-}
-
-function SeatEl({
-  id,
-  x,
-  y,
-  seatNum,
-  category,
-  occupied,
-  selected,
-  onClick,
-}: {
-  id: string;
-  x: number;
-  y: number;
-  seatNum: number;
-  category: Category;
-  occupied: boolean;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  const sty = selected
-    ? SELECTED_STYLE
-    : occupied
-      ? OCCUPIED_STYLE
-      : CATEGORY_STYLES[category];
-
-  return (
-    <div
-      id={id}
-      onClick={onClick}
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width: SEAT_SIZE,
-        height: SEAT_SIZE,
-        borderRadius: "8px 8px 4px 4px",
-        background: sty.bg,
-        border: `1.5px solid ${sty.border}`,
-        cursor: occupied ? "default" : "pointer",
-        boxShadow: selected
-          ? `0 0 18px ${sty.glow}, 0 0 6px ${sty.glow}`
-          : undefined,
-        opacity: occupied ? 0.35 : 1,
-        zIndex: selected ? 5 : 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <span
-        style={{
-          color: occupied
-            ? "rgba(255,255,255,0.2)"
-            : "rgba(255,255,255,0.65)",
-          fontSize: 9,
-          fontWeight: 700,
-          userSelect: "none",
-          pointerEvents: "none",
-          fontFamily: "system-ui, sans-serif",
-        }}
-      >
-        {seatNum}
-      </span>
-    </div>
-  );
-}
-
-function Legend() {
-  const items: { cat?: Category; label: string; occupied?: boolean }[] = [
-    { cat: "standard", label: `Standard — $15` },
-    { cat: "premium", label: `Premium — $25` },
-    { cat: "vip", label: `VIP — $40` },
-    { label: "Occupied", occupied: true },
-  ];
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 28,
-        right: 36,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-      }}
-    >
-      {items.map((item) => {
-        const sty = item.occupied
-          ? OCCUPIED_STYLE
-          : CATEGORY_STYLES[item.cat!];
-        return (
-          <div
-            key={item.label}
-            style={{ display: "flex", alignItems: "center", gap: 8 }}
-          >
-            <div
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 4,
-                background: sty.bg,
-                border: `1px solid ${sty.border}`,
-                opacity: item.occupied ? 0.35 : 1,
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                color: item.occupied
-                  ? "rgba(255,255,255,0.3)"
-                  : "rgba(255,255,255,0.5)",
-                fontSize: 11,
-                fontWeight: 500,
-                whiteSpace: "nowrap",
-                userSelect: "none",
-              }}
-            >
-              {item.label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function ExitSign({ x, y }: { x: number; y: number }) {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        display: "flex",
-        alignItems: "center",
-        gap: 4,
-        pointerEvents: "none",
-        userSelect: "none",
-      }}
-    >
-      <div
-        style={{
-          width: 18,
-          height: 18,
-          borderRadius: 3,
-          background: "rgba(16, 185, 129, 0.15)",
-          border: "1px solid rgba(16, 185, 129, 0.3)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <span
-          style={{
-            color: "rgba(16, 185, 129, 0.6)",
-            fontSize: 8,
-            fontWeight: 800,
-            letterSpacing: "0.5px",
-          }}
-        >
-          ➜
-        </span>
-      </div>
-      <span
-        style={{
-          color: "rgba(16, 185, 129, 0.35)",
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: "2px",
-          textTransform: "uppercase",
-        }}
-      >
-        Exit
       </span>
     </div>
   );

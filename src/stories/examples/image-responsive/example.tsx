@@ -122,12 +122,13 @@ export const Example: React.FC<any> = (args: any) => {
     >
       {imageScale > 0 && (
         <TransformWrapper
+          {...normalizeArgs(args)}
           key={`${containerWidth}x${containerHeight}`}
           initialScale={imageScale}
           minScale={imageScale * 0.5}
           maxScale={imageScale * zoomFactor}
           centerOnInit
-          {...normalizeArgs(args)}
+          centerZoomedOut
         >
           {(utils) => (
             <>

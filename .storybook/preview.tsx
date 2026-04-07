@@ -19,6 +19,7 @@ const preview: Preview = {
           "Advanced",
           "Components",
           "Examples",
+          ["Product card", "*"],
           "Hooks",
         ],
       },

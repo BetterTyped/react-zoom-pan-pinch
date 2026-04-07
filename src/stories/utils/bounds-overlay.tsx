@@ -1,78 +1,17 @@
 import React, { useCallback } from "react";
+
 import { useTransformComponent } from "../../hooks/use-transform-component";
 
 const THRESHOLD = 30;
 const FOG_MAX = 60;
 const FOG_COLOR = "10, 10, 18";
 
-interface BoundsOverlayProps {
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-  wrapperWidth: number;
-  wrapperHeight: number;
-}
-
-export function BoundsOverlay({
-  minX,
-  maxX,
-  minY,
-  maxY,
-  wrapperWidth,
-  wrapperHeight,
-}: BoundsOverlayProps) {
-  const computeEdges = useCallback(
-    (state: {
-      state: { positionX: number; positionY: number; scale: number };
-    }) => {
-      const { positionX, positionY, scale } = state.state;
-
-      // Match the library's scaled bounds (see calculateBounds in bounds.utils.ts)
-      const sMinX = wrapperWidth * (1 - scale) + minX * scale;
-      const sMaxX = maxX * scale;
-      const sMinY = wrapperHeight * (1 - scale) + minY * scale;
-      const sMaxY = maxY * scale;
-
-      const rangeX = sMaxX - sMinX || 1;
-      const rangeY = sMaxY - sMinY || 1;
-      const t = THRESHOLD;
-
-      return {
-        left: Math.max(0, 1 - (sMaxX - positionX) / Math.min(t, rangeX)),
-        right: Math.max(0, 1 - (positionX - sMinX) / Math.min(t, rangeX)),
-        top: Math.max(0, 1 - (sMaxY - positionY) / Math.min(t, rangeY)),
-        bottom: Math.max(0, 1 - (positionY - sMinY) / Math.min(t, rangeY)),
-      };
-    },
-    [minX, maxX, minY, maxY, wrapperWidth, wrapperHeight],
-  );
-
-  const edges = useTransformComponent(computeEdges);
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        pointerEvents: "none",
-        overflow: "hidden",
-        borderRadius: "10px",
-        zIndex: 10,
-      }}
-    >
-      <FogBar side="left" intensity={edges.left} />
-      <FogBar side="right" intensity={edges.right} />
-      <FogBar side="top" intensity={edges.top} />
-      <FogBar side="bottom" intensity={edges.bottom} />
-
-      <EdgeLabel side="left" intensity={edges.left} />
-      <EdgeLabel side="right" intensity={edges.right} />
-      <EdgeLabel side="top" intensity={edges.top} />
-      <EdgeLabel side="bottom" intensity={edges.bottom} />
-    </div>
-  );
-}
+const GRADIENT_DIR: Record<string, string> = {
+  left: "to right",
+  right: "to left",
+  top: "to bottom",
+  bottom: "to top",
+};
 
 function FogBar({
   side,
@@ -86,14 +25,7 @@ function FogBar({
   const depth = Math.round(FOG_MAX * intensity);
   const isHorizontal = side === "left" || side === "right";
 
-  const gradientDir =
-    side === "left"
-      ? "to right"
-      : side === "right"
-        ? "to left"
-        : side === "top"
-          ? "to bottom"
-          : "to top";
+  const gradientDir = GRADIENT_DIR[side];
 
   const style: React.CSSProperties = {
     position: "absolute",
@@ -163,5 +95,74 @@ function EdgeLabel({
     >
       Limit
     </span>
+  );
+}
+
+interface BoundsOverlayProps {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  wrapperWidth: number;
+  wrapperHeight: number;
+}
+
+export function BoundsOverlay({
+  minX,
+  maxX,
+  minY,
+  maxY,
+  wrapperWidth,
+  wrapperHeight,
+}: BoundsOverlayProps) {
+  const computeEdges = useCallback(
+    (state: {
+      state: { positionX: number; positionY: number; scale: number };
+    }) => {
+      const { positionX, positionY, scale } = state.state;
+
+      // Match the library's scaled bounds (see calculateBounds in bounds.utils.ts)
+      const sMinX = wrapperWidth * (1 - scale) + minX * scale;
+      const sMaxX = maxX * scale;
+      const sMinY = wrapperHeight * (1 - scale) + minY * scale;
+      const sMaxY = maxY * scale;
+
+      const rangeX = sMaxX - sMinX || 1;
+      const rangeY = sMaxY - sMinY || 1;
+      const t = THRESHOLD;
+
+      return {
+        left: Math.max(0, 1 - (sMaxX - positionX) / Math.min(t, rangeX)),
+        right: Math.max(0, 1 - (positionX - sMinX) / Math.min(t, rangeX)),
+        top: Math.max(0, 1 - (sMaxY - positionY) / Math.min(t, rangeY)),
+        bottom: Math.max(0, 1 - (positionY - sMinY) / Math.min(t, rangeY)),
+      };
+    },
+    [minX, maxX, minY, maxY, wrapperWidth, wrapperHeight],
+  );
+
+  const edges = useTransformComponent(computeEdges);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
+        overflow: "hidden",
+        borderRadius: "10px",
+        zIndex: 10,
+      }}
+    >
+      <FogBar side="left" intensity={edges.left} />
+      <FogBar side="right" intensity={edges.right} />
+      <FogBar side="top" intensity={edges.top} />
+      <FogBar side="bottom" intensity={edges.bottom} />
+
+      <EdgeLabel side="left" intensity={edges.left} />
+      <EdgeLabel side="right" intensity={edges.right} />
+      <EdgeLabel side="top" intensity={edges.top} />
+      <EdgeLabel side="bottom" intensity={edges.bottom} />
+    </div>
   );
 }

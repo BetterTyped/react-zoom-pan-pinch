@@ -19,68 +19,60 @@ type Api = {
   zoomOut: () => void;
 };
 
-export const Example: React.FC<any> = (args: any) => {
-  const [selectedSeat, setSelectedSeat] = useState<SeatInfo | null>(null);
-  const apiRef = useRef<Api | null>(null);
-
-  const handleSeatSelect = (seat: SeatInfo) => {
-    setSelectedSeat(seat);
-    apiRef.current?.zoomToElement(seat.id, 4);
-  };
-
-  const handleReset = () => {
-    setSelectedSeat(null);
-    apiRef.current?.resetTransform();
-  };
+function SeatBadge({ seat }: { seat: SeatInfo | null }) {
+  if (!seat) return null;
+  const cat = CATEGORY_STYLES[seat.category];
 
   return (
-    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      <TransformWrapper
-        {...normalizeArgs(args)}
-        initialScale={0.5}
-        minScale={0.5}
-        maxScale={8}
-        limitToBounds
-        centerZoomedOut
-        centerOnInit
-      >
-        {(api) => {
-          apiRef.current = api;
-          return (
-            <>
-              <Controls {...api} extraButtons={selectedSeat ? [{ label: "Deselect seat", icon: <CloseIcon />, onClick: handleReset }] : []} />
-              <SeatBadge seat={selectedSeat} />
-              <TransformComponent
-                wrapperStyle={{
-                  ...viewerChrome,
-                  width: "800px",
-                  maxWidth: "100%",
-                  height: "600px",
-                  maxHeight: "70vh",
-                }}
-                contentStyle={{
-                  width: CANVAS_WIDTH,
-                  height: CANVAS_HEIGHT,
-                }}
-              >
-                <CinemaLayout
-                  selectedSeat={selectedSeat?.id ?? null}
-                  onSeatClick={handleSeatSelect}
-                />
-              </TransformComponent>
-            </>
-          );
+    <div
+      style={{
+        position: "absolute",
+        top: 30,
+        left: 300,
+        zIndex: 10,
+        padding: "6px 14px",
+        borderRadius: 10,
+        background: "rgba(10, 10, 18, 0.82)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: `1px solid ${cat.border}`,
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <span
+        style={{
+          width: 10,
+          height: 10,
+          borderRadius: 3,
+          background: cat.bg,
+          flexShrink: 0,
         }}
-      </TransformWrapper>
-
-      <SeatMap
-        selectedId={selectedSeat?.id ?? null}
-        onSelect={handleSeatSelect}
-        onReset={handleReset}
       />
+      <span
+        style={{
+          color: "#fff",
+          fontSize: 12,
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+        }}
+      >
+        Row {seat.row} · Seat {seat.number}
+      </span>
+      <span
+        style={{
+          color: "rgba(255,255,255,0.5)",
+          fontSize: 11,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {cat.label} · {cat.price}
+      </span>
     </div>
   );
-};
+}
 
 function SeatMap({
   selectedId,
@@ -222,7 +214,18 @@ function SeatMap({
               const selected = selectedId === seatId;
               const cat = CATEGORY_STYLES[row.category];
               const [leftSection, centerSection] = row.sections;
-              const isAisle = num === leftSection + 1 || num === leftSection + centerSection + 1;
+              const isAisle =
+                num === leftSection + 1 ||
+                num === leftSection + centerSection + 1;
+
+              let seatBg: string;
+              if (occupied) {
+                seatBg = "rgba(55, 65, 81, 0.3)";
+              } else if (selected) {
+                seatBg = "#059669";
+              } else {
+                seatBg = cat.border;
+              }
 
               return (
                 <button
@@ -251,11 +254,7 @@ function SeatMap({
                     border: selected
                       ? "2px solid #34d399"
                       : "1px solid transparent",
-                    background: occupied
-                      ? "rgba(55, 65, 81, 0.3)"
-                      : selected
-                        ? "#059669"
-                        : cat.border,
+                    background: seatBg,
                     opacity: occupied ? 0.35 : 1,
                     cursor: occupied ? "default" : "pointer",
                     fontSize: 7,
@@ -302,44 +301,78 @@ function SeatMap({
   );
 }
 
-function SeatBadge({ seat }: { seat: SeatInfo | null }) {
-  if (!seat) return null;
-  const cat = CATEGORY_STYLES[seat.category];
+export const Example: React.FC<any> = (args: any) => {
+  const [selectedSeat, setSelectedSeat] = useState<SeatInfo | null>(null);
+  const apiRef = useRef<Api | null>(null);
+
+  const handleSeatSelect = (seat: SeatInfo) => {
+    setSelectedSeat(seat);
+    apiRef.current?.zoomToElement(seat.id, 4);
+  };
+
+  const handleReset = () => {
+    setSelectedSeat(null);
+    apiRef.current?.resetTransform();
+  };
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 30,
-        left: 300,
-        zIndex: 10,
-        padding: "6px 14px",
-        borderRadius: 10,
-        background: "rgba(10, 10, 18, 0.82)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        border: `1px solid ${cat.border}`,
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      }}
-    >
-      <span
-        style={{
-          width: 10,
-          height: 10,
-          borderRadius: 3,
-          background: cat.bg,
-          flexShrink: 0,
+    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <TransformWrapper
+        {...normalizeArgs(args)}
+        initialScale={0.5}
+        minScale={0.5}
+        maxScale={8}
+        limitToBounds
+        centerZoomedOut
+        centerOnInit
+      >
+        {(api) => {
+          apiRef.current = api;
+          return (
+            <>
+              <Controls
+                {...api}
+                extraButtons={
+                  selectedSeat
+                    ? [
+                        {
+                          label: "Deselect seat",
+                          icon: <CloseIcon />,
+                          onClick: handleReset,
+                        },
+                      ]
+                    : []
+                }
+              />
+              <SeatBadge seat={selectedSeat} />
+              <TransformComponent
+                wrapperStyle={{
+                  ...viewerChrome,
+                  width: "800px",
+                  maxWidth: "100%",
+                  height: "600px",
+                  maxHeight: "70vh",
+                }}
+                contentStyle={{
+                  width: CANVAS_WIDTH,
+                  height: CANVAS_HEIGHT,
+                }}
+              >
+                <CinemaLayout
+                  selectedSeat={selectedSeat?.id ?? null}
+                  onSeatClick={handleSeatSelect}
+                />
+              </TransformComponent>
+            </>
+          );
         }}
+      </TransformWrapper>
+
+      <SeatMap
+        selectedId={selectedSeat?.id ?? null}
+        onSelect={handleSeatSelect}
+        onReset={handleReset}
       />
-      <span style={{ color: "#fff", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
-        Row {seat.row} · Seat {seat.number}
-      </span>
-      <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, whiteSpace: "nowrap" }}>
-        {cat.label} · {cat.price}
-      </span>
     </div>
   );
-}
+};

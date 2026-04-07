@@ -1,5 +1,7 @@
 import { Meta } from "@storybook/blocks";
 
+import { DocTable } from "../docs/DocTable.tsx";
+
 <Meta title="Hooks/useTransformComponent" />
 
 # useTransformComponent
@@ -87,12 +89,19 @@ to run side-effects (not render UI), use `useTransformEffect` instead.
 
 ## vs Other Hooks
 
-| Hook | Purpose | Re-renders? |
-|------|---------|-------------|
-| `useTransformComponent` | Render UI from state | Yes |
-| `useTransformEffect` | Side-effects on change | No |
-| `useControls` | Trigger actions | No |
-| `useTransformContext` | Raw instance access | No |
+<DocTable
+  columns={[
+    { header: "Hook", style: "name" },
+    { header: "Purpose", style: "type" },
+    { header: "Re-renders?", style: "text" },
+  ]}
+  rows={[
+    ["useTransformComponent", "Render UI from state", "Yes"],
+    ["useTransformEffect", "Side-effects on change", "No"],
+    ["useControls", "Trigger actions", "No"],
+    ["useTransformContext", "Raw instance access", "No"],
+  ]}
+/>
 
 ## Requirements
 

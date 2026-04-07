@@ -1,0 +1,206 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper, TransformComponent } from "../../../components";
+import { argsTypes } from "../../types/args.types.ts";
+import { normalizeArgs, Controls, viewerChrome } from "../../utils";
+import { useTransformComponent } from "../../../hooks";
+
+import { DocTable } from "../../docs/DocTable.tsx";
+import exampleImg from "../../assets/medium-image.jpg";
+
+export const ScaleBadge = () => {
+  return useTransformComponent(({ state }) => (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 14,
+        right: 14,
+        zIndex: 10,
+        padding: "4px 10px",
+        borderRadius: 8,
+        background: "rgba(10, 10, 18, 0.8)",
+        backdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        color: "rgba(255,255,255,0.7)",
+        fontSize: 11,
+        fontWeight: 600,
+        fontFamily: "'SF Mono', ui-monospace, monospace",
+        fontVariantNumeric: "tabular-nums",
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+    >
+      {state.scale.toFixed(2)}×
+    </div>
+  ));
+};
+
+export const Template = (args) => (
+  <div
+    style={{
+      fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+      background:
+        "linear-gradient(165deg, #0c0a14 0%, #131025 40%, #0a0812 100%)",
+      padding: "20px 22px 28px",
+      borderRadius: 16,
+      boxSizing: "border-box",
+    }}
+  >
+    <header style={{ marginBottom: 16 }}>
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: "rgba(139, 92, 246, 0.85)",
+          marginBottom: 6,
+        }}
+      >
+        Basic demo
+      </div>
+      <h1
+        style={{
+          margin: 0,
+          fontSize: "clamp(1.2rem, 2.2vw, 1.55rem)",
+          fontWeight: 800,
+          letterSpacing: "-0.03em",
+          color: "#f4f4f5",
+        }}
+      >
+        Center Zoomed Out
+      </h1>
+    </header>
+
+    <TransformWrapper
+      {...normalizeArgs(args)}
+      initialScale={0.5}
+      minScale={0.2}
+      centerOnInit
+      centerZoomedOut
+    >
+      {(utils) => (
+        <div style={{ position: "relative" }}>
+          <Controls {...utils} />
+          <ScaleBadge />
+          <TransformComponent
+            wrapperStyle={{
+              ...viewerChrome,
+              width: "min(600px, 90vw)",
+              height: "min(440px, 65vh)",
+            }}
+          >
+            <img src={exampleImg} alt="" style={{ display: "block" }} />
+          </TransformComponent>
+        </div>
+      )}
+    </TransformWrapper>
+
+    <div
+      style={{
+        marginTop: 16,
+        padding: "14px 18px",
+        borderRadius: 12,
+        background: "rgba(30, 27, 56, 0.7)",
+        border: "1px solid rgba(139, 92, 246, 0.2)",
+        maxWidth: 600,
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+      }}
+    >
+      <span
+        style={{
+          flexShrink: 0,
+          width: 24,
+          height: 24,
+          borderRadius: 8,
+          background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 12,
+          fontWeight: 800,
+          color: "#fff",
+          marginTop: 1,
+        }}
+      >
+        i
+      </span>
+      <div style={{ fontSize: 13, color: "#c4b5fd", lineHeight: 1.65 }}>
+        Try panning while zoomed out — the image{" "}
+        <strong style={{ color: "#ede9fe" }}>snaps back to center</strong>.
+        Zoom in past 1× and it pans freely.
+        <div
+          style={{
+            marginTop: 8,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+          }}
+        >
+          {[
+            { label: "centerZoomedOut", color: "#a78bfa" },
+            { label: "centerOnInit", color: "#a78bfa" },
+            { label: "initialScale=0.5", color: "#38bdf8" },
+          ].map((p) => (
+            <span
+              key={p.label}
+              style={{
+                padding: "3px 10px",
+                borderRadius: 6,
+                background: `${p.color}18`,
+                border: `1px solid ${p.color}35`,
+                fontSize: 11,
+                fontWeight: 600,
+                fontFamily: "'SF Mono', ui-monospace, monospace",
+                color: p.color,
+              }}
+            >
+              {p.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+<Meta
+  title="Basic/Center Zoomed Out"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Center Zoomed Out
+
+When the image is **zoomed out** (scale below 1×), the content automatically
+**stays centered** in the viewport. Try panning — the image snaps back. Once
+you zoom in past 1×, free panning works normally.
+
+This is the same pattern used in cinema / ticket-booking UIs where the layout
+should always stay framed when the user hasn't zoomed in yet.
+
+<DocTable
+  columns={[
+    { header: "Prop" },
+    { header: "Value", style: "type" },
+    { header: "Effect", style: "text" },
+  ]}
+  rows={[
+    ["centerOnInit", "true", "Centers content when the component mounts"],
+    ["centerZoomedOut", "true", "Keeps content centered whenever scale < 1"],
+    ["initialScale", "0.5", "Starts zoomed out at 50%"],
+    ["minScale", "0.2", "Allows zooming out further to 20%"],
+  ]}
+/>
+
+<Canvas>
+  <Story name="Center Zoomed Out">
+    {(args) => <Template {...args} />}
+  </Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Center Zoomed Out" />

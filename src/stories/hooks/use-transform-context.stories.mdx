@@ -1,5 +1,7 @@
 import { Meta } from "@storybook/blocks";
 
+import { DocTable } from "../docs/DocTable.tsx";
+
 <Meta title="Hooks/useTransformContext" />
 
 # useTransformContext
@@ -18,14 +20,21 @@ function useTransformContext(): ReactZoomPanPinchContext
 
 The returned context object provides:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `state` | `{ scale, positionX, positionY, previousScale }` | Current mutable transform state |
-| `setup` | `object` | Resolved configuration (minScale, maxScale, etc.) |
-| `wrapperComponent` | `HTMLDivElement \| null` | The wrapper DOM element |
-| `contentComponent` | `HTMLDivElement \| null` | The content DOM element |
-| `onChange` | `(callback) => unsubscribe` | Subscribe to transform changes |
-| `onInit` | `(callback) => unsubscribe` | Subscribe to initialization |
+<DocTable
+  columns={[
+    { header: "Property", style: "name" },
+    { header: "Type", style: "type" },
+    { header: "Description", style: "text" },
+  ]}
+  rows={[
+    ["state", "{ scale, positionX, positionY, previousScale }", "Current mutable transform state"],
+    ["setup", "object", "Resolved configuration (minScale, maxScale, etc.)"],
+    ["wrapperComponent", "HTMLDivElement | null", "The wrapper DOM element"],
+    ["contentComponent", "HTMLDivElement | null", "The content DOM element"],
+    ["onChange", "(callback) => unsubscribe", "Subscribe to transform changes"],
+    ["onInit", "(callback) => unsubscribe", "Subscribe to initialization"],
+  ]}
+/>
 
 ## When to Use
 

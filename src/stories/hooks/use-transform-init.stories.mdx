@@ -1,5 +1,7 @@
 import { Meta } from "@storybook/blocks";
 
+import { DocTable } from "../docs/DocTable.tsx";
+
 <Meta title="Hooks/useTransformInit" />
 
 # useTransformInit
@@ -78,11 +80,18 @@ function CanvasSetup() {
 
 ## Key Differences
 
-| | `useTransformInit` | `useTransformEffect` |
-|---|---|---|
-| Fires | Once (on mount) | On every transform change |
-| Purpose | Setup / measurements | Ongoing side-effects |
-| Deps | `[]` (captured once) | `[callback, context]` |
+<DocTable
+  columns={[
+    { header: "" },
+    { header: "useTransformInit", style: "type" },
+    { header: "useTransformEffect", style: "text" },
+  ]}
+  rows={[
+    ["Fires", "Once (on mount)", "On every transform change"],
+    ["Purpose", "Setup / measurements", "Ongoing side-effects"],
+    ["Deps", "[] (captured once)", "[callback, context]"],
+  ]}
+/>
 
 ## Caveat
 

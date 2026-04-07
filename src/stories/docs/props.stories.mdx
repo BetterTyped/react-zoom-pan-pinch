@@ -1,83 +1,11 @@
 import { Meta } from "@storybook/blocks";
-
 import { componentProps, wrapperProps } from "./props.tsx";
+import { PropTable } from "./PropTable.tsx";
 
 <Meta title="Docs/Props" />
 
-# TransformComponent Props
-
-<div style={{ maxWidth: 760, fontFamily: "system-ui, -apple-system, sans-serif" }}>
-  {componentProps.map((row, i) => (
-    <div
-      key={i}
-      style={{
-        padding: "14px 18px",
-        marginBottom: 8,
-        borderRadius: 10,
-        background: row.isObjectRow ? "rgba(102, 126, 234, 0.08)" : "rgba(255,255,255,0.02)",
-        border: row.isObjectRow ? "1px solid rgba(102, 126, 234, 0.2)" : "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: row.description ? 6 : 0, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: "'SF Mono', 'Fira Code', monospace", fontSize: 13, fontWeight: 700, color: row.isObjectRow ? "#667eea" : "rgba(255,255,255,0.9)" }}>
-          {row.name}
-        </span>
-        {row.type.filter(Boolean).map((t, j) => (
-          <code key={j} style={{ padding: "1px 6px", borderRadius: 4, background: "rgba(30,30,50,0.7)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11, color: "#93c5fd", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
-            {t}
-          </code>
-        ))}
-        {row.defaultValue && row.defaultValue !== "" && (
-          <code style={{ padding: "1px 6px", borderRadius: 4, background: "rgba(30,30,50,0.7)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11, color: "#86efac", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
-            {row.defaultValue}
-          </code>
-        )}
-      </div>
-      {row.description && (
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "rgba(255,255,255,0.5)" }}>
-          {row.description}
-        </p>
-      )}
-    </div>
-  ))}
-</div>
+<PropTable rows={componentProps} title="TransformComponent Props" />
 
 <br />
 
-# TransformWrapper Props
-
-<div style={{ maxWidth: 760, fontFamily: "system-ui, -apple-system, sans-serif" }}>
-  {wrapperProps.map((row, i) => (
-    <div
-      key={i}
-      style={{
-        padding: "14px 18px",
-        marginBottom: 8,
-        borderRadius: 10,
-        background: row.isObjectRow ? "rgba(102, 126, 234, 0.08)" : "rgba(255,255,255,0.02)",
-        border: row.isObjectRow ? "1px solid rgba(102, 126, 234, 0.2)" : "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: row.description ? 6 : 0, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: "'SF Mono', 'Fira Code', monospace", fontSize: 13, fontWeight: 700, color: row.isObjectRow ? "#667eea" : "rgba(255,255,255,0.9)" }}>
-          {row.name}
-        </span>
-        {row.type.filter(Boolean).map((t, j) => (
-          <code key={j} style={{ padding: "1px 6px", borderRadius: 4, background: "rgba(30,30,50,0.7)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11, color: "#93c5fd", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
-            {t}
-          </code>
-        ))}
-        {row.defaultValue && row.defaultValue !== "" && (
-          <code style={{ padding: "1px 6px", borderRadius: 4, background: "rgba(30,30,50,0.7)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11, color: "#86efac", fontFamily: "'SF Mono', 'Fira Code', monospace" }}>
-            {row.defaultValue}
-          </code>
-        )}
-      </div>
-      {row.description && (
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "rgba(255,255,255,0.5)" }}>
-          {row.description}
-        </p>
-      )}
-    </div>
-  ))}
-</div>
+<PropTable rows={wrapperProps} title="TransformWrapper Props" />

@@ -18,58 +18,62 @@ export type ComponentProps = Record<
 
 export const handlersTable: ComponentProps = {
   zoomIn: {
-    type: ["function(step, animationTime, animationName)"],
+    type: ["function(step, animationTime, animationType)"],
     parameters: [
       "step: number = 0.5",
       "animationTime: number = 300",
-      "animationName: string = easeOut",
+      "animationType: keyof typeof animations = easeOut",
     ],
     description: "Function used for zoom in button",
   },
   zoomOut: {
-    type: ["function(step, animationTime, animationName)"],
+    type: ["function(step, animationTime, animationType)"],
     parameters: [
       "step: number = 0.5",
       "animationTime: number = 300",
-      "animationName: string = easeOut",
+      "animationType: keyof typeof animations = easeOut",
     ],
     description: "Function used for zoom out button",
   },
   setTransform: {
-    type: ["function(x, y, scale, animationTime, animationName)"],
+    type: ["function(x, y, scale, animationTime, animationType)"],
     parameters: [
       "x: number",
       "y: number",
       "scale: number",
       "animationTime: number = 300",
-      "animationName: string = easeOut",
+      "animationType: keyof typeof animations = easeOut",
     ],
     description: "Function used for custom transformation animation",
   },
   resetTransform: {
-    type: ["function(animationTime, animationName)"],
+    type: ["function(animationTime, animationType)"],
     parameters: [
-      "animationTime: number = 300",
-      "animationName: string = easeOut",
+      "animationTime: number = 200",
+      "animationType: keyof typeof animations = easeOut",
     ],
     description: "Function used for reset button",
   },
   centerView: {
-    type: ["function(scale, animationTime, animationName)"],
+    type: ["function(scale, animationTime, animationType)"],
     parameters: [
       "scale: number = undefined",
-      "animationTime: number = 300",
-      "animationName: string = easeOut",
+      "animationTime: number = 200",
+      "animationType: keyof typeof animations = easeOut",
     ],
     description: "Function used for centering the content component",
   },
   zoomToElement: {
-    type: ["function(node, customZoom, animationTime, animationName)"],
+    type: [
+      "function(node, scale, animationTime, animationType, offsetX, offsetY)",
+    ],
     parameters: [
       "node: HTMLElement | string",
-      "customScale: number = undefined",
-      "animationTime: number = 300",
-      "animationName: string = easeOut",
+      "scale: number = undefined",
+      "animationTime: number = 600",
+      "animationType: keyof typeof animations = easeOut",
+      "offsetX: number = 0",
+      "offsetY: number = 0",
     ],
     description:
       "This function make a transition for certain node provided to the function(as node element or it's id string). It allows only to zoom elements with offsetWidth and offsetHeight properties - since SVG's doesn't have those, it is impossible to perform it on such elements.",

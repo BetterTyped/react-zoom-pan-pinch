@@ -6,9 +6,11 @@ dist
 tmp
 out-tsc
 storybook-static
+reports
 
 # dependencies
 node_modules
+.venv-gdi
 
 # IDEs and editors
 /.idea

@@ -11,7 +11,7 @@
     <img src="https://custom-icon-badges.demolab.com/npm/v/react-zoom-pan-pinch.svg?logo=npm&color=e22121"/>
   </a>
   <a href="https://github.com/prc5/react-zoom-pan-pinch">
-    <img src="https://custom-icon-badges.demolab.com/github/stars/prc5/react-zoom-pan-pinch?logo=star" />
+    <img src="https://custom-icon-badges.demolab.com/github/stars/prc5/react-zoom-pan-pinch?logo=star&style=flat" />
   </a>
   <a href="https://github.com/prc5/react-zoom-pan-pinch/blob/main/License.md">
     <img src="https://custom-icon-badges.demolab.com/github/license/prc5/react-zoom-pan-pinch?logo=law&color=yellow" />

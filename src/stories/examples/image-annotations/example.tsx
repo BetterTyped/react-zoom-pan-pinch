@@ -839,6 +839,7 @@ function AnnotationCanvas(props: {
   const handlePinClick = useCallback(
     (e: React.MouseEvent) => {
       if (placeMode !== "pin") return;
+      e.stopPropagation();
       const pt = clientToContent(
         e.clientX,
         e.clientY,

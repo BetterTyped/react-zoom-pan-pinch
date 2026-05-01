@@ -74,7 +74,12 @@ export const calculateBounds = (
   const { centerZoomedOut, disablePadding } = contextInstance.setup;
 
   if (!wrapperComponent || !contentComponent) {
-    throw new Error("Components are not mounted");
+    return {
+      minPositionX: 0,
+      maxPositionX: 0,
+      minPositionY: 0,
+      maxPositionY: 0,
+    }
   }
 
   const {

@@ -205,7 +205,14 @@ export class ZoomPanPinch {
     const passive = makePassiveEventOption();
 
     wrapper.addEventListener("wheel", this.onWheelZoom, passive);
-    wrapper.addEventListener("dblclick", this.onDoubleClick, passive);
+    // On touch-capable devices `onTouchPanningStart` already detects double-tap
+    // and calls onDoubleClick directly. Adding a `dblclick` listener here as well
+    // causes iOS to re-trigger onDoubleClick via the synthetic `dblclick` the
+    // browser fires after two taps (one synthetic `click` per tap ~300 ms later),
+    // toggling zoom back out immediately. Only attach the listener on non-touch devices.
+    if (!("ontouchstart" in wrapper.ownerDocument.documentElement)) {
+      wrapper.addEventListener("dblclick", this.onDoubleClick, passive);
+    }
     wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
@@ -494,19 +501,6 @@ export class ZoomPanPinch {
   onDoubleClick = (event: MouseEvent | TouchEvent): void => {
     const { disabled } = this.setup;
     if (disabled) return;
-
-    // On iOS (and other touch-capable browsers), every tap generates a synthetic
-    // `click` event ~300 ms after the touchend. Two fast taps produce two of these
-    // synthetic clicks close enough together for the browser to also fire a `dblclick`.
-    // The touch double-tap is already handled in `onTouchPanningStart` via `lastTouch`;
-    // this guard drops the synthetic `dblclick` that would otherwise re-toggle the zoom.
-    if (
-      event.type === "dblclick" &&
-      this.lastTouch !== null &&
-      +new Date() - this.lastTouch < 600
-    ) {
-      return;
-    }
 
     const isAllowed = isDoubleClickAllowed(this, event);
     if (!isAllowed) return;

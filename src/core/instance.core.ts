@@ -495,6 +495,19 @@ export class ZoomPanPinch {
     const { disabled } = this.setup;
     if (disabled) return;
 
+    // On iOS (and other touch-capable browsers), every tap generates a synthetic
+    // `click` event ~300 ms after the touchend. Two fast taps produce two of these
+    // synthetic clicks close enough together for the browser to also fire a `dblclick`.
+    // The touch double-tap is already handled in `onTouchPanningStart` via `lastTouch`;
+    // this guard drops the synthetic `dblclick` that would otherwise re-toggle the zoom.
+    if (
+      event.type === "dblclick" &&
+      this.lastTouch !== null &&
+      +new Date() - this.lastTouch < 600
+    ) {
+      return;
+    }
+
     const isAllowed = isDoubleClickAllowed(this, event);
     if (!isAllowed) return;
 

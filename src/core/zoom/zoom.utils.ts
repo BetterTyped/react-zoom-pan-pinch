@@ -17,7 +17,7 @@ export function handleCalculateZoomPositions(
 
   const scaleDifference = newScale - scale;
 
-  if (typeof mouseX !== "number" || typeof mouseY !== "number") {
+  if (!Number.isFinite(mouseX) || !Number.isFinite(mouseY)) {
     console.error("Mouse X and Y position were not provided!");
     return { x: positionX, y: positionY };
   }

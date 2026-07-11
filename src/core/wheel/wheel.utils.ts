@@ -96,8 +96,10 @@ export function getMousePosition(
     mouseY = (touch.clientY - contentRect.top) / scale;
   }
 
-  if (Number.isNaN(mouseX) || Number.isNaN(mouseY))
+  if (Number.isNaN(mouseX) || Number.isNaN(mouseY)) {
     console.error("No mouse or touch offset found");
+    return { x: 0, y: 0 };
+  }
 
   return {
     x: mouseX,

@@ -32,7 +32,13 @@
     <img src="https://hits.sh/github.com/prc5/react-zoom-pan-pinch.svg?color=64BC4B&logo=bookmeter" />
   </a>
   <a href="https://twitter.com/maciej_pyrc">
-    <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/maciej_pyrc?label=Follow%20&style=social"/>
+    <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/maciej_pyrc"/>
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://discord.gg/DQXAJw36v">
+    <img src="./.github/assets/discord.png" alt="Join our Discord community" />
   </a>
 </p>
 

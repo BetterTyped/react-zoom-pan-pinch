@@ -10,11 +10,11 @@
   <a href="https://www.npmjs.com/package/react-zoom-pan-pinch">
     <img src="https://custom-icon-badges.demolab.com/npm/v/react-zoom-pan-pinch.svg?logo=npm&color=e22121"/>
   </a>
-  <a href="https://github.com/prc5/react-zoom-pan-pinch">
-    <img src="https://custom-icon-badges.demolab.com/github/stars/prc5/react-zoom-pan-pinch?logo=star&style=flat" />
+  <a href="https://github.com/BetterTyped/react-zoom-pan-pinch">
+    <img src="https://custom-icon-badges.demolab.com/github/stars/BetterTyped/react-zoom-pan-pinch?logo=star&style=flat" />
   </a>
-  <a href="https://github.com/prc5/react-zoom-pan-pinch/blob/main/License.md">
-    <img src="https://custom-icon-badges.demolab.com/github/license/prc5/react-zoom-pan-pinch?logo=law&color=yellow" />
+  <a href="https://github.com/BetterTyped/react-zoom-pan-pinch/blob/main/License.md">
+    <img src="https://custom-icon-badges.demolab.com/github/license/BetterTyped/react-zoom-pan-pinch?logo=law&color=yellow" />
   </a>
   <a href="https://github.com/semantic-release/semantic-release">
     <img src="https://custom-icon-badges.demolab.com/badge/semver-commitzen-e10079?logo=semantic-release&color=e76f51" />
@@ -25,11 +25,11 @@
   <a href="https://www.npmjs.com/package/react-zoom-pan-pinch">
     <img src="https://custom-icon-badges.demolab.com/bundlephobia/minzip/react-zoom-pan-pinch?color=E10098&logo=package" />
   </a>
-  <a href="https://github.com/prc5/react-zoom-pan-pinch">
+  <a href="https://github.com/BetterTyped/react-zoom-pan-pinch">
     <img src="https://custom-icon-badges.demolab.com/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white" />
   </a>
-  <a href="https://hits.sh/github.com/prc5/react-zoom-pan-pinch/">
-    <img src="https://hits.sh/github.com/prc5/react-zoom-pan-pinch.svg?color=64BC4B&logo=bookmeter" />
+  <a href="https://hits.sh/github.com/BetterTyped/react-zoom-pan-pinch/">
+    <img src="https://hits.sh/github.com/BetterTyped/react-zoom-pan-pinch.svg?color=64BC4B&logo=bookmeter" />
   </a>
   <a href="https://twitter.com/maciej_pyrc">
     <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/maciej_pyrc"/>

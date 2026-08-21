@@ -83,13 +83,13 @@ help you resolve issues quickly and avoid blocking releases.
 Do you like this library? Here is what else I build and maintain.
 
 <p align="center">
-  <a href="https://www.hype-stack.dev">
+  <a href="https://github.com/BetterTyped/hype-stack">
     <img src="./.github/assets/banner-hype-stack.png" alt="Build your SaaS on Hype Stack" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://hyperfetch.bettertyped.com">
+  <a href="https://github.com/BetterTyped/hyper-fetch">
     <img src="./.github/assets/banner-hyper-fetch.png" alt="Connect any API with Hyper Fetch" />
   </a>
 </p>

@@ -80,31 +80,19 @@ help you resolve issues quickly and avoid blocking releases.
 
 ## Try other BetterTyped projects
 
-Do you like this library? Here is another **BetterTyped** project — the whole
-preview below is a single link to GitHub.
+Do you like this library? Here is what else I build and maintain.
 
-<div align="center">
-  <a href="https://github.com/BetterTyped/hyper-fetch">
-    <table>
-      <tr>
-        <td align="center" valign="middle" width="140">
-          <img
-            src="./.github/assets/hyper-fetch.svg"
-            width="112"
-            alt="Hyper Fetch logo"
-          />
-        </td>
-        <td align="left" valign="middle">
-          <h3>⚡ Hyper Fetch</h3>
-          <p>
-          Fetching and realtime data exchange framework.
-          </p>
-          </br>
-        </td>
-      </tr>
-    </table>
+<p align="center">
+  <a href="https://www.hype-stack.dev">
+    <img src="./.github/assets/banner-hype-stack.png" alt="Build your SaaS on Hype Stack" />
   </a>
-</div>
+</p>
+
+<p align="center">
+  <a href="https://hyperfetch.bettertyped.com">
+    <img src="./.github/assets/banner-hyper-fetch.png" alt="Connect any API with Hyper Fetch" />
+  </a>
+</p>
 
 ---
 

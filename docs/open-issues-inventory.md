@@ -36,9 +36,9 @@ the `## Rating (2026-09-01)` section of each doc; this file is the index.
 | Keep: meta | 2 |
 
 **67 of the 95 were closed on GitHub on 2026-09-01** (each with a comment giving the
-reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
+reason; see the close list). After the easy-wins pass (v4.1.0) 21 remain open: 2 Fix (#467, #290), 2 Build (#252, #254), 14 Discuss, 2 meta; #371 is partially addressed and stays open.
 
-## Fixed in the 2026-09-01 easy-wins pass (unreleased until the next semantic-release)
+## Fixed in the 2026-09-01 easy-wins pass (released as v4.1.0)
 
 | # | Change |
 |---|--------|
@@ -55,18 +55,18 @@ reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
 
 | # | Verdict | Priority | Title | Action |
 |---|---------|----------|-------|--------|
-| 582 | Fix → **Fixed on master** | high | Wheel input dropped when it arrives 100-160ms after the prev | Fix in `handleWheelZoom`/`handleWheelStart`: cancel the running alignment animation (or key the cancel guard to `wheelAnimationTimer`), and skip `handleAlignToBounds` when the target equals the current state. Add a fake-timer regression spec for gaps of 90/120/150 ms. |
+| 582 | Fix → **Fixed in v4.1.0** | high | Wheel input dropped when it arrives 100-160ms after the prev | Fix in `handleWheelZoom`/`handleWheelStart`: cancel the running alignment animation (or key the cancel guard to `wheelAnimationTimer`), and skip `handleAlignToBounds` when the target equals the current state. Add a fake-timer regression spec for gaps of 90/120/150 ms. |
 | 290 | Fix | medium | Broken when using portal windows on Mac - Chrome | Review and merge PR #552 (panning in additional window) with a spec; then close #290 and #537. |
 | 371 | Fix → **Partially addressed on master** | medium | Support Use Under Shadow DOM | Inline the critical styles (`transform-origin: 0 0`, `position`, `overflow`, `user-select`) as style attributes, or inject the stylesheet into `wrapperComponent.getRootNode()` when it is a ShadowRoot. Resolve event targets through `composedPath()`. Add a jsdom spec that mounts inside `attachShadow`. |
 | 467 | Fix | medium | Unable to Copy content | Scope `user-select: none` to an active gesture (toggle a class while `isPanning`/pinching), or add a `panning.allowTextSelection` prop. Until then answer with the `text-selection` story pattern (`panning.excluded` + `userSelect: text`). |
-| 214 | Build → **Shipped on master** | high | Fire events or callbacks at zoomIn, zoomToElement etc...? | Give `zoomIn/zoomOut/setTransform/resetTransform/centerView/zoomToElement` a completion signal: return a Promise resolved when `animate` finishes (or accept an `onComplete`). `animate` currently has no end hook. |
+| 214 | Build → **Shipped in v4.1.0** | high | Fire events or callbacks at zoomIn, zoomToElement etc...? | Give `zoomIn/zoomOut/setTransform/resetTransform/centerView/zoomToElement` a completion signal: return a Promise resolved when `animate` finishes (or accept an `onComplete`). `animate` currently has no end hook. |
 | 252 | Build | high | Auto fit large images on init | Add a first-class fit: `initialScale="fit"` (or `fitOnInit`) plus a `fitToView()` control. Today the workaround is `zoomToElement(contentEl, undefined, 0)` from `onInit`/image `onload`. |
 | 254 | Build | medium | Use keyboard keys for panning | Roadmap item 5. Add `keyboard={{ disabled, panStep, zoomStep }}` on the wrapper (arrows pan, +/- zoom, 0 reset) and a public `panBy(dx, dy)` control that #527 can use for buttons. |
-| 329 | Build → **Shipped on master** | medium | Add hook to allow zoom-pan-pinch without predefined componen | `useZoomPanPinch` exists in src/hooks and is covered by hooks.spec, but it is not exported from the package. Sign off on the API (`wrapperRef`, `contentRef`, `instance`, `useTransform`), export it from `src/hooks/index.ts` and document it. |
-| 388 | Build → **Shipped on master** | medium | Zoom to multiple elements | Accept `HTMLElement \| HTMLElement[] \| string \| string[]` in `zoomToElement` and fit the union rect. The reporter offered a PR; a contributor bumped it 2026-08-19. |
-| 353 | Build → **Shipped on master** | low | Zoom in on click to mouse position | Export the internal `handleZoomToPoint` as a `zoomToPoint(x, y, scale)` control. Single-click wiring stays in userland (it conflicts with pan-click). |
-| 378 | Build → **Shipped on master** | low | How to get the mouse position | Add one helper, e.g. `instance.clientToContent(clientX, clientY)` returning content-space coordinates, and a docs recipe. Closes #378, #472 and the #297 follow-up. |
-| 515 | Build → **Shipped on master** | low | zoomToElement with max/min scale support | Add an options object to `zoomToElement` (`{ maxScale, minScale }`) so the auto-fit scale can be capped without passing an explicit scale. |
+| 329 | Build → **Shipped in v4.1.0** | medium | Add hook to allow zoom-pan-pinch without predefined componen | `useZoomPanPinch` exists in src/hooks and is covered by hooks.spec, but it is not exported from the package. Sign off on the API (`wrapperRef`, `contentRef`, `instance`, `useTransform`), export it from `src/hooks/index.ts` and document it. |
+| 388 | Build → **Shipped in v4.1.0** | medium | Zoom to multiple elements | Accept `HTMLElement \| HTMLElement[] \| string \| string[]` in `zoomToElement` and fit the union rect. The reporter offered a PR; a contributor bumped it 2026-08-19. |
+| 353 | Build → **Shipped in v4.1.0** | low | Zoom in on click to mouse position | Export the internal `handleZoomToPoint` as a `zoomToPoint(x, y, scale)` control. Single-click wiring stays in userland (it conflicts with pan-click). |
+| 378 | Build → **Shipped in v4.1.0** | low | How to get the mouse position | Add one helper, e.g. `instance.clientToContent(clientX, clientY)` returning content-space coordinates, and a docs recipe. Closes #378, #472 and the #297 follow-up. |
+| 515 | Build → **Shipped in v4.1.0** | low | zoomToElement with max/min scale support | Add an options object to `zoomToElement` (`{ maxScale, minScale }`) so the auto-fit scale can be capped without passing an explicit scale. |
 | 366 | Discuss | high | Controlling zoom state via shared state | Controlled-component mode (`scale`/`positionX`/`positionY` + `onChange`) is a real architectural change. Decide whether v4 wants it or whether `setTransform` + `useTransformEffect` is the supported two-way pattern. |
 | 280 | Discuss | medium | Mobile - Virtual keyboard overlap behaviour | Decide whether to handle focus-driven scroll of the wrapper: listen to `scroll` on the wrapper, fold `scrollLeft/scrollTop` into the transform and reset them to 0. Needs a real-device check before and after. |
 | 385 | Discuss | medium | Cannot pan within iframe on mobile devices | Pick one: (a) document the overlay workaround (`pointer-events: none` on the iframe while a gesture is active, or a transparent capture layer), or (b) ship a `TransformIFrameComponent` as asked in the #348 thread. Cannot be fixed inside the core: events inside an iframe never reach the parent document. |
@@ -179,7 +179,7 @@ reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
 |---|-------|------|---------|----------|---------|------|----|----|-----|
 | 113 | Cannot pan with 2-finger gesture when using mac | feature | Close: shipped | — | wheel-to-pan | — | 22 | 12 | [113-two-finger-pan-mac.md](feature-requests/113-two-finger-pan-mac.md) |
 | 125 | How do I get double click to toggle zoom all-the-way out/all-the-wa... | feature | Discuss | low | — | — | 12 | 4 | [125-double-click-toggle-zoom.md](feature-requests/125-double-click-toggle-zoom.md) |
-| 214 | Fire events or callbacks at zoomIn, zoomToElement etc...? | feature | Build → Shipped on master | high | — | — | 16 | 6 | [214-callbacks-zoom-animation-end.md](feature-requests/214-callbacks-zoom-animation-end.md) |
+| 214 | Fire events or callbacks at zoomIn, zoomToElement etc...? | feature | Build → Shipped in v4.1.0 | high | — | — | 16 | 6 | [214-callbacks-zoom-animation-end.md](feature-requests/214-callbacks-zoom-animation-end.md) |
 | 226 | AlignmentAnimation.size separate for every direction | invalid | Close: shipped | — | — | — | 0 | 0 | [226-alignment-animation-size-per-direction.md](invalid-issues/226-alignment-animation-size-per-direction.md) |
 | 229 | Boundaries for panning | feature | Close: shipped | — | — | — | 0 | 0 | [229-boundaries-for-panning.md](feature-requests/229-boundaries-for-panning.md) |
 | 237 | How to add an image loader ? | invalid | Close: not worth | — | — | — | 1 | 1 | [237-how-to-add-image-loader.md](invalid-issues/237-how-to-add-image-loader.md) |
@@ -200,10 +200,10 @@ reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
 | 317 | scroll bar adjustment | invalid | Close: dupe | — | native-scrollbars | → #454 | 2 | 0 | [317-scroll-bar-adjustment.md](invalid-issues/317-scroll-bar-adjustment.md) |
 | 326 | Add the Controls component | feature | Discuss | low | — | — | 0 | 0 | [326-controls-component.md](feature-requests/326-controls-component.md) |
 | 328 | Unlimited mode | feature | Close: shipped | — | — | — | 0 | 0 | [328-unlimited-mode.md](feature-requests/328-unlimited-mode.md) |
-| 329 | Add hook to allow zoom-pan-pinch without predefined components | feature | Build → Shipped on master | medium | — | — | 2 | 0 | [329-hook-without-components.md](feature-requests/329-hook-without-components.md) |
+| 329 | Add hook to allow zoom-pan-pinch without predefined components | feature | Build → Shipped in v4.1.0 | medium | — | — | 2 | 0 | [329-hook-without-components.md](feature-requests/329-hook-without-components.md) |
 | 348 | Roadmap | invalid | Keep: meta | — | — | — | 10 | 7 | [348-roadmap.md](invalid-issues/348-roadmap.md) |
 | 349 | Allow to use `'left' \| 'center' \| 'right'` and `'top' \| 'center'... | feature | Discuss | low | — | — | 1 | 4 | [349-position-values-left-center-right.md](feature-requests/349-position-values-left-center-right.md) |
-| 353 | Zoom in on click to mouse position | feature | Build → Shipped on master | low | — | — | 0 | 4 | [353-zoom-click-mouse-position.md](feature-requests/353-zoom-click-mouse-position.md) |
+| 353 | Zoom in on click to mouse position | feature | Build → Shipped in v4.1.0 | low | — | — | 0 | 4 | [353-zoom-click-mouse-position.md](feature-requests/353-zoom-click-mouse-position.md) |
 | 354 | onZoomOut event | feature | Close: not worth | — | — | — | 0 | 2 | [354-on-zoom-out-event.md](feature-requests/354-on-zoom-out-event.md) |
 | 357 | Placing elements on top of each other, and window resizing problem. | feature | Close: no repro | — | — | — | 1 | 0 | [357-element-positioning-resize.md](feature-requests/357-element-positioning-resize.md) |
 | 358 | OnClick doesnt work inside <area> | invalid | Close: no repro | — | — | — | 0 | 0 | [358-onclick-area-element.md](invalid-issues/358-onclick-area-element.md) |
@@ -215,10 +215,10 @@ reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
 | 374 | Image appears blurry or low quality on iphone brwosers | invalid | Close: no repro | — | — | — | 2 | 3 | [374-blurry-image-iphone.md](invalid-issues/374-blurry-image-iphone.md) |
 | 376 | Fit to screen | feature | Close: dupe | — | fit-to-view | → #252 | 0 | 6 | [376-fit-to-screen.md](feature-requests/376-fit-to-screen.md) |
 | 377 | limit the panning to the size of the image, not the screen. | feature | Close: no repro | — | — | — | 0 | 6 | [377-limit-panning-image-size.md](feature-requests/377-limit-panning-image-size.md) |
-| 378 | How to get the mouse position | invalid | Build → Shipped on master | low | coordinates | — | 0 | 2 | [378-how-to-get-mouse-position.md](invalid-issues/378-how-to-get-mouse-position.md) |
+| 378 | How to get the mouse position | invalid | Build → Shipped in v4.1.0 | low | coordinates | — | 0 | 2 | [378-how-to-get-mouse-position.md](invalid-issues/378-how-to-get-mouse-position.md) |
 | 384 | Multiple simultaneous gestures, two-finger pan (e.g. panning while ... | feature | Close: shipped | — | — | — | 8 | 3 | [384-simultaneous-gestures.md](feature-requests/384-simultaneous-gestures.md) |
 | 385 | Cannot pan within iframe on mobile devices | bugs | Discuss | medium | iframe-children | — | 0 | 0 | [385-cannot-pan-iframe-mobile.md](bugs/385-cannot-pan-iframe-mobile.md) |
-| 388 | Zoom to multiple elements | feature | Build → Shipped on master | medium | — | — | 0 | 5 | [388-zoom-to-multiple-elements.md](feature-requests/388-zoom-to-multiple-elements.md) |
+| 388 | Zoom to multiple elements | feature | Build → Shipped in v4.1.0 | medium | — | — | 0 | 5 | [388-zoom-to-multiple-elements.md](feature-requests/388-zoom-to-multiple-elements.md) |
 | 397 | Need Help - React-Zoom-Pan-Pinch+FluentUI Modal Pop Up | invalid | Close: not worth | — | — | — | 0 | 1 | [397-fluentui-modal-help.md](invalid-issues/397-fluentui-modal-help.md) |
 | 400 | Open Image in new tab not working. | invalid | Close: not worth | — | — | — | 0 | 0 | [400-open-image-new-tab.md](invalid-issues/400-open-image-new-tab.md) |
 | 401 | Initial Lag with Animation in Large SVG | bugs | Close: not worth | — | render-performance | — | 1 | 0 | [401-initial-lag-large-svg.md](bugs/401-initial-lag-large-svg.md) |
@@ -256,7 +256,7 @@ reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
 | 502 | Add two way interaction for MiniMap | feature | Close: shipped | — | minimap | — | 3 | 1 | [502-minimap-two-way-interaction.md](feature-requests/502-minimap-two-way-interaction.md) |
 | 506 | Pinch does not work on latest version 3.6.1 | bugs | Close: fixed | — | — | — | 12 | 9 | [506-pinch-not-working-v361.md](bugs/506-pinch-not-working-v361.md) |
 | 509 | Don't prevent events for panning when image has reached the boundary | feature | Discuss | medium | — | — | 6 | 2 | [509-dont-prevent-events-boundary.md](feature-requests/509-dont-prevent-events-boundary.md) |
-| 515 | zoomToElement with max/min scale support | feature | Build → Shipped on master | low | — | — | 1 | 1 | [515-zoom-to-element-max-min-scale.md](feature-requests/515-zoom-to-element-max-min-scale.md) |
+| 515 | zoomToElement with max/min scale support | feature | Build → Shipped in v4.1.0 | low | — | — | 1 | 1 | [515-zoom-to-element-max-min-scale.md](feature-requests/515-zoom-to-element-max-min-scale.md) |
 | 519 | [help] How to prevent click event propagation when clicking on an i... | invalid | Close: dupe | — | click-vs-drag | → #452 | 0 | 0 | [519-prevent-click-propagation.md](invalid-issues/519-prevent-click-propagation.md) |
 | 521 | Allow to pass style/className to TransformWrapper & TransformComponent | feature | Close: shipped | — | — | — | 3 | 3 | [521-style-classname-components.md](feature-requests/521-style-classname-components.md) |
 | 525 | Option to View Image at Original Size | feature | Close: shipped | — | fit-to-view | — | 1 | 0 | [525-view-image-original-size.md](feature-requests/525-view-image-original-size.md) |
@@ -271,7 +271,7 @@ reason; see the close list). 28 remain open: 4 Fix, 8 Build, 14 Discuss, 2 meta.
 | 549 | NPM Package publish workflow failing | bugs | Close: fixed | — | — | — | 1 | 0 | [549-npm-publish-workflow-failing.md](bugs/549-npm-publish-workflow-failing.md) |
 | 550 | Support for browser text search(cmd/ctrl + f) when using panning | feature | Close: not worth | — | — | — | 0 | 0 | [550-browser-text-search-panning.md](feature-requests/550-browser-text-search-panning.md) |
 | 558 | Vulnerability in react-zoom-pan-pinch project | invalid | Close: not worth | — | — | — | 0 | 0 | [558-vite-dev-dependency-cve.md](invalid-issues/558-vite-dev-dependency-cve.md) |
-| 582 | Wheel input dropped when it arrives 100-160ms after the previous wh... | bugs | Fix → Fixed on master | high | — | — | 0 | 0 | [582-wheel-dropped-during-alignment-animation.md](bugs/582-wheel-dropped-during-alignment-animation.md) |
+| 582 | Wheel input dropped when it arrives 100-160ms after the previous wh... | bugs | Fix → Fixed in v4.1.0 | high | — | — | 0 | 0 | [582-wheel-dropped-during-alignment-animation.md](bugs/582-wheel-dropped-during-alignment-animation.md) |
 
 ## Closed since the April inventory
 

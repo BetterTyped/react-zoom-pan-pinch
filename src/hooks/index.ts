@@ -3,3 +3,4 @@ export * from "./use-transform-init";
 export * from "./use-transform-effect";
 export * from "./use-transform-context";
 export * from "./use-transform-component";
+export * from "./use-zoom-pan-pinch";

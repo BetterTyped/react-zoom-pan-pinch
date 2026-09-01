@@ -332,5 +332,11 @@ describe("Hooks", () => {
 
       expect(onTransform).not.toHaveBeenCalled();
     });
+
+    it("is part of the public package API (#329)", () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+      const pkg = require("../../../src") as Record<string, unknown>;
+      expect(pkg.useZoomPanPinch).toBe(useZoomPanPinch);
+    });
   });
 });

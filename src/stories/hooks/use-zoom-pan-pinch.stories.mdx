@@ -1,0 +1,79 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Hooks/useZoomPanPinch" />
+
+# useZoomPanPinch
+
+The **headless** hook. It gives you the full zoom / pan / pinch engine without
+`TransformWrapper` and `TransformComponent`, so you can attach the behaviour to
+your own markup — a plain `div`, a `canvas` wrapper, an existing layout you
+cannot restructure.
+
+## Signature
+
+```ts
+function useZoomPanPinch(props?: ReactZoomPanPinchProps): {
+  wrapperRef: React.RefObject<HTMLDivElement>;
+  contentRef: React.RefObject<HTMLDivElement>;
+  instance: React.MutableRefObject<ZoomPanPinch>;
+  useTransform: (callback: (data: {
+    scale: number;
+    positionX: number;
+    positionY: number;
+    previousScale: number;
+    ref: ReactZoomPanPinchRef;
+  }) => void) => void;
+}
+```
+
+- **`wrapperRef`** — attach to the element that clips the content and receives
+  the gestures.
+- **`contentRef`** — attach to the element that gets transformed. The hook
+  writes `style.transform` on it directly.
+- **`instance`** — the underlying engine. `instance.current.state` holds the
+  transform; controls are available through
+  `getControls(instance.current)` or by reading `instance.current` directly
+  (`setTransform`, `zoomIn`, `zoomToElement`, …).
+- **`useTransform`** — register a callback that runs on every transform
+  change, without re-rendering.
+
+All `TransformWrapper` props (`minScale`, `wheel`, `panning`, `limitToBounds`,
+…) are accepted and behave the same.
+
+## Example
+
+```tsx
+import { useZoomPanPinch, getControls } from "react-zoom-pan-pinch";
+
+function Canvas() {
+  const { wrapperRef, contentRef, instance, useTransform } = useZoomPanPinch({
+    minScale: 0.5,
+    maxScale: 4,
+    wheel: { step: 0.1 },
+  });
+
+  useTransform(({ scale }) => {
+    document.title = `${Math.round(scale * 100)}%`;
+  });
+
+  return (
+    <>
+      <button onClick={() => getControls(instance.current).zoomIn()}>+</button>
+      <div ref={wrapperRef} style={{ width: 600, height: 400, overflow: "hidden" }}>
+        <div ref={contentRef} style={{ width: 1200, height: 800, transformOrigin: "0 0" }}>
+          …
+        </div>
+      </div>
+    </>
+  );
+}
+```
+
+## Notes
+
+- You own the styling: give the wrapper `overflow: hidden` (or whatever
+  clipping you want) and the content `transform-origin: 0 0`.
+- The engine mounts in a layout effect and cleans up on unmount.
+- Prefer `TransformWrapper` + `TransformComponent` when you do not need custom
+  markup — they wire the same instance with sensible defaults and expose the
+  context hooks (`useControls`, `useTransformEffect`, …).

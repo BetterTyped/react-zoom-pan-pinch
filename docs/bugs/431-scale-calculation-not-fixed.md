@@ -17,8 +17,8 @@
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Fixed on master.** Fixed: `zoomIn` / `zoomOut` / double-click `step` is now an absolute increment regardless of `smooth` (under the default `smooth: true` it used to be `scale * e^step`, i.e. 1.649 for `zoomIn(0.5)`). `smooth` now only shapes wheel/trackpad deltas, as documented. |
 
 ## Regression spec
 
-**PASSING** — [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

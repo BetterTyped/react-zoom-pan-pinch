@@ -17,8 +17,8 @@ The `onPanning` callback is not fired during velocity-driven (inertia) panning a
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: `onPanning` keeps firing during the post-release inertia animation. |
 
 ## Regression spec
 
-- **`__tests__/regressions/velocity-animation.spec.tsx`** — **Failing** on v4 (confirmed bug).
+- [`__tests__/regressions/velocity-animation.spec.tsx`](../../__tests__/regressions/velocity-animation.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

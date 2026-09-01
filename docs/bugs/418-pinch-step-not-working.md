@@ -17,8 +17,8 @@ The `pinch.step` prop does not affect pinch zoom sensitivity. The step value is 
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: the scale delta is proportional to `pinch.step`. |
 
 ## Regression spec
 
-- **`__tests__/regressions/pinch-interaction.spec.tsx`** — **Failing** on v4 (confirmed bug).
+- [`__tests__/regressions/pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

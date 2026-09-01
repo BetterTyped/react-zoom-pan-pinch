@@ -17,8 +17,8 @@ The `wheel.activationKeys` prop does not gate wheel zoom as documented. Wheel zo
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: wheel zoom is gated by `wheel.activationKeys`. |
 
 ## Regression spec
 
-**PASSING** — [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

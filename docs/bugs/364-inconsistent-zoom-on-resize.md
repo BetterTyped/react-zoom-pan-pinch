@@ -17,8 +17,8 @@ When the browser window is resized, the zoom level changes inconsistently. The c
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Cannot reproduce.** Cannot reproduce in v4: the library does not react to window resize at all, so the scale cannot change on resize; bounds are recomputed when the next gesture starts. Possible enhancement: observe wrapper size changes to refresh bounds eagerly. |
 
 ## Regression spec
 
-**PASSING** — [`component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

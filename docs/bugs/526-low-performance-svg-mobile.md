@@ -17,8 +17,8 @@ Large SVG content (5MB+ map) causes severe performance degradation on Android de
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: Android GPU/paint performance; no code change. |
 
 ## Regression spec
 
-- **N/A** — mobile GPU/paint performance; not a correctness assertion.
+- N/A — performance, not a correctness assertion.

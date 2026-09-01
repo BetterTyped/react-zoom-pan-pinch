@@ -17,10 +17,9 @@ Text inputs, textareas, and elements with `contenteditable="true"` inside `Trans
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Fixed on master.** Fixed: `input`, `textarea`, `select` and anything nested inside a `contenteditable` region no longer start a pan or cancel `mousedown` / `touchstart`, and double-click on them does not zoom (`isEditableTarget` in `src/utils/helpers.utils.ts`). The `panning.excluded` workaround keeps working. Dupe #544. |
 
 ## Regression spec
 
-- **`__tests__/regressions/pan-interaction.spec.tsx`** — **mixed**:
-  - **PASSING** — `panning.excluded` on the contenteditable still prevents pan handlers from taking over (documented workaround).
-  - **FAILING** — mousedown on a contenteditable inside the transform still hits `preventDefault`, confirming the underlying bug for the default configuration.
+- [`__tests__/regressions/editable-targets.spec.tsx`](../../__tests__/regressions/editable-targets.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.
+- [`__tests__/regressions/pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

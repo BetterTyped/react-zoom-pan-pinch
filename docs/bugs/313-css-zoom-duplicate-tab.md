@@ -17,8 +17,8 @@ Duplicating a browser tab that has an active transform state causes CSS renderin
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: browser tab duplication; no code change. |
 
 ## Regression spec
 
-- **N/A** — browser tab duplication; not reproducible in jsdom.
+- N/A — not reproducible in jsdom.

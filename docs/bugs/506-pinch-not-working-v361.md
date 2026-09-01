@@ -17,8 +17,8 @@ Pinch zoom stopped working entirely in v3.6.1+. Instead of zooming the element, 
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: the wrapper does not set `touch-action`; touch events are cancelled from a non-passive listener while pinching. Page-level pinch zoom needs a device pass; no code change. |
 
 ## Regression spec
 
-- **`__tests__/regressions/css-and-styles.spec.tsx`** — **FAILING**. Asserts the wrapper does not set `touch-action: none` in applied styles (regression tied to page-level pinch zoom).
+- N/A — needs device testing.

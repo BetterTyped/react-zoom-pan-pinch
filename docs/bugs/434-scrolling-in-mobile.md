@@ -17,8 +17,8 @@ Native page scrolling is blocked on mobile devices when the TransformComponent i
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified for the reported configuration: with `panning.disabled` a cancelable `touchmove` is not prevented, so native page scroll works. With panning enabled the `touchmove` is cancelled while a pan is active (by design). A mobile device pass is still recommended. |
 
 ## Regression spec
 
-- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. The test was rewritten: with **panning enabled**, a vertical `touchmove` still leads to `preventDefault`, blocking native page scroll—matching the reported mobile behavior. The previous spec used `panning.disabled` and was not exercising the real failure mode.
+- [`__tests__/regressions/pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

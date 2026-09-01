@@ -17,8 +17,8 @@ The published npm package includes source maps that reference TypeScript files u
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified: `package.json` `files` ships `src` (minus stories) so the published source maps resolve. Dupe #542. |
 
 ## Regression spec
 
-- **`__tests__/regressions/css-and-styles.spec.tsx`** — **FAILING**. Asserts `package.json` `files` does not include `src/` (published maps still reference missing sources until packaging is fixed).
+- [`__tests__/regressions/build-packaging.spec.ts`](../../__tests__/regressions/build-packaging.spec.ts) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

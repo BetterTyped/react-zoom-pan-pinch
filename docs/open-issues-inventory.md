@@ -157,3 +157,78 @@ Total open issues: 145
 | 549 | NPM Package publish workflow failing | bug | [549-npm-publish-workflow-failing.md](bugs/549-npm-publish-workflow-failing.md) | — |
 | 550 | Support for browser text search(cmd/ctrl + f) when using panning | feature | [550-browser-text-search-panning.md](feature-requests/550-browser-text-search-panning.md) | — |
 | 553 | Inconsistent ref API: `ref.current.state` vs `ref.current.instance.transformS... | bug | [553-inconsistent-ref-api.md](bugs/553-inconsistent-ref-api.md) | — |
+
+## Verification pass (2026-09-01)
+
+Every bug doc was re-checked against the code and its regression spec. The
+previous regression specs were audited for tests that passed without
+exercising the reported failure mode; those were rewritten (see the
+resolution log in each bug doc). Status counts:
+
+| Status | Bugs |
+|--------|------|
+| Fixed on master | 7 |
+| Verified fixed | 30 |
+| By design (documented) | 2 |
+| Cannot reproduce | 2 |
+| Partially addressed | 2 |
+| Open | 1 |
+| Not testable in Jest | 11 |
+
+| # | Status |
+|---|--------|
+| 112 | Cannot reproduce |
+| 168 | Fixed on master |
+| 241 | Verified fixed |
+| 250 | Verified fixed |
+| 280 | Not testable in Jest |
+| 283 | Verified fixed |
+| 286 | Verified fixed |
+| 290 | Partially addressed |
+| 313 | Not testable in Jest |
+| 316 | Verified fixed |
+| 323 | Verified fixed |
+| 363 | Verified fixed |
+| 364 | Cannot reproduce |
+| 369 | Verified fixed |
+| 385 | Not testable in Jest |
+| 392 | Verified fixed |
+| 396 | Fixed on master |
+| 401 | Not testable in Jest |
+| 404 | Partially addressed |
+| 406 | Verified fixed |
+| 408 | Verified fixed |
+| 418 | Verified fixed |
+| 423 | Verified fixed |
+| 427 | Verified fixed |
+| 430 | Not testable in Jest |
+| 431 | Fixed on master |
+| 432 | Verified fixed |
+| 434 | Verified fixed |
+| 437 | Fixed on master |
+| 438 | By design (documented) |
+| 439 | Verified fixed |
+| 440 | Not testable in Jest |
+| 443 | Verified fixed |
+| 444 | Not testable in Jest |
+| 460 | Fixed on master |
+| 462 | Verified fixed |
+| 463 | Verified fixed |
+| 467 | Open |
+| 477 | Not testable in Jest |
+| 479 | Verified fixed |
+| 483 | Verified fixed |
+| 487 | Verified fixed |
+| 495 | Verified fixed |
+| 498 | By design (documented) |
+| 506 | Not testable in Jest |
+| 508 | Verified fixed |
+| 516 | Fixed on master |
+| 524 | Verified fixed |
+| 526 | Not testable in Jest |
+| 529 | Verified fixed |
+| 538 | Verified fixed |
+| 545 | Fixed on master |
+| 547 | Verified fixed |
+| 549 | Not testable in Jest |
+| 553 | Verified fixed |

@@ -17,8 +17,8 @@ When the component is rendered inside a Shadow DOM, the library's injected style
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: styles are CSS-module classes on the rendered elements, no injected `<style>`; Shadow DOM verification needs a browser. No code change. |
 
 ## Regression spec
 
-- **N/A** — Shadow DOM style encapsulation; requires browser testing.
+- N/A — needs browser testing.

@@ -17,8 +17,9 @@ Drag and drop functionality (HTML5 DnD or libraries like react-beautiful-dnd) do
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Fixed on master.** Fixed: children of a `draggable` element are excluded from panning as well (previously only the element carrying the attribute), so HTML5 drag sources inside the wrapper keep their native drag (`isDraggableTarget` in `src/utils/helpers.utils.ts`). |
 
 ## Regression spec
 
-- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. Asserts the library starts pan and calls `preventDefault` on `mousedown` even on draggable elements (current behavior blocks HTML5 DnD inside the wrapper).
+- [`__tests__/regressions/editable-targets.spec.tsx`](../../__tests__/regressions/editable-targets.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.
+- [`__tests__/regressions/pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

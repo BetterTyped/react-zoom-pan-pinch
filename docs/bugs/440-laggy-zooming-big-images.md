@@ -17,8 +17,8 @@ Zooming on large images causes noticeable lag/jank. The CSS transform triggers e
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: repaint performance on large images; no code change. |
 
 ## Regression spec
 
-- **N/A** — performance; not a correctness assertion.
+- N/A — performance, not a correctness assertion.

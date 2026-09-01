@@ -17,8 +17,8 @@ Users want to pan while pinch-zooming. Currently panning is disabled during pinc
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master with a pure two-finger translation (constant finger distance): `pinch.allowPanning: true` moves the content by the finger delta, `false` and `panning.disabled` do not. |
 
 ## Regression spec
 
-**PASSING** — [`pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

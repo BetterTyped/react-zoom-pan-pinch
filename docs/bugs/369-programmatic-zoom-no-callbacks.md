@@ -17,8 +17,8 @@ Programmatic methods `zoomIn()`, `zoomOut()`, `resetTransform()`, and double-cli
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: `zoomIn`, `zoomOut`, `resetTransform` and double-click all fire `onZoomStart` / `onZoom` / `onZoomStop` exactly once and actually change the scale. Dupes #259, #305. |
 
 ## Regression spec
 
-**PASSING** — [`programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

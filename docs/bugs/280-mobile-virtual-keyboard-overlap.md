@@ -17,8 +17,8 @@ On iOS Safari and Android Chrome, when a text input inside TransformComponent ga
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: virtual keyboard viewport shifts need a real device; no code change. |
 
 ## Regression spec
 
-- **N/A** — mobile virtual keyboard viewport shift; requires device testing.
+- N/A — needs device testing.

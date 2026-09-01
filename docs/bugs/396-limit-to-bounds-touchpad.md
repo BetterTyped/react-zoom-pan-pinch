@@ -17,8 +17,8 @@
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Fixed on master.** Fixed: trackpad panning only computed its bounds at mount, so after any zoom it clamped to the wrong range (the old spec asserted scale clamping instead and hid this). Bounds are now recalculated when a trackpad pan starts (`handleWheelPanningStart` in `src/core/wheel/wheel.logic.ts`). Dupe #433. |
 
 ## Regression spec
 
-- **`__tests__/regressions/bounds-centering.spec.tsx`** — **FAILING**. The test was rewritten: it fires ctrl+wheel zoom-out with `deltaMode: 0` (trackpad-style) and checks that scale does not go below `minScale`. It currently fails, confirming touchpad zoom-out can ignore `minScale`. The earlier spec was passing for the wrong reason.
+- [`__tests__/regressions/bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

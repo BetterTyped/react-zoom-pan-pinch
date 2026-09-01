@@ -17,8 +17,8 @@ Content centering is incorrect in certain CSS layout contexts (e.g., fixed-width
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified on master: `centerView` centres within the wrapper and the wrapper's page offset does not leak into the transform. |
 
 ## Regression spec
 
-- **`__tests__/regressions/bounds-centering.spec.tsx`** — **FAILING**. Asserts `centerView` does not account for the wrapper’s viewport offset in the page layout.
+- [`__tests__/regressions/bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

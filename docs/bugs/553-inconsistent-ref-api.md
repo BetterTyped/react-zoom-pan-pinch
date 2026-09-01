@@ -17,8 +17,8 @@ The ref object returned by TransformWrapper has inconsistent structure: sometime
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: the ref has the same shape from the render prop, `onInit` and `ref.current`; `ref.state` is the live state object shared with `instance.state` (documented). |
 
 ## Regression spec
 
-- **`__tests__/regressions/programmatic-api-callbacks.spec.tsx`** — **Failing** on v4 (confirmed bug).
+- [`__tests__/regressions/programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

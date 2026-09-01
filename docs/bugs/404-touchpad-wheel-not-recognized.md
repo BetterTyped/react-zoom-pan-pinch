@@ -17,9 +17,9 @@ Trackpad gestures on iOS (iPad with keyboard/trackpad) are not recognized. The l
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Partially addressed.** Partially verified in jsdom: ctrl+wheel with pixel deltas zooms and the step scales with `|deltaY|`; `wheel.touchPadDisabled` opts out; pixel-mode wheel pans when zoom is disabled. There is no `deltaMode` / `wheelDeltaY` device heuristic (`isTrackPad` in `src/utils/event.utils.ts` is unused). iPad-specific recognition still needs device testing. |
 
 ## Regression spec
 
-- **PASSING** — Trackpad-style wheel handling: [`pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) (`deltaMode: 0` routed as trackpad for panning when wheel zoom is disabled).
-- **PASSING** — Opt-out path: [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) asserts `wheel.touchPadDisabled: true` blocks ctrl+wheel (trackpad pinch) zoom. Together these suggest v4 behavior is sound for what Jest covers; iPad-specific issues may still need device verification.
+- [`__tests__/regressions/zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.
+- [`__tests__/regressions/pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

@@ -17,8 +17,8 @@ TransformWrapper and TransformComponent report 0 width/height when rendered insi
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified on master: zero wrapper and content sizes do not throw or produce NaN, and centring works once real sizes appear. |
 
 ## Regression spec
 
-- **`__tests__/regressions/component-lifecycle.spec.tsx`** — **PASSING**. Asserts the library handles zero wrapper dimensions without crashing and recovers when dimensions become non-zero (dialog / late layout timing class of bugs).
+- [`__tests__/regressions/component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

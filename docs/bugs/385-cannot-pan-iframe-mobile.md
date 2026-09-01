@@ -17,8 +17,8 @@ Panning does not work on mobile devices when an iframe is a child of `TransformC
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: iframe touch capture on mobile needs a real device; no code change. Dupe #528. |
 
 ## Regression spec
 
-- **N/A** — iframe touch events on mobile; requires device testing.
+- N/A — needs device testing.

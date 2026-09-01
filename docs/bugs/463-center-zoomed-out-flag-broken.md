@@ -17,8 +17,8 @@ Setting `centerZoomedOut={false}` does not prevent content from being centered w
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: `centerZoomedOut: false` keeps the panned position exactly (80, 60); the mirror case with `true` snaps to (62.5, 62.5). |
 
 ## Regression spec
 
-**PASSING** — [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

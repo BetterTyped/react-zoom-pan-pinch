@@ -17,8 +17,8 @@ When zooming, the browser's native scrollbar thumb jumps to an unexpected positi
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: native scrollbar behaviour; no code change. |
 
 ## Regression spec
 
-- **N/A** — native scrollbar behavior; requires browser testing.
+- N/A — needs browser testing.

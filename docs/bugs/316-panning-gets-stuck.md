@@ -17,8 +17,8 @@ Panning stops responding after reaching certain boundary conditions. User must s
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: after hitting the bound (0) a reversed pan reaches the opposite bound (-500). |
 
 ## Regression spec
 
-- **`__tests__/regressions/bounds-centering.spec.tsx`** — **FAILING**. Asserts panning stays stuck after hitting bounds: reversing pan direction does not update position.
+- [`__tests__/regressions/bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

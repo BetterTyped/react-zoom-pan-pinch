@@ -17,8 +17,8 @@ The GitHub Actions workflow for publishing to npm is broken. Packages are not be
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: CI publish workflow (moved to OIDC trusted publishing in 59ff58b); not a runtime test. |
 
 ## Regression spec
 
-- **N/A** — GitHub Actions CI/CD; not a runtime test.
+- N/A — GitHub Actions.

@@ -17,8 +17,8 @@ Pinch-related props (`pinch.step`, `pinch.disabled`, `onPinching`) have no effec
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **By design (documented).** Documented behaviour, not a bug: a touchpad pinch reaches the browser as ctrl+wheel and is handled by the wheel path, so `wheel.touchPadDisabled` / `wheel.step` apply and `pinch.*` / `onPinch*` do not. The previous spec asserted an unrelated callback. Recommend closing with a docs note. |
 
 ## Regression spec
 
-**PASSING** — [`pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/pinch-interaction.spec.tsx`](../../__tests__/regressions/pinch-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

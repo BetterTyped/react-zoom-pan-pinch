@@ -17,8 +17,8 @@
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: `resetTransform` restores the literal `initialPositionX/Y` and `initialScale`, and returns to the centred position when `centerOnInit` is set. |
 
 ## Regression spec
 
-**PASSING** — [`programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

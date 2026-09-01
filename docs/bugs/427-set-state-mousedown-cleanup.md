@@ -17,8 +17,8 @@ Calling `setState` in a parent component above `TransformWrapper` causes the mou
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: every move of a pan whose `onPanning` re-renders the parent is applied (exact transform) and the next gesture still works. |
 
 ## Regression spec
 
-**PASSING** — [`component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

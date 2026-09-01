@@ -17,8 +17,8 @@ Panning and other interactions break when the component is rendered inside a por
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Partially addressed.** Partially addressed: `zoomToElement(id)` now resolves ids in the wrapper's `ownerDocument` and the MiniMap listens on its own document; window/document listeners were already attached to the wrapper's window. A real portal-window pass is not possible in jsdom. Dupe #537. |
 
 ## Regression spec
 
-- **N/A** — multi-document window.open; not reproducible in jsdom.
+- N/A — multi-document window.open cannot be reproduced in jsdom.

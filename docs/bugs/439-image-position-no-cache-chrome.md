@@ -17,8 +17,8 @@ When browser cache is disabled in Chrome, the initial image position is calculat
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: with `centerOnInit` the `ResizeObserver` re-centres once the content gets its real size (late image load). |
 
 ## Regression spec
 
-- **`__tests__/regressions/pan-interaction.spec.tsx`** — **FAILING**. Asserts the library does not re-measure after content dimensions change (Chrome no-cache / late image load class of bugs).
+- [`__tests__/regressions/pan-interaction.spec.tsx`](../../__tests__/regressions/pan-interaction.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

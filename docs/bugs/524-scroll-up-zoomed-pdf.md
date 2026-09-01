@@ -17,8 +17,8 @@ When zoomed into a PDF viewer inside TransformComponent, content above the zoom 
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: after zooming on a focal point near the bottom, both the top and the bottom content edge are reachable by panning. |
 
 ## Regression spec
 
-**PASSING** — [`bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

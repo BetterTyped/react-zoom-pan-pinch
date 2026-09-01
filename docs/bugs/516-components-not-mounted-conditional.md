@@ -17,8 +17,9 @@ If `TransformComponent` is rendered conditionally (delayed or inside a lazy-load
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Fixed on master.** Fixed and verified: a deferred `TransformComponent` initializes and handles gestures, controls called before it exists do not throw, and unmount/remount keeps working. On unmount every timer, animation frame and listener is now cleared (the `mounted` flag never used to turn false). |
 
 ## Regression spec
 
-- **`__tests__/regressions/component-lifecycle.spec.tsx`** — **Failing** on v4 (confirmed bug).
+- [`__tests__/regressions/component-lifecycle.spec.tsx`](../../__tests__/regressions/component-lifecycle.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.
+- [`__tests__/regressions/lifecycle-unmount.spec.tsx`](../../__tests__/regressions/lifecycle-unmount.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

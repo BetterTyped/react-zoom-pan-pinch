@@ -17,8 +17,8 @@ Double-click zoom-out does not work in the demo. First double-click zooms in, bu
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: double-click toggle zooms 1 → 1.7 → 1 (the midpoint is asserted so a no-op double-click cannot pass). |
 
 ## Regression spec
 
-**PASSING** — [`zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

@@ -17,8 +17,8 @@ The `fit-content` CSS value on TransformComponent's wrapper causes Chrome to mis
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Cannot reproduce.** Could not reproduce on a current Chrome: unprefixed `fit-content` has been supported since Chrome 46 and the wrapper intentionally sizes itself to its content (override via `wrapperStyle`). The previous spec asserted the *presence* of the rule under this issue number; it is now a plain CSS-contract test without an issue link. Recommend closing as cannot reproduce. |
 
 ## Regression spec
 
-- **`__tests__/regressions/css-and-styles.spec.tsx`** — **FAILING**. The test was rewritten to read the CSS module source directly (not rely on jsdom-applied styles). It expects **no** `width`/`height: fit-content` on the wrapper; failure means those values are **still** in the published module, matching the reported Chrome misrender risk until the stylesheet is fixed. Real Chrome behavior still benefits from manual check.
+- N/A — `__tests__/regressions/css-and-styles.spec.tsx` pins the stylesheet contract but is not a fix for this issue.

@@ -17,8 +17,8 @@ Large SVG content (~5MB+) causes significant lag on initial render and first int
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: paint performance with large SVG; no code change. |
 
 ## Regression spec
 
-- **N/A** — performance/paint lag; not a correctness assertion.
+- N/A — performance, not a correctness assertion.

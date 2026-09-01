@@ -17,8 +17,9 @@ The `centerOnInit` prop does not reliably center content on first render. Timing
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: centering happens synchronously during mount, and initialization now runs in a layout effect so it is applied before the first paint. |
 
 ## Regression spec
 
-**PASSING** — [`bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) (appears fixed in v4)
+- [`__tests__/regressions/bounds-centering.spec.tsx`](../../__tests__/regressions/bounds-centering.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.
+- [`__tests__/regressions/first-paint.spec.tsx`](../../__tests__/regressions/first-paint.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

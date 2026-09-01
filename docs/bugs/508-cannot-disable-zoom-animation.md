@@ -17,8 +17,8 @@ Setting `zoomAnimation.disabled: true` does not remove the animation. Users must
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: with `zoomAnimation.disabled` a programmatic zoom applies synchronously and the elastic snap-back animation is skipped. |
 
 ## Regression spec
 
-- **`__tests__/regressions/velocity-animation.spec.tsx`** — **Failing** on v4 (confirmed bug).
+- [`__tests__/regressions/velocity-animation.spec.tsx`](../../__tests__/regressions/velocity-animation.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

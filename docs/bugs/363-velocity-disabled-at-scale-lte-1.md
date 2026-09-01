@@ -18,7 +18,8 @@ Panning velocity/inertia is explicitly disabled when `scale <= 1` in the source 
 | Date | Entry |
 |------|-------|
 | 2026-04-06 | Fixed: replaced `scale > 1` guard in `isVelocityCalculationAllowed` with content-overflow check (`offsetWidth * scale` vs wrapper). Also fixed `isVelocityAllowed` using `\|\|` instead of `&&`, and switched `handlePanningEnd` from `getBoundingClientRect` to `offsetWidth * scale` with `!limitToBounds` bypass. |
+| 2026-09-01 | **Verified fixed.** Re-verified: an inertia animation is scheduled at scale 1 (unlimited bounds and overflowing content); no velocity is computed at all when the content fits the wrapper. |
 
 ## Regression spec
 
-- **`__tests__/regressions/velocity-animation.spec.tsx`** — 4 tests covering: scale-1 velocity with `limitToBounds: false`, big-image overflow at scale 1, zoom-in-then-reset, and negative case (content fits = no velocity).
+- [`__tests__/regressions/velocity-animation.spec.tsx`](../../__tests__/regressions/velocity-animation.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

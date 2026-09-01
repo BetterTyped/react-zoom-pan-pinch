@@ -17,8 +17,8 @@ Zoom-in behavior is erratic: the zoom level jumps inconsistently or overshoots. 
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: wheel zoom anchors on the cursor (`position = -cursor * Δscale`) and consecutive events add exactly one step each. Programmatic `zoomIn` is linear as well (see #431 / #545). |
 
 ## Regression spec
 
-- **`__tests__/regressions/zoom-behavior.spec.tsx`** — **PASSING**. The test was rewritten to assert zoom targets the **cursor** position (not an arbitrary fixed point). It passes; erratic zoom-at-wrong-anchor behavior appears fixed in v4 for what the spec covers.
+- [`__tests__/regressions/zoom-behavior.spec.tsx`](../../__tests__/regressions/zoom-behavior.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

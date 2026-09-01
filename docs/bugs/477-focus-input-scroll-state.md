@@ -17,8 +17,8 @@ Focusing an input inside TransformComponent causes the browser to scroll the con
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Not testable in Jest.** Reviewed: focus-driven scroll needs a browser; no code change. |
 
 ## Regression spec
 
-- **N/A** — focus scrollIntoView behavior; requires browser testing.
+- N/A — needs browser testing.

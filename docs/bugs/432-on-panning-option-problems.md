@@ -17,8 +17,8 @@ The `onPanning` callback fires inconsistently or with incorrect state data. Repo
 
 | Date | Entry |
 |------|-------|
-| — | _open — not yet investigated_ |
+| 2026-09-01 | **Verified fixed.** Verified fixed on master: `onPanning` reports monotonically updated positions on every move, before and after the content DOM changes. |
 
 ## Regression spec
 
-- **`__tests__/regressions/programmatic-api-callbacks.spec.tsx`** — **PASSING**. The test was rewritten to pan while the DOM inside the content is mutated, verifying `onPanning` keeps firing with consistent behavior. Appears fixed in v4 for this scenario.
+- [`__tests__/regressions/programmatic-api-callbacks.spec.tsx`](../../__tests__/regressions/programmatic-api-callbacks.spec.tsx) — passing on master (2026-09-01); asserts the reported failure mode, not just that the code runs.

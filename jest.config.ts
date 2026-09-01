@@ -13,7 +13,11 @@ const config: Config.InitialOptions = {
     "json",
     "text",
   ],
-  collectCoverageFrom: ["<rootDir>/src/**/*.ts", "<rootDir>/src/**/*.tsx"],
+  collectCoverageFrom: [
+    "<rootDir>/src/**/*.ts",
+    "<rootDir>/src/**/*.tsx",
+    "!<rootDir>/src/stories/**",
+  ],
   coveragePathIgnorePatterns: [
     ".spec",
     "test",

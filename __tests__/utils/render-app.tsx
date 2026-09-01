@@ -56,6 +56,13 @@ import { Example } from "../examples/example";
  */
 export const DEFAULT_MS_PER_STEP = 16;
 
+/**
+ * Upper bound on synthesized events for the `zoom` / `pinch` helpers. Reaching
+ * `maxScale` (8) from 1 with the default wheel step takes ~470 events, so this
+ * only guards against a runaway loop.
+ */
+const MAX_GESTURE_EVENTS = 5000;
+
 // jsdom doesn't implement CSS layout so offsetWidth/Height are always 0.
 // This polyfill reads dimensions from inline styles, resolving percentages
 // against the parent element's dimension.
@@ -359,31 +366,31 @@ export const renderApp = ({
     const cx = center ? center[0] : 0;
     const cy = center ? center[1] : 0;
 
-    const startTime = Date.now();
-    while (Date.now() - startTime < 1000) {
-      if (
-        (isZoomIn
-          ? ref.current.instance.state.scale < value
-          : ref.current.instance.state.scale > value) &&
-        ref.current.instance.state.scale !== value
-      ) {
-        const isNearScale =
-          Math.abs(ref.current.instance.state.scale - value) < 0.05;
-        const newStep = isNearScale ? 0.4 : step;
+    // Bounded by event count (not wall-clock time) so the helper behaves the
+    // same on a loaded CI box as on an idle laptop. Stops early when a wheel
+    // event no longer moves the scale (limit reached, keys not pressed,
+    // excluded target).
+    for (let i = 0; i < MAX_GESTURE_EVENTS; i += 1) {
+      const scaleNow = ref.current.instance.state.scale;
+      const shouldContinue =
+        (isZoomIn ? scaleNow < value : scaleNow > value) && scaleNow !== value;
+      if (!shouldContinue) break;
 
-        fireEvent(
-          content,
-          new WheelEvent("wheel", {
-            bubbles: true,
-            deltaY: isZoomIn ? -newStep : newStep,
-            clientX: cx,
-            clientY: cy,
-            ...modifiers,
-          }),
-        );
-      } else {
-        break;
-      }
+      const isNearScale = Math.abs(scaleNow - value) < 0.05;
+      const newStep = isNearScale ? 0.4 : step;
+
+      fireEvent(
+        content,
+        new WheelEvent("wheel", {
+          bubbles: true,
+          deltaY: isZoomIn ? -newStep : newStep,
+          clientX: cx,
+          clientY: cy,
+          ...modifiers,
+        }),
+      );
+
+      if (ref.current.instance.state.scale === scaleNow) break;
     }
 
     // Snap to exact target when close — wheel steps use floating-point
@@ -422,30 +429,31 @@ export const renderApp = ({
       touches: getPinchTouches(content, center, spread, from),
     });
 
-    const startTime = Date.now();
-    while (Date.now() - startTime < 1000) {
+    // Bounded by event count (not wall-clock time), see `zoom` above.
+    for (let i = 0; i < MAX_GESTURE_EVENTS; i += 1) {
       const currentScale = ref.current.instance.state.scale;
       if (scaleCloseEnough(currentScale, value)) {
         break;
       }
-      if (
-        isZoomIn ? currentScale < value - 1e-5 : currentScale > value + 1e-5
-      ) {
-        const scaleDifference = Math.abs(currentScale - value);
-        const isNearScale = scaleDifference < 0.1;
-        const newStep = isNearScale ? step / 6 : step;
+      const shouldContinue = isZoomIn
+        ? currentScale < value - 1e-5
+        : currentScale > value + 1e-5;
+      if (!shouldContinue) break;
 
-        spread = isZoomIn ? spread + newStep : spread - newStep;
-        if (!isZoomIn) {
-          spread = Math.max(spread, -from + step);
-        }
+      const scaleDifference = Math.abs(currentScale - value);
+      const isNearScale = scaleDifference < 0.1;
+      const newStep = isNearScale ? step / 6 : step;
 
-        fireEvent.touchMove(content, {
-          touches: getPinchTouches(content, center, spread, from),
-        });
-      } else {
-        break;
+      spread = isZoomIn ? spread + newStep : spread - newStep;
+      if (!isZoomIn) {
+        spread = Math.max(spread, -from + step);
       }
+
+      fireEvent.touchMove(content, {
+        touches: getPinchTouches(content, center, spread, from),
+      });
+
+      if (ref.current.instance.state.scale === currentScale) break;
     }
 
     fireEvent.touchMove(content, {

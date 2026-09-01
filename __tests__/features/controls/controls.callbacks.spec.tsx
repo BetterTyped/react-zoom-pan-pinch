@@ -54,6 +54,12 @@ describe("Controls [Callbacks]", () => {
       });
 
       zoom({ value: 2 });
+      // The wheel gesture schedules its own onZoomStop (~160 ms). Let it
+      // settle before clearing the mocks, otherwise it lands after the clear
+      // and gets counted as a second reset callback.
+      await waitFor(() => {
+        expect(onZoomStop).toHaveBeenCalled();
+      });
       onZoomStart.mockClear();
       onZoom.mockClear();
       onZoomStop.mockClear();

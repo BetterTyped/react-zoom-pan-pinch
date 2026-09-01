@@ -459,7 +459,8 @@ export const wrapperPropsTable: Record<
     disabled: {
       type: ["boolean"],
       defaultValue: String(initialSetup.autoAlignment.disabled),
-      description: "Disable automatic alignment back toward the allowed bounds.",
+      description:
+        "Disable automatic alignment back toward the allowed bounds.",
     },
     sizeX: {
       type: ["number"],

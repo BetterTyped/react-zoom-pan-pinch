@@ -156,8 +156,7 @@ function PresetButton({
         fontWeight: 600,
         fontFamily: "inherit",
         cursor: "pointer",
-        transition:
-          "all 0.2s cubic-bezier(.4,0,.2,1)",
+        transition: "all 0.2s cubic-bezier(.4,0,.2,1)",
         boxShadow: active
           ? "0 0 12px rgba(99,102,241,0.15), 0 0 0 0.5px rgba(129,140,248,0.12) inset"
           : "none",

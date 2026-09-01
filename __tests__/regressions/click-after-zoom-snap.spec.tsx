@@ -7,8 +7,9 @@
  * handleVelocityPanning, which flings the viewport in the direction of the
  * tiny movement with inertia — appearing as a fast pan to a corner.
  *
- * Fix: require a minimum displacement threshold before treating a
- * mousedown→mouseup as a real pan gesture.
+ * Fix: require a minimum displacement (5px, i.e. dx² + dy² > 25) before a
+ * mousedown→mouseup counts as a real pan gesture. Both sides of that
+ * threshold are pinned below.
  */
 import { act, fireEvent } from "@testing-library/react";
 
@@ -37,6 +38,63 @@ function parseTransform(transform: string) {
   };
 }
 
+const setupZoomed = () => {
+  const app = renderApp({
+    limitToBounds: true,
+    doubleClick: { disabled: true },
+    velocityAnimation: { disabled: false },
+  });
+  mockDimensions(app.wrapper, 500, 500);
+  mockDimensions(app.content, 500, 500);
+
+  act(() => {
+    app.zoom({ value: 4, center: [250, 250] });
+  });
+  act(() => {
+    flushAnimationFrames();
+  });
+  act(() => {
+    app.zoom({ value: 2, center: [250, 250] });
+  });
+  act(() => {
+    flushAnimationFrames();
+  });
+  return app;
+};
+
+/** mousedown at (200, 200), two timed moves, mouseup at the last point. */
+const clickWithJitter = (
+  content: HTMLElement,
+  first: [number, number],
+  second: [number, number],
+) => {
+  act(() => {
+    fireEvent.mouseDown(content, { clientX: 200, clientY: 200, buttons: 1 });
+  });
+  act(() => {
+    jest.advanceTimersByTime(8);
+    fireEvent.mouseMove(content, {
+      clientX: first[0],
+      clientY: first[1],
+      buttons: 1,
+    });
+  });
+  act(() => {
+    jest.advanceTimersByTime(8);
+    fireEvent.mouseMove(content, {
+      clientX: second[0],
+      clientY: second[1],
+      buttons: 1,
+    });
+  });
+  act(() => {
+    fireEvent.mouseUp(content, { clientX: second[0], clientY: second[1] });
+  });
+  act(() => {
+    flushAnimationFrames();
+  });
+};
+
 describe("click-after-zoom snap regression", () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -45,112 +103,32 @@ describe("click-after-zoom snap regression", () => {
     jest.useRealTimers();
   });
 
-  it("tiny mouse movement during click must not trigger velocity panning", () => {
-    const { content, wrapper, zoom } = renderApp({
-      limitToBounds: true,
-      doubleClick: { disabled: true },
-      velocityAnimation: { disabled: false },
-    });
-
-    mockDimensions(wrapper, 500, 500);
-    mockDimensions(content, 500, 500);
-
-    // Zoom in then out
-    act(() => {
-      zoom({ value: 4, center: [250, 250] });
-    });
-    act(() => {
-      flushAnimationFrames();
-    });
-    act(() => {
-      zoom({ value: 2, center: [250, 250] });
-    });
-    act(() => {
-      flushAnimationFrames();
-    });
-
+  it("tiny mouse movement during click moves the content by exactly that jitter, with no inertia", () => {
+    const { content } = setupZoomed();
     const settled = parseTransform(content.style.transform);
 
-    // Simulate a "click" with tiny accidental mouse jitter.
-    // Two moves are needed so the velocity calculation has a previous sample.
-    act(() => {
-      fireEvent.mouseDown(content, { clientX: 200, clientY: 200, buttons: 1 });
-    });
-    act(() => {
-      jest.advanceTimersByTime(8);
-      fireEvent.mouseMove(content, { clientX: 201, clientY: 201, buttons: 1 });
-    });
-    act(() => {
-      jest.advanceTimersByTime(8);
-      fireEvent.mouseMove(content, { clientX: 203, clientY: 204, buttons: 1 });
-    });
-    act(() => {
-      fireEvent.mouseUp(content, { clientX: 203, clientY: 204 });
-    });
-    act(() => {
-      flushAnimationFrames();
-    });
+    // Total displacement (2, 3): well inside the 5px threshold.
+    clickWithJitter(content, [201, 201], [202, 203]);
 
     const afterClick = parseTransform(content.style.transform);
-
-    // Direct mouse displacement is ~7px; the bug caused 129px+ velocity snap
-    const drift =
-      Math.abs(afterClick.x - settled.x) + Math.abs(afterClick.y - settled.y);
-    expect(drift).toBeLessThan(10);
+    expect(afterClick.x - settled.x).toBeCloseTo(2, 5);
+    expect(afterClick.y - settled.y).toBeCloseTo(3, 5);
   });
 
-  it("tiny mouse movement during click must not trigger velocity panning (with autoAlignment)", () => {
-    const { content, wrapper, zoom } = renderApp({
-      limitToBounds: true,
-      doubleClick: { disabled: true },
-      velocityAnimation: { disabled: false },
-      autoAlignment: { disabled: false },
-    });
-
-    mockDimensions(wrapper, 500, 500);
-    mockDimensions(content, 500, 500);
-
-    act(() => {
-      zoom({ value: 4, center: [250, 250] });
-    });
-    act(() => {
-      flushAnimationFrames();
-    });
-    act(() => {
-      zoom({ value: 2, center: [250, 250] });
-    });
-    act(() => {
-      flushAnimationFrames();
-    });
-
+  it("a displacement past the threshold does fling the content with inertia", () => {
+    const { content, ref } = setupZoomed();
     const settled = parseTransform(content.style.transform);
 
-    // Click with tiny jitter — two moves so velocity gets a sample
-    act(() => {
-      fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
-    });
-    act(() => {
-      jest.advanceTimersByTime(8);
-      fireEvent.mouseMove(content, { clientX: 101, clientY: 101, buttons: 1 });
-    });
-    act(() => {
-      jest.advanceTimersByTime(8);
-      fireEvent.mouseMove(content, { clientX: 103, clientY: 102, buttons: 1 });
-    });
-    act(() => {
-      fireEvent.mouseUp(content, { clientX: 103, clientY: 102 });
-    });
-    act(() => {
-      flushAnimationFrames();
-    });
+    // Total displacement (8, 8): dx² + dy² = 128 > 25.
+    clickWithJitter(content, [204, 204], [208, 208]);
 
-    const afterClick = parseTransform(content.style.transform);
-    const drift =
-      Math.abs(afterClick.x - settled.x) + Math.abs(afterClick.y - settled.y);
-    expect(drift).toBeLessThan(10);
+    const afterFlick = parseTransform(content.style.transform);
+    expect(afterFlick.x - settled.x).toBeGreaterThan(8 + 5);
+    expect(afterFlick.y - settled.y).toBeGreaterThan(8 + 5);
+    expect(ref.current!.instance.isAnimating).toBe(false);
   });
 
-  it("real pan gesture (larger movement) still works", () => {
+  it("a real pan gesture keeps moving in the drag direction after release", () => {
     const { content, wrapper, zoom, pan } = renderApp({
       limitToBounds: false,
       doubleClick: { disabled: true },
@@ -167,20 +145,18 @@ describe("click-after-zoom snap regression", () => {
       flushAnimationFrames();
     });
 
-    const afterZoom = parseTransform(content.style.transform);
-
-    // Real pan with substantial movement
     act(() => {
       pan({ x: -80, y: -40, moveEventCount: 5 });
     });
+    const atRelease = parseTransform(content.style.transform);
+
     act(() => {
       flushAnimationFrames();
     });
+    const afterInertia = parseTransform(content.style.transform);
 
-    const afterPan = parseTransform(content.style.transform);
-    const moved =
-      Math.abs(afterPan.x - afterZoom.x) > 5 ||
-      Math.abs(afterPan.y - afterZoom.y) > 5;
-    expect(moved).toBe(true);
+    // Inertia carries the content further than the pointer travelled.
+    expect(afterInertia.x).toBeLessThan(atRelease.x - 5);
+    expect(afterInertia.y).toBeLessThan(atRelease.y - 5);
   });
 });

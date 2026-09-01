@@ -15,9 +15,32 @@ import { parseTransform } from "../utils/parsing";
  *    Fix: check `event.buttons === 0` on mousemove.
  *
  * 2. **Keyboard:** keyup outside the iframe → `pressedKeys` has stale
- *    entries (e.g. `{ Shift: true }`) → activation-key gating misbehaves.
- *    Fix: clear `pressedKeys` on window `blur`.
+ *    entries → activation-key gating misbehaves.
+ *    Fix: clear `pressedKeys` on window `blur`. Modifier keys are also
+ *    re-synced from every pointer/wheel event, so the blur fix is only
+ *    observable with a non-modifier activation key; the tests use "a".
  */
+const drag = (
+  content: HTMLElement,
+  from: [number, number],
+  to: [number, number],
+  init: MouseEventInit = {},
+) => {
+  fireEvent.mouseDown(content, {
+    clientX: from[0],
+    clientY: from[1],
+    buttons: 1,
+    ...init,
+  });
+  fireEvent.mouseMove(content, {
+    clientX: to[0],
+    clientY: to[1],
+    buttons: 1,
+    ...init,
+  });
+  fireEvent.mouseUp(content);
+};
+
 describe("iframe pan jump regression", () => {
   it("resets panning when mousemove arrives with no buttons pressed (missed mouseup)", () => {
     const { content } = renderApp({});
@@ -59,21 +82,24 @@ describe("iframe pan jump regression", () => {
     expect(afterClear.translate).toBe("30px, 30px");
 
     // Now start a fresh pan — should work from current position without jump
-    fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
-    fireEvent.mouseMove(content, { clientX: 120, clientY: 120, buttons: 1 });
-    fireEvent.mouseUp(content);
+    drag(content, [100, 100], [120, 120]);
 
     const afterSecondPan = parseTransform(content.style.transform);
     expect(afterSecondPan.translate).toBe("50px, 50px");
   });
 
-  it("does not interfere with normal panning when buttons are pressed", () => {
+  it("keeps panning while a non-left button is held (buttons !== 0)", () => {
     const { content } = renderApp({});
 
-    // Normal pan with button held throughout
-    fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
-    fireEvent.mouseMove(content, { clientX: 40, clientY: 40, buttons: 1 });
-    fireEvent.mouseMove(content, { clientX: 80, clientY: 80, buttons: 1 });
+    // Middle-button drag: button 1, buttons bitmask 4.
+    fireEvent.mouseDown(content, {
+      clientX: 0,
+      clientY: 0,
+      button: 1,
+      buttons: 4,
+    });
+    fireEvent.mouseMove(content, { clientX: 40, clientY: 40, buttons: 4 });
+    fireEvent.mouseMove(content, { clientX: 80, clientY: 80, buttons: 4 });
     fireEvent.mouseUp(content);
 
     const result = parseTransform(content.style.transform);
@@ -99,56 +125,38 @@ describe("iframe pan jump regression", () => {
 
     // Zoom in
     zoom({ value: 2, center: [250, 250] });
+    const [zx, zy] = parseTransform(content.style.transform)
+      .translate.replace(/px/g, "")
+      .split(", ")
+      .map(Number);
 
-    // Pan again — should work cleanly from current position
+    // Pan again — must move by exactly the pointer delta from the zoomed
+    // position, with no stale offset from the interrupted gesture.
     userEvent.hover(content);
-    fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
-    fireEvent.mouseMove(content, { clientX: 110, clientY: 110, buttons: 1 });
-    fireEvent.mouseUp(content);
+    drag(content, [100, 100], [110, 110]);
 
     const final = parseTransform(content.style.transform);
-    const [fx, fy] = final.translate.replace(/px/g, "").split(", ").map(Number);
-    expect(typeof fx).toBe("number");
-    expect(typeof fy).toBe("number");
-    expect(Number.isNaN(fx)).toBe(false);
-    expect(Number.isNaN(fy)).toBe(false);
+    expect(final.translate).toBe(`${zx + 10}px, ${zy + 10}px`);
   });
 });
 
 describe("iframe keyboard state regression", () => {
-  it("clears pressed keys on window blur (missed keyup outside iframe)", () => {
+  it("clears a stale non-modifier activation key on window blur (missed keyup outside iframe)", () => {
     const { ref, content } = renderApp({
-      panning: { activationKeys: ["Shift"] },
+      panning: { activationKeys: ["a"] },
     });
 
-    // Pan with Shift held — mouse events carry shiftKey: true (matching
-    // real browser behavior when the key is physically held)
-    userEvent.hover(content);
-    fireEvent.mouseDown(content, {
-      clientX: 0,
-      clientY: 0,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseMove(content, {
-      clientX: -50,
-      clientY: -50,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseUp(content);
+    fireEvent.keyDown(window, { key: "a" });
+    drag(content, [0, 0], [-50, -50]);
     expect(content.style.transform).toBe("translate(-50px, -50px) scale(1)");
 
     // Simulate iframe losing focus: window blur fires but keyup never does.
     fireEvent(window, new Event("blur"));
 
-    // Shift should no longer be considered pressed
-    expect(ref.current!.instance.pressedKeys.Shift).toBeFalsy();
+    expect(ref.current!.instance.pressedKeys.a).toBeFalsy();
 
-    // Pan without Shift — should be blocked
-    fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
-    fireEvent.mouseMove(content, { clientX: -20, clientY: -20, buttons: 1 });
-    fireEvent.mouseUp(content);
+    // Pan without the key — must be blocked.
+    drag(content, [0, 0], [-20, -20]);
     expect(content.style.transform).toBe("translate(-50px, -50px) scale(1)");
   });
 
@@ -168,44 +176,22 @@ describe("iframe keyboard state regression", () => {
     expect(ref.current!.instance.startCoords).toBeNull();
   });
 
-  it("resumes normal key-gated panning after blur + re-press", () => {
+  it("resumes key-gated panning after blur once the key is pressed again", () => {
     const { content } = renderApp({
-      panning: { activationKeys: ["Shift"] },
+      panning: { activationKeys: ["a"] },
     });
 
-    userEvent.hover(content);
-    fireEvent.mouseDown(content, {
-      clientX: 0,
-      clientY: 0,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseMove(content, {
-      clientX: -30,
-      clientY: -30,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseUp(content);
+    fireEvent.keyDown(window, { key: "a" });
+    drag(content, [0, 0], [-30, -30]);
     expect(content.style.transform).toBe("translate(-30px, -30px) scale(1)");
 
-    // Blur clears the key state
     fireEvent(window, new Event("blur"));
 
-    // Re-hold Shift — panning should work again
-    fireEvent.mouseDown(content, {
-      clientX: 0,
-      clientY: 0,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseMove(content, {
-      clientX: -20,
-      clientY: -20,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseUp(content);
+    drag(content, [0, 0], [-20, -20]);
+    expect(content.style.transform).toBe("translate(-30px, -30px) scale(1)");
+
+    fireEvent.keyDown(window, { key: "a" });
+    drag(content, [0, 0], [-20, -20]);
     expect(content.style.transform).toBe("translate(-50px, -50px) scale(1)");
   });
 });
@@ -259,26 +245,14 @@ describe("iframe modifier key sync regression", () => {
       panning: { activationKeys: ["Shift"] },
     });
 
-    // No keydown — but the mousedown carries shiftKey: true
-    fireEvent.mouseDown(content, {
-      clientX: 100,
-      clientY: 100,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseMove(content, {
-      clientX: 150,
-      clientY: 150,
-      buttons: 1,
-      shiftKey: true,
-    });
-    fireEvent.mouseUp(content);
+    // No keydown — but the mouse events carry shiftKey: true
+    drag(content, [100, 100], [150, 150], { shiftKey: true });
 
     const result = parseTransform(content.style.transform);
     expect(result.translate).toBe("50px, 50px");
   });
 
-  it("does not zoom when modifier key is not held on wheel event", () => {
+  it("releasing the modifier (event flag false) stops the zoom even though keyup never fired", () => {
     const { content, ref } = renderApp({
       wheel: { activationKeys: ["Control"] },
     });
@@ -286,13 +260,17 @@ describe("iframe modifier key sync regression", () => {
     userEvent.hover(content);
     fireEvent(
       content,
-      new WheelEvent("wheel", {
-        bubbles: true,
-        deltaY: -5,
-        ctrlKey: false,
-      }),
+      new WheelEvent("wheel", { bubbles: true, deltaY: -5, ctrlKey: true }),
+    );
+    const zoomed = ref.current!.instance.state.scale;
+    expect(zoomed).toBeGreaterThan(1);
+
+    // Only the `false` branch of syncModifierKeys can block this one.
+    fireEvent(
+      content,
+      new WheelEvent("wheel", { bubbles: true, deltaY: -5, ctrlKey: false }),
     );
 
-    expect(ref.current!.instance.state.scale).toBe(1);
+    expect(ref.current!.instance.state.scale).toBe(zoomed);
   });
 });

@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import {
@@ -15,26 +9,41 @@ import {
 } from "../../src";
 import { renderApp } from "../utils";
 
+const deferredRef = React.createRef<ReactZoomPanPinchContentRef>();
+
 function DeferredMount() {
   const [show, setShow] = useState(false);
   return (
-    <TransformWrapper>
+    <TransformWrapper ref={deferredRef}>
       <button type="button" data-testid="toggle" onClick={() => setShow(true)}>
         Show
       </button>
       {show && (
-        <TransformComponent>
-          <div data-testid="content516">Content</div>
+        <TransformComponent
+          wrapperStyle={{ width: "500px", height: "500px" }}
+          contentStyle={{ width: "1000px", height: "1000px" }}
+          contentProps={
+            {
+              "data-testid": "content516",
+            } as React.HTMLAttributes<HTMLDivElement>
+          }
+        >
+          <div />
         </TransformComponent>
       )}
     </TransformWrapper>
   );
 }
 
-function PanWithParentRerender() {
+function PanWithParentRerender({ onTick }: { onTick: () => void }) {
   const [, setTick] = useState(0);
   return (
-    <TransformWrapper onPanning={() => setTick((n) => n + 1)}>
+    <TransformWrapper
+      onPanning={() => {
+        onTick();
+        setTick((n) => n + 1);
+      }}
+    >
       <TransformComponent
         wrapperProps={
           {
@@ -54,17 +63,55 @@ function PanWithParentRerender() {
   );
 }
 
+const rect = (
+  left: number,
+  top: number,
+  width: number,
+  height: number,
+): DOMRect =>
+  ({
+    width,
+    height,
+    top,
+    left,
+    bottom: top + height,
+    right: left + width,
+    x: left,
+    y: top,
+    toJSON: () => ({}),
+  }) as DOMRect;
+
 describe("component lifecycle regressions", () => {
-  it("allows TransformComponent to mount after TransformWrapper (Ref #516)", () => {
+  it("initializes and handles gestures when TransformComponent mounts after TransformWrapper (Ref #516)", () => {
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     render(<DeferredMount />);
+
+    expect(deferredRef.current!.instance.isInitialized).toBe(false);
+    // Controls called before the component exists must not throw.
+    expect(() => deferredRef.current!.zoomIn(0.5, 0)).not.toThrow();
+
     fireEvent.click(screen.getByTestId("toggle"));
-    expect(screen.getByTestId("content516")).toBeTruthy();
+    const content = screen.getByTestId("content516");
+
+    expect(deferredRef.current!.instance.isInitialized).toBe(true);
+
+    fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
+    fireEvent.mouseMove(content, { clientX: 60, clientY: 70, buttons: 1 });
+    fireEvent.mouseUp(content);
+
+    expect(content.style.transform).toBe("translate(-40px, -30px) scale(1)");
+    expect(
+      errorSpy.mock.calls.some(([message]) =>
+        String(message).includes("Components are not mounted"),
+      ),
+    ).toBe(false);
+    errorSpy.mockRestore();
   });
 
-  it("pan completes when onPanning triggers a parent re-render (Ref #427)", () => {
-    render(<PanWithParentRerender />);
+  it("a pan whose onPanning re-renders the parent still applies every move, and the next gesture too (Ref #427)", () => {
+    const onTick = jest.fn();
+    render(<PanWithParentRerender onTick={onTick} />);
     const content = screen.getByTestId("content427");
-    const before = content.style.transform;
 
     userEvent.hover(content);
     fireEvent.mouseDown(content, { clientX: 100, clientY: 100, buttons: 1 });
@@ -72,172 +119,145 @@ describe("component lifecycle regressions", () => {
     fireEvent.mouseMove(content, { clientX: 190, clientY: 145, buttons: 1 });
     fireEvent.mouseUp(content);
 
-    expect(content.style.transform).not.toBe(before);
-    expect(content.style.transform).toMatch(/translate\(/);
+    expect(onTick).toHaveBeenCalledTimes(2);
+    expect(content.style.transform).toBe("translate(90px, 45px) scale(1)");
+
+    // The parent re-rendered twice; the listeners must have survived.
+    fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
+    fireEvent.mouseMove(content, { clientX: 10, clientY: 10, buttons: 1 });
+    fireEvent.mouseUp(content);
+
+    expect(content.style.transform).toBe("translate(100px, 55px) scale(1)");
   });
 
-  it("zoomToElement centers the target at the requested scale (Ref #283)", () => {
-    const ref: { current: ReactZoomPanPinchContentRef | null } = {
-      current: null,
+  describe("Ref #283", () => {
+    // A wide 800 x 400 wrapper and a 100 x 50 target sitting at (150, 20)
+    // inside the content, so the offset term and the min(scaleX, scaleY)
+    // choice are both exercised.
+    const renderWide = () => {
+      const ref = React.createRef<ReactZoomPanPinchContentRef>();
+      render(
+        <TransformWrapper ref={ref} limitToBounds={false}>
+          <TransformComponent
+            wrapperProps={
+              {
+                "data-testid": "wrap283",
+              } as React.HTMLAttributes<HTMLDivElement>
+            }
+            wrapperStyle={{ width: "800px", height: "400px" }}
+            contentStyle={{ width: "800px", height: "400px" }}
+          >
+            <div
+              data-testid="target283"
+              style={{
+                position: "absolute",
+                left: "150px",
+                top: "20px",
+                width: "100px",
+                height: "50px",
+              }}
+            />
+          </TransformComponent>
+        </TransformWrapper>,
+      );
+      const wrapper = screen.getByTestId("wrap283");
+      const target = screen.getByTestId("target283");
+      jest
+        .spyOn(wrapper, "getBoundingClientRect")
+        .mockReturnValue(rect(0, 0, 800, 400));
+      jest
+        .spyOn(target, "getBoundingClientRect")
+        .mockReturnValue(rect(150, 20, 100, 50));
+      return { ref, target };
     };
 
-    render(
-      <TransformWrapper
-        ref={(r) => {
-          ref.current = r;
-        }}
-        limitToBounds={false}
-      >
-        <TransformComponent
-          wrapperProps={
-            {
-              "data-testid": "wrap283",
-            } as React.HTMLAttributes<HTMLDivElement>
-          }
-          contentProps={
-            {
-              "data-testid": "target283",
-            } as React.HTMLAttributes<HTMLDivElement>
-          }
-          wrapperStyle={{ width: "400px", height: "400px" }}
-        >
-          <div style={{ width: "100px", height: "100px" }} />
-        </TransformComponent>
-      </TransformWrapper>,
-    );
+    it("zoomToElement centers an offset target at the requested scale (Ref #283, dupes #343, #540)", () => {
+      const { ref, target } = renderWide();
 
-    const wrapper = screen.getByTestId("wrap283");
-    const target = screen.getByTestId("target283");
+      act(() => {
+        ref.current!.zoomToElement(target, 2, 0);
+      });
 
-    jest.spyOn(wrapper, "getBoundingClientRect").mockReturnValue({
-      width: 400,
-      height: 400,
-      top: 0,
-      left: 0,
-      bottom: 400,
-      right: 400,
-      x: 0,
-      y: 0,
-      toJSON: () => ({}),
-    } as DOMRect);
-
-    jest.spyOn(target, "getBoundingClientRect").mockReturnValue({
-      width: 100,
-      height: 100,
-      top: 50,
-      left: 50,
-      bottom: 150,
-      right: 150,
-      x: 50,
-      y: 50,
-      toJSON: () => ({}),
-    } as DOMRect);
-
-    act(() => {
-      ref.current!.zoomToElement(target, 2, 0);
+      const { scale, positionX, positionY } = ref.current!.instance.state;
+      expect(scale).toBe(2);
+      // target centre (150 + 50, 20 + 25) * 2 + position == wrapper centre
+      expect(positionX + 200 * 2).toBe(400);
+      expect(positionY + 45 * 2).toBe(200);
+      expect(positionX).toBe(0);
+      expect(positionY).toBe(110);
     });
 
-    expect(ref.current!.instance.state.scale).toBe(2);
-    expect(ref.current!.instance.state.positionX).toBeCloseTo(100, 0);
-    expect(ref.current!.instance.state.positionY).toBeCloseTo(100, 0);
+    it("zoomToElement without a scale fits the target using the tighter axis (Ref #283)", () => {
+      const { ref, target } = renderWide();
+
+      act(() => {
+        ref.current!.zoomToElement(target, undefined, 0);
+      });
+
+      // min(800 / 100, 400 / 50) = 8, which is also maxScale.
+      const { scale, positionX, positionY } = ref.current!.instance.state;
+      expect(scale).toBe(8);
+      expect(positionX + 200 * 8).toBe(400);
+      expect(positionY + 45 * 8).toBe(200);
+    });
+
+    it("zoomToElement resolves string ids inside the wrapper's document (Ref #283)", () => {
+      const { ref, target } = renderWide();
+      target.id = "seat-42";
+
+      act(() => {
+        ref.current!.zoomToElement("seat-42", 2, 0);
+      });
+
+      expect(ref.current!.instance.state.scale).toBe(2);
+      expect(ref.current!.instance.state.positionY).toBe(110);
+    });
   });
 
-  it("handles zero dimensions without crashing when mounted in hidden container (Ref #479)", () => {
-    const origRO = global.ResizeObserver;
-    /* eslint-disable class-methods-use-this */
-    global.ResizeObserver = class {
-      observe() {}
-      disconnect() {}
-      unobserve() {}
-    } as unknown as typeof ResizeObserver;
-    /* eslint-enable class-methods-use-this */
-
+  it("survives zero wrapper and content dimensions and recovers once they are laid out (Ref #479)", () => {
     const { ref, wrapper, content } = renderApp({
       centerOnInit: true,
       limitToBounds: false,
+      wrapperWidth: "0px",
+      wrapperHeight: "0px",
+      contentWidth: "0px",
+      contentHeight: "0px",
     });
 
-    jest.spyOn(wrapper, "getBoundingClientRect").mockReturnValue({
-      width: 0,
-      height: 0,
-      top: 0,
-      left: 0,
-      bottom: 0,
-      right: 0,
-      x: 0,
-      y: 0,
-      toJSON: () => ({}),
-    } as DOMRect);
-    jest.spyOn(content, "getBoundingClientRect").mockReturnValue({
-      width: 0,
-      height: 0,
-      top: 0,
-      left: 0,
-      bottom: 0,
-      right: 0,
-      x: 0,
-      y: 0,
-      toJSON: () => ({}),
-    } as DOMRect);
-
+    expect(wrapper.offsetWidth).toBe(0);
+    expect(content.offsetWidth).toBe(0);
     expect(() => {
       ref.current!.zoomIn(1, 0);
+      ref.current!.centerView(1, 0);
     }).not.toThrow();
+    expect(Number.isFinite(ref.current!.instance.state.positionX)).toBe(true);
+    expect(Number.isFinite(ref.current!.instance.state.positionY)).toBe(true);
 
-    jest.spyOn(wrapper, "getBoundingClientRect").mockReturnValue({
-      width: 500,
-      height: 500,
-      top: 0,
-      left: 0,
-      bottom: 500,
-      right: 500,
-      x: 0,
-      y: 0,
-      toJSON: () => ({}),
-    } as DOMRect);
-    jest.spyOn(content, "getBoundingClientRect").mockReturnValue({
-      width: 500,
-      height: 500,
-      top: 0,
-      left: 0,
-      bottom: 500,
-      right: 500,
-      x: 0,
-      y: 0,
-      toJSON: () => ({}),
-    } as DOMRect);
+    // The dialog opens: real sizes appear.
+    wrapper.style.width = "500px";
+    wrapper.style.height = "500px";
+    content.style.width = "300px";
+    content.style.height = "300px";
 
     ref.current!.centerView(1, 0);
-    const { scale } = ref.current!.instance.state;
-    expect(scale).toBe(1);
-    global.ResizeObserver = origRO;
+
+    expect(ref.current!.instance.state.positionX).toBe(100);
+    expect(ref.current!.instance.state.positionY).toBe(100);
   });
 
-  it("scale stays stable when the wrapper size changes (Ref #364)", async () => {
-    const { ref, wrapper, zoom } = renderApp();
+  // The library does not listen to window resize; bounds are recomputed on
+  // the next gesture. This pins that the scale is left alone (Ref #364).
+  it("does not change the scale on window resize (Ref #364)", () => {
+    const { ref, wrapper } = renderApp();
 
-    zoom({ value: 2 });
-    await waitFor(() => {
-      expect(ref.current!.instance.state.scale).toBe(2);
-    });
+    ref.current!.setTransform(0, 0, 2, 0);
 
-    const scaleBeforeResize = ref.current!.instance.state.scale;
-
-    Object.defineProperty(wrapper, "offsetWidth", {
-      configurable: true,
-      value: 300,
-    });
-    Object.defineProperty(wrapper, "offsetHeight", {
-      configurable: true,
-      value: 300,
-    });
-
-    await act(async () => {
+    wrapper.style.width = "300px";
+    wrapper.style.height = "300px";
+    act(() => {
       window.dispatchEvent(new Event("resize"));
     });
 
-    await waitFor(() => {
-      expect(ref.current!.instance.state.scale).toBe(scaleBeforeResize);
-    });
+    expect(ref.current!.instance.state.scale).toBe(2);
   });
 });

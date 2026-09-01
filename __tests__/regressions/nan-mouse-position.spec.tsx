@@ -19,7 +19,6 @@ import { BoundsType } from "models/calculations.model";
 import { getMousePosition } from "core/wheel/wheel.utils";
 import { handleCalculateZoomPositions } from "core/zoom/zoom.utils";
 import { ReactZoomPanPinchContext } from "models/context.model";
-
 import { renderApp } from "../utils/render-app";
 
 const makeNaNRect = (): DOMRect =>
@@ -159,7 +158,24 @@ describe("handleCalculateZoomPositions — Number.isFinite guard (#566)", () => 
 // ---------------------------------------------------------------------------
 
 describe("Integration: wheel event with degenerate cursor position (#566)", () => {
-  it("state stays finite after wheel event when contentComponent.getBoundingClientRect returns NaN", () => {
+  // `setState` always rejected NaN, so "state stays finite" would hold even
+  // without the fix. The user-visible symptom was that the zoom silently did
+  // nothing and logged "Detected NaN set state values"; assert on that.
+  let errorSpy: jest.SpyInstance;
+  const nanStateErrors = () =>
+    errorSpy.mock.calls.filter(([message]) =>
+      String(message).includes("Detected NaN set state values"),
+    ).length;
+
+  beforeEach(() => {
+    errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    errorSpy.mockRestore();
+  });
+
+  it("wheel zoom still applies when contentComponent.getBoundingClientRect returns NaN", () => {
     const { content, ref } = renderApp({ minScale: 0.5 });
 
     const contentComponent = ref.current!.instance.contentComponent!;
@@ -169,12 +185,13 @@ describe("Integration: wheel event with degenerate cursor position (#566)", () =
 
     fireEvent(content, new WheelEvent("wheel", { bubbles: true, deltaY: -1 }));
 
-    expect(Number.isFinite(ref.current!.instance.state.scale)).toBe(true);
-    expect(Number.isFinite(ref.current!.instance.state.positionX)).toBe(true);
-    expect(Number.isFinite(ref.current!.instance.state.positionY)).toBe(true);
+    expect(ref.current!.instance.state.scale).toBeCloseTo(1.015, 10);
+    expect(ref.current!.instance.state.positionX).toBe(0);
+    expect(ref.current!.instance.state.positionY).toBe(0);
+    expect(nanStateErrors()).toBe(0);
   });
 
-  it("scale stays finite after multiple wheel events with NaN cursor", () => {
+  it("repeated wheel events with a NaN cursor keep zooming without NaN state errors", () => {
     const { content, ref } = renderApp();
 
     const contentComponent = ref.current!.instance.contentComponent!;
@@ -189,8 +206,9 @@ describe("Integration: wheel event with degenerate cursor position (#566)", () =
       );
     }
 
-    expect(Number.isFinite(ref.current!.instance.state.scale)).toBe(true);
+    expect(ref.current!.instance.state.scale).toBeCloseTo(1.15, 10);
     expect(Number.isFinite(ref.current!.instance.state.positionX)).toBe(true);
     expect(Number.isFinite(ref.current!.instance.state.positionY)).toBe(true);
+    expect(nanStateErrors()).toBe(0);
   });
 });

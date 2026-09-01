@@ -1,6 +1,8 @@
-import { waitFor, fireEvent, act } from "@testing-library/react";
+import { waitFor, fireEvent } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import { renderApp, flushAnimationFrames } from "../utils";
+import { ReactZoomPanPinchRef } from "../../src";
+import { renderApp } from "../utils";
 
 const NativeResizeObserver = global.ResizeObserver;
 
@@ -19,89 +21,148 @@ afterAll(() => {
 });
 
 describe("bounds and centering regressions", () => {
-  it("maxPositionX clamps horizontal pan when set (Ref #250)", () => {
-    const { pan, ref } = renderApp({
-      maxPositionX: 50,
-      limitToBounds: true,
-      disablePadding: true,
+  describe("Ref #250", () => {
+    // Explicit bounds are content-space values at scale 1 and scale with the
+    // zoom: maxPositionX 50 => 100 at scale 2, minPositionX -100 =>
+    // wrapperWidth * (1 - 2) + (-100 * 2) = -700 at scale 2.
+    it("maxPositionX clamps a rightward pan exactly at the scaled bound (Ref #250)", () => {
+      const { pan, ref } = renderApp({
+        maxPositionX: 50,
+        limitToBounds: true,
+        disablePadding: true,
+      });
+      ref.current!.setTransform(0, 0, 2, 0);
+
+      pan({ x: 200, y: 0 });
+
+      expect(ref.current!.instance.state.positionX).toBe(100);
     });
-    // At scale=2 the bound scales to 50*2=100 (wrapperWidth=0 in jsdom)
-    ref.current!.setTransform(0, 0, 2, 0);
-    pan({ x: 200, y: 0 });
-    expect(ref.current!.instance.state.positionX).toBeLessThanOrEqual(100);
+
+    it("minPositionX clamps a leftward pan exactly at the scaled bound (Ref #250, dupe #478)", () => {
+      const { pan, ref } = renderApp({
+        minPositionX: -100,
+        limitToBounds: true,
+        disablePadding: true,
+      });
+      ref.current!.setTransform(0, 0, 2, 0);
+
+      pan({ x: -20000, y: 0 });
+
+      expect(ref.current!.instance.state.positionX).toBe(-700);
+    });
   });
 
-  it("touchpad zoom-out respects minScale / limitToBounds (Ref #396)", () => {
-    jest.useFakeTimers();
-    const { content, ref } = renderApp({
-      minScale: 0.5,
-      limitToBounds: true,
-      smooth: false,
-    });
+  describe("Ref #396", () => {
+    it("trackpad panning never leaves the bounds, at any point of the gesture (Ref #396, dupe #433)", () => {
+      const seenX: number[] = [];
+      const { trackPadPan, ref } = renderApp({
+        wheel: { disabled: true },
+        trackPadPanning: { disabled: false },
+        limitToBounds: true,
+        disablePadding: true,
+        onPanning: (ctx: ReactZoomPanPinchRef) => {
+          seenX.push(ctx.state.positionX);
+        },
+      });
+      // wrapper 500, content 100 % => 1000 px at scale 2 => bounds [-500, 0]
+      ref.current!.setTransform(0, 0, 2, 0);
 
-    for (let i = 0; i < 50; i += 1) {
+      trackPadPan({ x: 2000, y: 0, moveEventCount: 5 });
+      expect(ref.current!.instance.state.positionX).toBe(0);
+
+      trackPadPan({ x: -3000, y: 0, moveEventCount: 5 });
+      expect(ref.current!.instance.state.positionX).toBe(-500);
+
+      expect(seenX.length).toBeGreaterThan(0);
+      expect(Math.max(...seenX)).toBeLessThanOrEqual(0);
+      expect(Math.min(...seenX)).toBeGreaterThanOrEqual(-500);
+    });
+  });
+
+  describe("Ref #524", () => {
+    it("both content edges stay reachable after zooming on a focal point near the bottom (Ref #524)", () => {
+      const { content, pan, ref } = renderApp({
+        contentHeight: "2000px",
+        wrapperHeight: "500px",
+        limitToBounds: true,
+        disablePadding: true,
+        smooth: false,
+        wheel: { step: 1 },
+      });
+
+      // One wheel notch at the bottom of the viewport: scale 2 anchored there.
+      userEvent.hover(content);
       fireEvent(
         content,
         new WheelEvent("wheel", {
           bubbles: true,
-          deltaY: 30,
-          ctrlKey: true,
-          deltaMode: 0,
+          deltaY: -1,
+          clientX: 250,
+          clientY: 450,
         }),
       );
-    }
+      expect(ref.current!.instance.state.scale).toBe(2);
+      expect(ref.current!.instance.state.positionY).toBe(-450);
 
-    // During trackpad pinch the scale may temporarily overshoot below
-    // minScale (elastic rubberband). After the gesture ends the library
-    // animates back. Trigger the wheel-stop timer and flush the animation.
-    act(() => {
-      jest.advanceTimersByTime(200);
-      flushAnimationFrames(60);
+      // Content above the focal point: pan down until the top edge shows.
+      pan({ x: 0, y: 1000, from: { clientX: 250, clientY: 100 } });
+      expect(ref.current!.instance.state.positionY).toBe(0);
+
+      // And the bottom edge: 500 - 2000 * 2 = -3500.
+      pan({ x: 0, y: -5000, from: { clientX: 250, clientY: 400 } });
+      expect(ref.current!.instance.state.positionY).toBe(-3500);
     });
-
-    expect(ref.current!.instance.state.scale).toBeGreaterThanOrEqual(0.5);
-    jest.useRealTimers();
   });
 
-  it("tall zoomed content can pan far enough upward (negative positionY) (Ref #524)", () => {
-    const { pan, ref } = renderApp({
-      contentHeight: "2000px",
-      wrapperHeight: "500px",
-      limitToBounds: true,
-      disablePadding: true,
+  describe("Ref #392", () => {
+    it("centerOnInit centers synchronously on mount (Ref #392)", () => {
+      const { ref, content } = renderApp({
+        centerOnInit: true,
+        contentHeight: "2000px",
+        wrapperHeight: "500px",
+        limitToBounds: false,
+      });
+
+      // wrapper 500 x 500, content 500 x 2000 => (0, -750), no waitFor.
+      expect(ref.current!.instance.state.positionX).toBe(0);
+      expect(ref.current!.instance.state.positionY).toBe(-750);
+      expect(content.style.transform).toBe("translate(0px, -750px) scale(1)");
     });
-    ref.current!.setTransform(0, 0, 2, 0);
-    pan({ x: 0, y: -600 });
-    expect(ref.current!.instance.state.positionY).toBeLessThan(-1);
   });
 
-  it("centerOnInit yields centered translation after mount (Ref #392)", async () => {
-    const { ref } = renderApp({
-      centerOnInit: true,
-      contentHeight: "2000px",
-      wrapperHeight: "500px",
-      limitToBounds: false,
-    });
-    await waitFor(() => {
+  describe("Ref #462", () => {
+    it("centerView ignores the wrapper's page offset and centers within the wrapper (Ref #462)", () => {
+      const { ref, wrapper } = renderApp({
+        wrapperWidth: "500px",
+        wrapperHeight: "500px",
+        contentWidth: "300px",
+        contentHeight: "300px",
+        limitToBounds: false,
+      });
+
+      // The wrapper sits somewhere in the page; that must not leak into the
+      // transform, which is relative to the wrapper.
+      jest.spyOn(wrapper, "getBoundingClientRect").mockReturnValue({
+        width: 500,
+        height: 500,
+        top: 60,
+        left: 120,
+        bottom: 560,
+        right: 620,
+        x: 120,
+        y: 60,
+        toJSON: () => ({}),
+      } as DOMRect);
+
+      ref.current!.centerView(1, 0);
+
       const { positionX, positionY } = ref.current!.instance.state;
-      expect(positionX !== 0 || positionY !== 0).toBe(true);
+      expect(positionX).toBe(100);
+      expect(positionY).toBe(100);
+      // Rendered centre of the content == visual centre of the wrapper.
+      expect(120 + positionX + 150).toBe(120 + 250);
+      expect(60 + positionY + 150).toBe(60 + 250);
     });
-  });
-
-  it("centerView centers content within wrapper dimensions (Ref #462)", () => {
-    const { ref } = renderApp({
-      wrapperWidth: "500px",
-      wrapperHeight: "500px",
-      contentWidth: "300px",
-      contentHeight: "300px",
-      limitToBounds: false,
-    });
-
-    ref.current!.centerView(1, 0);
-
-    const { positionX, positionY } = ref.current!.instance.state;
-    expect(positionX).toBe(100);
-    expect(positionY).toBe(100);
   });
 
   it("panning resumes after hitting bounds and reversing direction (Ref #316)", () => {
@@ -112,21 +173,24 @@ describe("bounds and centering regressions", () => {
     ref.current!.setTransform(0, 0, 2, 0);
     pan({ x: 1000, y: 0 });
     const posAfterRight = ref.current!.instance.state.positionX;
+    expect(posAfterRight).toBe(0);
 
     pan({ x: -500, y: 0, from: { clientX: 250, clientY: 250 } });
     const posAfterLeft = ref.current!.instance.state.positionX;
 
-    expect(posAfterLeft).toBeLessThan(posAfterRight);
+    expect(posAfterLeft).toBe(-500);
   });
 
-  it("initialPositionX is applied on first paint (Ref #483)", async () => {
-    const { ref } = renderApp({
+  it("initialPositionX is applied in the very first render (Ref #483)", () => {
+    const { ref, content } = renderApp({
       initialPositionX: 100,
       limitToBounds: false,
     });
-    await waitFor(() => {
-      expect(ref.current!.instance.state.positionX).toBe(100);
-    });
+
+    // Synchronous on purpose: a waitFor would hide a wrong first paint that
+    // corrects itself later.
+    expect(ref.current!.instance.state.positionX).toBe(100);
+    expect(content.style.transform).toBe("translate(100px, 0px) scale(1)");
   });
 
   // The bug: explicit minPosition*/maxPosition* props were applied as fixed

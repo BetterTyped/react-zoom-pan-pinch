@@ -23,8 +23,14 @@ export const handleWheelStart = (
 ): void => {
   const { onWheelStart, onZoomStart } = contextInstance.props;
 
+  // Every wheel event must stop a running animation, not only the first one
+  // of a gesture. The alignment animation scheduled by `handleWheelStop`
+  // starts after `wheelAnimationTime` (100 ms) while `wheelStopEventTimer`
+  // (160 ms) is still pending; guarding the cancel on the stop timer let that
+  // animation overwrite the zoom of any wheel event arriving in between (#582).
+  handleCancelAnimation(contextInstance);
+
   if (!contextInstance.wheelStopEventTimer) {
-    handleCancelAnimation(contextInstance);
     handleCallback(getContext(contextInstance), event, onWheelStart);
     handleCallback(getContext(contextInstance), event, onZoomStart);
   }
@@ -128,8 +134,10 @@ export const handleWheelPanningStart = (
 ): void => {
   const { onWheelStart, onPanningStart } = contextInstance.props;
 
+  // See `handleWheelStart` (#582): cancel on every event, not only the first.
+  handleCancelAnimation(contextInstance);
+
   if (!contextInstance.wheelStopEventTimer) {
-    handleCancelAnimation(contextInstance);
     // Same as a mouse pan start: bounds must reflect the current scale and
     // content size, not the ones measured at mount (#396, #433).
     handleCalculateBounds(contextInstance, contextInstance.state.scale);

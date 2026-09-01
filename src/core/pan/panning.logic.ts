@@ -47,7 +47,16 @@ export function handleAlignToBounds(
 
   const targetState = handlePanToBounds(contextInstance);
 
-  if (targetState) {
+  if (!targetState) return;
+
+  // Nothing to align: starting a 200 ms animation towards the current state
+  // would only pin the transform and swallow input that arrives meanwhile
+  // (#582).
+  const { positionX, positionY } = contextInstance.state;
+  const isNoop =
+    targetState.positionX === positionX && targetState.positionY === positionY;
+
+  if (!isNoop) {
     animate(
       contextInstance,
       targetState,

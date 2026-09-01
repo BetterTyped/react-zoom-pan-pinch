@@ -13,7 +13,6 @@ import {
   useTransformInit,
 } from "hooks";
 import { useResize } from "./use-resize.hook";
-import { ReactZoomPanPinchRef } from "models";
 import { boundLimiter } from "core/bounds/bounds.utils";
 
 export type MiniMapProps = {
@@ -59,7 +58,6 @@ export const MiniMap: React.FC<MiniMapProps> = ({
   const [initialized, setInitialized] = useState(false);
   const instance = useTransformContext();
   const [isDown, setIsDown] = useState(false);
-  const miniMapInstance = useRef<ReactZoomPanPinchRef>(null);
 
   const mainRef = useRef<HTMLDivElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -179,19 +177,6 @@ export const MiniMap: React.FC<MiniMapProps> = ({
   useResize(instance.contentComponent, initialize, [initialized]);
 
   useEffect(() => {
-    return instance.onChange((zpp) => {
-      const scale = computeMiniMapScale();
-      if (miniMapInstance.current) {
-        miniMapInstance.current.instance.state.scale = zpp.instance.state.scale;
-        miniMapInstance.current.instance.state.positionX =
-          zpp.instance.state.positionX * scale;
-        miniMapInstance.current.instance.state.positionY =
-          zpp.instance.state.positionY * scale;
-      }
-    });
-  }, [computeMiniMapScale, instance, miniMapInstance]);
-
-  useEffect(() => {
     const move = (e: MouseEvent) => {
       if (
         panning &&
@@ -250,14 +235,18 @@ export const MiniMap: React.FC<MiniMapProps> = ({
     const setUp = () => {
       setIsDown(false);
     };
-    document.addEventListener("mousedown", setDown);
-    document.addEventListener("mouseup", setUp);
-    document.addEventListener("mousemove", move);
+    // Listen on the mini map's own document so it keeps working inside
+    // portal windows and iframes.
+    const doc = mainRef.current?.ownerDocument ?? document;
+    doc.addEventListener("mousedown", setDown);
+    doc.addEventListener("mouseup", setUp);
+    doc.addEventListener("mousemove", move);
     return () => {
-      document.removeEventListener("mousemove", move);
-      document.removeEventListener("mouseup", setUp);
+      doc.removeEventListener("mousedown", setDown);
+      doc.removeEventListener("mousemove", move);
+      doc.removeEventListener("mouseup", setUp);
     };
-  });
+  }, [computeMiniMapScale, instance, isDown, panning]);
 
   const wrapperStyle = useMemo(() => {
     return {

@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { Context } from "../transform-wrapper/transform-wrapper";
 import { baseClasses } from "../../constants/state.constants";
 import { getTransformStyles } from "../../utils/styles.utils";
+import { useIsomorphicLayoutEffect } from "../../utils/effect.utils";
 
 import styles from "./transform-component.module.css";
 
@@ -40,7 +41,10 @@ export const TransformComponent: React.FC<Props> = ({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  // Layout effect: the initial transform (initialPosition*, centerOnInit)
+  // and the first visibility check of virtualized children happen before the
+  // browser paints, so nothing jumps into place a frame late.
+  useIsomorphicLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     const content = contentRef.current;
     if (wrapper !== null && content !== null && init) {

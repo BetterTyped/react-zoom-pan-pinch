@@ -9,7 +9,7 @@ export function useTransformComponent<T>(
 ): T {
   const libraryContext = useTransformContext();
 
-  const [transformRender, setTransformRender] = useState<T>(
+  const [transformRender, setTransformRender] = useState<T>(() =>
     callback(getState(libraryContext)),
   );
 

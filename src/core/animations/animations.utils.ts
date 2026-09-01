@@ -6,18 +6,14 @@ import {
   StateType,
 } from "../../models";
 
-const handleCancelAnimationFrame = (animation: AnimationType | null) => {
-  if (typeof animation === "number") {
-    cancelAnimationFrame(animation);
-  }
-};
-
 export const handleCancelAnimation = (
   contextInstance: ReactZoomPanPinchContext,
 ): void => {
-  if (!contextInstance.mounted) return;
-  handleCancelAnimationFrame(contextInstance.animation);
+  if (contextInstance.animationFrame !== null) {
+    cancelAnimationFrame(contextInstance.animationFrame);
+  }
   // Clear animation state
+  contextInstance.animationFrame = null;
   contextInstance.isAnimating = false;
   contextInstance.animation = null;
   contextInstance.velocity = null;
@@ -37,9 +33,12 @@ export function handleSetupAnimation(
   handleCancelAnimation(contextInstance);
 
   // new animation
-  contextInstance.animation = () => {
-    if (!contextInstance.mounted) {
-      return handleCancelAnimationFrame(contextInstance.animation);
+  const animation: AnimationType = () => {
+    // A frame that was already queued when this animation got cancelled or
+    // replaced must not run: it would apply a stale target and re-schedule
+    // the replacement animation a second time per frame.
+    if (!contextInstance.mounted || contextInstance.animation !== animation) {
+      return;
     }
 
     const frameTime = new Date().getTime() - startTime;
@@ -49,15 +48,19 @@ export function handleSetupAnimation(
     const step = animationType(animationProgress);
 
     if (frameTime >= animationTime) {
-      callback(lastStep);
+      // Clear before the final step so a callback that starts a new
+      // animation (e.g. from onTransform) is not wiped out afterwards.
       contextInstance.animation = null;
-    } else if (contextInstance.animation) {
+      contextInstance.animationFrame = null;
+      callback(lastStep);
+    } else {
       callback(step);
-      requestAnimationFrame(contextInstance.animation);
+      contextInstance.animationFrame = requestAnimationFrame(animation);
     }
   };
 
-  requestAnimationFrame(contextInstance.animation);
+  contextInstance.animation = animation;
+  contextInstance.animationFrame = requestAnimationFrame(animation);
 }
 
 function isValidTargetState(targetState: StateType): boolean {

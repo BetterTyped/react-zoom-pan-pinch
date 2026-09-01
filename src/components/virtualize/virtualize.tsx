@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 
 import { Context } from "../transform-wrapper/transform-wrapper";
+import { useIsomorphicLayoutEffect } from "../../utils/effect.utils";
 import { isElementVisible } from "./virtualize.utils";
 
 /* eslint-disable react/require-default-props */
@@ -67,7 +68,30 @@ export const Virtualize = React.forwardRef<HTMLDivElement, VirtualizeProps>(
     ref,
   ) => {
     const instance = useContext(Context);
-    const [visible, setVisible] = useState(false);
+
+    const computeVisible = () => {
+      const wrapper = instance.wrapperComponent;
+      if (!wrapper) return false;
+
+      return isElementVisible({
+        elementX: x,
+        elementY: y,
+        elementWidth: width,
+        elementHeight: height,
+        scale: instance.state.scale,
+        positionX: instance.state.positionX,
+        positionY: instance.state.positionY,
+        viewportWidth: wrapper.offsetWidth,
+        viewportHeight: wrapper.offsetHeight,
+        margin,
+        threshold,
+      });
+    };
+
+    // Elements mounted after the wrapper is initialized (items added to a
+    // canvas at runtime) render their children in the very first commit
+    // instead of one frame later.
+    const [visible, setVisible] = useState(computeVisible);
     const visibleRef = useRef(false);
 
     const onShowRef = useRef(onShow);
@@ -75,24 +99,13 @@ export const Virtualize = React.forwardRef<HTMLDivElement, VirtualizeProps>(
     onShowRef.current = onShow;
     onHideRef.current = onHide;
 
-    useEffect(() => {
+    // Layout effect so the check triggered by the wrapper's init (also a
+    // layout effect) re-renders before the browser paints.
+    useIsomorphicLayoutEffect(() => {
       const check = () => {
-        const wrapper = instance.wrapperComponent;
-        if (!wrapper) return;
+        if (!instance.wrapperComponent) return;
 
-        const nowVisible = isElementVisible({
-          elementX: x,
-          elementY: y,
-          elementWidth: width,
-          elementHeight: height,
-          scale: instance.state.scale,
-          positionX: instance.state.positionX,
-          positionY: instance.state.positionY,
-          viewportWidth: wrapper.offsetWidth,
-          viewportHeight: wrapper.offsetHeight,
-          margin,
-          threshold,
-        });
+        const nowVisible = computeVisible();
 
         if (nowVisible !== visibleRef.current) {
           visibleRef.current = nowVisible;

@@ -106,8 +106,16 @@ export const zoomToElement =
 
     const { wrapperComponent } = contextInstance;
 
+    // Resolve ids in the wrapper's own document so it works inside portal
+    // windows and iframes, not only the top-level document (#290).
+    const ownerDocument =
+      wrapperComponent?.ownerDocument ??
+      (typeof document !== "undefined" ? document : null);
+
     const target: HTMLElement | null =
-      typeof node === "string" ? document.getElementById(node) : node;
+      typeof node === "string"
+        ? ownerDocument?.getElementById(node) ?? null
+        : node;
 
     if (wrapperComponent && target && wrapperComponent.contains(target)) {
       const targetState = calculateZoomToNode(

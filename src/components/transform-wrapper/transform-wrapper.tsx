@@ -24,11 +24,24 @@ export const TransformWrapper = React.forwardRef(
     props: Omit<ReactZoomPanPinchProps, "ref">,
     ref: React.Ref<ReactZoomPanPinchContentRef>,
   ) => {
-    const instance = useRef(new ZoomPanPinch(props)).current;
+    // Lazy so a fresh (immediately discarded) instance is not built on every
+    // render.
+    const instanceRef = useRef<ZoomPanPinch | null>(null);
+    if (instanceRef.current === null) {
+      instanceRef.current = new ZoomPanPinch(props);
+    }
+    const instance = instanceRef.current;
 
     const content = getContent(props.children, getControls(instance));
 
     useImperativeHandle(ref, () => getControls(instance), [instance]);
+
+    useEffect(() => {
+      instance.mount();
+      return () => {
+        instance.unmount();
+      };
+    }, [instance]);
 
     useEffect(() => {
       instance.update(props);

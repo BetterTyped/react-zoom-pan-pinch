@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 import { initialSetup } from "constants/state.constants";
 import { ZoomPanPinch } from "core/instance.core";
@@ -7,7 +7,13 @@ import { ReactZoomPanPinchProps, ReactZoomPanPinchRef } from "models";
 export const useZoomPanPinch = (props?: ReactZoomPanPinchProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const instance = useRef(new ZoomPanPinch({ ...initialSetup, ...props }));
+  // Lazy so a fresh (immediately discarded) instance is not built on every
+  // render.
+  const instanceRef = useRef<ZoomPanPinch | null>(null);
+  if (instanceRef.current === null) {
+    instanceRef.current = new ZoomPanPinch({ ...initialSetup, ...props });
+  }
+  const instance = instanceRef as React.MutableRefObject<ZoomPanPinch>;
 
   const useTransformCallback = useRef<
     (data: {
@@ -29,7 +35,7 @@ export const useZoomPanPinch = (props?: ReactZoomPanPinchProps) => {
     });
 
     return () => {
-      inst.cleanupWindowEvents();
+      inst.unmount();
       unmount();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -107,6 +107,9 @@ export class ZoomPanPinch {
   // animations helpers
   public isAnimating = false;
   public animation: AnimationType | null = null;
+  public animationFrame: number | null = null;
+  // init helpers
+  public initObserverTimer: ReturnType<typeof setTimeout> | null = null;
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
 
@@ -117,19 +120,38 @@ export class ZoomPanPinch {
   }
 
   mount = () => {
+    this.mounted = true;
     this.initializeWindowEvents();
   };
 
+  // Marks the instance as gone so pending timers, animation frames and
+  // callbacks scheduled before unmount become no-ops.
   unmount = () => {
+    this.mounted = false;
     this.cleanupWindowEvents();
   };
 
   update = (newProps: ReactZoomPanPinchProps) => {
     this.props = newProps;
+    // Setup first: bounds depend on the new props (min/max positions,
+    // centerZoomedOut, disablePadding).
+    this.setup = createSetup(newProps);
     if (this.wrapperComponent && this.contentComponent) {
       handleCalculateBounds(this, this.state.scale);
     }
-    this.setup = createSetup(newProps);
+  };
+
+  clearTimers = (): void => {
+    if (this.wheelStopEventTimer) clearTimeout(this.wheelStopEventTimer);
+    if (this.wheelAnimationTimer) clearTimeout(this.wheelAnimationTimer);
+    if (this.doubleClickStopEventTimer) {
+      clearTimeout(this.doubleClickStopEventTimer);
+    }
+    if (this.initObserverTimer) clearTimeout(this.initObserverTimer);
+    this.wheelStopEventTimer = null;
+    this.wheelAnimationTimer = null;
+    this.doubleClickStopEventTimer = null;
+    this.initObserverTimer = null;
   };
 
   initializeWindowEvents = (): void => {
@@ -180,7 +202,6 @@ export class ZoomPanPinch {
     currentWindow?.removeEventListener("keyup", this.setKeyUnPressed, passive);
     currentWindow?.removeEventListener("keydown", this.setKeyPressed, passive);
     currentWindow?.removeEventListener("blur", this.handleWindowBlur);
-    document.removeEventListener("mouseleave", this.clearPanning, passive);
     this.wrapperComponent?.removeEventListener(
       "wheel",
       this.onWheelPanning,
@@ -196,8 +217,26 @@ export class ZoomPanPinch {
       this.setKeyPressed,
       passive,
     );
+    this.cleanupWrapperEvents();
+    this.clearTimers();
     handleCancelAnimation(this);
     this.observer?.disconnect();
+  };
+
+  cleanupWrapperEvents = (): void => {
+    const wrapper = this.wrapperComponent;
+    if (!wrapper) return;
+    const passive = makePassiveEventOption();
+
+    wrapper.removeEventListener("wheel", this.onWheelZoom, passive);
+    wrapper.removeEventListener("dblclick", this.onDoubleClick, passive);
+    wrapper.removeEventListener(
+      "touchstart",
+      this.onTouchPanningStart,
+      passive,
+    );
+    wrapper.removeEventListener("touchmove", this.onTouchPanning, passive);
+    wrapper.removeEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
@@ -218,6 +257,7 @@ export class ZoomPanPinch {
 
     if (centerOnInit) {
       this.setCenter();
+      this.observer?.disconnect();
       this.observer = new ResizeObserver(() => {
         const currentWidth = contentComponent.offsetWidth;
         const currentHeight = contentComponent.offsetHeight;
@@ -234,7 +274,9 @@ export class ZoomPanPinch {
 
       // TODO: CHANGE to first interaction?
       // if nothing about the contentComponent has changed after 5 seconds, disconnect the observer
-      setTimeout(() => {
+      if (this.initObserverTimer) clearTimeout(this.initObserverTimer);
+      this.initObserverTimer = setTimeout(() => {
+        this.initObserverTimer = null;
         this.observer?.disconnect();
       }, 5000);
 
@@ -435,6 +477,9 @@ export class ZoomPanPinch {
     const isDoubleTap = this.lastTouch && +new Date() - this.lastTouch < 200;
 
     if (isDoubleTapAllowed && isDoubleTap && event.touches.length === 1) {
+      // Consume the pair so a third quick tap starts a fresh sequence
+      // instead of counting as another double tap.
+      this.lastTouch = null;
       this.onDoubleClick(event);
     } else {
       this.lastTouch = +new Date();
@@ -697,6 +742,7 @@ export class ZoomPanPinch {
     wrapperComponent: HTMLDivElement,
     contentComponent: HTMLDivElement,
   ): void => {
+    this.mounted = true;
     this.cleanupWindowEvents();
     this.wrapperComponent = wrapperComponent;
     this.contentComponent = contentComponent;

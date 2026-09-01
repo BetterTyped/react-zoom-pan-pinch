@@ -71,6 +71,7 @@ describe("Controls [State]", () => {
 
       fireEvent(centerBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
+        // centred at the wheel-zoomed scale: (500 - 500 * 1.65) / 2
         expect(content.style.transform).toBe(
           "translate(-162.5px, -162.5px) scale(1.65)",
         );
@@ -85,7 +86,7 @@ describe("Controls [State]", () => {
       fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
         expect(content.style.transform).toBe(
-          "translate(-162.5px, -162.5px) scale(1.65)",
+          "translate(-125px, -125px) scale(1.5)",
         );
       });
 
@@ -101,14 +102,14 @@ describe("Controls [State]", () => {
       fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
         expect(content.style.transform).toBe(
-          "translate(-162.5px, -162.5px) scale(1.65)",
+          "translate(-125px, -125px) scale(1.5)",
         );
       });
 
       fireEvent(centerBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
         expect(content.style.transform).toBe(
-          "translate(-162.5px, -162.5px) scale(1.65)",
+          "translate(-125px, -125px) scale(1.5)",
         );
       });
 

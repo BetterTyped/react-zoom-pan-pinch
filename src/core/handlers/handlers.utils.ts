@@ -22,16 +22,17 @@ export const handleCalculateButtonZoom = (
 ): number => {
   const { scale } = contextInstance.state;
   const { wrapperComponent, setup } = contextInstance;
-  const { maxScale, minScale, zoomAnimation, smooth } = setup;
+  const { maxScale, minScale, zoomAnimation } = setup;
   const { size } = zoomAnimation;
 
   if (!wrapperComponent) {
     throw new Error("Wrapper is not mounted");
   }
 
-  const targetScale = smooth
-    ? scale * Math.exp(delta * step)
-    : scale + delta * step;
+  // `step` is an absolute scale increment for zoomIn/zoomOut and double
+  // click: zoomIn(0.25) from 1 lands on 1.25. The `smooth` option only
+  // shapes wheel/trackpad deltas (#545, #431).
+  const targetScale = scale + delta * step;
 
   const newScale = checkZoomBounds(
     roundNumber(targetScale, 3),

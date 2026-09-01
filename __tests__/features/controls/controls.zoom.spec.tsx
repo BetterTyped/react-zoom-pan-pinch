@@ -12,14 +12,14 @@ describe("Controls [Zoom]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       await waitFor(() => {
         expect(content.style.transform).toBe(
-          "translate(-162.5px, -162.5px) scale(1.65)",
+          "translate(-125px, -125px) scale(1.5)",
         );
       });
       fireEvent(centerBtn, new MouseEvent("click", { bubbles: true }));
       await sleep(40);
       await waitFor(() => {
         expect(content.style.transform).toBe(
-          "translate(-162.5px, -162.5px) scale(1.65)",
+          "translate(-125px, -125px) scale(1.5)",
         );
       });
     });
@@ -31,7 +31,7 @@ describe("Controls [Zoom]", () => {
       fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
 
       await waitFor(() => {
-        expect(ref.current?.instance.state.scale).toBe(1.65);
+        expect(ref.current?.instance.state.scale).toBe(1.5);
       });
     });
 
@@ -40,12 +40,12 @@ describe("Controls [Zoom]", () => {
 
       fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
-        expect(ref.current?.instance.state.scale).toBe(1.65);
+        expect(ref.current?.instance.state.scale).toBe(1.5);
       });
 
       fireEvent(zoomInBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
-        expect(ref.current?.instance.state.scale).toBeGreaterThanOrEqual(1.65);
+        expect(ref.current?.instance.state.scale).toBe(2);
       });
     });
 
@@ -59,8 +59,8 @@ describe("Controls [Zoom]", () => {
     it("should change css scale", async () => {
       const { content, zoomOutBtn, zoom } = renderApp();
 
-      zoom({ value: 1.65 });
-      expect(content.style.transform).toBe("translate(0px, 0px) scale(1.65)");
+      zoom({ value: 1.5 });
+      expect(content.style.transform).toBe("translate(0px, 0px) scale(1.5)");
       fireEvent(zoomOutBtn, new MouseEvent("click", { bubbles: true }));
       await waitFor(() => {
         expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");

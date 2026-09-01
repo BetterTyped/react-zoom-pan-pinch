@@ -85,6 +85,9 @@ export const TransformComponent: React.FC<Props> = ({
         ref={contentRef}
         className={`${baseClasses.contentClass} ${styles.content} ${contentClass}`}
         style={{
+          // Inline so the zoom anchor survives environments where the
+          // stylesheet is not applied, e.g. a shadow root (#371, #444).
+          transformOrigin: "0 0",
           ...contentStyle,
           transform: getTransformStyles(
             instance.state.positionX,

@@ -16,4 +16,11 @@ Request for a mode with no panning or zooming boundaries, enabling truly infinit
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#328 — Close: shipped**
+
+- **Action:** Close: `limitToBounds={false}` + `<TransformComponent infinite>` + the Miro example is the unlimited mode.
+- **Why:** Maintainer's own issue; shipped in v4.

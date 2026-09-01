@@ -16,4 +16,11 @@ Request for directional pan controls (left, right, up, down buttons) for keyboar
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#527 — Close: dupe** · duplicate of #254 · cluster `keyboard-a11y`
+
+- **Action:** Close as part of #254: a `panBy(dx, dy)` control covers directional buttons. Until then `setTransform(positionX ± n, positionY, scale)` works (see the 2025-03 comment).
+- **Why:** Same feature from the button side.

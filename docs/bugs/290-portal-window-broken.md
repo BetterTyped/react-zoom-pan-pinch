@@ -22,3 +22,15 @@ Panning and other interactions break when the component is rendered inside a por
 ## Regression spec
 
 - N/A — multi-document window.open cannot be reproduced in jsdom.
+
+## Rating (2026-09-01)
+
+**#290 — Fix** · priority medium · cluster `portal-window`
+
+- **Action:** Review and merge PR #552 (panning in additional window) with a spec; then close #290 and #537.
+- **Why:** Partially addressed on master (ids resolve in `ownerDocument`, MiniMap listens on its own document). PR #552 by @qsavoye targets the remaining window-listener gap.
+
+**#537 — Close: dupe** · duplicate of #290 · cluster `portal-window`
+
+- **Action:** Close as duplicate of #290 once PR #552 lands.
+- **Why:** Same portal/external-window scenario.

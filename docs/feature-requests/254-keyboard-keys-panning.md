@@ -16,4 +16,11 @@ Request to support keyboard arrow keys for panning the viewport after zooming in
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#254 — Build** · priority medium · cluster `keyboard-a11y`
+
+- **Action:** Roadmap item 5. Add `keyboard={{ disabled, panStep, zoomStep }}` on the wrapper (arrows pan, +/- zoom, 0 reset) and a public `panBy(dx, dy)` control that #527 can use for buttons.
+- **Why:** No keyboard navigation exists in core (only modifier tracking). Accessibility win.

@@ -16,4 +16,11 @@ Request to make the CSS `overflow` property on the wrapper and content container
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#412 — Close: shipped**
+
+- **Action:** Close: `wrapperStyle={{ overflow: 'visible' }}` / `contentStyle` on `TransformComponent`.
+- **Why:** Shipped.

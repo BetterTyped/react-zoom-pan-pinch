@@ -6,3 +6,10 @@
 ## Reason
 
 The user reports that right-click "Open image in new tab" does not work. This is expected behavior when pointer event listeners are attached to the image wrapper, as the browser's context menu target changes. This is not a library bug — it is inherent to wrapping images in interactive containers. No repro or version info was provided.
+
+## Rating (2026-09-01)
+
+**#400 — Close: not worth**
+
+- **Action:** Close: expected with pointer listeners on the image.
+- **Why:** Not a defect.

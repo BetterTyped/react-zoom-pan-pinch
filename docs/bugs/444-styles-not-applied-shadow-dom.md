@@ -22,3 +22,10 @@ When the component is rendered inside a Shadow DOM, the library's injected style
 ## Regression spec
 
 - N/A — needs browser testing.
+
+## Rating (2026-09-01)
+
+**#444 — Close: dupe** · duplicate of #371 · cluster `styles-delivery`
+
+- **Action:** Close as duplicate of #371.
+- **Why:** Identical root cause (CSS-module classes not applied inside a shadow root).

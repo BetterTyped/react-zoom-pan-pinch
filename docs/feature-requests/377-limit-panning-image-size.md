@@ -16,4 +16,11 @@ Request to limit panning so the viewport never scrolls beyond the actual content
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#377 — Close: no repro**
+
+- **Action:** Close: bounds are derived from the content size with `limitToBounds`; ask for a repro if it recurs.
+- **Why:** Likely resolved by the v4 bounds fixes (#250/#396).

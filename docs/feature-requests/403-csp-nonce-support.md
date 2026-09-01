@@ -16,4 +16,11 @@ Request for Content Security Policy nonce support on injected `<style>` tags. Re
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#403 — Discuss** · priority medium · cluster `styles-delivery`
+
+- **Action:** Strict CSP blocks the runtime-injected `<style>` from rollup-plugin-postcss. Options: ship `dist/styles.css` and let consumers import it, or move the handful of critical rules inline. Decide together with #371.
+- **Why:** Shares a fix with the shadow-DOM cluster.

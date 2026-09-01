@@ -16,4 +16,11 @@ Request for an option to reverse the zoom direction (scroll up = zoom out, scrol
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#421 — Discuss** · priority low
+
+- **Action:** Decide whether a `wheel.reversed` flag is worth the API surface. Implementation is one sign flip in `getDelta`.
+- **Why:** Two reactions.

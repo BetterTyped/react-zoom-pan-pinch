@@ -16,4 +16,11 @@ Request to support browser text search (Cmd/Ctrl+F) in panning mode: when the br
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#550 — Close: not worth**
+
+- **Action:** Close: browsers expose no find-in-page event to hook into.
+- **Why:** Not implementable.

@@ -6,3 +6,10 @@
 ## Reason
 
 LQIP (Low Quality Image Placeholders) is an image optimization pattern handled at the application or image-loading layer, not within a zoom/pan/pinch library. The library is content-agnostic and renders whatever children it receives, so LQIP can be implemented entirely in userland without library changes.
+
+## Rating (2026-09-01)
+
+**#238 — Close: not worth**
+
+- **Action:** Close: LQIP is an image-pipeline concern.
+- **Why:** Out of scope.

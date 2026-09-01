@@ -16,4 +16,11 @@ Request for a "view at original size" (100% zoom / 1:1 pixel mapping) button or 
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#525 — Close: shipped** · cluster `fit-to-view`
+
+- **Action:** Close: `centerView(1)` (or `setTransform(x, y, 1)`) shows the content at 1:1. Could become a `zoomToScale` alias when #252 lands.
+- **Why:** Already possible; keep in the fit cluster for the docs page.

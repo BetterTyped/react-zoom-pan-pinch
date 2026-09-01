@@ -6,3 +6,10 @@
 ## Reason
 
 The issue body is effectively "hi i want to use drag and drop...can someone help me" with no code, no reproduction steps, and no version information. It reads as a help request rather than a bug report, and provides no actionable information to work with.
+
+## Rating (2026-09-01)
+
+**#268 — Close: shipped**
+
+- **Action:** Close: `panning.excluded` plus draggable/form subtrees are excluded since 2827939.
+- **Why:** Answered by the API.

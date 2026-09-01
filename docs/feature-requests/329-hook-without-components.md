@@ -16,4 +16,12 @@ Request for a hook-based API that provides zoom/pan/pinch behavior without requi
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-01 | **Shipped on master.** `useZoomPanPinch` is exported from the package and documented in the Storybook (Hooks/useZoomPanPinch). Spec: `__tests__/features/hooks/hooks.spec.tsx`. |
+
+## Rating (2026-09-01)
+
+**#329 — Build** · priority medium
+
+- **Action:** `useZoomPanPinch` exists in src/hooks and is covered by hooks.spec, but it is not exported from the package. Sign off on the API (`wrapperRef`, `contentRef`, `instance`, `useTransform`), export it from `src/hooks/index.ts` and document it.
+- **Why:** Ninety percent done; only the export and docs are missing.

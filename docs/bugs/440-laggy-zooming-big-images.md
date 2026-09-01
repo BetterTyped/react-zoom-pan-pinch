@@ -22,3 +22,10 @@ Zooming on large images causes noticeable lag/jank. The CSS transform triggers e
 ## Regression spec
 
 - N/A — performance, not a correctness assertion.
+
+## Rating (2026-09-01)
+
+**#440 — Close: not worth** · duplicate of #401 · cluster `render-performance`
+
+- **Action:** Close with the same performance guide as #401.
+- **Why:** 2025-09 comment confirms `will-change: transform` blurs SVG; there is no library-side fix for GPU rasterisation limits.

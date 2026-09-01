@@ -16,4 +16,11 @@ Request to allow scroll-wheel zoom while the user is actively panning (holding m
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#543 — Discuss** · priority low
+
+- **Action:** `isWheelAllowed` deliberately returns false while `isPanning`. Enabling wheel zoom mid-drag changes the pan anchor maths. Lean close unless a use case appears.
+- **Why:** No reactions.

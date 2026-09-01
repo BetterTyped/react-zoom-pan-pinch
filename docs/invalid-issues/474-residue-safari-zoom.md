@@ -6,3 +6,10 @@
 ## Reason
 
 The issue reports a vague visual artifact on Safari 15 and links to an external Google Drive video. No code, no minimal reproduction, and the issue is Safari-specific. Without a reproducible test case, this is not actionable — it may be a browser compositing bug rather than a library issue.
+
+## Rating (2026-09-01)
+
+**#474 — Close: no repro**
+
+- **Action:** Close: Safari 15 compositing artefact, no repro.
+- **Why:** Insufficient info.

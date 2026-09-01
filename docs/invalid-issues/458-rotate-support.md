@@ -6,3 +6,10 @@
 ## Reason
 
 The user is asking whether the library supports rotation. This is a pure question about the library's scope. Rotation is not part of the zoom/pan/pinch feature set, and the issue contains no concrete proposal or use case for adding it.
+
+## Rating (2026-09-01)
+
+**#458 — Close: not worth**
+
+- **Action:** Close: rotation changes the bounds maths fundamentally and is out of scope for this library.
+- **Why:** 5 reactions but no proposal.

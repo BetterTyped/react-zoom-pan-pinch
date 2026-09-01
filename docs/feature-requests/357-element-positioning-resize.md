@@ -16,4 +16,11 @@ When using absolute positioning to stack elements inside `TransformComponent`, w
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#357 — Close: no repro**
+
+- **Action:** Close: no reproduction, no activity since 2023.
+- **Why:** Vague layout question about absolutely-positioned children.

@@ -16,4 +16,11 @@ Request for click-to-navigate on the MiniMap: clicking a point on the minimap sh
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#536 — Discuss** · priority low · cluster `minimap`
+
+- **Action:** Click already pans the MiniMap; decide whether click should also zoom (opinionated). Lean close.
+- **Why:** No reactions.

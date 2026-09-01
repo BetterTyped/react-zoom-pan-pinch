@@ -16,4 +16,11 @@ Request to expose `scale`, `positionX`, and `positionY` state values from the `u
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#442 — Close: shipped**
+
+- **Action:** Close: `useControls()` returns `instance` and `state`; for reactive reads use `useTransformEffect`/`useTransformContext`; the ref exposes `instance.state`.
+- **Why:** Shipped; the docs answer is `useTransformEffect`.

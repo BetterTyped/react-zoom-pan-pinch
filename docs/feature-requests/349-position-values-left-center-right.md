@@ -16,4 +16,11 @@ Request to accept semantic position values like `'left' | 'center' | 'right'` an
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#349 — Discuss** · priority low
+
+- **Action:** Decide whether `initialPositionX/Y` should accept `'left' | 'center' | 'right'` / `'top' | 'center' | 'bottom'`. `centerOnInit` already covers the common case.
+- **Why:** Nice-to-have sugar; small.

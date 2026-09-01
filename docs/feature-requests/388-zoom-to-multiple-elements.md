@@ -16,4 +16,12 @@ Request for a `zoomToElements` (plural) API that calculates the bounding box of 
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-01 | **Shipped on master.** `zoomToElement` accepts an element, an id, or an array of either and frames the union rect. Spec: `__tests__/features/zoom-to-element/zoom-to-element.targets.spec.tsx`. |
+
+## Rating (2026-09-01)
+
+**#388 — Build** · priority medium
+
+- **Action:** Accept `HTMLElement | HTMLElement[] | string | string[]` in `zoomToElement` and fit the union rect. The reporter offered a PR; a contributor bumped it 2026-08-19.
+- **Why:** Small change inside `calculateZoomToNode`.

@@ -6,3 +6,10 @@
 ## Reason
 
 The user is asking how to access zoom/pan controls from components that are not descendants of TransformWrapper. This is answerable via the ref API (`useRef` on TransformWrapper), which exposes all control methods externally. It is a usage question, not a bug or missing feature.
+
+## Rating (2026-09-01)
+
+**#476 — Close: shipped**
+
+- **Action:** Close: the `TransformWrapper` ref exposes every control.
+- **Why:** Answered.

@@ -16,4 +16,11 @@ Request for a dedicated `onZoomOut` event/callback that fires specifically on zo
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#354 — Close: not worth**
+
+- **Action:** Close: `onZoom` receives `state.previousScale`, so direction is `scale < previousScale`.
+- **Why:** No new callback needed.

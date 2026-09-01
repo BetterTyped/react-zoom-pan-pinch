@@ -16,4 +16,12 @@ Request for a callback or event that fires when programmatic zoom animations (`z
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-01 | **Shipped on master.** `zoomIn`, `zoomOut`, `setTransform`, `resetTransform`, `centerView`, `zoomToElement` and the new `zoomToPoint` return a `Promise<void>` that settles when the animation finishes, is interrupted, or the component unmounts. Spec: `__tests__/features/controls/controls.promises.spec.tsx`. |
+
+## Rating (2026-09-01)
+
+**#214 — Build** · priority high
+
+- **Action:** Give `zoomIn/zoomOut/setTransform/resetTransform/centerView/zoomToElement` a completion signal: return a Promise resolved when `animate` finishes (or accept an `onComplete`). `animate` currently has no end hook.
+- **Why:** 16 reactions. Programmatic zooms fire `onZoom*` since 665bff5, but nothing tells the caller when the animation is done.

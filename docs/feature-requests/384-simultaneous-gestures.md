@@ -16,4 +16,11 @@ Request for simultaneous gesture support: panning while pinch-zooming with two f
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#384 — Close: shipped**
+
+- **Action:** Close: `pinch.allowPanning` pans while pinching.
+- **Why:** Shipped in v4.

@@ -16,4 +16,11 @@ Request for a built-in `Controls` component shipping zoom-in, zoom-out, reset, a
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#326 — Discuss** · priority low
+
+- **Action:** Decide whether to export the Storybook `Controls` (src/stories/utils/controls.utils.tsx) as a headless component. Styling opinions are the blocker; a headless variant with render props would avoid them.
+- **Why:** Maintainer's own issue. Zero external reactions.

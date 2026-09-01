@@ -6,3 +6,10 @@
 ## Reason
 
 The issue has an empty body (0 characters). The title poses a question but provides no context, no version, no code, and no description of the expected vs actual behavior. It is not actionable without any information to work with.
+
+## Rating (2026-09-01)
+
+**#459 — Close: no repro**
+
+- **Action:** Close: empty body.
+- **Why:** Insufficient info.

@@ -6,3 +6,10 @@
 ## Reason
 
 The user is asking about fitting behavior when zooming out below scale 1. This is a usage question about how existing props like `centerOnInit`, `minScale`, and alignment options work together. No bug or missing feature is described.
+
+## Rating (2026-09-01)
+
+**#245 — Close: shipped**
+
+- **Action:** Close: `centerZoomedOut` + `centerOnInit`.
+- **Why:** Answered by the API.

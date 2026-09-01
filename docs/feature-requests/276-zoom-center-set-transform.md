@@ -16,4 +16,11 @@ Request for a `setTransform` variant that zooms to or from a specific center poi
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#276 — Close: shipped**
+
+- **Action:** Close: `centerView(scale, animationTime, animationType)` zooms about the centre.
+- **Why:** Shipped.

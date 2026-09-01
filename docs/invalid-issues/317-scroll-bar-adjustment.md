@@ -6,3 +6,10 @@
 ## Reason
 
 The user is asking about scroll bar behavior when zooming SVG content. This is a usage/integration question about how CSS overflow and the transform container interact. The library deliberately uses CSS transforms rather than changing element dimensions, so native scrollbars require application-level handling.
+
+## Rating (2026-09-01)
+
+**#317 — Close: dupe** · duplicate of #454 · cluster `native-scrollbars`
+
+- **Action:** Close and point to #454.
+- **Why:** Scrollbar theme.

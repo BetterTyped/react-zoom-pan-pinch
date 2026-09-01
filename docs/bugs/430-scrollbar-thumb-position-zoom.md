@@ -22,3 +22,10 @@ When zooming, the browser's native scrollbar thumb jumps to an unexpected positi
 ## Regression spec
 
 - N/A — needs browser testing.
+
+## Rating (2026-09-01)
+
+**#430 — Close: not worth** · duplicate of #454 · cluster `native-scrollbars`
+
+- **Action:** Close; point to #454 for the scrollbar discussion.
+- **Why:** The library never drives native scroll, so scrollbar thumbs are the host page's. Folded into the scrollbars cluster.

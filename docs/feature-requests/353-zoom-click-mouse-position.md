@@ -16,4 +16,12 @@ Request for single-click zoom (instead of double-click) that zooms toward the mo
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-01 | **Shipped on master.** New `zoomToPoint(scale, clientX, clientY, animationTime?, animationType?)` control anchors the zoom at client coordinates. Spec: `__tests__/features/controls/controls.zoom-to-point.spec.tsx`. |
+
+## Rating (2026-09-01)
+
+**#353 — Build** · priority low
+
+- **Action:** Export the internal `handleZoomToPoint` as a `zoomToPoint(x, y, scale)` control. Single-click wiring stays in userland (it conflicts with pan-click).
+- **Why:** Cheap public API; also useful for #276-style focal zooms.

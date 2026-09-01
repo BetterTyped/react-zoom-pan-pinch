@@ -22,3 +22,10 @@ Large SVG content (~5MB+) causes significant lag on initial render and first int
 ## Regression spec
 
 - N/A — performance, not a correctness assertion.
+
+## Rating (2026-09-01)
+
+**#401 — Close: not worth** · cluster `render-performance`
+
+- **Action:** Close with a link to a short performance guide (Virtualize component, `will-change` trade-offs, rasterising huge SVGs to tiles). No library change.
+- **Why:** Paint cost of multi-megabyte SVG is a browser limit; the v4 `Virtualize` component and the Miro/stress examples are the answer.

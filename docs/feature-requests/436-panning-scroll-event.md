@@ -16,4 +16,11 @@ Request to connect panning state changes to native scroll events, enabling scrol
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#436 — Close: dupe** · duplicate of #454 · cluster `native-scrollbars`
+
+- **Action:** Close and point to #454.
+- **Why:** Same scroll/scrollbar theme.

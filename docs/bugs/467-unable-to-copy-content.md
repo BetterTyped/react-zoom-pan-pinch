@@ -22,3 +22,10 @@ Text selection and copy (Ctrl+C / Cmd+C) does not work on content inside Transfo
 ## Regression spec
 
 - N/A — no regression test until the CSS is gesture-scoped.
+
+## Rating (2026-09-01)
+
+**#467 — Fix** · priority medium
+
+- **Action:** Scope `user-select: none` to an active gesture (toggle a class while `isPanning`/pinching), or add a `panning.allowTextSelection` prop. Until then answer with the `text-selection` story pattern (`panning.excluded` + `userSelect: text`).
+- **Why:** Still the only bug marked Open in the September verification pass. The `text-selection` Storybook example already shows the userland workaround, so this is small.

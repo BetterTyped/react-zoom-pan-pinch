@@ -16,4 +16,11 @@ Request to configure which finger count triggers which gesture (e.g. 1-finger = 
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#473 — Close: not worth**
+
+- **Action:** Close: swapping finger counts contradicts every platform convention.
+- **Why:** No reactions.

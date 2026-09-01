@@ -16,4 +16,11 @@ Request for scroll-wheel-driven panning (vertical and horizontal scrolling moves
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#441 — Close: dupe** · duplicate of #113 · cluster `wheel-to-pan`
+
+- **Action:** Close as duplicate of #113 (shipped).
+- **Why:** Same ask.

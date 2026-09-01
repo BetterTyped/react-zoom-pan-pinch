@@ -22,3 +22,10 @@ On iOS Safari and Android Chrome, when a text input inside TransformComponent ga
 ## Regression spec
 
 - N/A — needs device testing.
+
+## Rating (2026-09-01)
+
+**#280 — Discuss** · priority medium · cluster `focus-scroll`
+
+- **Action:** Decide whether to handle focus-driven scroll of the wrapper: listen to `scroll` on the wrapper, fold `scrollLeft/scrollTop` into the transform and reset them to 0. Needs a real-device check before and after.
+- **Why:** Both #280 (virtual keyboard) and #477 (input focus) are the browser scrolling the `overflow: hidden` wrapper to reveal a focused control; the transform state never learns about it.

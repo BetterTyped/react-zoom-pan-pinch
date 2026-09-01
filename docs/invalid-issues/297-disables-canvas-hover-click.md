@@ -6,3 +6,10 @@
 ## Reason
 
 The user reports that integrating with react-img-mapper causes canvas hover and click events to stop working. This is an integration concern between the two libraries' event handling, not a bug in react-zoom-pan-pinch. Canvas event coordination with overlaid pointer listeners is an application-level responsibility.
+
+## Rating (2026-09-01)
+
+**#297 — Close: not worth** · duplicate of #378 · cluster `coordinates`
+
+- **Action:** Close: integration with react-img-mapper. The 2025-01 follow-up asks for click coordinates, which belongs to #378.
+- **Why:** See the coordinates helper cluster.

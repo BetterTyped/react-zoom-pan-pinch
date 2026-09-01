@@ -16,4 +16,11 @@ Request for a "fit to screen" API that scales content to fill the available view
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#376 — Close: dupe** · duplicate of #252 · cluster `fit-to-view`
+
+- **Action:** Close as duplicate of #252.
+- **Why:** Same ask.

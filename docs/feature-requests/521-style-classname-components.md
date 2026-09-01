@@ -16,4 +16,11 @@ Request to pass custom `style` and `className` props to `TransformWrapper` and `
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#521 — Close: shipped**
+
+- **Action:** Close: `TransformComponent` takes `wrapperClass`, `contentClass`, `wrapperStyle`, `contentStyle`, `wrapperProps`, `contentProps`. `TransformWrapper` renders no DOM.
+- **Why:** Confirmed by a commenter in 2025-08.

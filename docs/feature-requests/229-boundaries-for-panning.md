@@ -16,4 +16,11 @@ Request for configurable panning boundaries independent of content size. Users w
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#229 — Close: shipped**
+
+- **Action:** Close: `minPositionX/maxPositionX/minPositionY/maxPositionY` are respected since the #250/#478 fix. Mention PR #541 (`maxBounds`) only if a stricter mode is wanted.
+- **Why:** Custom pan boundaries exist.

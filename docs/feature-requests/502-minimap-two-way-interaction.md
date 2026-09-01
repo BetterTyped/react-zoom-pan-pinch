@@ -16,4 +16,11 @@ Request for bidirectional MiniMap interaction: clicking or dragging on the MiniM
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#502 — Close: shipped** · cluster `minimap`
+
+- **Action:** Close: `MiniMap` `panning` (default `true`) navigates on click and drag.
+- **Why:** Shipped in v4.

@@ -16,4 +16,11 @@ Request to automatically scale content to fit the container on initial load when
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#530 — Close: dupe** · duplicate of #252 · cluster `fit-to-view`
+
+- **Action:** Close as duplicate of #252.
+- **Why:** Same ask, first-render focused.

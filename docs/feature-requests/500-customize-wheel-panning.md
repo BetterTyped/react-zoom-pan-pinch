@@ -16,4 +16,11 @@ Request for customizable trackpad/wheel panning behavior: sensitivity adjustment
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#500 — Discuss** · priority low · cluster `wheel-to-pan`
+
+- **Action:** Decide whether `trackPadPanning` needs a `sensitivity`/`speed` option. Axis lock, velocity and activation keys already exist. PR #518 (shift key → horizontal wheel pan) is in the same area.
+- **Why:** Partially shipped; only speed tuning is missing.

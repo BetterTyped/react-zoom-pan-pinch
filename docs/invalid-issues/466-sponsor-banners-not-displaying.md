@@ -6,3 +6,10 @@
 ## Reason
 
 This reports that sponsor banner images in the README are not rendering on GitHub. This is a README/GitHub rendering issue, not a bug in the library code. It has no impact on library functionality.
+
+## Rating (2026-09-01)
+
+**#466 — Close: fixed**
+
+- **Action:** Close: README banners were rebuilt in 2026.
+- **Why:** Fixed.

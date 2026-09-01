@@ -16,4 +16,11 @@ Request for React Native compatibility. The library currently only supports Reac
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#368 — Close: not worth**
+
+- **Action:** Close: out of scope, the library is React DOM only.
+- **Why:** Would be a separate package.

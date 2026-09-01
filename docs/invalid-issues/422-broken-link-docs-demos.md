@@ -6,3 +6,10 @@
 ## Reason
 
 This is a duplicate of #417, reporting the same broken documentation and demo links. The user notes "Make sure to check your readme files and its links before updating." This is a docs/README maintenance issue, not a library code bug.
+
+## Rating (2026-09-01)
+
+**#422 — Close: dupe** · duplicate of #417 · cluster `docs-links`
+
+- **Action:** Close as duplicate of #417 (fixed).
+- **Why:** Same links.

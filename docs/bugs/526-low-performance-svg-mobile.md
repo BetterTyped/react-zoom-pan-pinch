@@ -22,3 +22,10 @@ Large SVG content (5MB+ map) causes severe performance degradation on Android de
 ## Regression spec
 
 - N/A — performance, not a correctness assertion.
+
+## Rating (2026-09-01)
+
+**#526 — Close: not worth** · duplicate of #401 · cluster `render-performance`
+
+- **Action:** Close with the same performance guide as #401.
+- **Why:** Android GPU rasterisation of a 5 MB SVG; not a library defect.

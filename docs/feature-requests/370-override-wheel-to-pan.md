@@ -16,4 +16,11 @@ Request to override the default wheel behavior from zoom to pan. Some users want
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#370 — Close: dupe** · duplicate of #113 · cluster `wheel-to-pan`
+
+- **Action:** Close as duplicate of #113 (shipped).
+- **Why:** Same ask; the 2025-02 comment already points at the v3 props.

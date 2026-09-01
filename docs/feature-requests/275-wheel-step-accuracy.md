@@ -16,4 +16,11 @@ The `wheel.step` value doesn't produce accurate, rounded scale increments. Users
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#275 — Close: shipped**
+
+- **Action:** Close: with `smooth: false` the wheel step is an exact additive increment (`scale + delta * step`), so 1.0 → 1.5 → 2.0 is reproducible.
+- **Why:** Shipped via the linear-step decision (76fa606).

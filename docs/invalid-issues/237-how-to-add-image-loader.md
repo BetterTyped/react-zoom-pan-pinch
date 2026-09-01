@@ -6,3 +6,10 @@
 ## Reason
 
 The user is asking how to show a loading state before images finish loading inside the transform container. This is standard React image handling (e.g. onLoad callbacks, skeleton placeholders) and is not a concern of the zoom/pan/pinch library itself.
+
+## Rating (2026-09-01)
+
+**#237 — Close: not worth**
+
+- **Action:** Close: image loading state is userland React.
+- **Why:** Out of scope.

@@ -22,3 +22,10 @@ Pinch zoom stopped working entirely in v3.6.1+. Instead of zooming the element, 
 ## Regression spec
 
 - N/A — needs device testing.
+
+## Rating (2026-09-01)
+
+**#506 — Close: fixed**
+
+- **Action:** Close as fixed: reporters confirm 3.7.0 fixed it (2025-02, 2025-05) and v4 carries the fix.
+- **Why:** Multiple confirmations in the thread; nothing left to verify.

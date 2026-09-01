@@ -16,4 +16,11 @@ Request for props to selectively enable or disable panning on specific mouse but
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#272 — Close: shipped**
+
+- **Action:** Close: `panning.allowLeftClickPan / allowMiddleClickPan / allowRightClickPan`.
+- **Why:** Shipped.

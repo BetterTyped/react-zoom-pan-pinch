@@ -16,4 +16,11 @@ Request to stop calling `preventDefault` on pan events when the content has reac
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#509 — Discuss** · priority medium
+
+- **Action:** Decide whether touch panning should stop calling `preventDefault` when the content is already at the bound in the gesture direction, so the page can scroll (scroll chaining). Real mobile UX need; needs a device pass.
+- **Why:** 6 reactions, 'this needs fixing' in 2025-08.

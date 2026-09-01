@@ -6,3 +6,10 @@
 ## Reason
 
 The bug template was filled with placeholder text only ("Go to '...'", "Click on '....'"). Zero actual information was provided — no device, no version, no reproduction steps, no description of the smoothness issue. Completely not actionable.
+
+## Rating (2026-09-01)
+
+**#469 — Close: no repro**
+
+- **Action:** Close: template placeholders only.
+- **Why:** Insufficient info.

@@ -22,3 +22,15 @@ Panning does not work on mobile devices when an iframe is a child of `TransformC
 ## Regression spec
 
 - N/A — needs device testing.
+
+## Rating (2026-09-01)
+
+**#385 — Discuss** · priority medium · cluster `iframe-children`
+
+- **Action:** Pick one: (a) document the overlay workaround (`pointer-events: none` on the iframe while a gesture is active, or a transparent capture layer), or (b) ship a `TransformIFrameComponent` as asked in the #348 thread. Cannot be fixed inside the core: events inside an iframe never reach the parent document.
+- **Why:** Three reporters across #385/#528 plus a roadmap comment. Needs a product decision, not a bug fix.
+
+**#528 — Close: dupe** · duplicate of #385 · cluster `iframe-children`
+
+- **Action:** Close as duplicate of #385.
+- **Why:** Same iframe-child limitation (pinch instead of pan).

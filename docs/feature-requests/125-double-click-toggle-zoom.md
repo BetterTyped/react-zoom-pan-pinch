@@ -16,4 +16,11 @@ Request for double-click to toggle between fully zoomed-in and fully zoomed-out 
 
 | Date | Entry |
 |------|-------|
-| — | _open_ |
+| 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+
+## Rating (2026-09-01)
+
+**#125 — Discuss** · priority low
+
+- **Action:** Decide the semantics of `doubleClick.mode: 'toggle'`: today it zooms in by `step` at scale 1 and out by `step` otherwise. PR #548 wants it relative to `initialScale`; the reporter wanted min↔max. Pick one, then close.
+- **Why:** Mostly shipped; the remaining question is what 'toggle' should mean.

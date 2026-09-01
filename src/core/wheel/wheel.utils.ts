@@ -14,6 +14,10 @@ export const isWheelAllowed = (
   const isAllowed = isInitialized && !isPanning && !disabled && target;
 
   if (!isAllowed) return false;
+  // A purely horizontal wheel/swipe (Magic Mouse, trackpad) carries no zoom
+  // intent. Treating its deltaY of 0 as "zoom out" was #168; leaving it
+  // unclaimed also lets trackpad panning pick it up.
+  if (event.deltaY === 0) return false;
   // Event ctrlKey detects if touchpad action is executing wheel or pinch gesture
   if (wheelDisabled && !event.ctrlKey) return false;
   if (touchPadDisabled && event.ctrlKey) return false;

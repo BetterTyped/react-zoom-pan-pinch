@@ -130,6 +130,9 @@ export const handleWheelPanningStart = (
 
   if (!contextInstance.wheelStopEventTimer) {
     handleCancelAnimation(contextInstance);
+    // Same as a mouse pan start: bounds must reflect the current scale and
+    // content size, not the ones measured at mount (#396, #433).
+    handleCalculateBounds(contextInstance, contextInstance.state.scale);
     handleCallback(getContext(contextInstance), event, onWheelStart);
     handleCallback(getContext(contextInstance), event, onPanningStart);
   }

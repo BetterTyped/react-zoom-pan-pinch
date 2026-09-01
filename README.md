@@ -1,4 +1,9 @@
-# 🖼 React Zoom Pan Pinch
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-lockup-dark.png">
+    <img src=".github/assets/logo-lockup-light.png" alt="react-zoom-pan-pinch" width="524" height="96">
+  </picture>
+</p>
 
 > Super fast and light react npm package for zooming, panning and pinching html
 > elements in easy way

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+<defs>
+<linearGradient id="rzpp-tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d2434"></stop><stop offset="1" stop-color="#090c12"></stop></linearGradient>
+<radialGradient id="rzpp-glow" cx="0.28" cy="0.12" r="0.85"><stop offset="0" stop-color="#ffffff" stop-opacity="0.1"></stop><stop offset="1" stop-color="#ffffff" stop-opacity="0"></stop></radialGradient>
+<linearGradient id="rzpp-accent" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color: hsl(198 93% 80%)"></stop><stop offset="1" style="stop-color: #38bdf8"></stop></linearGradient>
+
+<linearGradient id="rzpp-sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.5"></stop><stop offset="0.55" stop-color="#ffffff" stop-opacity="0"></stop></linearGradient>
+<filter id="rzpp-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"></feGaussianBlur></filter>
+</defs>
+<rect width="256" height="256" rx="58" fill="url(#rzpp-tile)"></rect>
+<rect width="256" height="256" rx="58" fill="url(#rzpp-glow)"></rect>
+<rect x="1.5" y="1.5" width="253" height="253" rx="56.5" fill="none" stroke="#ffffff" stroke-opacity="0.09" stroke-width="3"></rect>
+<g transform="translate(0 12)" filter="url(#rzpp-blur)" opacity="0.6"><path d="M116 78 H178 V140 M178 78 L142 114" fill="none" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" stroke="#000000"></path><path d="M140 178 H78 V116 M78 178 L114 142" fill="none" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" stroke="#000000"></path></g>
+<g transform="translate(0 7)"><path d="M116 78 H178 V140 M178 78 L142 114" fill="none" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" style="stroke: hsl(198 84% 26%)"></path><path d="M140 178 H78 V116 M78 178 L114 142" fill="none" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" style="stroke: hsl(198 84% 26%)"></path></g>
+<g><path d="M116 78 H178 V140 M178 78 L142 114" fill="none" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" stroke="url(#rzpp-accent)"></path><path d="M140 178 H78 V116 M78 178 L114 142" fill="none" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" stroke="url(#rzpp-accent)"></path></g>
+<g><path d="M116 78 H178 V140 M178 78 L142 114" fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke="url(#rzpp-sheen)"></path><path d="M140 178 H78 V116 M78 178 L114 142" fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke="url(#rzpp-sheen)"></path></g>
+</svg>

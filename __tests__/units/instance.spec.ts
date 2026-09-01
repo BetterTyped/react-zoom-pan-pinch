@@ -248,6 +248,8 @@ describe("ZoomPanPinch instance (headless)", () => {
       expect(Object.keys(controls).sort()).toEqual(
         [
           "centerView",
+          "clientToContent",
+          "contentToClient",
           "instance",
           "resetTransform",
           "setTransform",
@@ -255,6 +257,7 @@ describe("ZoomPanPinch instance (headless)", () => {
           "zoomIn",
           "zoomOut",
           "zoomToElement",
+          "zoomToPoint",
         ].sort(),
       );
     });
@@ -279,6 +282,9 @@ describe("ZoomPanPinch instance (headless)", () => {
       expect(() => controls.resetTransform(0)).not.toThrow();
       expect(() => controls.zoomToElement("missing", 2, 0)).not.toThrow();
       expect(() => controls.zoomIn(0.5, 0)).not.toThrow();
+      expect(() => controls.zoomToPoint(2, 10, 10, 0)).not.toThrow();
+      expect(controls.clientToContent(10, 20)).toEqual({ x: 0, y: 0 });
+      expect(controls.contentToClient(10, 20)).toEqual({ x: 0, y: 0 });
       expect(instance.state.scale).toBe(1);
       errorSpy.mockRestore();
     });

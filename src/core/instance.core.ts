@@ -108,6 +108,8 @@ export class ZoomPanPinch {
   public isAnimating = false;
   public animation: AnimationType | null = null;
   public animationFrame: number | null = null;
+  // Settles the promise returned by the running programmatic animation.
+  public animationResolve: (() => void) | null = null;
   // init helpers
   public initObserverTimer: ReturnType<typeof setTimeout> | null = null;
   // key press

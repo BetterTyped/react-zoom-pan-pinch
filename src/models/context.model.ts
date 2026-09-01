@@ -4,13 +4,31 @@ import { animations } from "../core/animations/animations.constants";
 import { DeepNonNullable } from "./helpers.model";
 import {
   centerView,
+  clientToContent,
+  contentToClient,
   resetTransform,
   setTransform,
   zoomIn,
   zoomOut,
   zoomToElement,
+  zoomToPoint,
 } from "../core/handlers/handlers.logic";
 import { ZoomPanPinch } from "../core/instance.core";
+
+export type ZoomToElementTarget = HTMLElement | string;
+
+export type ZoomToElementOptions = {
+  /** Explicit target scale; when omitted the element(s) are fitted to the viewport. */
+  scale?: number;
+  /** Lower cap for the automatically computed fit scale. */
+  minScale?: number;
+  /** Upper cap for the automatically computed fit scale (e.g. stop tiny elements from over-zooming). */
+  maxScale?: number;
+  animationTime?: number;
+  animationType?: keyof typeof animations;
+  offsetX?: number;
+  offsetY?: number;
+};
 
 export type ReactZoomPanPinchContext = typeof ZoomPanPinch.prototype;
 
@@ -41,6 +59,9 @@ export type ReactZoomPanPinchHandlers = {
   resetTransform: ReturnType<typeof resetTransform>;
   centerView: ReturnType<typeof centerView>;
   zoomToElement: ReturnType<typeof zoomToElement>;
+  zoomToPoint: ReturnType<typeof zoomToPoint>;
+  clientToContent: ReturnType<typeof clientToContent>;
+  contentToClient: ReturnType<typeof contentToClient>;
 };
 
 export type ReactZoomPanPinchRefProps = {

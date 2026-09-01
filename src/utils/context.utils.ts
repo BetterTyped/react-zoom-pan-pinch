@@ -10,7 +10,10 @@ import {
   setTransform,
   resetTransform,
   zoomToElement,
+  zoomToPoint,
   centerView,
+  clientToContent,
+  contentToClient,
 } from "../core/handlers/handlers.logic";
 
 export const getControls = (
@@ -25,6 +28,9 @@ export const getControls = (
     resetTransform: resetTransform(contextInstance),
     centerView: centerView(contextInstance),
     zoomToElement: zoomToElement(contextInstance),
+    zoomToPoint: zoomToPoint(contextInstance),
+    clientToContent: clientToContent(contextInstance),
+    contentToClient: contentToClient(contextInstance),
   };
 };
 

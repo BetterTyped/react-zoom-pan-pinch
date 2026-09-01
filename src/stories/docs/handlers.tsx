@@ -65,18 +65,42 @@ export const handlersTable: ComponentProps = {
   },
   zoomToElement: {
     type: [
-      "function(node, scale, animationTime, animationType, offsetX, offsetY)",
+      "function(node, scale | options, animationTime, animationType, offsetX, offsetY)",
     ],
     parameters: [
-      "node: HTMLElement | string",
-      "scale: number = undefined",
+      "node: HTMLElement | string | Array<HTMLElement | string>",
+      "scale: number | { scale?, minScale?, maxScale?, animationTime?, animationType?, offsetX?, offsetY? } = undefined",
       "animationTime: number = 600",
       "animationType: keyof typeof animations = easeOut",
       "offsetX: number = 0",
       "offsetY: number = 0",
     ],
     description:
-      "This function make a transition for certain node provided to the function(as node element or it's id string). It allows only to zoom elements with offsetWidth and offsetHeight properties - since SVG's doesn't have those, it is impossible to perform it on such elements.",
+      "Zooms and pans so the node(s) fill the viewport. Pass an element, an element id, or an array of them to frame the union of several elements. The second argument is either the target scale or an options object; `minScale`/`maxScale` cap the automatically computed fit scale. Returns a promise that resolves when the animation finishes.",
+  },
+  zoomToPoint: {
+    type: ["function(scale, clientX, clientY, animationTime, animationType)"],
+    parameters: [
+      "scale: number",
+      "clientX: number",
+      "clientY: number",
+      "animationTime: number = 300",
+      "animationType: keyof typeof animations = easeOut",
+    ],
+    description:
+      "Zooms to `scale` keeping the content point under the given client (viewport) coordinates fixed on screen — the same anchoring a wheel zoom does at the cursor. Use it for click-to-zoom. Returns a promise that resolves when the animation finishes.",
+  },
+  clientToContent: {
+    type: ["function(clientX, clientY): { x, y }"],
+    parameters: ["clientX: number", "clientY: number"],
+    description:
+      "Converts client (viewport) coordinates such as `event.clientX/Y` into unscaled content coordinates, independent of the current pan and zoom.",
+  },
+  contentToClient: {
+    type: ["function(x, y): { x, y }"],
+    parameters: ["x: number", "y: number"],
+    description:
+      "Inverse of `clientToContent`: converts unscaled content coordinates into client (viewport) coordinates for the current transform.",
   },
 };
 

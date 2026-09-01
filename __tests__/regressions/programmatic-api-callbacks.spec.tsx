@@ -17,6 +17,9 @@ const HANDLER_KEYS = [
   "centerView",
   "setTransform",
   "zoomToElement",
+  "zoomToPoint",
+  "clientToContent",
+  "contentToClient",
 ];
 
 function assertStableRefAPI(ctx: ReactZoomPanPinchRef | null) {

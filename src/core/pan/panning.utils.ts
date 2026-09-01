@@ -4,7 +4,11 @@ import {
   ReactZoomPanPinchContext,
   ReactZoomPanPinchState,
 } from "../../models";
-import { isExcludedNode } from "../../utils";
+import {
+  isDraggableTarget,
+  isEditableTarget,
+  isExcludedNode,
+} from "../../utils";
 import { getMouseBoundedPosition } from "../bounds/bounds.utils";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
@@ -35,11 +39,7 @@ export const isPanningStartAllowed = (
 
   if (isExcluded) return false;
 
-  if (
-    target.getAttribute("draggable") === "true" ||
-    target.getAttribute("contenteditable") === "true" ||
-    target.isContentEditable
-  ) {
+  if (isDraggableTarget(target) || isEditableTarget(target)) {
     return false;
   }
 

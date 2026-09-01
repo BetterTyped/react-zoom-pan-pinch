@@ -7,6 +7,7 @@ import {
   cancelTimeout,
   getContext,
   handleCallback,
+  isEditableTarget,
   isExcludedNode,
 } from "../../utils";
 import {
@@ -24,6 +25,7 @@ export const handleDoubleClickStop = (
   cancelTimeout(contextInstance.doubleClickStopEventTimer);
   contextInstance.doubleClickStopEventTimer = setTimeout(() => {
     contextInstance.doubleClickStopEventTimer = null;
+    if (!contextInstance.mounted) return;
     handleCallback(getContext(contextInstance), event, onZoomStop);
   }, animationTime);
 };
@@ -122,6 +124,9 @@ export const isDoubleClickAllowed = (
   const isExcluded = isExcludedNode(target, excluded);
 
   if (isExcluded) return false;
+
+  // Double-clicking a word inside an input selects it; it must not zoom.
+  if (isEditableTarget(target)) return false;
 
   return true;
 };

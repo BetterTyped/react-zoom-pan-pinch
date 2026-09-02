@@ -5,6 +5,10 @@ import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
 import dts from "rollup-plugin-dts";
 import pkg from "./package.json" with { type: "json" };
+import {
+  toDistRelativeSourcePath,
+  embedSourcesContentPlugin,
+} from "./scripts/sourcemap-path.cjs";
 
 export default [
   {
@@ -15,12 +19,14 @@ export default [
         format: "cjs",
         exports: "named",
         sourcemap: true,
+        sourcemapPathTransform: toDistRelativeSourcePath,
       },
       {
         file: pkg.module,
         format: "es",
         exports: "named",
         sourcemap: true,
+        sourcemapPathTransform: toDistRelativeSourcePath,
       },
     ],
     plugins: [
@@ -34,6 +40,7 @@ export default [
       postcss({
         modules: true,
       }),
+      embedSourcesContentPlugin(),
     ],
     onwarn(error, warn) {
       if (error.code !== "CIRCULAR_DEPENDENCY") {

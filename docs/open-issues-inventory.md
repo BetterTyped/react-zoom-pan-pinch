@@ -324,7 +324,7 @@ Closed on GitHub between 2026-04-06 and 2026-09-01. Their docs stay in `docs/bug
 | 516 | "Components are not mounted" error if TransformComponent render is del | 2026-04-07 |
 | 522 | not work | 2026-04-07 |
 | 524 | Unable to scroll up When zoomed In on PDF | 2026-04-07 |
-| 529 | Source maps contain the links to the absent `src` folder | 2026-09-01 |
+| 529 | Source maps contain the links to the absent `src` folder — **regressed in 4.0.7/4.1.0, fixed 2026-09-02** | 2026-09-01 |
 | 538 | Ignored attempt to cancel a touchmove event with cancelable=false due  | 2026-04-08 |
 | 540 | Zoom To Element Example Crashes Webpage | 2026-09-01 |
 | 542 | Source map warnings due to missing TypeScript files in published packa | 2026-09-01 |

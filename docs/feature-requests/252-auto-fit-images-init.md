@@ -17,6 +17,8 @@ Request to automatically scale large images to fit the container on initial rend
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-02 | **Shipped on master.** New `fitOnInit` prop (`true`/`'contain'`/`'cover'`; re-applied when the content gets its size, `resetTransform` returns to it) and `fitToView({ mode, minScale, maxScale, animationTime, animationType })` control. Both honour `minScale`/`maxScale`, so large content shrinks only when `minScale` allows. Specs: `__tests__/features/props/fit-on-init.spec.tsx`, `__tests__/features/controls/controls.fit-to-view.spec.tsx`. Closes #376, #530. |
+| 2026-09-02 | Follow-up: the pending initial layout also waits for the wrapper to have a size (hidden tab / collapsed panel), and the wrapper is measured by its client box so a border does not offset the fit. Storybook example: Basic/Fit Image. |
 
 ## Rating (2026-09-01)
 

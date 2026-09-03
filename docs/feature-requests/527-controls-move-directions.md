@@ -17,6 +17,7 @@ Request for directional pan controls (left, right, up, down buttons) for keyboar
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-02 | **Shipped on master** as `panBy(dx, dy)` (see #254). |
 
 ## Rating (2026-09-01)
 

@@ -17,6 +17,7 @@ Request for a "fit to screen" API that scales content to fill the available view
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-02 | **Shipped on master** via `fitToView()` / `fitOnInit` (see #252). |
 
 ## Rating (2026-09-01)
 

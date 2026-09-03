@@ -18,6 +18,7 @@ Text selection and copy (Ctrl+C / Cmd+C) does not work on content inside Transfo
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | **Open.** Still open: `.wrapper { user-select: none }` is what blocks selection and copy. The previous spec listed that rule as the fix for this issue; it is now a plain CSS-contract pin. A fix would scope `user-select: none` to active gestures only. |
+| 2026-09-02 | **Fixed on master.** The stylesheet no longer sets `user-select: none`; the wrapper gets an inline `user-select: none` only while a pan gesture is active (mouse or touch) and the previous inline value is restored afterwards. `panning.disabled` also stops the mousedown from being claimed, so selection works natively there. Spec: `__tests__/regressions/text-selection.spec.tsx`. |
 
 ## Regression spec
 

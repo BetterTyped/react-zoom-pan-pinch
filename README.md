@@ -1,7 +1,7 @@
-<p align="center">
+<p>
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-lockup-dark.png">
-    <img src=".github/assets/logo-lockup-light.png" alt="react-zoom-pan-pinch" width="524" height="96">
+    <img src=".github/assets/logo-lockup-light.png" alt="react-zoom-pan-pinch" width="524">
   </picture>
 </p>
 

@@ -18,6 +18,7 @@ Request for a `zoomToElements` (plural) API that calculates the bounding box of 
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
 | 2026-09-01 | **Shipped on master.** `zoomToElement` accepts an element, an id, or an array of either and frames the union rect. Spec: `__tests__/features/zoom-to-element/zoom-to-element.targets.spec.tsx`. |
+| 2026-09-03 | Storybook example added: **Advanced/Zoom To Group** (`src/stories/examples/zoom-to-group`) — frames whole clusters and a multi-selection of nodes through the array form of `zoomToElement`. |
 
 ## Rating (2026-09-01)
 

@@ -36,7 +36,7 @@ the `## Rating (2026-09-01)` section of each doc; this file is the index.
 | Keep: meta | 2 |
 
 **67 of the 95 were closed on GitHub on 2026-09-01** (each with a comment giving the
-reason; see the close list). After the easy-wins pass (v4.1.0) 21 remain open: 2 Fix (#467, #290), 2 Build (#252, #254), 14 Discuss, 2 meta; #371 is partially addressed and stays open.
+reason; see the close list). After the easy-wins pass (v4.1.0) 21 remained open; the 2026-09-02 pass fixed/built #467, #290, #252, #254 (plus dupes #537, #376, #530, #527), leaving 14 Discuss, 2 meta and the partially addressed #371.
 
 ## Fixed in the 2026-09-01 easy-wins pass (released as v4.1.0)
 
@@ -51,17 +51,29 @@ reason; see the close list). After the easy-wins pass (v4.1.0) 21 remain open: 2
 | 515 | `zoomToElement` options object with `minScale`/`maxScale` |
 | 371 | Inline `transform-origin` + root-node id lookup (partial) |
 
+## Fixed in the 2026-09-02 pass (uncommitted at the time of writing)
+
+| # | Change |
+|---|--------|
+| 467 | Text is selectable again; `user-select: none` is applied inline only during a pan |
+| 290 / 537 | Panning works in another window (duck-typed node and touch-event checks) |
+| 252 / 376 / 530 | `fitOnInit` prop and `fitToView()` control |
+| 254 / 527 | Opt-in `keyboard` navigation and `panBy()` control |
+| 529 / 542 | Source maps resolve and embed sources (commit 27f07ff, released as v4.1.1) |
+| — | Wrapper is measured with `clientWidth`/`clientHeight`: a border on the wrapper no longer shifts centring, bounds and fit by its width |
+| — | Keyboard mode focuses the wrapper when a pan starts (a cancelled mousedown never focuses), handled keys stop propagating; Storybook examples "Fit Image" and "Keyboard Navigation" added |
+
 ## Work list (Fix / Build / Discuss)
 
 | # | Verdict | Priority | Title | Action |
 |---|---------|----------|-------|--------|
 | 582 | Fix → **Fixed in v4.1.0** | high | Wheel input dropped when it arrives 100-160ms after the prev | Fix in `handleWheelZoom`/`handleWheelStart`: cancel the running alignment animation (or key the cancel guard to `wheelAnimationTimer`), and skip `handleAlignToBounds` when the target equals the current state. Add a fake-timer regression spec for gaps of 90/120/150 ms. |
-| 290 | Fix | medium | Broken when using portal windows on Mac - Chrome | Review and merge PR #552 (panning in additional window) with a spec; then close #290 and #537. |
+| 290 | Fix → **Fixed on master** | medium | Broken when using portal windows on Mac - Chrome | Review and merge PR #552 (panning in additional window) with a spec; then close #290 and #537. |
 | 371 | Fix → **Partially addressed on master** | medium | Support Use Under Shadow DOM | Inline the critical styles (`transform-origin: 0 0`, `position`, `overflow`, `user-select`) as style attributes, or inject the stylesheet into `wrapperComponent.getRootNode()` when it is a ShadowRoot. Resolve event targets through `composedPath()`. Add a jsdom spec that mounts inside `attachShadow`. |
-| 467 | Fix | medium | Unable to Copy content | Scope `user-select: none` to an active gesture (toggle a class while `isPanning`/pinching), or add a `panning.allowTextSelection` prop. Until then answer with the `text-selection` story pattern (`panning.excluded` + `userSelect: text`). |
+| 467 | Fix → **Fixed on master** | medium | Unable to Copy content | Scope `user-select: none` to an active gesture (toggle a class while `isPanning`/pinching), or add a `panning.allowTextSelection` prop. Until then answer with the `text-selection` story pattern (`panning.excluded` + `userSelect: text`). |
 | 214 | Build → **Shipped in v4.1.0** | high | Fire events or callbacks at zoomIn, zoomToElement etc...? | Give `zoomIn/zoomOut/setTransform/resetTransform/centerView/zoomToElement` a completion signal: return a Promise resolved when `animate` finishes (or accept an `onComplete`). `animate` currently has no end hook. |
-| 252 | Build | high | Auto fit large images on init | Add a first-class fit: `initialScale="fit"` (or `fitOnInit`) plus a `fitToView()` control. Today the workaround is `zoomToElement(contentEl, undefined, 0)` from `onInit`/image `onload`. |
-| 254 | Build | medium | Use keyboard keys for panning | Roadmap item 5. Add `keyboard={{ disabled, panStep, zoomStep }}` on the wrapper (arrows pan, +/- zoom, 0 reset) and a public `panBy(dx, dy)` control that #527 can use for buttons. |
+| 252 | Build → **Shipped on master** | high | Auto fit large images on init | Add a first-class fit: `initialScale="fit"` (or `fitOnInit`) plus a `fitToView()` control. Today the workaround is `zoomToElement(contentEl, undefined, 0)` from `onInit`/image `onload`. |
+| 254 | Build → **Shipped on master** | medium | Use keyboard keys for panning | Roadmap item 5. Add `keyboard={{ disabled, panStep, zoomStep }}` on the wrapper (arrows pan, +/- zoom, 0 reset) and a public `panBy(dx, dy)` control that #527 can use for buttons. |
 | 329 | Build → **Shipped in v4.1.0** | medium | Add hook to allow zoom-pan-pinch without predefined componen | `useZoomPanPinch` exists in src/hooks and is covered by hooks.spec, but it is not exported from the package. Sign off on the API (`wrapperRef`, `contentRef`, `instance`, `useTransform`), export it from `src/hooks/index.ts` and document it. |
 | 388 | Build → **Shipped in v4.1.0** | medium | Zoom to multiple elements | Accept `HTMLElement \| HTMLElement[] \| string \| string[]` in `zoomToElement` and fit the union rect. The reporter offered a PR; a contributor bumped it 2026-08-19. |
 | 353 | Build → **Shipped in v4.1.0** | low | Zoom in on click to mouse position | Export the internal `handleZoomToPoint` as a `zoomToPoint(x, y, scale)` control. Single-click wiring stays in userland (it conflicts with pan-click). |
@@ -185,16 +197,16 @@ reason; see the close list). After the easy-wins pass (v4.1.0) 21 remain open: 2
 | 237 | How to add an image loader ? | invalid | Close: not worth | — | — | — | 1 | 1 | [237-how-to-add-image-loader.md](invalid-issues/237-how-to-add-image-loader.md) |
 | 238 | Feature request: support of LQIP (Low Quality Images Placeholder) | invalid | Close: not worth | — | — | — | 0 | 0 | [238-support-lqip.md](invalid-issues/238-support-lqip.md) |
 | 245 | Can I make TransformWrapper fit to Top and Bottom of TransformCompo... | invalid | Close: shipped | — | — | — | 3 | 0 | [245-fit-to-top-and-bottom.md](invalid-issues/245-fit-to-top-and-bottom.md) |
-| 252 | Auto fit large images on init | feature | Build | high | fit-to-view | — | 22 | 2 | [252-auto-fit-images-init.md](feature-requests/252-auto-fit-images-init.md) |
+| 252 | Auto fit large images on init | feature | Build → Shipped on master | high | fit-to-view | — | 22 | 2 | [252-auto-fit-images-init.md](feature-requests/252-auto-fit-images-init.md) |
 | 253 | on double click is there any callback method | invalid | Close: dupe | — | — | → #369 | 7 | 1 | [253-double-click-callback.md](invalid-issues/253-double-click-callback.md) |
-| 254 | Use keyboard keys for panning | feature | Build | medium | keyboard-a11y | — | 0 | 0 | [254-keyboard-keys-panning.md](feature-requests/254-keyboard-keys-panning.md) |
+| 254 | Use keyboard keys for panning | feature | Build → Shipped on master | medium | keyboard-a11y | — | 0 | 0 | [254-keyboard-keys-panning.md](feature-requests/254-keyboard-keys-panning.md) |
 | 256 | Step for zoom in and zoom out not equal | invalid | Close: fixed | — | linear-step | — | 0 | 0 | [256-zoom-step-not-equal.md](invalid-issues/256-zoom-step-not-equal.md) |
 | 268 | disableOnTarget pan property | invalid | Close: shipped | — | — | — | 3 | 0 | [268-disable-on-target-pan.md](invalid-issues/268-disable-on-target-pan.md) |
 | 272 | Disable panning on specific mouse buttons? | feature | Close: shipped | — | — | — | 4 | 1 | [272-disable-panning-mouse-buttons.md](feature-requests/272-disable-panning-mouse-buttons.md) |
 | 275 | wheel step is not accurate | feature | Close: shipped | — | — | — | 1 | 2 | [275-wheel-step-accuracy.md](feature-requests/275-wheel-step-accuracy.md) |
 | 276 | Zoom on center using  setTransform | feature | Close: shipped | — | — | — | 7 | 9 | [276-zoom-center-set-transform.md](feature-requests/276-zoom-center-set-transform.md) |
 | 280 | Mobile - Virtual keyboard overlap behaviour | bugs | Discuss | medium | focus-scroll | — | 2 | 2 | [280-mobile-virtual-keyboard-overlap.md](bugs/280-mobile-virtual-keyboard-overlap.md) |
-| 290 | Broken when using portal windows on Mac - Chrome | bugs | Fix | medium | portal-window | — | 0 | 1 | [290-portal-window-broken.md](bugs/290-portal-window-broken.md) |
+| 290 | Broken when using portal windows on Mac - Chrome | bugs | Fix → Fixed on master | medium | portal-window | — | 0 | 1 | [290-portal-window-broken.md](bugs/290-portal-window-broken.md) |
 | 297 | react zoom pan pinch disables my canvas hover and click | invalid | Close: not worth | — | coordinates | → #378 | 3 | 2 | [297-disables-canvas-hover-click.md](invalid-issues/297-disables-canvas-hover-click.md) |
 | 313 | CSS issues on zooming and duplicating tab | bugs | Close: no repro | — | — | — | 0 | 0 | [313-css-zoom-duplicate-tab.md](bugs/313-css-zoom-duplicate-tab.md) |
 | 317 | scroll bar adjustment | invalid | Close: dupe | — | native-scrollbars | → #454 | 2 | 0 | [317-scroll-bar-adjustment.md](invalid-issues/317-scroll-bar-adjustment.md) |
@@ -243,7 +255,7 @@ reason; see the close list). After the easy-wins pass (v4.1.0) 21 remain open: 2
 | 458 | Is there any way to do rotate in this library? | invalid | Close: not worth | — | — | — | 5 | 5 | [458-rotate-support.md](invalid-issues/458-rotate-support.md) |
 | 459 | how to disable panning while transformation in react-zoom-pan-pinch... | invalid | Close: no repro | — | — | — | 0 | 0 | [459-disable-panning-while-transformation.md](invalid-issues/459-disable-panning-while-transformation.md) |
 | 466 | Sponser banners in README.md not displaying | invalid | Close: fixed | — | — | — | 0 | 0 | [466-sponsor-banners-not-displaying.md](invalid-issues/466-sponsor-banners-not-displaying.md) |
-| 467 | Unable to Copy content | bugs | Fix | medium | — | — | 0 | 0 | [467-unable-to-copy-content.md](bugs/467-unable-to-copy-content.md) |
+| 467 | Unable to Copy content | bugs | Fix → Fixed on master | medium | — | — | 0 | 0 | [467-unable-to-copy-content.md](bugs/467-unable-to-copy-content.md) |
 | 469 | Pinching is not working as smooth | invalid | Close: no repro | — | — | — | 0 | 0 | [469-pinching-not-smooth.md](invalid-issues/469-pinching-not-smooth.md) |
 | 470 | Better examples and documentation | invalid | Close: fixed | — | — | — | 15 | 1 | [470-better-examples-documentation.md](invalid-issues/470-better-examples-documentation.md) |
 | 472 | How i get clicked x, y coordinates in react-zoom-pan-pinch canvas? | invalid | Close: dupe | — | coordinates | → #378 | 0 | 1 | [472-get-clicked-coordinates.md](invalid-issues/472-get-clicked-coordinates.md) |

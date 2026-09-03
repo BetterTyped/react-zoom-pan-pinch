@@ -18,6 +18,7 @@ Request for `zoomToElement` to accept `maxScale`/`minScale` constraints, prevent
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
 | 2026-09-01 | **Shipped on master.** `zoomToElement(node, { minScale, maxScale, scale, animationTime, animationType, offsetX, offsetY })` caps the automatic fit scale. Spec: `__tests__/features/zoom-to-element/zoom-to-element.targets.spec.tsx`. |
+| 2026-09-03 | Storybook example added: **Advanced/Zoom To Group** (`src/stories/examples/zoom-to-group`) — a "cap zoom" toggle shows `maxScale` stopping a single node from filling the viewport. |
 
 ## Rating (2026-09-01)
 

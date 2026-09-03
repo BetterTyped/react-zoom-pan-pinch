@@ -17,6 +17,7 @@ Request to automatically scale content to fit the container on initial load when
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-09-02 | **Shipped on master** via `fitOnInit` (see #252). |
 
 ## Rating (2026-09-01)
 

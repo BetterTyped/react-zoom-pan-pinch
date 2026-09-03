@@ -18,6 +18,7 @@ Panning and other interactions break when the component is rendered inside a por
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | **Partially addressed.** Partially addressed: `zoomToElement(id)` now resolves ids in the wrapper's `ownerDocument` and the MiniMap listens on its own document; window/document listeners were already attached to the wrapper's window. A real portal-window pass is not possible in jsdom. Dupe #537. |
+| 2026-09-02 | **Fixed on master.** `isPanningStartAllowed` walks `composedPath()` with a duck-typed element check and `handlePanningStart` detects touch events by shape, so nodes and events from another window (portal, popup, iframe) are accepted (the change proposed in PR #552). Spec: `__tests__/regressions/portal-window.spec.tsx` renders into an iframe realm and pans with mouse and touch. Dupe #537. |
 
 ## Regression spec
 

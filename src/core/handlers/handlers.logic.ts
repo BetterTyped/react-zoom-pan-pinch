@@ -1,18 +1,25 @@
 import {
+  FitToViewOptions,
   PositionType,
   ReactZoomPanPinchContext,
   ZoomToElementOptions,
   ZoomToElementTarget,
 } from "../../models";
 import {
+  calculateFitToView,
   calculateZoomToRect,
   clientToContentPoint,
   contentToClientPoint,
   getUnionRect,
   handleZoomToViewCenter,
   resetTransformations,
+  runPanAnimation,
   runZoomAnimation,
 } from "./handlers.utils";
+import {
+  handleCalculateBounds,
+  getMouseBoundedPosition,
+} from "../bounds/bounds.utils";
 import { animations } from "../animations/animations.constants";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import { handleZoomToPoint } from "../zoom/zoom.logic";
@@ -250,5 +257,83 @@ export const zoomToElement =
       targetState,
       options.animationTime ?? animationTime,
       options.animationType ?? animationType,
+    );
+  };
+
+/**
+ * Fits the whole content into the viewport (`contain`, default) or fills the
+ * viewport with it (`cover`), centred. Honours the wrapper's
+ * `minScale`/`maxScale`; lower `minScale` to let large content shrink (#252).
+ */
+export const fitToView =
+  (contextInstance: ReactZoomPanPinchContext) =>
+  (options: FitToViewOptions = {}): Promise<void> => {
+    const { wrapperComponent, contentComponent, setup } = contextInstance;
+    if (setup.disabled || !wrapperComponent || !contentComponent) {
+      return Promise.resolve();
+    }
+
+    const targetState = calculateFitToView(
+      contextInstance,
+      options.mode ?? "contain",
+      options.minScale,
+      options.maxScale,
+    );
+    if (!targetState) return Promise.resolve();
+
+    const animationTime = setup.zoomAnimation.disabled
+      ? 0
+      : options.animationTime ?? 200;
+
+    return runZoomAnimation(
+      contextInstance,
+      targetState,
+      animationTime,
+      options.animationType ?? "easeOut",
+    );
+  };
+
+/**
+ * Pans by a pixel delta (positive x moves the content right), limited to the
+ * bounds when `limitToBounds` is on. Backs the keyboard arrows and is handy
+ * for directional buttons (#254, #527).
+ */
+export const panBy =
+  (contextInstance: ReactZoomPanPinchContext) =>
+  (
+    deltaX: number,
+    deltaY: number,
+    animationTime = 200,
+    animationType: keyof typeof animations = "easeOut",
+  ): Promise<void> => {
+    const { wrapperComponent, contentComponent, setup, state } =
+      contextInstance;
+    if (setup.disabled || !wrapperComponent || !contentComponent) {
+      return Promise.resolve();
+    }
+    if (!Number.isFinite(deltaX) || !Number.isFinite(deltaY)) {
+      return Promise.resolve();
+    }
+
+    const bounds = handleCalculateBounds(contextInstance, state.scale);
+    const { x, y } = getMouseBoundedPosition(
+      state.positionX + deltaX,
+      state.positionY + deltaY,
+      bounds,
+      setup.limitToBounds,
+      0,
+      0,
+      wrapperComponent,
+    );
+
+    if (x === state.positionX && y === state.positionY) {
+      return Promise.resolve();
+    }
+
+    return runPanAnimation(
+      contextInstance,
+      { scale: state.scale, positionX: x, positionY: y },
+      animationTime,
+      animationType,
     );
   };

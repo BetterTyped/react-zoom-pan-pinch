@@ -70,8 +70,15 @@ export const TransformComponent: React.FC<Props> = ({
     return instance.onChange(sync);
   }, [infinite, instance]);
 
+  // Keyboard navigation (#254) needs a focus target; `wrapperProps.tabIndex`
+  // still wins because it is spread afterwards.
+  const keyboardEnabled = !instance.setup.keyboard?.disabled;
+
   return (
     <div
+      // The wrapper is a keyboard-operated widget when navigation is on.
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={keyboardEnabled ? 0 : undefined}
       {...wrapperProps}
       ref={wrapperRef}
       className={`${baseClasses.wrapperClass} ${styles.wrapper} ${wrapperClass}`}

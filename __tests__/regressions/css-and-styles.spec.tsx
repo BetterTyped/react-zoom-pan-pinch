@@ -15,7 +15,8 @@ const readBlock = (css: string, selector: string): string => {
 /**
  * These pin the shipped stylesheet contract. They are not fixes for any
  * GitHub issue: #112 (fit-content in old Chrome) could not be reproduced on a
- * current browser and #467 (text selection inside the canvas) is still open;
+ * current browser and #467 (text selection inside the canvas) is fixed by an
+ * inline lock during gestures;
  * see docs/bugs/112-*.md and docs/bugs/467-*.md.
  */
 describe("CSS module contract", () => {
@@ -36,9 +37,11 @@ describe("CSS module contract", () => {
     expect(content).toMatch(/height:\s*fit-content/);
   });
 
-  it("wrapper disables text selection (current behaviour, #467 remains open)", () => {
+  it("wrapper leaves text selectable; the lock is applied inline during a pan (#467)", () => {
     const wrapper = readBlock(css, "\\.wrapper");
-    expect(wrapper).toMatch(/user-select:\s*none/);
+    expect(wrapper).not.toMatch(/user-select/);
+    // The iOS long-press callout on images stays disabled.
+    expect(wrapper).toMatch(/-webkit-touch-callout:\s*none/);
   });
 
   it("images inside the content do not capture pointer events", () => {

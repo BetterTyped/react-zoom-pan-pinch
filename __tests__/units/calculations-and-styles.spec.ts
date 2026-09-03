@@ -79,7 +79,12 @@ describe("styles.utils", () => {
 
   describe("getCenterPosition", () => {
     const element = (width: number, height: number) =>
-      ({ offsetWidth: width, offsetHeight: height }) as HTMLDivElement;
+      ({
+        offsetWidth: width,
+        offsetHeight: height,
+        clientWidth: width,
+        clientHeight: height,
+      }) as HTMLDivElement;
 
     it("centers content smaller than the wrapper with a positive offset", () => {
       expect(

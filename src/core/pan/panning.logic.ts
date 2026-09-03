@@ -25,7 +25,8 @@ export function handlePanningStart(
   contextInstance.panStartPosition = { x: positionX, y: positionY };
   handleCancelAnimation(contextInstance);
   handleCalculateBounds(contextInstance, scale);
-  if (window.TouchEvent !== undefined && event instanceof TouchEvent) {
+  // Duck-typed: a TouchEvent from another window fails `instanceof` (#290).
+  if ("touches" in event) {
     handleTouchPanningSetup(contextInstance, event as TouchEvent);
   } else {
     handlePanningSetup(contextInstance, event as MouseEvent);
@@ -44,6 +45,13 @@ export function handleAlignToBounds(
   const isDisabled = disabled || scale < minScale || (!sizeX && !sizeY);
 
   if (isDisabled) return;
+
+  // The content or the wrapper changed size during the gesture (the resize
+  // observer postpones its bounds refresh, see `handleResizeAlignment`):
+  // align against the current limits so this single animation lands right.
+  if (contextInstance.isResizeAlignmentPending) {
+    handleCalculateBounds(contextInstance, scale);
+  }
 
   const targetState = handlePanToBounds(contextInstance);
 
@@ -107,8 +115,14 @@ export function handlePanningEnd(
     contextInstance.isAnimating = false;
     contextInstance.animation = null;
 
-    const wrapperWidth = wrapperComponent?.offsetWidth || 0;
-    const wrapperHeight = wrapperComponent?.offsetHeight || 0;
+    // See `handleAlignToBounds`: the velocity animation clamps against
+    // `bounds`, so they must reflect a size change seen during the pan.
+    if (contextInstance.isResizeAlignmentPending) {
+      handleCalculateBounds(contextInstance, scale);
+    }
+
+    const wrapperWidth = wrapperComponent?.clientWidth || 0;
+    const wrapperHeight = wrapperComponent?.clientHeight || 0;
     const contentWidth = (contentComponent?.offsetWidth || 0) * scale;
     const contentHeight = (contentComponent?.offsetHeight || 0) * scale;
     const isContentOverflowing =

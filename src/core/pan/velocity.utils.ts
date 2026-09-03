@@ -15,8 +15,8 @@ export const isVelocityCalculationAllowed = (
   if (!limitToBounds) return true;
 
   const contentOverflows =
-    wrapperComponent.offsetWidth < contentComponent.offsetWidth * scale ||
-    wrapperComponent.offsetHeight < contentComponent.offsetHeight * scale;
+    wrapperComponent.clientWidth < contentComponent.offsetWidth * scale ||
+    wrapperComponent.clientHeight < contentComponent.offsetHeight * scale;
 
   return contentOverflows;
 };

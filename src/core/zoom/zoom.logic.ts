@@ -54,8 +54,8 @@ export function handleAlignToScaleBounds(
 
   if (isDisabled || !wrapperComponent || !contextInstance.mounted) return;
 
-  const mouseX = mousePositionX || wrapperComponent.offsetWidth / 2;
-  const mouseY = mousePositionY || wrapperComponent.offsetHeight / 2;
+  const mouseX = mousePositionX || wrapperComponent.clientWidth / 2;
+  const mouseY = mousePositionY || wrapperComponent.clientHeight / 2;
 
   const targetScale = scale < minScale ? minScale : maxScale;
   const targetState = handleZoomToPoint(

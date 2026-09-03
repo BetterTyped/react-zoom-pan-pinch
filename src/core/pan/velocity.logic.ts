@@ -14,7 +14,7 @@ import {
 
 export function getSizeMultiplier(wrapperComponent: HTMLDivElement): number {
   const defaultMultiplier = 1;
-  const value = wrapperComponent.offsetWidth / window.innerWidth;
+  const value = wrapperComponent.clientWidth / window.innerWidth;
 
   if (Number.isNaN(value)) {
     return defaultMultiplier;
@@ -123,8 +123,8 @@ export function handleVelocityPanning(
 
   const paddingValueX = getPaddingValue(contextInstance, sizeX);
   const paddingValueY = getPaddingValue(contextInstance, sizeY);
-  const paddingX = (paddingValueX * wrapperComponent.offsetWidth) / 100;
-  const paddingY = (paddingValueY * wrapperComponent.offsetHeight) / 100;
+  const paddingX = (paddingValueX * wrapperComponent.clientWidth) / 100;
+  const paddingY = (paddingValueY * wrapperComponent.clientHeight) / 100;
   const maxTargetX = maxPositionX + paddingX;
   const minTargetX = minPositionX - paddingX;
 

@@ -6,6 +6,8 @@ import {
   centerView,
   clientToContent,
   contentToClient,
+  fitToView,
+  panBy,
   resetTransform,
   setTransform,
   zoomIn,
@@ -28,6 +30,19 @@ export type ZoomToElementOptions = {
   animationType?: keyof typeof animations;
   offsetX?: number;
   offsetY?: number;
+};
+
+export type FitToViewMode = "contain" | "cover";
+
+export type FitToViewOptions = {
+  /** `contain` (default) shows the whole content, `cover` fills the viewport. */
+  mode?: FitToViewMode;
+  /** Lower cap for the computed fit scale. */
+  minScale?: number;
+  /** Upper cap for the computed fit scale. */
+  maxScale?: number;
+  animationTime?: number;
+  animationType?: keyof typeof animations;
 };
 
 export type ReactZoomPanPinchContext = typeof ZoomPanPinch.prototype;
@@ -62,6 +77,8 @@ export type ReactZoomPanPinchHandlers = {
   zoomToPoint: ReturnType<typeof zoomToPoint>;
   clientToContent: ReturnType<typeof clientToContent>;
   contentToClient: ReturnType<typeof contentToClient>;
+  fitToView: ReturnType<typeof fitToView>;
+  panBy: ReturnType<typeof panBy>;
 };
 
 export type ReactZoomPanPinchRefProps = {
@@ -87,6 +104,12 @@ export type ReactZoomPanPinchProps = {
   limitToBounds?: boolean;
   centerZoomedOut?: boolean;
   centerOnInit?: boolean;
+  /**
+   * Fit the content to the wrapper on init (and again when the content gets
+   * its size, e.g. after an image loads). `true`/`"contain"` shows the whole
+   * content, `"cover"` fills the wrapper. Honours `minScale`/`maxScale`.
+   */
+  fitOnInit?: boolean | FitToViewMode;
   disablePadding?: boolean;
   customTransform?: (x: number, y: number, scale: number) => string;
   smooth?: boolean;
@@ -121,6 +144,17 @@ export type ReactZoomPanPinchProps = {
     lockAxisX?: boolean;
     lockAxisY?: boolean;
     activationKeys?: string[] | ((keys: string[]) => boolean);
+    excluded?: string[];
+  };
+  keyboard?: {
+    /** Keyboard navigation is opt-in. */
+    disabled?: boolean;
+    /** Pixels moved per arrow key press. */
+    panStep?: number;
+    /** Scale added/removed per +/- press. */
+    zoomStep?: number;
+    animationTime?: number;
+    animationType?: keyof typeof animations;
     excluded?: string[];
   };
   doubleClick?: {

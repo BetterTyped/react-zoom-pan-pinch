@@ -81,8 +81,8 @@ export const Virtualize = React.forwardRef<HTMLDivElement, VirtualizeProps>(
         scale: instance.state.scale,
         positionX: instance.state.positionX,
         positionY: instance.state.positionY,
-        viewportWidth: wrapper.offsetWidth,
-        viewportHeight: wrapper.offsetHeight,
+        viewportWidth: wrapper.clientWidth,
+        viewportHeight: wrapper.clientHeight,
         margin,
         threshold,
       });

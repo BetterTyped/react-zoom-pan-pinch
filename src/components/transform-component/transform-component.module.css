@@ -6,11 +6,8 @@
   height: fit-content;
   overflow: hidden;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
+  /* Text stays selectable (#467); the instance applies an inline lock
+     only while a pan gesture is active. */
   margin: 0;
   padding: 0;
   transform: translate3d(0, 0, 0);

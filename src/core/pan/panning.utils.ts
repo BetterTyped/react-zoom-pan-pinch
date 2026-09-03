@@ -20,16 +20,23 @@ export const isPanningStartAllowed = (
   const { isInitialized, wrapperComponent } = contextInstance;
 
   const target = event.target as HTMLElement;
-  const targetIsShadowDom = "shadowRoot" in target && "composedPath" in event;
-  const isWrapperChild = targetIsShadowDom
-    ? event.composedPath().some((el) => {
-        if (!(el instanceof Element)) {
-          return false;
-        }
-
-        return wrapperComponent?.contains(el);
-      })
-    : wrapperComponent?.contains(target);
+  // `composedPath()` also lists the nodes inside a shadow root (#371) and the
+  // real target in another window (portal, popup) whose nodes fail an
+  // `instanceof Element` check from this realm (#290, PR #552): only
+  // duck-typed node checks are safe here.
+  const isElementNode = (node: unknown): node is Element =>
+    !!node &&
+    typeof node === "object" &&
+    (node as Node).nodeType === 1 &&
+    typeof (node as Element).contains === "function";
+  const isWrapperChild =
+    typeof event.composedPath === "function"
+      ? event
+          .composedPath()
+          .some(
+            (node) => isElementNode(node) && !!wrapperComponent?.contains(node),
+          )
+      : !!wrapperComponent?.contains(target);
 
   const isAllowed = isInitialized && target && isWrapperChild;
 
@@ -108,11 +115,11 @@ export function handlePanToBounds(
 
   const mousePosX =
     positionX > maxPositionX
-      ? wrapperComponent.offsetWidth
+      ? wrapperComponent.clientWidth
       : contextInstance.setup.minPositionX || 0;
   const mousePosY =
     positionY > maxPositionY
-      ? wrapperComponent.offsetHeight
+      ? wrapperComponent.clientHeight
       : contextInstance.setup.minPositionY || 0;
 
   const { x, y } = handleCalculateZoomPositions(

@@ -109,8 +109,8 @@ export function handleZoomToViewCenter(
 
   const effectiveAnimationTime = zoomAnimation.disabled ? 0 : animationTime;
 
-  const wrapperWidth = wrapperComponent.offsetWidth;
-  const wrapperHeight = wrapperComponent.offsetHeight;
+  const wrapperWidth = wrapperComponent.clientWidth;
+  const wrapperHeight = wrapperComponent.clientHeight;
   const mouseX = (wrapperWidth / 2 - positionX) / scale;
   const mouseY = (wrapperHeight / 2 - positionY) / scale;
 
@@ -138,6 +138,78 @@ export function handleZoomToViewCenter(
   );
 }
 
+/**
+ * Runs a programmatic pan: fires `onPanningStart`/`onPanning`, animates to
+ * `targetState` and fires `onPanningStop` once the animation time has
+ * elapsed. Resolves when the animation has finished (or was interrupted).
+ */
+export function runPanAnimation(
+  contextInstance: ReactZoomPanPinchContext,
+  targetState: StateType,
+  animationTime: number,
+  animationType: keyof typeof animations,
+): Promise<void> {
+  const { wrapperComponent } = contextInstance;
+  const { onPanningStart, onPanning, onPanningStop } = contextInstance.props;
+  const event = new MouseEvent("mousemove", { bubbles: true });
+  const ctx = getContext(contextInstance);
+  handleCallback(ctx, event, onPanningStart);
+  handleCallback(ctx, event, onPanning);
+  const done = animate(
+    contextInstance,
+    targetState,
+    animationTime,
+    animationType,
+  );
+  const win =
+    wrapperComponent?.ownerDocument?.defaultView ??
+    (typeof window !== "undefined" ? window : null);
+  if (win) {
+    win.setTimeout(() => {
+      if (!contextInstance.mounted) return;
+      handleCallback(getContext(contextInstance), event, onPanningStop);
+    }, animationTime);
+  }
+  return done;
+}
+
+/**
+ * Scale and centred position that fit the whole content into the wrapper
+ * (`contain`) or fill the wrapper with it (`cover`) (#252).
+ *
+ * The fit scale is capped by `minFitScale`/`maxFitScale` first and by the
+ * wrapper's own `minScale`/`maxScale` second — with the default `minScale` of
+ * 1 the content is never shrunk, so lower `minScale` to fit large content.
+ * Returns `null` until both elements have a size.
+ */
+export function calculateFitToView(
+  contextInstance: ReactZoomPanPinchContext,
+  mode: "contain" | "cover" = "contain",
+  minFitScale?: number,
+  maxFitScale?: number,
+): StateType | null {
+  const { wrapperComponent, contentComponent, setup } = contextInstance;
+  if (!wrapperComponent || !contentComponent) return null;
+
+  const contentWidth = contentComponent.offsetWidth;
+  const contentHeight = contentComponent.offsetHeight;
+  const wrapperWidth = wrapperComponent.clientWidth;
+  const wrapperHeight = wrapperComponent.clientHeight;
+  if (!contentWidth || !contentHeight || !wrapperWidth || !wrapperHeight) {
+    return null;
+  }
+
+  const ratioX = wrapperWidth / contentWidth;
+  const ratioY = wrapperHeight / contentHeight;
+  let scale =
+    mode === "cover" ? Math.max(ratioX, ratioY) : Math.min(ratioX, ratioY);
+  if (maxFitScale !== undefined) scale = Math.min(scale, maxFitScale);
+  if (minFitScale !== undefined) scale = Math.max(scale, minFitScale);
+  scale = checkZoomBounds(scale, setup.minScale, setup.maxScale, 0, false);
+
+  return getCenterPosition(scale, wrapperComponent, contentComponent);
+}
+
 export function resetTransformations(
   contextInstance: ReactZoomPanPinchContext,
   animationTime: number,
@@ -145,11 +217,36 @@ export function resetTransformations(
   onResetTransformation?: () => void,
 ): Promise<void> {
   const { setup, wrapperComponent, contentComponent } = contextInstance;
-  const { limitToBounds, centerOnInit } = setup;
+  const { limitToBounds, centerOnInit, fitOnInit } = setup;
   const initialTransformation = createState(contextInstance.props);
   const { scale, positionX, positionY } = contextInstance.state;
 
   if (!wrapperComponent) return Promise.resolve();
+
+  // With `fitOnInit` the initial layout is the fitted one, so that is what a
+  // reset returns to (#252).
+  if (fitOnInit) {
+    const fitted = calculateFitToView(
+      contextInstance,
+      fitOnInit === "cover" ? "cover" : "contain",
+    );
+    if (fitted) {
+      if (
+        scale === fitted.scale &&
+        positionX === fitted.positionX &&
+        positionY === fitted.positionY
+      ) {
+        return Promise.resolve();
+      }
+      onResetTransformation?.();
+      return runZoomAnimation(
+        contextInstance,
+        fitted,
+        animationTime,
+        animationType,
+      );
+    }
+  }
 
   let targetPositionX = initialTransformation.positionX;
   let targetPositionY = initialTransformation.positionY;
@@ -275,8 +372,8 @@ export function calculateZoomToRect(
   const nodeWidth = rect.width / state.scale;
   const nodeHeight = rect.height / state.scale;
 
-  const scaleX = wrapperComponent.offsetWidth / nodeWidth;
-  const scaleY = wrapperComponent.offsetHeight / nodeHeight;
+  const scaleX = wrapperComponent.clientWidth / nodeWidth;
+  const scaleY = wrapperComponent.clientHeight / nodeHeight;
 
   let targetScale = customZoom || Math.min(scaleX, scaleY);
   if (maxFitScale !== undefined) {

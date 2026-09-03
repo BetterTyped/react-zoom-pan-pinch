@@ -110,4 +110,19 @@ Object.defineProperties(window.HTMLElement.prototype, {
       return getSize(this, false).width;
     },
   },
+  // The library measures the wrapper with clientWidth/clientHeight (border
+  // excluded). jsdom has no layout, so mirror the inline-style based size;
+  // specs that need a border override these per element.
+  clientHeight: {
+    configurable: true,
+    get: function () {
+      return getSize(this, false).height;
+    },
+  },
+  clientWidth: {
+    configurable: true,
+    get: function () {
+      return getSize(this, false).width;
+    },
+  },
 });

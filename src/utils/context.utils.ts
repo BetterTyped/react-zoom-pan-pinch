@@ -14,6 +14,8 @@ import {
   centerView,
   clientToContent,
   contentToClient,
+  fitToView,
+  panBy,
 } from "../core/handlers/handlers.logic";
 
 export const getControls = (
@@ -31,6 +33,8 @@ export const getControls = (
     zoomToPoint: zoomToPoint(contextInstance),
     clientToContent: clientToContent(contextInstance),
     contentToClient: contentToClient(contextInstance),
+    fitToView: fitToView(contextInstance),
+    panBy: panBy(contextInstance),
   };
 };
 

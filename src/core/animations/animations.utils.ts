@@ -69,6 +69,8 @@ export function handleSetupAnimation(
       contextInstance.animationResolve = null;
       callback(lastStep);
       resolve?.();
+      // A resize seen while this animation ran aligns its final state.
+      contextInstance.flushResizeAlignment();
     } else {
       callback(step);
       contextInstance.animationFrame = requestAnimationFrame(animation);

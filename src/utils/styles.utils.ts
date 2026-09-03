@@ -38,8 +38,8 @@ export const getCenterPosition = (
   const contentWidth = contentComponent.offsetWidth * scale;
   const contentHeight = contentComponent.offsetHeight * scale;
 
-  const centerPositionX = (wrapperComponent.offsetWidth - contentWidth) / 2;
-  const centerPositionY = (wrapperComponent.offsetHeight - contentHeight) / 2;
+  const centerPositionX = (wrapperComponent.clientWidth - contentWidth) / 2;
+  const centerPositionY = (wrapperComponent.clientHeight - contentHeight) / 2;
 
   return {
     scale,

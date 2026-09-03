@@ -20,6 +20,8 @@ const HANDLER_KEYS = [
   "zoomToPoint",
   "clientToContent",
   "contentToClient",
+  "fitToView",
+  "panBy",
 ];
 
 function assertStableRefAPI(ctx: ReactZoomPanPinchRef | null) {

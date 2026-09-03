@@ -22,6 +22,7 @@ export const initialSetup: LibrarySetup = {
   limitToBounds: true,
   centerZoomedOut: false,
   centerOnInit: false,
+  fitOnInit: false,
   disablePadding: false,
   smooth: true,
   detached: false,
@@ -56,6 +57,14 @@ export const initialSetup: LibrarySetup = {
     step: 5,
     disabled: false,
     allowPanning: true,
+    excluded: [],
+  },
+  keyboard: {
+    disabled: true,
+    panStep: 50,
+    zoomStep: 0.25,
+    animationTime: 100,
+    animationType: "easeOut",
     excluded: [],
   },
   doubleClick: {

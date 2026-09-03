@@ -10,7 +10,12 @@ import { checkZoomBounds } from "../../src/core/zoom/zoom.utils";
 import { BoundsType } from "../../src/models";
 
 const element = (width: number, height: number) =>
-  ({ offsetWidth: width, offsetHeight: height }) as HTMLDivElement;
+  ({
+    offsetWidth: width,
+    offsetHeight: height,
+    clientWidth: width,
+    clientHeight: height,
+  }) as HTMLDivElement;
 
 describe("bounds.utils", () => {
   describe("getComponentsSizes", () => {

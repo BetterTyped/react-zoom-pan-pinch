@@ -12,8 +12,8 @@ export function getComponentsSizes(
   contentComponent: HTMLDivElement,
   newScale: number,
 ): ComponentsSizesType {
-  const wrapperWidth = wrapperComponent.offsetWidth;
-  const wrapperHeight = wrapperComponent.offsetHeight;
+  const wrapperWidth = wrapperComponent.clientWidth;
+  const wrapperHeight = wrapperComponent.clientHeight;
 
   const contentWidth = contentComponent.offsetWidth;
   const contentHeight = contentComponent.offsetHeight;

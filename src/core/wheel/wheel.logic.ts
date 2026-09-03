@@ -113,6 +113,7 @@ export const handleWheelStop = (
     if (!contextInstance.mounted) return;
     handleAlignToScaleBounds(contextInstance, event.x, event.y);
     contextInstance.wheelAnimationTimer = null;
+    contextInstance.flushResizeAlignment();
   }, wheelAnimationTime);
 
   // Wheel stop event
@@ -124,6 +125,7 @@ export const handleWheelStop = (
       contextInstance.wheelStopEventTimer = null;
       handleCallback(getContext(contextInstance), event, onWheelStop);
       handleCallback(getContext(contextInstance), event, onZoomStop);
+      contextInstance.flushResizeAlignment();
     }, wheelStopEventTime);
   }
 };
@@ -139,8 +141,13 @@ export const handleWheelPanningStart = (
 
   if (!contextInstance.wheelStopEventTimer) {
     // Same as a mouse pan start: bounds must reflect the current scale and
-    // content size, not the ones measured at mount (#396, #433).
-    handleCalculateBounds(contextInstance, contextInstance.state.scale);
+    // content size, not the ones measured at mount (#396, #433). Only at the
+    // start of a wheel sequence though — mid-sequence the gesture owns them
+    // (see `handleResizeAlignment`), otherwise a content resize would make
+    // the next event clamp against a new limit and jump.
+    if (!contextInstance.wheelAnimationTimer) {
+      handleCalculateBounds(contextInstance, contextInstance.state.scale);
+    }
     handleCallback(getContext(contextInstance), event, onWheelStart);
     handleCallback(getContext(contextInstance), event, onPanningStart);
   }
@@ -158,6 +165,7 @@ export const handleWheelPanningStop = (
     if (!contextInstance.mounted) return;
     handleAlignToScaleBounds(contextInstance, event.x, event.y);
     contextInstance.wheelAnimationTimer = null;
+    contextInstance.flushResizeAlignment();
   }, wheelAnimationTime);
 
   // Wheel stop event
@@ -169,6 +177,7 @@ export const handleWheelPanningStop = (
       contextInstance.wheelStopEventTimer = null;
       handleCallback(getContext(contextInstance), event, onWheelStop);
       handleCallback(getContext(contextInstance), event, onPanningStop);
+      contextInstance.flushResizeAlignment();
     }, wheelStopEventTime);
   }
 };

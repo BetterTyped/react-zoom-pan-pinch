@@ -20,6 +20,15 @@ import {
   assignRef,
 } from "../utils";
 import { handleCancelAnimation } from "./animations/animations.utils";
+import { handleKeyboardNavigation } from "./keyboard/keyboard.logic";
+import {
+  handleResizeAlignment,
+  handleSizeChange,
+  isGestureActive,
+  measureSizes,
+} from "./resize/resize.logic";
+import { MeasuredSizesType } from "./resize/resize.types";
+import { calculateFitToView } from "./handlers/handlers.utils";
 import { isWheelAllowed, isWheelPanningAllowed } from "./wheel/wheel.utils";
 import { isPinchAllowed, isPinchStartAllowed } from "./pinch/pinch.utils";
 import { handleCalculateBounds } from "./bounds/bounds.utils";
@@ -112,8 +121,23 @@ export class ZoomPanPinch {
   public animationResolve: (() => void) | null = null;
   // init helpers
   public initObserverTimer: ReturnType<typeof setTimeout> | null = null;
+  // `centerOnInit`/`fitOnInit` wait for content that has no size yet
+  public isInitialLayoutPending = false;
+  // resize helpers: last measured sizes and an alignment postponed until the
+  // running animation settles
+  public measuredSizes: MeasuredSizesType | null = null;
+  public isResizeAlignmentPending = false;
+  // The alignment animation started by a resize, so further size changes can
+  // retarget it instead of waiting for it (compared by identity to
+  // `animation`, which is null once it has finished).
+  public resizeAnimation: AnimationType | null = null;
   // key press
   public pressedKeys: { [key: string]: boolean } = {};
+  // text selection lock while a gesture is active (#467)
+  public selectionLock: {
+    userSelect: string;
+    webkitUserSelect: string;
+  } | null = null;
 
   constructor(props: ReactZoomPanPinchProps) {
     this.props = props;
@@ -138,7 +162,14 @@ export class ZoomPanPinch {
     // Setup first: bounds depend on the new props (min/max positions,
     // centerZoomedOut, disablePadding).
     this.setup = createSetup(newProps);
-    if (this.wrapperComponent && this.contentComponent) {
+    // A gesture owns the bounds until it ends (see `handleResizeAlignment`):
+    // replacing them mid-drag makes the next move clamp against a new limit
+    // and jump. The gesture start recalculates them anyway.
+    if (
+      this.wrapperComponent &&
+      this.contentComponent &&
+      !isGestureActive(this)
+    ) {
       handleCalculateBounds(this, this.state.scale);
     }
   };
@@ -222,7 +253,12 @@ export class ZoomPanPinch {
     this.cleanupWrapperEvents();
     this.clearTimers();
     handleCancelAnimation(this);
+    this.unlockTextSelection();
     this.observer?.disconnect();
+    this.observer = undefined;
+    this.isInitialLayoutPending = false;
+    this.isResizeAlignmentPending = false;
+    this.resizeAnimation = null;
   };
 
   cleanupWrapperEvents = (): void => {
@@ -232,6 +268,7 @@ export class ZoomPanPinch {
 
     wrapper.removeEventListener("wheel", this.onWheelZoom, passive);
     wrapper.removeEventListener("dblclick", this.onDoubleClick, passive);
+    wrapper.removeEventListener("keydown", this.onKeyboardNavigation, passive);
     wrapper.removeEventListener(
       "touchstart",
       this.onTouchPanningStart,
@@ -247,44 +284,94 @@ export class ZoomPanPinch {
 
     wrapper.addEventListener("wheel", this.onWheelZoom, passive);
     wrapper.addEventListener("dblclick", this.onDoubleClick, passive);
+    wrapper.addEventListener("keydown", this.onKeyboardNavigation, passive);
     wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
   };
 
-  handleInitialize = (contentComponent: HTMLDivElement): void => {
-    const { centerOnInit } = this.setup;
+  handleInitialize = (): void => {
+    const { centerOnInit, fitOnInit } = this.setup;
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
 
-    if (centerOnInit) {
-      this.setCenter();
-      this.observer?.disconnect();
-      this.observer = new ResizeObserver(() => {
-        const currentWidth = contentComponent.offsetWidth;
-        const currentHeight = contentComponent.offsetHeight;
-
-        if (currentWidth > 0 || currentHeight > 0) {
-          this.onInitCallbacks.forEach((callback) =>
-            callback(getContext(this)),
-          );
-          this.setCenter();
-
-          this.observer?.disconnect();
-        }
-      });
-
-      // TODO: CHANGE to first interaction?
-      // if nothing about the contentComponent has changed after 5 seconds, disconnect the observer
+    if (centerOnInit || fitOnInit) {
+      const applied = this.applyInitialLayout();
+      // Content without a size yet (an image still loading) gets its layout
+      // applied again by `onSizeChange` once it has one. Once a real layout
+      // exists, stop waiting after 5 seconds so a later resize aligns instead
+      // of re-centring. Until then keep waiting: in a hidden tab the observer
+      // may not deliver for a long time and the first layout must still be
+      // the fitted/centred one.
+      this.isInitialLayoutPending = true;
       if (this.initObserverTimer) clearTimeout(this.initObserverTimer);
-      this.initObserverTimer = setTimeout(() => {
-        this.initObserverTimer = null;
-        this.observer?.disconnect();
-      }, 5000);
-
-      // Start observing the target node for configured mutations
-      this.observer.observe(contentComponent);
+      if (applied) {
+        this.initObserverTimer = setTimeout(() => {
+          this.initObserverTimer = null;
+          this.isInitialLayoutPending = false;
+        }, 5000);
+      }
     }
+  };
+
+  /// ///////
+  // Size changes
+  /// ///////
+
+  // One observer for the whole lifetime of the instance: it finishes the
+  // initial layout for late-sized content and, after that, keeps the
+  // transform inside the bounds whenever the content or the wrapper changes
+  // size (children re-rendering with another size, images loading, the
+  // viewport resizing).
+  observeSizes = (
+    wrapperComponent: HTMLDivElement,
+    contentComponent: HTMLDivElement,
+  ): void => {
+    this.observer?.disconnect();
+    this.observer = undefined;
+    this.measuredSizes = measureSizes(wrapperComponent, contentComponent);
+
+    if (typeof ResizeObserver === "undefined") return;
+
+    this.observer = new ResizeObserver(this.onSizeChange);
+    this.observer.observe(wrapperComponent);
+    this.observer.observe(contentComponent);
+  };
+
+  onSizeChange = (): void => {
+    const { wrapperComponent, contentComponent } = this;
+    if (!this.mounted || !wrapperComponent || !contentComponent) return;
+
+    if (this.isInitialLayoutPending) {
+      // Both boxes must be laid out: a wrapper that is sized late (hidden
+      // tab, collapsed panel) would otherwise get a fit against a 0px box.
+      const hasSize =
+        (contentComponent.offsetWidth > 0 ||
+          contentComponent.offsetHeight > 0) &&
+        wrapperComponent.clientWidth > 0 &&
+        wrapperComponent.clientHeight > 0;
+      if (!hasSize) return;
+
+      this.isInitialLayoutPending = false;
+      if (this.initObserverTimer) clearTimeout(this.initObserverTimer);
+      this.initObserverTimer = null;
+      this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
+      this.applyInitialLayout();
+      this.measuredSizes = measureSizes(wrapperComponent, contentComponent);
+      handleCalculateBounds(this, this.state.scale);
+      return;
+    }
+
+    handleSizeChange(this);
+  };
+
+  // Called once a gesture or an animation has ended, so a resize seen while
+  // it ran is checked against the settled state (it may postpone itself
+  // again when another gesture or animation is still running).
+  flushResizeAlignment = (): void => {
+    if (!this.isResizeAlignmentPending) return;
+    this.isResizeAlignmentPending = false;
+    handleResizeAlignment(this);
   };
 
   /// ///////
@@ -354,9 +441,11 @@ export class ZoomPanPinch {
   /// ///////
 
   onPanningStart = (event: MouseEvent): void => {
-    const { disabled } = this.setup;
+    const { disabled, panning } = this.setup;
     const { onPanningStart } = this.props;
-    if (disabled) return;
+    // With panning off the mousedown is not ours: no pan state, no
+    // preventDefault, and native text selection keeps working (#467).
+    if (disabled || panning.disabled) return;
 
     this.syncModifierKeys(event);
 
@@ -377,6 +466,8 @@ export class ZoomPanPinch {
 
     handleCancelAnimation(this);
     handlePanningStart(this, event);
+    this.lockTextSelection();
+    this.focusForKeyboard();
     handleCallback(getContext(this), event, onPanningStart);
   };
 
@@ -415,8 +506,10 @@ export class ZoomPanPinch {
     const { onPanningStop } = this.props;
 
     if (this.isPanning) {
+      this.unlockTextSelection();
       handlePanningEnd(this, velocityDisabled);
       handleCallback(getContext(this), event, onPanningStop);
+      this.flushResizeAlignment();
     }
   };
 
@@ -462,6 +555,7 @@ export class ZoomPanPinch {
     if (this.pinchStartScale) {
       handlePinchStop(this);
       handleCallback(getContext(this), event, onPinchStop);
+      this.flushResizeAlignment();
     }
   };
 
@@ -495,9 +589,11 @@ export class ZoomPanPinch {
 
       const isAllowed = isPanningStartAllowed(this, event);
       if (isPanningAction) {
-        if (!isAllowed) return;
+        if (!isAllowed || this.setup.panning.disabled) return;
         handleCancelAnimation(this);
         handlePanningStart(this, event);
+        this.lockTextSelection();
+        this.focusForKeyboard();
         handleCallback(getContext(this), event, onPanningStart);
       }
       if (isPinchAction) {
@@ -567,6 +663,8 @@ export class ZoomPanPinch {
       this.isPanning = false;
       this.startCoords = null;
     }
+    this.unlockTextSelection();
+    this.flushResizeAlignment();
   };
 
   // Iframe focus problem (e.g. Storybook):
@@ -617,6 +715,85 @@ export class ZoomPanPinch {
       return true;
     }
     return Boolean(keys.every((key) => this.pressedKeys[key]));
+  };
+
+  /// ///////
+  // Keyboard
+  /// ///////
+
+  onKeyboardNavigation = (event: KeyboardEvent): void => {
+    handleKeyboardNavigation(this, event);
+  };
+
+  // A pan start cancels the mousedown, which also cancels the focus the
+  // click would have given the wrapper — so with keyboard navigation on,
+  // focus it explicitly or the arrow keys never reach it.
+  focusForKeyboard = (): void => {
+    const wrapper = this.wrapperComponent;
+    if (!wrapper || this.setup.keyboard.disabled) return;
+    const active = wrapper.ownerDocument?.activeElement;
+    if (active && wrapper.contains(active)) return;
+    if (typeof wrapper.focus === "function") {
+      wrapper.focus({ preventScroll: true });
+    }
+  };
+
+  /// ///////
+  // Text selection (#467)
+  /// ///////
+
+  // The stylesheet no longer disables text selection globally, so users can
+  // select and copy content. While a pan gesture is active the wrapper gets
+  // an inline `user-select: none` so the drag does not also select text.
+  lockTextSelection = (): void => {
+    const wrapper = this.wrapperComponent;
+    if (!wrapper || this.selectionLock) return;
+    this.selectionLock = {
+      userSelect: wrapper.style.userSelect,
+      webkitUserSelect: wrapper.style.webkitUserSelect,
+    };
+    wrapper.style.userSelect = "none";
+    wrapper.style.webkitUserSelect = "none";
+  };
+
+  unlockTextSelection = (): void => {
+    const lock = this.selectionLock;
+    this.selectionLock = null;
+    const wrapper = this.wrapperComponent;
+    if (!wrapper || !lock) return;
+    wrapper.style.userSelect = lock.userSelect;
+    wrapper.style.webkitUserSelect = lock.webkitUserSelect;
+  };
+
+  /// ///////
+  // Initial layout
+  /// ///////
+
+  // `fitOnInit` wins over `centerOnInit` (a fit is always centred). Falls
+  // back to centring while the content has no size yet; `onSizeChange`
+  // re-runs this once it does. Returns whether both boxes had a size, i.e.
+  // whether this was a real initial layout.
+  applyInitialLayout = (): boolean => {
+    const { fitOnInit } = this.setup;
+    const { wrapperComponent, contentComponent } = this;
+    const hasSizes =
+      !!wrapperComponent &&
+      !!contentComponent &&
+      wrapperComponent.clientWidth > 0 &&
+      wrapperComponent.clientHeight > 0 &&
+      (contentComponent.offsetWidth > 0 || contentComponent.offsetHeight > 0);
+    if (fitOnInit) {
+      const fitted = calculateFitToView(
+        this,
+        fitOnInit === "cover" ? "cover" : "contain",
+      );
+      if (fitted) {
+        this.setState(fitted.scale, fitted.positionX, fitted.positionY);
+        return hasSizes;
+      }
+    }
+    this.setCenter();
+    return hasSizes;
   };
 
   setCenter = (): void => {
@@ -750,7 +927,8 @@ export class ZoomPanPinch {
     this.contentComponent = contentComponent;
     handleCalculateBounds(this, this.state.scale);
     this.handleInitializeWrapperEvents(wrapperComponent);
-    this.handleInitialize(contentComponent);
+    this.handleInitialize();
+    this.observeSizes(wrapperComponent, contentComponent);
     this.initializeWindowEvents();
     this.isInitialized = true;
     const ctx = getContext(this);

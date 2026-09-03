@@ -98,6 +98,18 @@ function patchOffsetDimensions() {
       return resolveDimension(this, "height", "offsetHeight");
     },
   });
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get() {
+      return resolveDimension(this, "width", "offsetWidth");
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+    configurable: true,
+    get() {
+      return resolveDimension(this, "height", "offsetHeight");
+    },
+  });
 }
 
 /** Options shared by pan-like gesture helpers. */

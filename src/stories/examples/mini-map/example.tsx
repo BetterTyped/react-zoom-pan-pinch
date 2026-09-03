@@ -10,7 +10,6 @@ const storyMiniMapPreviewStyle: React.CSSProperties = {
     "0 0 0 1px rgba(255,255,255,0.22) inset",
     "0 0 14px rgba(125,211,252,0.45)",
     "0 0 28px rgba(56,189,248,0.22)",
-    "rgba(6,10,20,0.82) 0 0 0 10000000px",
   ].join(", "),
 };
 
@@ -109,6 +108,8 @@ export const Template = (args: any) => {
               <MiniMap
                 width={168}
                 height={126}
+                zoomable
+                maskColor="rgba(6, 10, 20, 0.82)"
                 previewStyle={storyMiniMapPreviewStyle}
                 borderColor="rgba(147, 197, 253, 0.95)"
               >

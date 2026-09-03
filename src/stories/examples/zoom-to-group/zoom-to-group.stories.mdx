@@ -1,0 +1,51 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => <Example {...args} />;
+
+<Meta
+  title="Advanced/Zoom To Group"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Zoom To Group
+
+`zoomToElement` accepts **an array of targets** — element ids, elements, or a
+mix — and frames the **union of their bounding boxes** in one animation. Use it
+to fit a cluster of diagram nodes, every seat in a booking, or the set of
+annotations a user just selected.
+
+```tsx
+const { zoomToElement } = useControls();
+
+// Frame three nodes at once.
+zoomToElement(["node-auth", "node-api", "node-search"]);
+
+// Frame the current selection, but never zoom past 1.5×.
+zoomToElement(selectedIds, { maxScale: 1.5, animationTime: 500 });
+```
+
+The second argument is either a fixed `scale` or an options object. When the
+scale is omitted the library computes the fit scale itself; `minScale` /
+`maxScale` clamp that computed value, which keeps a single tiny target from
+being blown up to fill the viewport. The call returns a promise that resolves
+when the animation finishes.
+
+The diagram below is built in layers so every frame looks different: **Core**
+is a tight cluster in the middle, **Ring** surrounds it (framing the ring shows
+the core inside it), and **Remote** is a small cluster tucked into the top-right
+corner, outside the ring. Pick a **Frame group** chip to fit one layer, tick
+any nodes on the canvas and press **Frame selection** to fit exactly those, or
+toggle the zoom cap in the control bar to compare capped and uncapped framing.
+
+<Canvas>
+  <Story name="Zoom To Group">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Zoom To Group" />

@@ -17,10 +17,16 @@ export const checkerboard: React.CSSProperties = {
   backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
 };
 
+/** Border width of `viewerFrame`, for stories that size content by hand. */
+export const viewerFrameBorder = 2;
+
 /** Common glass-panel frame used by most story viewers. */
 export const viewerFrame: React.CSSProperties = {
+  // `width: 100%` + border must not overflow the (clipped) parent, otherwise
+  // the right/bottom borders disappear and the frame looks shifted.
+  boxSizing: "border-box",
   borderRadius: "12px",
-  border: "2px solid rgba(255,255,255,0.08)",
+  border: `${viewerFrameBorder}px solid rgba(255,255,255,0.08)`,
   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.03)",
 };
 

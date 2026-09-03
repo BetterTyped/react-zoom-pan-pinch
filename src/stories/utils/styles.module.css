@@ -221,3 +221,136 @@
   display: grid;
   grid-template-columns: repeat(100, 1fr);
 }
+
+/* ── Focus chips (floating "zoom to" buttons on the viewer) ──── */
+
+.focusChips {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: calc(100% - 50px);
+  padding: 5px;
+  border-radius: 12px;
+  background: rgba(15, 15, 20, 0.72);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 0 0.5px rgba(255, 255, 255, 0.04) inset;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.focusChipsBottomCenter {
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.focusChipsTitle {
+  padding: 0 4px 0 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.focusChip {
+  --chip-accent: #818cf8;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px 0 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.72);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.focusChip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.focusChip:active {
+  transform: scale(0.97);
+}
+
+.focusChip:focus-visible {
+  outline: 2px solid rgba(100, 160, 255, 0.6);
+  outline-offset: -1px;
+}
+
+.focusChipActive {
+  background: color-mix(in srgb, var(--chip-accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--chip-accent) 55%, transparent);
+  color: #fff;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--chip-accent) 25%, transparent);
+}
+
+.focusChipIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--chip-accent) 22%, transparent);
+  color: var(--chip-accent);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.focusChipActive .focusChipIcon {
+  background: var(--chip-accent);
+  color: #0b0b12;
+}
+
+.focusChip[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(10, 10, 14, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e4e4e7;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  z-index: 100;
+}
+
+.focusChip[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}

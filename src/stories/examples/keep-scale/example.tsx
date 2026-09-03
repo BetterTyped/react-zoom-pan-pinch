@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { TransformComponent, TransformWrapper, KeepScale } from "components";
 import { Controls, CloseIcon, normalizeArgs, viewerChrome } from "../../utils";
@@ -536,14 +536,22 @@ function MapMarker(props: {
   );
 }
 
-/* ── Location bar (bottom panel) ───────────────────────────── */
+/* ── Location panel (floats over the map) ─────────────────── */
 
-function LocationBar(props: {
+function LocationPanel(props: {
   selectedId: string | null;
   onSelect: (loc: Location) => void;
   onReset: () => void;
 }) {
   const { selectedId, onSelect, onReset } = props;
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Keep the highlighted row visible when a pin on the map is clicked.
+  useEffect(() => {
+    const row = listRef.current?.querySelector('[aria-pressed="true"]');
+    row?.scrollIntoView({ block: "nearest" });
+  }, [selectedId]);
+
   const categories = Object.entries(CATEGORY_META) as [
     Location["category"],
     (typeof CATEGORY_META)[Location["category"]],
@@ -552,31 +560,47 @@ function LocationBar(props: {
   return (
     <div
       style={{
-        marginTop: 14,
+        position: "absolute",
+        top: 14,
+        right: 14,
+        bottom: 14,
+        zIndex: 10,
+        width: 240,
+        maxWidth: "46%",
+        display: "flex",
+        flexDirection: "column",
         borderRadius: 14,
-        background: "rgba(10, 10, 20, 0.75)",
-        border: "1px solid rgba(255,255,255,0.06)",
-        backdropFilter: "blur(12px)",
-        padding: "14px 16px",
+        background: "rgba(8, 10, 22, 0.78)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        backdropFilter: "blur(16px) saturate(1.4)",
+        WebkitBackdropFilter: "blur(16px) saturate(1.4)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
         fontFamily: font,
+        overflow: "hidden",
       }}
     >
       {/* Header */}
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 12,
+          padding: "12px 14px 10px",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          flexShrink: 0,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 8,
+          }}
+        >
           <span
             style={{
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: 700,
-              color: "rgba(255,255,255,0.6)",
-              letterSpacing: "0.06em",
+              color: "rgba(255,255,255,0.65)",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
             }}
           >
@@ -585,16 +609,16 @@ function LocationBar(props: {
           <span
             style={{
               fontSize: 10,
-              color: "rgba(255,255,255,0.3)",
+              color: "rgba(255,255,255,0.35)",
               padding: "2px 8px",
               borderRadius: 6,
-              background: "rgba(255,255,255,0.04)",
+              background: "rgba(255,255,255,0.05)",
             }}
           >
             {LOCATIONS.length} points
           </span>
         </div>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 10px" }}>
           {categories.map(([key, meta]) => (
             <span
               key={key}
@@ -609,8 +633,8 @@ function LocationBar(props: {
             >
               <span
                 style={{
-                  width: 7,
-                  height: 7,
+                  width: 6,
+                  height: 6,
                   borderRadius: "50%",
                   background: meta.accent,
                   flexShrink: 0,
@@ -622,12 +646,17 @@ function LocationBar(props: {
         </div>
       </div>
 
-      {/* Cards grid */}
+      {/* Scrollable list */}
       <div
+        ref={listRef}
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-          gap: 8,
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          padding: 8,
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
         }}
       >
         {LOCATIONS.map((loc) => {
@@ -638,40 +667,51 @@ function LocationBar(props: {
               key={loc.id}
               type="button"
               onClick={() => onSelect(loc)}
+              aria-pressed={sel}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                padding: "10px 12px",
+                padding: "8px 10px",
                 borderRadius: 10,
                 border: sel
-                  ? `1px solid ${meta.accent}55`
-                  : "1px solid rgba(255,255,255,0.05)",
+                  ? `1px solid ${meta.accent}66`
+                  : "1px solid transparent",
                 background: sel
-                  ? `linear-gradient(135deg, ${meta.accent}15, ${meta.accent}08)`
-                  : "rgba(255,255,255,0.02)",
+                  ? `linear-gradient(135deg, ${meta.accent}22, ${meta.accent}0a)`
+                  : "transparent",
+                boxShadow: sel ? `0 0 16px ${meta.glow}` : "none",
                 cursor: "pointer",
                 fontFamily: font,
                 textAlign: "left",
-                transition: "border-color 0.2s, background 0.2s",
+                width: "100%",
+                transition:
+                  "border-color 0.2s, background 0.2s, box-shadow 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                if (!sel)
+                  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+              }}
+              onMouseLeave={(e) => {
+                if (!sel) e.currentTarget.style.background = "transparent";
               }}
             >
               <span
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 9,
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
                   background: sel
-                    ? `${meta.accent}25`
-                    : "rgba(255,255,255,0.04)",
+                    ? `${meta.accent}2e`
+                    : "rgba(255,255,255,0.05)",
+                  border: sel
+                    ? `1px solid ${meta.accent}44`
+                    : "1px solid rgba(255,255,255,0.05)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 16,
+                  fontSize: 15,
                   flexShrink: 0,
-                  border: sel
-                    ? `1px solid ${meta.accent}33`
-                    : "1px solid rgba(255,255,255,0.04)",
                 }}
               >
                 {loc.icon}
@@ -681,7 +721,7 @@ function LocationBar(props: {
                   style={{
                     fontSize: 12,
                     fontWeight: 700,
-                    color: sel ? meta.accent : "rgba(255,255,255,0.85)",
+                    color: sel ? meta.accent : "rgba(255,255,255,0.88)",
                     lineHeight: 1.3,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -693,7 +733,7 @@ function LocationBar(props: {
                 <div
                   style={{
                     fontSize: 10,
-                    color: "rgba(255,255,255,0.35)",
+                    color: "rgba(255,255,255,0.38)",
                     lineHeight: 1.4,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -708,26 +748,29 @@ function LocationBar(props: {
         })}
       </div>
 
+      {/* Footer */}
       {selectedId && (
         <div
-          style={{ marginTop: 10, display: "flex", justifyContent: "center" }}
+          style={{
+            padding: 8,
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            flexShrink: 0,
+          }}
         >
           <button
             type="button"
             onClick={onReset}
             style={{
-              padding: "6px 20px",
+              width: "100%",
+              padding: "7px 0",
               borderRadius: 8,
               border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(255,255,255,0.04)",
-              color: "rgba(255,255,255,0.5)",
+              background: "rgba(255,255,255,0.05)",
+              color: "rgba(255,255,255,0.6)",
               fontSize: 11,
               fontWeight: 600,
               cursor: "pointer",
               fontFamily: font,
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
             }}
           >
             Reset view
@@ -748,8 +791,8 @@ function SelectedBadge({ loc }: { loc: Location | null }) {
     <div
       style={{
         position: "absolute",
-        top: 14,
-        right: 14,
+        bottom: 14,
+        left: 14,
         zIndex: 10,
         padding: "8px 14px",
         borderRadius: 10,
@@ -828,52 +871,49 @@ export const Example: React.FC<any> = (args: any) => {
         {(api) => {
           apiRef.current = api;
           return (
-            <>
-              <div style={{ position: "relative" }}>
-                <Controls
-                  {...api}
-                  extraButtons={
-                    selected
-                      ? [
-                          {
-                            label: "Clear selection",
-                            icon: <CloseIcon />,
-                            onClick: handleReset,
-                          },
-                        ]
-                      : []
-                  }
-                />
-                <SelectedBadge loc={selected} />
-                <TransformComponent
-                  wrapperStyle={{
-                    ...viewerChrome,
-                    width: "100%",
-                    height: "clamp(480px, calc(100vh - 360px), 680px)",
-                  }}
-                  contentStyle={{
-                    width: CANVAS_W,
-                    height: CANVAS_H,
-                  }}
-                >
-                  <IslandMap />
-                  {LOCATIONS.map((loc) => (
-                    <MapMarker
-                      key={loc.id}
-                      loc={loc}
-                      selected={selected?.id === loc.id}
-                      onClick={() => handleSelect(loc)}
-                    />
-                  ))}
-                </TransformComponent>
-              </div>
-
-              <LocationBar
+            <div style={{ position: "relative" }}>
+              <Controls
+                {...api}
+                extraButtons={
+                  selected
+                    ? [
+                        {
+                          label: "Clear selection",
+                          icon: <CloseIcon />,
+                          onClick: handleReset,
+                        },
+                      ]
+                    : []
+                }
+              />
+              <SelectedBadge loc={selected} />
+              <LocationPanel
                 selectedId={selected?.id ?? null}
                 onSelect={handleSelect}
                 onReset={handleReset}
               />
-            </>
+              <TransformComponent
+                wrapperStyle={{
+                  ...viewerChrome,
+                  width: "100%",
+                  height: "clamp(480px, calc(100vh - 360px), 680px)",
+                }}
+                contentStyle={{
+                  width: CANVAS_W,
+                  height: CANVAS_H,
+                }}
+              >
+                <IslandMap />
+                {LOCATIONS.map((loc) => (
+                  <MapMarker
+                    key={loc.id}
+                    loc={loc}
+                    selected={selected?.id === loc.id}
+                    onClick={() => handleSelect(loc)}
+                  />
+                ))}
+              </TransformComponent>
+            </div>
           );
         }}
       </TransformWrapper>

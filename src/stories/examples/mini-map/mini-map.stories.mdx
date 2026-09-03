@@ -1,6 +1,10 @@
 import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
 
-import { TransformWrapper, TransformComponent, MiniMap } from "../../../components";
+import {
+  TransformWrapper,
+  TransformComponent,
+  MiniMap,
+} from "../../../components";
 import { argsTypes } from "../../types/args.types.ts";
 import { Template } from "./example";
 
@@ -20,6 +24,40 @@ documents, or maps where spatial awareness matters.
 <Canvas>
   <Story name="Mini Map">{(args) => <Template {...args} />}</Story>
 </Canvas>
+
+## Interaction
+
+The mini map behaves like the one in React Flow:
+
+- **Drag anywhere** on the map to grab the viewport indicator. It follows the
+  pointer (mouse or touch) 1:1 — pressing the map never jumps the view.
+  `inversePan` flips the direction so the drag moves the content instead.
+- **Wheel** over the map zooms the main view around its centre when `zoomable`
+  is on (`zoomStep` per notch).
+- **Click / tap** without moving fires `onClick(event, position)` with the point
+  in content coordinates — pair it with `zoomToPoint` for click-to-zoom.
+- The map always shows the union of the content and the current viewport (plus
+  `offsetScale` padding), so the indicator stays visible even when the view is
+  panned or zoomed past the content.
+
+## MiniMap props
+
+| Prop                                | Default              | Description                                                         |
+| ----------------------------------- | -------------------- | ------------------------------------------------------------------- |
+| `width` / `height`                  | `200` / `200`        | Size of the mini map box in px.                                     |
+| `panning`                           | `true`               | Drag to move the viewport.                                          |
+| `inversePan`                        | `false`              | Drag moves the content instead of the indicator.                    |
+| `zoomable`                          | `false`              | Wheel over the map zooms the main view.                             |
+| `zoomStep`                          | `0.2`                | Scale increment per wheel notch.                                    |
+| `offsetScale`                       | `5`                  | Padding around the mapped area (mini map px at map scale).          |
+| `maskColor`                         | `rgba(0, 0, 0, 0.2)` | Colour of the overlay outside the viewport (`.rzpp-minimap-mask`).  |
+| `borderColor`                       | `red`                | Border colour of the viewport indicator.                            |
+| `previewStyle` / `previewClassName` | —                    | Customise the indicator (`.rzpp-minimap-preview`).                  |
+| `wrapperClassName`                  | —                    | Extra class for the scaled content clone (`.rzpp-minimap-wrapper`). |
+| `onClick`                           | —                    | `(event, { x, y })` for a click or tap that did not drag.           |
+
+Any other `div` attribute (`style`, `className`, `aria-*`) is spread onto the
+`.rzpp-mini-map` container.
 
 ## Component API
 

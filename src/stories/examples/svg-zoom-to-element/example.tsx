@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
 import {
   Controls,
+  FocusChips,
   NumberedTargetIcon,
   normalizeArgs,
   viewerChrome,
 } from "../../utils";
 import { ReactComponent as Creativity } from "./creativity.svg";
 
-const ZOOMABLE_IDS = ["element1", "element2", "element3"];
+const TARGETS = [
+  { id: "element1", label: "Element 1", accent: "#f4f4f5" },
+  { id: "element2", label: "Element 2", accent: "#ec7e96" },
+  { id: "element3", label: "Element 3", accent: "#a78bfa" },
+];
+
+const ZOOMABLE_IDS = TARGETS.map((t) => t.id);
 
 function findZoomableId(el: HTMLElement | SVGElement | null): string | null {
   let node = el;
@@ -21,6 +28,9 @@ function findZoomableId(el: HTMLElement | SVGElement | null): string | null {
 }
 
 export const Example: React.FC<any> = (args: any) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const clearActive = () => setActiveId(null);
+
   return (
     <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
       <style>{`
@@ -33,34 +43,44 @@ export const Example: React.FC<any> = (args: any) => {
           opacity: 0.85;
         }
       `}</style>
-      <TransformWrapper {...normalizeArgs(args)} centerOnInit>
+      <TransformWrapper
+        {...normalizeArgs(args)}
+        centerOnInit
+        onPanningStart={clearActive}
+        onWheelStart={clearActive}
+        onPinchStart={clearActive}
+      >
         {(utils) => {
+          const focus = (id: string) => {
+            setActiveId(id);
+            utils.zoomToElement(id);
+          };
+
           const handleSvgClick = (e: React.MouseEvent) => {
             const id = findZoomableId(e.target as HTMLElement);
-            if (id) utils.zoomToElement(id);
+            if (id) focus(id);
           };
 
           return (
-            <>
+            <div style={{ position: "relative", display: "inline-block" }}>
               <Controls
                 {...utils}
-                extraButtons={[
-                  {
-                    label: "Focus element 1",
-                    icon: <NumberedTargetIcon n={1} />,
-                    onClick: () => utils.zoomToElement("element1"),
-                  },
-                  {
-                    label: "Focus element 2",
-                    icon: <NumberedTargetIcon n={2} />,
-                    onClick: () => utils.zoomToElement("element2"),
-                  },
-                  {
-                    label: "Focus element 3",
-                    icon: <NumberedTargetIcon n={3} />,
-                    onClick: () => utils.zoomToElement("element3"),
-                  },
-                ]}
+                resetTransform={(...rest) => {
+                  clearActive();
+                  return utils.resetTransform(...rest);
+                }}
+              />
+              <FocusChips
+                title="Zoom to"
+                position="bottom-left"
+                activeId={activeId}
+                onSelect={focus}
+                items={TARGETS.map((t, i) => ({
+                  id: t.id,
+                  label: t.label,
+                  icon: <NumberedTargetIcon n={i + 1} />,
+                  accent: t.accent,
+                }))}
               />
               <TransformComponent
                 wrapperStyle={{
@@ -86,7 +106,7 @@ export const Example: React.FC<any> = (args: any) => {
                   <Creativity style={{ width: "100%" }} />
                 </div>
               </TransformComponent>
-            </>
+            </div>
           );
         }}
       </TransformWrapper>

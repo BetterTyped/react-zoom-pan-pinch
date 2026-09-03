@@ -24,6 +24,9 @@ interface Preset {
   centerOnInit: boolean;
 }
 
+// The viewer is 600×440 and the 1125×750 image renders at 600×400, so at
+// scale `s` the content is (600·s)×(400·s) and the furthest in-bounds
+// position is (600 − 600·s, 440 − 400·s). Presets below stay within that.
 const PRESETS: Preset[] = [
   {
     label: "Centered overview",
@@ -53,15 +56,15 @@ const PRESETS: Preset[] = [
     label: "Center detail",
     description: "initialScale: 2 — offset to center the middle region",
     initialScale: 2,
-    initialPositionX: -460,
-    initialPositionY: -220,
+    initialPositionX: -300,
+    initialPositionY: -180,
     centerOnInit: false,
   },
   {
     label: "Bottom-right",
     description: "initialScale: 2.2 — panned to the bottom-right corner",
     initialScale: 2.2,
-    initialPositionX: -900,
+    initialPositionX: -720,
     initialPositionY: -440,
     centerOnInit: false,
   },

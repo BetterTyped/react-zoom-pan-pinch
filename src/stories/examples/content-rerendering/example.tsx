@@ -1,8 +1,112 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
 import { Controls, normalizeArgs } from "../../utils";
 import { viewerFrame } from "../../utils/viewer.styles";
+
+const LAYOUT_TRANSITION_MS = 350;
+
+/** Zoom with the wheel only while Ctrl/⌘ is held; a plain trackpad scroll pans. */
+const hasZoomKey = (keys: string[]) =>
+  keys.includes("Control") || keys.includes("Meta");
+
+const FADE_KEYFRAMES = `
+@keyframes rzpp-story-fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes rzpp-story-fade-out { from { opacity: 1 } to { opacity: 0 } }
+`;
+
+type OutgoingLayout = { key: string; node: React.ReactNode } | null;
+
+/**
+ * Animates layout swaps of its children: the box transitions to the height
+ * of the incoming layout (measured with a ResizeObserver) while the outgoing
+ * layout stays mounted as an overlay and fades out and the incoming one fades
+ * in. Swapping a compact layout for a large one is therefore a smooth
+ * cross-fade and reflow, not a jump — which is what the library has to follow.
+ */
+function AnimatedBlock({
+  layoutKey,
+  children,
+}: {
+  layoutKey: string;
+  children: React.ReactNode;
+}) {
+  const innerRef = useRef<HTMLDivElement | null>(null);
+  const lastChildren = useRef<React.ReactNode>(children);
+  const [height, setHeight] = useState<number | undefined>(undefined);
+  const [shown, setShown] = useState<{
+    key: string;
+    outgoing: OutgoingLayout;
+  }>({ key: layoutKey, outgoing: null });
+
+  // Derived state, set during render so the outgoing layout never disappears
+  // for a frame: on a swap keep the layout rendered last time for the fade.
+  if (shown.key !== layoutKey) {
+    setShown({
+      key: layoutKey,
+      outgoing: { key: shown.key, node: lastChildren.current },
+    });
+  }
+  lastChildren.current = children;
+
+  useEffect(() => {
+    if (!shown.outgoing) return undefined;
+    const timer = setTimeout(
+      () => setShown((current) => ({ ...current, outgoing: null })),
+      LAYOUT_TRANSITION_MS,
+    );
+    return () => clearTimeout(timer);
+  }, [shown.outgoing]);
+
+  // The inner box is keyed by layout, so it is a new element after every
+  // swap: measure and observe the current one before paint.
+  useLayoutEffect(() => {
+    const inner = innerRef.current;
+    if (!inner) return undefined;
+    const measure = () => setHeight(inner.offsetHeight);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(inner);
+    return () => observer.disconnect();
+  }, [layoutKey]);
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        height,
+        overflow: "hidden",
+        transition: `height ${LAYOUT_TRANSITION_MS}ms ease`,
+      }}
+    >
+      <div
+        key={layoutKey}
+        ref={innerRef}
+        style={{
+          animation: `rzpp-story-fade-in ${LAYOUT_TRANSITION_MS}ms ease both`,
+        }}
+      >
+        {children}
+      </div>
+      {shown.outgoing && (
+        <div
+          key={shown.outgoing.key}
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            pointerEvents: "none",
+            animation: `rzpp-story-fade-out ${LAYOUT_TRANSITION_MS}ms ease both`,
+          }}
+        >
+          {shown.outgoing.node}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const BLOCKS = [
   { interval: 1000, label: "Block A", color: "#667eea", desc: "1 s cycle" },
@@ -510,6 +614,7 @@ function BlockC({ expanded }: { expanded: boolean }) {
 }
 
 export const Example: React.FC<any> = (args: any) => {
+  const normalized = normalizeArgs(args);
   const [toggles, setToggles] = useState([false, false, false]);
 
   useEffect(() => {
@@ -529,7 +634,17 @@ export const Example: React.FC<any> = (args: any) => {
 
   return (
     <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      <TransformWrapper {...normalizeArgs(args)} centerOnInit>
+      <style>{FADE_KEYFRAMES}</style>
+      <TransformWrapper
+        {...normalized}
+        centerOnInit
+        wheel={{ ...normalized.wheel, activationKeys: hasZoomKey }}
+        trackPadPanning={{
+          ...normalized.trackPadPanning,
+          disabled: false,
+          activationKeys: (keys) => !hasZoomKey(keys),
+        }}
+      >
         {(utils) => (
           <div style={{ position: "relative" }}>
             <Controls {...utils} position="bottom-left" />
@@ -606,8 +721,9 @@ export const Example: React.FC<any> = (args: any) => {
                 >
                   Each block alternates between a <strong>compact</strong> and a{" "}
                   <strong>large</strong> layout: different grids, columns,
-                  heights, and extra sections. This is a stronger test than text
-                  swaps alone — pan and zoom should stay stable.
+                  heights, and extra sections, each reflow smoothly animated.
+                  Scroll the trackpad to pan, hold Ctrl/⌘ to zoom — the content
+                  edge follows the reflow and stays aligned to the viewport.
                 </p>
 
                 <div
@@ -617,9 +733,15 @@ export const Example: React.FC<any> = (args: any) => {
                     gap: 14,
                   }}
                 >
-                  <BlockA expanded={a} />
-                  <BlockB expanded={b} />
-                  <BlockC expanded={c} />
+                  <AnimatedBlock layoutKey={a ? "a-large" : "a-compact"}>
+                    <BlockA expanded={a} />
+                  </AnimatedBlock>
+                  <AnimatedBlock layoutKey={b ? "b-large" : "b-compact"}>
+                    <BlockB expanded={b} />
+                  </AnimatedBlock>
+                  <AnimatedBlock layoutKey={c ? "c-large" : "c-compact"}>
+                    <BlockC expanded={c} />
+                  </AnimatedBlock>
                 </div>
               </div>
             </TransformComponent>

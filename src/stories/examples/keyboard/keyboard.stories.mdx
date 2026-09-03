@@ -1,0 +1,83 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components/";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 640,
+      height: "min(420px, 52vh)",
+      margin: "0 auto",
+      boxSizing: "border-box",
+      position: "relative",
+    }}
+  >
+    <Example {...args} />
+  </div>
+);
+
+<Meta
+  title="Basic/Keyboard Navigation"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Keyboard Navigation
+
+Pan and zoom **without a pointer**. Keyboard navigation is opt-in: enable it
+with the `keyboard` prop and the wrapper becomes focusable (`tabIndex={0}`,
+unless your `wrapperProps` set one). While the wrapper — or anything inside
+it — has focus:
+
+| Keys      | Action                                   |
+| --------- | ---------------------------------------- |
+| `← ↑ → ↓` | pan by `keyboard.panStep` pixels (50)    |
+| `+` / `=` | zoom in by `keyboard.zoomStep` (0.25)    |
+| `-` / `_` | zoom out by `keyboard.zoomStep`          |
+| `0`       | reset the transform                      |
+
+```tsx
+<TransformWrapper keyboard={{ disabled: false, panStep: 80, zoomStep: 0.5 }}>
+  <TransformComponent>…</TransformComponent>
+</TransformWrapper>
+```
+
+Try it: **click the map**, then use the arrow keys. The hint in the corner
+lights up while the viewer has focus.
+
+What is deliberately left alone:
+
+- **Modifier combos** (`Cmd/Ctrl + 0`, `Cmd/Ctrl + -`, `Alt + …`) so browser
+  shortcuts keep working.
+- **Editable targets** — typing into an `<input>` or a `contenteditable`
+  region inside the content never moves the canvas.
+- Anything matching `keyboard.excluded` (class or tag names).
+
+Arrow steps respect `panning.lockAxisX` / `lockAxisY` and the pan bounds, and
+animate with `keyboard.animationTime` (100 ms by default).
+
+## Direction buttons: `panBy`
+
+The keys are built on the `panBy(deltaX, deltaY, animationTime?, animationType?)`
+control, which is also what the toolbar's arrow buttons call. Positive `x`
+moves the content right — the same convention as `setTransform`:
+
+```ts
+const { panBy } = useControls();
+panBy(80, 0); // reveal content on the left
+panBy(0, -80); // reveal content below
+```
+
+`panBy` is clamped to the bounds when `limitToBounds` is on, fires the panning
+callbacks, and returns a promise that resolves when the animation finishes.
+
+<Canvas>
+  <Story name="Keyboard Navigation">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Keyboard Navigation" />

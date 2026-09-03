@@ -1546,12 +1546,12 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
               limitToBounds={false}
               wheel={{
                 activationKeys: (keys) =>
-                  ["Meta", "Ctrl"].some((key) => keys.includes(key)),
+                  ["Meta", "Control"].some((key) => keys.includes(key)),
               }}
               trackPadPanning={{
                 disabled: false,
                 activationKeys: (keys) =>
-                  !["Meta", "Ctrl"].some((key) => keys.includes(key)),
+                  !["Meta", "Control"].some((key) => keys.includes(key)),
               }}
             >
               <TransformComponent

@@ -3,3 +3,4 @@ export * from "./bounds-overlay";
 export * from "./code.utils";
 export * from "./controls.utils";
 export * from "./viewer.styles";
+export * from "./focus-chips";

@@ -102,6 +102,29 @@ export const handlersTable: ComponentProps = {
     description:
       "Inverse of `clientToContent`: converts unscaled content coordinates into client (viewport) coordinates for the current transform.",
   },
+  fitToView: {
+    type: ["function(options)"],
+    parameters: [
+      "options.mode: 'contain' | 'cover' = 'contain'",
+      "options.minScale: number = undefined",
+      "options.maxScale: number = undefined",
+      "options.animationTime: number = 200",
+      "options.animationType: keyof typeof animations = easeOut",
+    ],
+    description:
+      "Fits the whole content into the viewport (`contain`) or fills the viewport with it (`cover`), centred. Honours the wrapper's `minScale`/`maxScale` — lower `minScale` to let large content shrink. Returns a promise that resolves when the animation finishes. See also the `fitOnInit` prop.",
+  },
+  panBy: {
+    type: ["function(deltaX, deltaY, animationTime, animationType)"],
+    parameters: [
+      "deltaX: number",
+      "deltaY: number",
+      "animationTime: number = 200",
+      "animationType: keyof typeof animations = easeOut",
+    ],
+    description:
+      "Pans by a pixel delta (positive x moves the content right), limited to the bounds when `limitToBounds` is on. Backs the keyboard arrows and directional buttons. Returns a promise that resolves when the animation finishes.",
+  },
 };
 
 export const getHandlersTable = (): ControlsFnOptionsType[] => {

@@ -1,12 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import {
-  Controls,
-  NumberedTargetIcon,
-  normalizeArgs,
-  viewerChrome,
-} from "../../utils";
+import { Controls, FocusChips, normalizeArgs, viewerChrome } from "../../utils";
 import { useTransformComponent } from "../../../hooks";
 
 function ScaleBadge() {
@@ -77,6 +72,9 @@ const TARGETS = [
 ];
 
 export const Example: React.FC<any> = (args: any) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const clearActive = () => setActiveId(null);
+
   return (
     <div style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
       <style>{`
@@ -88,18 +86,41 @@ export const Example: React.FC<any> = (args: any) => {
           box-shadow: 0 0 24px var(--target-glow), 0 0 0 1px var(--target-color);
         }
       `}</style>
-      <TransformWrapper {...normalizeArgs(args)} centerOnInit>
-        {(utils) => (
-          <>
-            <Controls
-              {...utils}
-              extraButtons={TARGETS.map((t, i) => ({
-                label: `Focus ${t.label}`,
-                icon: <NumberedTargetIcon n={i + 1} />,
-                onClick: () => utils.zoomToElement(t.id),
-              }))}
-            />
+      <TransformWrapper
+        {...normalizeArgs(args)}
+        centerOnInit
+        onPanningStart={clearActive}
+        onWheelStart={clearActive}
+        onPinchStart={clearActive}
+      >
+        {(utils) => {
+          const focus = (id: string) => {
+            setActiveId(id);
+            utils.zoomToElement(id);
+          };
+
+          return (
             <div style={{ position: "relative", display: "inline-block" }}>
+              <Controls
+                {...utils}
+                resetTransform={(...rest) => {
+                  clearActive();
+                  return utils.resetTransform(...rest);
+                }}
+              />
+              <FocusChips
+                title="Zoom to"
+                position="bottom-left"
+                activeId={activeId}
+                onSelect={focus}
+                items={TARGETS.map((t) => ({
+                  id: t.id,
+                  label: t.label,
+                  icon: t.icon,
+                  accent: t.color,
+                  hint: t.desc,
+                }))}
+              />
               <TransformComponent
                 wrapperStyle={{
                   ...viewerChrome,
@@ -149,11 +170,11 @@ export const Example: React.FC<any> = (args: any) => {
                             "--target-glow": `${target.color}33`,
                           } as React.CSSProperties
                         }
-                        onClick={() => utils.zoomToElement(target.id)}
+                        onClick={() => focus(target.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            utils.zoomToElement(target.id);
+                            focus(target.id);
                           }
                         }}
                       >
@@ -211,8 +232,8 @@ export const Example: React.FC<any> = (args: any) => {
               </TransformComponent>
               <ScaleBadge />
             </div>
-          </>
-        )}
+          );
+        }}
       </TransformWrapper>
     </div>
   );

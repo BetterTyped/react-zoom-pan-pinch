@@ -7,6 +7,157 @@ const font = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
 const SELECTABLE_CLASS = "selectable";
 
+// Zoom is gated behind a modifier so a plain two-finger trackpad swipe pans.
+// Keys are matched by their `event.key` name ("Control", not "Ctrl"); a
+// trackpad pinch arrives as a wheel event with `ctrlKey` set, so it counts
+// as "Control" and zooms too.
+const ZOOM_KEYS = ["Meta", "Control"];
+const hasZoomKey = (keys: string[]) =>
+  ZOOM_KEYS.some((key) => keys.includes(key));
+
+type ModifierState = { meta: boolean; control: boolean };
+
+const IS_MAC =
+  typeof navigator !== "undefined" &&
+  /Mac|iPhone|iPad/.test(navigator.platform);
+
+/**
+ * Tracks whether Cmd / Ctrl is held. Keyboard events only reach the story
+ * iframe when it has focus, so the modifier flags carried by wheel and mouse
+ * events are synced as well — the same trick the library uses internally.
+ */
+const useModifierKeys = () => {
+  const [modifiers, setModifiers] = React.useState<ModifierState>({
+    meta: false,
+    control: false,
+  });
+
+  const sync = React.useCallback(
+    (event: { metaKey: boolean; ctrlKey: boolean }) => {
+      setModifiers((previous) =>
+        previous.meta === event.metaKey && previous.control === event.ctrlKey
+          ? previous
+          : { meta: event.metaKey, control: event.ctrlKey },
+      );
+    },
+    [],
+  );
+
+  React.useEffect(() => {
+    const reset = () => setModifiers({ meta: false, control: false });
+    window.addEventListener("keydown", sync);
+    window.addEventListener("keyup", sync);
+    window.addEventListener("blur", reset);
+    return () => {
+      window.removeEventListener("keydown", sync);
+      window.removeEventListener("keyup", sync);
+      window.removeEventListener("blur", reset);
+    };
+  }, [sync]);
+
+  return { modifiers, sync };
+};
+
+const keyCapStyle = (active: boolean): React.CSSProperties => ({
+  display: "inline-flex",
+  alignItems: "center",
+  padding: "1px 7px",
+  borderRadius: 5,
+  border: `1px solid ${active ? "#818cf8" : "rgba(255, 255, 255, 0.18)"}`,
+  background: active ? "#4f46e5" : "rgba(255, 255, 255, 0.08)",
+  color: active ? "#ffffff" : "#e7e5e4",
+  fontSize: 11,
+  fontWeight: 700,
+  fontFamily: "'SF Mono', 'Fira Code', ui-monospace, monospace",
+  boxShadow: active ? "0 0 0 3px rgba(129, 140, 248, 0.35)" : "none",
+  transition: "all 120ms ease",
+});
+
+const legendRowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  whiteSpace: "nowrap",
+};
+
+const legendLabelStyle: React.CSSProperties = {
+  width: 40,
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: "rgba(255, 255, 255, 0.55)",
+};
+
+/**
+ * Overlay in the viewer's top-right corner (the control bar sits top-left)
+ * showing the gesture map and whether the zoom activation key is held.
+ */
+const GestureLegend: React.FC<{ modifiers: ModifierState }> = ({
+  modifiers,
+}) => {
+  const zoomKeyHeld = modifiers.meta || modifiers.control;
+  const primaryKey = IS_MAC ? "⌘ Cmd" : "Ctrl";
+
+  let status = "No activation key — scroll pans";
+  if (zoomKeyHeld && modifiers.meta) status = "Cmd held — scroll zooms";
+  if (zoomKeyHeld && !modifiers.meta) {
+    status = IS_MAC
+      ? "Pinch / Ctrl held — zooming"
+      : "Ctrl held — scroll zooms";
+  }
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      style={{
+        position: "absolute",
+        top: 25,
+        right: 25,
+        zIndex: 10,
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: "rgba(15, 15, 20, 0.72)",
+        backdropFilter: "blur(16px) saturate(1.6)",
+        WebkitBackdropFilter: "blur(16px) saturate(1.6)",
+        border: "1px solid rgba(255, 255, 255, 0.08)",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.25)",
+        fontSize: 12,
+        color: "#e7e5e4",
+        pointerEvents: "none",
+      }}
+    >
+      <div style={legendRowStyle}>
+        <span style={legendLabelStyle}>Pan</span>
+        <span>two-finger swipe</span>
+      </div>
+      <div style={legendRowStyle}>
+        <span style={legendLabelStyle}>Zoom</span>
+        <span>pinch, or</span>
+        <span style={keyCapStyle(zoomKeyHeld)}>{primaryKey}</span>
+        <span>+ scroll</span>
+      </div>
+      <div
+        style={{
+          marginTop: 2,
+          paddingTop: 6,
+          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+          fontSize: 11,
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+          color: zoomKeyHeld ? "#a5b4fc" : "rgba(255, 255, 255, 0.5)",
+        }}
+      >
+        {status}
+      </div>
+    </div>
+  );
+};
+
 const codeStyle: React.CSSProperties = {
   padding: "2px 6px",
   borderRadius: 4,
@@ -19,19 +170,31 @@ const codeStyle: React.CSSProperties = {
 
 export const Example: React.FC<Record<string, unknown>> = (args) => {
   const normalized = normalizeArgs(args);
+  const { modifiers, sync } = useModifierKeys();
 
   return (
-    <div style={{ fontFamily: font, maxWidth: 720 }}>
+    <div
+      style={{ fontFamily: font, maxWidth: 720 }}
+      onWheelCapture={sync}
+      onMouseMoveCapture={sync}
+      onMouseDownCapture={sync}
+    >
       <TransformWrapper
         {...normalized}
         centerOnInit
         centerZoomedOut
         panning={{ ...normalized.panning, excluded: [SELECTABLE_CLASS] }}
-        trackPadPanning={{ disabled: false }}
+        wheel={{ ...normalized.wheel, activationKeys: hasZoomKey }}
+        trackPadPanning={{
+          ...normalized.trackPadPanning,
+          disabled: false,
+          activationKeys: (keys) => !hasZoomKey(keys),
+        }}
       >
         {(utils) => (
           <div style={{ position: "relative" }}>
             <Controls {...utils} />
+            <GestureLegend modifiers={modifiers} />
             <TransformComponent
               wrapperStyle={{
                 ...viewerChrome,
@@ -165,12 +328,15 @@ export const Example: React.FC<Record<string, unknown>> = (args) => {
                     on this text to select it — panning is suppressed.
                   </li>
                   <li>
-                    <strong style={{ color: "#1c1917" }}>Scroll wheel</strong>{" "}
-                    zooms in/out, and{" "}
                     <strong style={{ color: "#1c1917" }}>
-                      trackpad panning
+                      Two-finger swipe
                     </strong>{" "}
-                    works normally (only click-drag is excluded).
+                    on the trackpad pans the page.{" "}
+                    <strong style={{ color: "#1c1917" }}>Pinch</strong> or{" "}
+                    <strong style={{ color: "#1c1917" }}>
+                      Cmd/Ctrl + scroll
+                    </strong>{" "}
+                    zooms in/out (only click-drag is excluded).
                   </li>
                   <li>
                     <strong style={{ color: "#1c1917" }}>Ctrl+A / Cmd+A</strong>{" "}

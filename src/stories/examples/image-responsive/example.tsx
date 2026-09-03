@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 import { TransformComponent, TransformWrapper } from "components";
-import { Controls, normalizeArgs, viewerChrome } from "stories/utils";
+import {
+  Controls,
+  normalizeArgs,
+  viewerChrome,
+  viewerFrameBorder,
+} from "stories/utils";
 import { useTransformComponent } from "../../../hooks";
 import exampleImg from "../../assets/medium-image.jpg";
 
@@ -76,9 +81,13 @@ export const Example: React.FC<any> = (args: any) => {
   useEffect(() => {
     if (!container) return undefined;
 
+    // The image is fitted into the wrapper's *client* box: the frame border
+    // sits inside the 100% width (border-box), so subtract it on both sides.
+    const inner = (value: number) => value - 2 * viewerFrameBorder;
+
     const measure = () => {
       const rect = container.getBoundingClientRect();
-      applySize(rect.width, rect.height);
+      applySize(inner(rect.width), inner(rect.height));
     };
 
     measure();
@@ -86,7 +95,7 @@ export const Example: React.FC<any> = (args: any) => {
     const ro = new ResizeObserver((entries) => {
       const cr = entries[0]?.contentRect;
       if (cr) {
-        applySize(cr.width, cr.height);
+        applySize(inner(cr.width), inner(cr.height));
       }
     });
     ro.observe(container);

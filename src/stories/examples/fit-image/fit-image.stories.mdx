@@ -1,0 +1,77 @@
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components/";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 640,
+      height: "min(420px, 52vh)",
+      margin: "0 auto",
+      boxSizing: "border-box",
+      position: "relative",
+    }}
+  >
+    <Example {...args} />
+  </div>
+);
+
+<Meta
+  title="Basic/Fit Image"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Fit Image
+
+Show a **large image fitted to its viewport** on the first paint, without
+measuring anything yourself. The image here is several times bigger than the
+frame; `fitOnInit` scales it down so the whole photo is visible and centred.
+
+```tsx
+<TransformWrapper fitOnInit minScale={0.05}>
+  <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
+    <img src={photo} alt="…" />
+  </TransformComponent>
+</TransformWrapper>
+```
+
+Two details matter:
+
+- **`minScale`** — the default `minScale` of `1` never shrinks content, so a
+  fit that has to zoom out needs a lower limit. Pick the smallest scale you
+  want to allow; the fit is clamped to `minScale`/`maxScale` like every other
+  zoom.
+- **Late-sized content** — an `<img>` has no size until it loads. `fitOnInit`
+  waits for it and applies the layout again once the image reports its
+  dimensions, so there is no flash of a wrongly-scaled image.
+
+`fitOnInit` accepts `true` (same as `"contain"`: the whole image is visible) or
+`"cover"` (the image fills the frame and the overflow is cropped).
+`resetTransform` returns to the fitted layout instead of `initialScale`.
+
+## At runtime: `fitToView`
+
+The extra buttons in the toolbar call the matching control:
+
+```ts
+const { fitToView, centerView } = useControls();
+
+fitToView(); // contain (default)
+fitToView({ mode: "cover" }); // fill the viewport
+fitToView({ maxScale: 2, animationTime: 400 }); // never upscale past 2x
+centerView(1); // original size (1:1), centred
+```
+
+`fitToView` returns a promise that resolves when the animation has finished.
+
+<Canvas>
+  <Story name="Fit Image">{(args) => <Template {...args} />}</Story>
+</Canvas>
+
+## Component API
+
+<ArgsTable story="Fit Image" />

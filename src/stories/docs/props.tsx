@@ -173,7 +173,7 @@ export const wrapperPropsTable: Record<
     type: ["boolean"],
     defaultValue: String(initialSetup.limitToBounds),
     description:
-      "Prop used to block panning/zooming outside of the scaled element, so the library will always keep it inside the wrapper view.",
+      "Prop used to block panning/zooming outside of the scaled element, so the library will always keep it inside the wrapper view. The bounds are re-checked whenever the content or the wrapper changes size (children re-rendering with another size, images loading, the viewport resizing); a transform left outside them eases back into place, following the moving edge while the size is still changing and settling within `autoAlignment.animationTime`.",
   },
   centerZoomedOut: {
     type: ["boolean"],
@@ -186,6 +186,12 @@ export const wrapperPropsTable: Record<
     defaultValue: String(initialSetup.centerOnInit),
     description:
       "When the prop is set to truth the content component will get centered based on the size of it's wrapper.",
+  },
+  fitOnInit: {
+    type: ["boolean", "'contain'", "'cover'"],
+    defaultValue: String(initialSetup.fitOnInit),
+    description:
+      "Fit the content to the wrapper on init and again once the content gets its size (e.g. after an image loads). `true`/`'contain'` shows the whole content, `'cover'` fills the wrapper. Honours `minScale`/`maxScale`, so lower `minScale` to let large content shrink. Takes precedence over `centerOnInit`; `resetTransform` returns to the fitted layout.",
   },
   disablePadding: {
     type: ["boolean"],
@@ -340,6 +346,45 @@ export const wrapperPropsTable: Record<
         "List of the class names or tags that should not activate this feature. (E.g. ['my-custom-class-name', 'div', 'a'])",
     },
   },
+  keyboard: {
+    keyboard: {
+      type: [""],
+      defaultValue: "",
+      description: "",
+    },
+    disabled: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.keyboard.disabled),
+      description:
+        "Keyboard navigation is opt-in. When enabled the wrapper becomes focusable (tabIndex 0 unless `wrapperProps.tabIndex` is set) and, while focused, arrow keys pan, `+`/`-` zoom and `0` resets. Modifier combos and editable targets are ignored.",
+    },
+    panStep: {
+      type: ["number"],
+      defaultValue: String(initialSetup.keyboard.panStep),
+      description: "Pixels moved per arrow key press.",
+    },
+    zoomStep: {
+      type: ["number"],
+      defaultValue: String(initialSetup.keyboard.zoomStep),
+      description: "Scale added or removed per `+`/`-` press.",
+    },
+    animationTime: {
+      type: ["number"],
+      defaultValue: String(initialSetup.keyboard.animationTime),
+      description: "Animation time of a keyboard step in ms.",
+    },
+    animationType: {
+      type: ["string"],
+      defaultValue: String(initialSetup.keyboard.animationType),
+      description: "Animation easing of a keyboard step.",
+    },
+    excluded: {
+      type: ["string[]"],
+      defaultValue: "[]",
+      description:
+        "Class or tag names whose key presses are ignored (inputs and contenteditable regions are ignored automatically).",
+    },
+  },
   trackPadPanning: {
     trackPadPanning: {
       type: [""],
@@ -483,7 +528,8 @@ export const wrapperPropsTable: Record<
     animationTime: {
       type: ["number"],
       defaultValue: String(initialSetup.autoAlignment.animationTime),
-      description: "Time of the alignment animation.",
+      description:
+        "Time of the alignment animation. The alignment that follows a content or wrapper resize settles within the same time.",
     },
     animationType: {
       type: Object.keys(animations),

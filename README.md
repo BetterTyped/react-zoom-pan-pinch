@@ -88,7 +88,7 @@ help you resolve issues quickly and avoid blocking releases.
 Do you like this library? Here is what else I build and maintain.
 
 <p align="center">
-  <a href="https://github.com/BetterTyped/hype-stack">
+  <a href="https://hype-stack.dev">
     <img src="./.github/assets/banner-hype-stack.png" alt="Build your SaaS on Hype Stack" />
   </a>
 </p>

@@ -88,7 +88,7 @@ help you resolve issues quickly and avoid blocking releases.
 Do you like this library? Here is what else I build and maintain.
 
 <p align="center">
-  <a href="https://hype-stack.dev">
+  <a href="https://www.hype-stack.dev/?utm_medium=referral&utm_source=react-zoom-pan-pinch&utm_campaign=readme">
     <img src="./.github/assets/banner-hype-stack.png" alt="Build your SaaS on Hype Stack" />
   </a>
 </p>

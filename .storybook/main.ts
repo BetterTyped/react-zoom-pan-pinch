@@ -14,6 +14,8 @@ const config: StorybookConfig = {
     name: "@storybook/react-vite",
     options: {},
   },
+  // The picture on the Hype Stack card in the sidebar (see manager.tsx).
+  staticDirs: ["./public"],
   docs: {
     autodocs: "tag",
   },

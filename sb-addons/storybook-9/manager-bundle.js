@@ -1,5 +1,5 @@
 try{
-(()=>{var e=__REACT__,{Children:b,Component:u,Fragment:_,Profiler:y,PureComponent:k,StrictMode:v,Suspense:S,__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:T,cloneElement:w,createContext:O,createElement:C,createFactory:E,createRef:M,forwardRef:z,isValidElement:A,lazy:L,memo:N,useCallback:I,useContext:P,useDebugValue:B,useEffect:H,useImperativeHandle:G,useLayoutEffect:K,useMemo:Y,useReducer:F,useRef:j,useState:D,version:V}=__REACT__;var q=__STORYBOOK_API__,{ActiveTabs:J,Consumer:Q,ManagerContext:Z,Provider:$,addons:t,combineParameters:ee,controlOrMetaKey:ae,controlOrMetaSymbol:re,eventMatchesShortcut:se,eventToShortcut:te,isMacLike:oe,isShortcutTaken:ne,keyToSymbol:ie,merge:he,mockChannel:le,optionOrAltSymbol:pe,shortcutMatchesShortcut:de,shortcutToHumanString:ce,types:o,useAddonState:me,useArgTypes:ge,useArgs:xe,useChannel:fe,useGlobalTypes:be,useGlobals:ue,useParameter:_e,useSharedState:ye,useStoryPrepared:ke,useStorybookApi:ve,useStorybookState:Se}=__STORYBOOK_API__;var Ee=__STORYBOOK_THEMING__,{CacheProvider:Me,ClassNames:ze,Global:Ae,ThemeProvider:Le,background:Ne,color:Ie,convert:Pe,create:Be,createCache:He,createGlobal:Ge,createReset:Ke,css:Ye,darken:Fe,ensure:je,ignoreSsrWarning:De,isPropValid:Ve,jsx:Ue,keyframes:We,lighten:Re,styled:Xe,themes:qe,typography:Je,useTheme:n,withTheme:Qe}=__STORYBOOK_THEMING__;var h="https://www.hype-stack.dev/?ref=react-zoom-pan-pinch&utm_source=react-zoom-pan-pinch&utm_medium=referral&utm_campaign=storybook-sidebar",l=`
+(()=>{var e=__REACT__,{Children:_,Component:w,Fragment:T,Profiler:C,PureComponent:O,StrictMode:M,Suspense:E,__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:z,cloneElement:L,createContext:N,createElement:A,createFactory:I,createRef:B,forwardRef:P,isValidElement:H,lazy:G,memo:K,useCallback:Y,useContext:j,useDebugValue:F,useEffect:n,useImperativeHandle:D,useLayoutEffect:V,useMemo:U,useReducer:W,useRef:X,useState:i,version:q}=__REACT__;var R=__STORYBOOK_API__,{ActiveTabs:ee,Consumer:ae,ManagerContext:se,Provider:te,addons:o,combineParameters:re,controlOrMetaKey:oe,controlOrMetaSymbol:ne,eventMatchesShortcut:ie,eventToShortcut:de,isMacLike:le,isShortcutTaken:he,keyToSymbol:pe,merge:ce,mockChannel:ge,optionOrAltSymbol:me,shortcutMatchesShortcut:xe,shortcutToHumanString:ue,types:d,useAddonState:be,useArgTypes:fe,useArgs:ke,useChannel:ye,useGlobalTypes:ve,useGlobals:Se,useParameter:_e,useSharedState:we,useStoryPrepared:Te,useStorybookApi:Ce,useStorybookState:Oe}=__STORYBOOK_API__;var Ne=__STORYBOOK_THEMING__,{CacheProvider:Ae,ClassNames:Ie,Global:Be,ThemeProvider:Pe,background:He,color:Ge,convert:Ke,create:Ye,createCache:je,createGlobal:Fe,createReset:De,css:Ve,darken:Ue,ensure:We,ignoreSsrWarning:Xe,isPropValid:qe,jsx:Je,keyframes:Qe,lighten:Ze,styled:$e,themes:Re,typography:ea,useTheme:l,withTheme:aa}=__STORYBOOK_THEMING__;var g="https://www.hype-stack.dev/?ref=react-zoom-pan-pinch&utm_source=react-zoom-pan-pinch&utm_medium=referral&utm_campaign=storybook-sidebar",m=`
 .hs-ad {
   --hs: oklch(0.68 0.2 50);
   --hs-bg: #ffffff;
@@ -7,7 +7,6 @@ try{
   --hs-dim: #5e5e66;
   --hs-line: rgb(0 0 0 / 0.14);
   display: grid;
-  margin-top: 12px;
   padding: 8px 8px 14px;
   border: 1px solid var(--hs-line);
   border-radius: 18px;
@@ -65,7 +64,7 @@ try{
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.hs-ad-label svg { flex: none; width: 13px; height: 13px; fill: var(--hs); }
+.hs-ad-label svg { flex: none; width: 13px; height: 13px; fill: var(--hs); stroke: none; }
 .hs-ad strong {
   margin-top: 8px;
   color: var(--hs-ink);
@@ -101,11 +100,57 @@ try{
   transition: filter 0.2s;
 }
 .hs-ad:hover .hs-ad-go { filter: brightness(1.07); }
-.hs-ad-go i { font-style: normal; transition: transform 0.2s; }
-.hs-ad:hover .hs-ad-go i { transform: translateX(3px); }
-@media (max-height: 760px) {
-  .hs-ad-art { display: none; }
-  .hs-ad { padding-top: 14px; }
+.hs-ad-go svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s;
 }
-`;function p(){let i=n();return e.createElement(e.Fragment,null,e.createElement("style",null,l),e.createElement("a",{className:"hs-ad","data-base":i.base,href:h,target:"_blank",rel:"noopener","aria-label":"Build your SaaS on Hype Stack"},e.createElement("span",{className:"hs-ad-art","aria-hidden":!0},e.createElement("img",{src:"./hype-stack-apps.jpg",alt:"",width:720,height:400})),e.createElement("span",{className:"hs-ad-label"},e.createElement("svg",{viewBox:"0 0 24 24","aria-hidden":!0},e.createElement("path",{d:"M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"})),"From Hype Stack"),e.createElement("strong",null,"Build your SaaS on ",e.createElement("b",null,"Hype Stack")),e.createElement("span",{className:"hs-ad-price"},e.createElement("b",null,"Free")," MIT template"),e.createElement("span",{className:"hs-ad-go"},"Explore the stack",e.createElement("i",{"aria-hidden":!0},"\u203A"))))}t.register("hype-stack/card",()=>{t.add("hype-stack/card/sidebar",{type:o.experimental_SIDEBAR_BOTTOM,render:()=>e.createElement(p,null)})});})();
+.hs-ad:hover .hs-ad-go svg { transform: translateX(3px); }
+.hs-ad-box { position: relative; margin-top: 12px; }
+.hs-ad-box .hs-ad { margin-top: 0; }
+.hs-ad-close {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #0a0a0a;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.2);
+  color: #fff;
+  cursor: pointer;
+}
+.hs-ad-close svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+/* Shrunk: the label, the headline and an orange arrow to go there. The cross turns the card into this. */
+.hs-ad[data-small] {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px 10px;
+  padding: 9px 9px 9px 4px;
+  border-radius: 14px;
+}
+.hs-ad[data-small] .hs-ad-art,
+.hs-ad[data-small] .hs-ad-price { display: none; }
+.hs-ad[data-small] .hs-ad-label { font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+.hs-ad[data-small] strong { grid-column: 1; margin-top: 0; font-size: 14px; }
+.hs-ad[data-small] strong b { display: inline; }
+.hs-ad[data-small] .hs-ad-go { grid-column: 2; grid-row: 1 / span 2; width: 40px; height: 40px; margin: 0; }
+.hs-ad[data-small] .hs-ad-go span { display: none; }
+.hs-ad[data-small] .hs-ad-go svg { width: 17px; height: 17px; }
+@media (max-height: 760px) {
+  .hs-ad:not([data-small]) .hs-ad-art { display: none; }
+  .hs-ad:not([data-small]) { padding-top: 14px; }
+}
+`,h="react-zoom-pan-pinch:storybook:hype-card";function x(){try{return window.sessionStorage.getItem(h)!==null}catch{return!1}}function u(){let p=l(),[a,c]=i(x);return n(()=>{if(a)try{window.sessionStorage.setItem(h,"1")}catch{}},[a]),e.createElement("div",{className:"hs-ad-box"},e.createElement("style",null,m),e.createElement("a",{className:"hs-ad","data-base":p.base,"data-small":a?"":void 0,href:g,target:"_blank",rel:"noopener","aria-label":"Build your SaaS on Hype Stack"},e.createElement("span",{className:"hs-ad-art","aria-hidden":!0},e.createElement("img",{src:"./hype-stack-apps.jpg",alt:"",width:720,height:400})),e.createElement("span",{className:"hs-ad-label"},e.createElement("svg",{viewBox:"0 0 24 24","aria-hidden":!0},e.createElement("path",{d:"M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"})),"From Hype Stack"),e.createElement("strong",null,"Build your SaaS on ",e.createElement("b",null,"Hype Stack")),e.createElement("span",{className:"hs-ad-price"},e.createElement("b",null,"Free")," MIT template"),e.createElement("span",{className:"hs-ad-go"},e.createElement("span",null,"Explore the stack"),e.createElement("svg",{viewBox:"0 0 24 24","aria-hidden":!0},e.createElement("path",{d:"M5 12h14M13 6l6 6-6 6"})))),a?null:e.createElement("button",{type:"button",className:"hs-ad-close",onClick:()=>c(!0),"aria-label":"Shrink the Hype Stack card"},e.createElement("svg",{viewBox:"0 0 24 24","aria-hidden":!0},e.createElement("path",{d:"M6 6l12 12M18 6 6 18"}))))}o.register("hype-stack/card",()=>{o.add("hype-stack/card/sidebar",{type:d.experimental_SIDEBAR_BOTTOM,render:()=>e.createElement(u,null)})});})();
 }catch(e){ console.error("[Storybook] One of your manager-entries failed: " + import.meta.url, e); }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { addons, types } from "@storybook/manager-api";
 import { useTheme } from "@storybook/theming";
 
@@ -19,7 +19,6 @@ const CSS = `
   --hs-dim: #5e5e66;
   --hs-line: rgb(0 0 0 / 0.14);
   display: grid;
-  margin-top: 12px;
   padding: 8px 8px 14px;
   border: 1px solid var(--hs-line);
   border-radius: 18px;
@@ -77,7 +76,7 @@ const CSS = `
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.hs-ad-label svg { flex: none; width: 13px; height: 13px; fill: var(--hs); }
+.hs-ad-label svg { flex: none; width: 13px; height: 13px; fill: var(--hs); stroke: none; }
 .hs-ad strong {
   margin-top: 8px;
   color: var(--hs-ink);
@@ -113,22 +112,90 @@ const CSS = `
   transition: filter 0.2s;
 }
 .hs-ad:hover .hs-ad-go { filter: brightness(1.07); }
-.hs-ad-go i { font-style: normal; transition: transform 0.2s; }
-.hs-ad:hover .hs-ad-go i { transform: translateX(3px); }
+.hs-ad-go svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s;
+}
+.hs-ad:hover .hs-ad-go svg { transform: translateX(3px); }
+.hs-ad-box { position: relative; margin-top: 12px; }
+.hs-ad-box .hs-ad { margin-top: 0; }
+.hs-ad-close {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #0a0a0a;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.2);
+  color: #fff;
+  cursor: pointer;
+}
+.hs-ad-close svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+/* Shrunk: the label, the headline and an orange arrow to go there. The cross turns the card into this. */
+.hs-ad[data-small] {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px 10px;
+  padding: 9px 9px 9px 4px;
+  border-radius: 14px;
+}
+.hs-ad[data-small] .hs-ad-art,
+.hs-ad[data-small] .hs-ad-price { display: none; }
+.hs-ad[data-small] .hs-ad-label { font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+.hs-ad[data-small] strong { grid-column: 1; margin-top: 0; font-size: 14px; }
+.hs-ad[data-small] strong b { display: inline; }
+.hs-ad[data-small] .hs-ad-go { grid-column: 2; grid-row: 1 / span 2; width: 40px; height: 40px; margin: 0; }
+.hs-ad[data-small] .hs-ad-go span { display: none; }
+.hs-ad[data-small] .hs-ad-go svg { width: 17px; height: 17px; }
 @media (max-height: 760px) {
-  .hs-ad-art { display: none; }
-  .hs-ad { padding-top: 14px; }
+  .hs-ad:not([data-small]) .hs-ad-art { display: none; }
+  .hs-ad:not([data-small]) { padding-top: 14px; }
 }
 `;
 
+/** Shrunk for this visit: the card stays small until the tab is closed, and comes back whole the next time. */
+const SMALL = "react-zoom-pan-pinch:storybook:hype-card";
+
+function wasShrunk() {
+  try {
+    return window.sessionStorage.getItem(SMALL) !== null;
+  } catch {
+    // Blocked storage: the card shows whole.
+    return false;
+  }
+}
+
 function HypeStackCard() {
   const theme = useTheme();
+  const [small, setSmall] = useState(wasShrunk);
+  useEffect(() => {
+    if (!small) return;
+    try {
+      window.sessionStorage.setItem(SMALL, "1");
+    } catch {
+      // Blocked storage: small for this page only.
+    }
+  }, [small]);
   return (
-    <>
+    <div className="hs-ad-box">
       <style>{CSS}</style>
       <a
         className="hs-ad"
         data-base={theme.base}
+        data-small={small ? "" : undefined}
         href={LINK}
         target="_blank"
         rel="noopener"
@@ -150,11 +217,25 @@ function HypeStackCard() {
           <b>Free</b> MIT template
         </span>
         <span className="hs-ad-go">
-          Explore the stack
-          <i aria-hidden>›</i>
+          <span>Explore the stack</span>
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
         </span>
       </a>
-    </>
+      {small ? null : (
+        <button
+          type="button"
+          className="hs-ad-close"
+          onClick={() => setSmall(true)}
+          aria-label="Shrink the Hype Stack card"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      )}
+    </div>
   );
 }
 

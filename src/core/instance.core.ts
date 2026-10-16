@@ -17,7 +17,6 @@ import {
   getTransformStyles,
   makePassiveEventOption,
   getCenterPosition,
-  assignRef,
 } from "../utils";
 import { handleCancelAnimation } from "./animations/animations.utils";
 import { handleKeyboardNavigation } from "./keyboard/keyboard.logic";
@@ -933,6 +932,5 @@ export class ZoomPanPinch {
     this.isInitialized = true;
     const ctx = getContext(this);
     handleCallback(ctx, undefined, this.props.onInit);
-    assignRef(this.props.ref, ctx);
   };
 }

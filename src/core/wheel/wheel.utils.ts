@@ -8,10 +8,11 @@ export const isWheelAllowed = (
 ): boolean => {
   const { disabled, wheelDisabled, touchPadDisabled, excluded } =
     contextInstance.setup.wheel;
-  const { isInitialized, isPanning } = contextInstance;
+  const { isInitialized } = contextInstance;
 
   const target = event.target as HTMLElement;
-  const isAllowed = isInitialized && !isPanning && !disabled && target;
+  // Zooming mid-drag is allowed (#543): `handleWheelZoom` re-anchors the pan.
+  const isAllowed = isInitialized && !disabled && target;
 
   if (!isAllowed) return false;
   // A purely horizontal wheel/swipe (Magic Mouse, trackpad) carries no zoom
@@ -49,6 +50,10 @@ export const isWheelPanningAllowed = (
   if (disabled || trackPadPanning.disabled || event.ctrlKey) {
     return false;
   }
+
+  // A drag owns the position; a wheel pan on top of it would be undone by
+  // the next pointer move.
+  if (contextInstance.isPanning) return false;
 
   const isAllowed = isWheelAllowed(contextInstance, event);
   // Cannot execute at the same time as wheel zoom

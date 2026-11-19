@@ -11,6 +11,7 @@ import {
   handleWheelZoomStop,
   getMousePosition,
 } from "./wheel.utils";
+import { handlePanningSetup } from "../pan/panning.utils";
 import { handleAlignToScaleBounds } from "../zoom/zoom.logic";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
@@ -64,13 +65,16 @@ export const handleWheelZoom = (
   }
   event.stopPropagation();
 
+  const { isPanning } = contextInstance;
   const delta = getDelta(event, null);
   const zoomStep = smooth ? step * Math.abs(event.deltaY) : step;
+  // Mid-drag the scale stays inside min/max: the overshoot would need the
+  // settle animation, which cannot run while the pointer owns the position.
   const newScale = handleCalculateWheelZoom(
     contextInstance,
     delta,
     zoomStep,
-    !event.ctrlKey,
+    !event.ctrlKey || isPanning,
   );
 
   // if scale not change
@@ -97,6 +101,16 @@ export const handleWheelZoom = (
 
   contextInstance.setState(newScale, x, y);
 
+  // Zoom during a drag (#543): the pan maps pointer → position through
+  // `startCoords`, taken at the old scale. Re-anchor it at the zoomed state,
+  // or the next move snaps the content back. The velocity sample from before
+  // the zoom would read the jump as a fling, so drop it too.
+  if (isPanning) {
+    handlePanningSetup(contextInstance, event);
+    contextInstance.lastMousePosition = null;
+    contextInstance.velocity = null;
+  }
+
   handleCallback(getContext(contextInstance), event, onWheel);
   handleCallback(getContext(contextInstance), event, onZoom);
 };
@@ -111,8 +125,11 @@ export const handleWheelStop = (
   cancelTimeout(contextInstance.wheelAnimationTimer);
   contextInstance.wheelAnimationTimer = setTimeout(() => {
     if (!contextInstance.mounted) return;
-    handleAlignToScaleBounds(contextInstance, event.x, event.y);
     contextInstance.wheelAnimationTimer = null;
+    // Mid-drag the pan end aligns (and flushes a pending resize) instead:
+    // an animation now would fight the pointer (#543).
+    if (contextInstance.isPanning) return;
+    handleAlignToScaleBounds(contextInstance, event.x, event.y);
     contextInstance.flushResizeAlignment();
   }, wheelAnimationTime);
 

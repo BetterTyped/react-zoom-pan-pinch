@@ -478,7 +478,7 @@ export const wrapperPropsTable: Record<
       type: ["zoomIn", "zoomOut", "reset", "toggle"],
       defaultValue: String(initialSetup.doubleClick.mode),
       description:
-        "The mode of the double click feature. Zoom in/Zoom out will change the scale with the given step settings. The reset functionality will take change transform to the initial values. The toggle functionality will toggle between zooming in and out.",
+        "The mode of the double click feature. Zoom in/Zoom out will change the scale with the given step settings. The reset functionality will take change transform to the initial values. Toggle zooms in by step when the scale is the reset scale (initialScale, or the fitted one with fitOnInit) and resets otherwise.",
     },
     animationTime: {
       type: ["number"],

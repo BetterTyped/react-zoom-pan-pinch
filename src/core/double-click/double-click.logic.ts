@@ -11,6 +11,7 @@ import {
   isExcludedNode,
 } from "../../utils";
 import {
+  getResetScale,
   handleCalculateButtonZoom,
   resetTransformations,
 } from "../handlers/handlers.utils";
@@ -46,16 +47,13 @@ export const handleDoubleClickResetMode = (
   handleDoubleClickStop(contextInstance, event);
 };
 
-function getDoubleClickScale(
-  mode: LibrarySetup["doubleClick"]["mode"],
-  scale: number,
-) {
-  if (mode === "toggle") {
-    return scale === 1 ? 1 : -1;
-  }
-
+function getDoubleClickScale(mode: LibrarySetup["doubleClick"]["mode"]) {
   return mode === "zoomOut" ? -1 : 1;
 }
+
+// Scales closer than this count as "at the reset scale": animations and fits
+// land on float values.
+const RESET_SCALE_TOLERANCE = 1e-3;
 
 export function handleDoubleClick(
   contextInstance: ReactZoomPanPinchContext,
@@ -76,9 +74,20 @@ export function handleDoubleClick(
     return handleDoubleClickResetMode(contextInstance, event);
   }
 
+  // `toggle` (#125): at the reset scale (`initialScale`, or the fitted one
+  // with `fitOnInit`) zoom in by `step`; anywhere else go back to the reset
+  // state. It used to compare against 1, so with another initial scale the
+  // first double click zoomed out, and the way back only stepped out.
+  if (mode === "toggle") {
+    const resetScale = getResetScale(contextInstance);
+    if (Math.abs(scale - resetScale) > RESET_SCALE_TOLERANCE) {
+      return handleDoubleClickResetMode(contextInstance, event);
+    }
+  }
+
   if (!contentComponent) return console.error("No ContentComponent found");
 
-  const delta = getDoubleClickScale(mode, contextInstance.state.scale);
+  const delta = getDoubleClickScale(mode);
 
   const newScale = handleCalculateButtonZoom(contextInstance, delta, step);
 

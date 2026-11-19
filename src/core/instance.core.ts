@@ -28,7 +28,11 @@ import {
 } from "./resize/resize.logic";
 import { MeasuredSizesType } from "./resize/resize.types";
 import { calculateFitToView } from "./handlers/handlers.utils";
-import { isWheelAllowed, isWheelPanningAllowed } from "./wheel/wheel.utils";
+import {
+  getWheelPanDelta,
+  isWheelAllowed,
+  isWheelPanningAllowed,
+} from "./wheel/wheel.utils";
 import { isPinchAllowed, isPinchStartAllowed } from "./pinch/pinch.utils";
 import { handleCalculateBounds } from "./bounds/bounds.utils";
 import {
@@ -430,21 +434,23 @@ export class ZoomPanPinch {
   onWheelPanning = (event: WheelEvent): void => {
     const { onPanning } = this.props;
     const { trackPadPanning } = this.setup;
-    const { lockAxisX, lockAxisY } = trackPadPanning;
+    const { lockAxisX, lockAxisY, speed } = trackPadPanning;
+    const wrapper = this.wrapperComponent;
 
     this.syncModifierKeys(event);
 
     const isAllowed = isWheelPanningAllowed(this, event);
 
-    if (!isAllowed) return;
+    if (!isAllowed || !wrapper) return;
 
     if (event.cancelable) {
       event.preventDefault();
     }
     event.stopPropagation();
 
-    const deltaX = lockAxisX ? 0 : event.deltaX;
-    const deltaY = lockAxisY ? 0 : event.deltaY;
+    const delta = getWheelPanDelta(event, wrapper, speed);
+    const deltaX = lockAxisX ? 0 : delta.x;
+    const deltaY = lockAxisY ? 0 : delta.y;
 
     if (!deltaX && !deltaY) return;
 

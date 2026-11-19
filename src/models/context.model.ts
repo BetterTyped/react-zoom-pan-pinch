@@ -153,6 +153,8 @@ export type ReactZoomPanPinchProps = {
   trackPadPanning?: {
     disabled?: boolean;
     velocityDisabled?: boolean;
+    /** Multiplier applied to the wheel/trackpad delta. Defaults to 1. */
+    speed?: number;
     lockAxisX?: boolean;
     lockAxisY?: boolean;
     activationKeys?: string[] | ((keys: string[]) => boolean);

@@ -414,6 +414,12 @@ export const wrapperPropsTable: Record<
       description:
         "Disable inertia and velocity-based continuation after trackpad panning ends.",
     },
+    speed: {
+      type: ["number"],
+      defaultValue: String(initialSetup.trackPadPanning.speed),
+      description:
+        "Multiplier applied to the wheel/trackpad delta. Line-based wheel deltas are converted to pixels first, and Shift turns a vertical wheel horizontal.",
+    },
     lockAxisX: {
       type: ["boolean"],
       defaultValue: String(initialSetup.trackPadPanning.lockAxisX),

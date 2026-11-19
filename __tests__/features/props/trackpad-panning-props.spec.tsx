@@ -84,4 +84,63 @@ describe("ReactZoomPanPinchProps.trackPadPanning", () => {
       expect(ref.current!.instance.state.positionX).toBe(0);
     });
   });
+
+  /**
+   * #500 — https://github.com/BetterTyped/react-zoom-pan-pinch/issues/500.
+   * Wheel zoom is turned off (`wheelDisabled`) so a vertical wheel pans.
+   * 500×500 wrapper and content at scale 1, autoAlignment off: the 100px
+   * padding is a plain area, so the content follows the delta 1:1.
+   */
+  describe("trackPadPanning.speed and wheel units (#500)", () => {
+    const wheel = (content: HTMLElement, init: WheelEventInit) => {
+      userEvent.hover(content);
+      fireEvent(content, new WheelEvent("wheel", { bubbles: true, ...init }));
+    };
+
+    it("pans by the delta at the default speed of 1", () => {
+      const { content } = renderApp({
+        trackPadPanning: { disabled: false },
+        wheel: { wheelDisabled: true },
+      });
+      wheel(content, { deltaX: 30, deltaY: 20 });
+      expect(content.style.transform).toBe("translate(-30px, -20px) scale(1)");
+    });
+
+    it("multiplies the delta by speed", () => {
+      const { content } = renderApp({
+        trackPadPanning: { disabled: false, speed: 2 },
+        wheel: { wheelDisabled: true },
+      });
+      wheel(content, { deltaX: 30, deltaY: 20 });
+      expect(content.style.transform).toBe("translate(-60px, -40px) scale(1)");
+    });
+
+    it("turns line deltas into pixels (Firefox mouse wheel)", () => {
+      const { content } = renderApp({
+        trackPadPanning: { disabled: false },
+        wheel: { wheelDisabled: true },
+      });
+      // 3 lines × 16px = 48px, not 3px.
+      wheel(content, { deltaY: 3, deltaMode: 1 });
+      expect(content.style.transform).toBe("translate(0px, -48px) scale(1)");
+    });
+
+    it("pans horizontally with Shift when the browser reports only deltaY", () => {
+      const { content } = renderApp({
+        trackPadPanning: { disabled: false },
+        wheel: { wheelDisabled: true },
+      });
+      wheel(content, { deltaY: 30, shiftKey: true });
+      expect(content.style.transform).toBe("translate(-30px, 0px) scale(1)");
+    });
+
+    it("keeps the browser's own Shift conversion as it is", () => {
+      const { content } = renderApp({
+        trackPadPanning: { disabled: false },
+        wheel: { wheelDisabled: true },
+      });
+      wheel(content, { deltaX: 30, shiftKey: true });
+      expect(content.style.transform).toBe("translate(-30px, 0px) scale(1)");
+    });
+  });
 });

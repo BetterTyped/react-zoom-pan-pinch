@@ -69,6 +69,43 @@ export const isWheelPanningAllowed = (
   return true;
 };
 
+// px per line for `deltaMode === 1` (Firefox with a mouse wheel), close to
+// what browsers scroll a page per line.
+const WHEEL_LINE_HEIGHT = 16;
+
+/**
+ * The distance in px a wheel event pans by (#500):
+ * - line and page deltas (`deltaMode` 1/2) become pixels, so a wheel that
+ *   reports "3 lines" moves 48px instead of 3px;
+ * - Shift turns a vertical wheel horizontal where the browser does not do it
+ *   already (a browser that does reports it as `deltaX`);
+ * - `speed` scales the result.
+ */
+export function getWheelPanDelta(
+  event: WheelEvent,
+  wrapperComponent: HTMLDivElement,
+  speed: number,
+): PositionType {
+  let unitX = 1;
+  let unitY = 1;
+  if (event.deltaMode === 1) {
+    unitX = WHEEL_LINE_HEIGHT;
+    unitY = WHEEL_LINE_HEIGHT;
+  } else if (event.deltaMode === 2) {
+    unitX = wrapperComponent.clientWidth;
+    unitY = wrapperComponent.clientHeight;
+  }
+
+  let x = event.deltaX * unitX;
+  let y = event.deltaY * unitY;
+  if (event.shiftKey && !x) {
+    x = y;
+    y = 0;
+  }
+
+  return { x: x * speed, y: y * speed };
+}
+
 export const getDeltaY = (event?: WheelEvent) => {
   if (event) {
     return event.deltaY < 0 ? 1 : -1;

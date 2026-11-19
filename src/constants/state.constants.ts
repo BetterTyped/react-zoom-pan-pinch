@@ -37,6 +37,7 @@ export const initialSetup: LibrarySetup = {
   trackPadPanning: {
     disabled: true,
     velocityDisabled: false,
+    speed: 1,
     lockAxisX: false,
     lockAxisY: false,
     activationKeys: [],

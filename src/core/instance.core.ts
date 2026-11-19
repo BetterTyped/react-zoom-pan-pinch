@@ -39,9 +39,11 @@ import {
   handleWheelPanningStart,
 } from "./wheel/wheel.logic";
 import {
+  CLICK_DISTANCE,
   getPaddingValue,
   getPanSourcePosition,
   handleNewPosition,
+  isPanBlockedAtBounds,
   isPanningAllowed,
   isPanningStartAllowed,
 } from "./pan/panning.utils";
@@ -98,6 +100,15 @@ export class ZoomPanPinch {
   public isWheelPanning = false;
   public startCoords: StartCoordsType = null;
   public panStartPosition: { x: number; y: number } | null = null;
+  // Pointer travel of the running mouse/touch pan: whether it moved at all
+  // (the first move decides `releaseAtBounds`, #509) and whether it went
+  // past the click distance (the click after it is swallowed, #452).
+  public panGesture: {
+    startX: number;
+    startY: number;
+    hasMoved: boolean;
+    isDrag: boolean;
+  } | null = null;
   public lastTouch: number | null = null;
   // pinch helpers
   public isPinching = false;
@@ -490,6 +501,7 @@ export class ZoomPanPinch {
 
     handleCancelAnimation(this);
     handlePanningStart(this, event);
+    this.startPanGesture(event.clientX, event.clientY);
     this.lockTextSelection();
     this.focusForKeyboard();
     handleCallback(getContext(this), event, onPanningStart);
@@ -516,6 +528,11 @@ export class ZoomPanPinch {
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
 
+    if (this.trackPanGesture(event.clientX, event.clientY)) {
+      this.onPanningStop(event);
+      return;
+    }
+
     if (event.cancelable) {
       event.preventDefault();
     }
@@ -526,15 +543,78 @@ export class ZoomPanPinch {
   };
 
   onPanningStop = (event: MouseEvent | TouchEvent): void => {
-    const { velocityDisabled } = this.setup.panning;
+    const { velocityDisabled, suppressClickAfterPan } = this.setup.panning;
     const { onPanningStop } = this.props;
 
     if (this.isPanning) {
+      const isDrag = !!this.panGesture?.isDrag;
+      this.panGesture = null;
       this.unlockTextSelection();
       handlePanningEnd(this, velocityDisabled);
       handleCallback(getContext(this), event, onPanningStop);
       this.flushResizeAlignment();
+      // Only a mouseup is followed by a click on the content; a released or
+      // cancelled gesture (mousemove, mouseleave, touch) is not.
+      if (isDrag && suppressClickAfterPan && event.type === "mouseup") {
+        this.suppressNextClick();
+      }
     }
+  };
+
+  startPanGesture = (clientX: number, clientY: number): void => {
+    this.panGesture = {
+      startX: clientX,
+      startY: clientY,
+      hasMoved: false,
+      isDrag: false,
+    };
+  };
+
+  // Records the pointer travel of the running pan. Returns true when this is
+  // the first move, it heads into a bound the content already rests on and
+  // `releaseAtBounds` is on: the caller then ends the pan without claiming
+  // the event, so the page scrolls or a parent takes the drag (#509).
+  trackPanGesture = (clientX: number, clientY: number): boolean => {
+    const gesture = this.panGesture;
+    if (!gesture) return false;
+
+    const dx = clientX - gesture.startX;
+    const dy = clientY - gesture.startY;
+    if (!dx && !dy) return false;
+
+    const isFirstMove = !gesture.hasMoved;
+    gesture.hasMoved = true;
+    if (dx * dx + dy * dy > CLICK_DISTANCE ** 2) gesture.isDrag = true;
+
+    return (
+      isFirstMove &&
+      this.setup.panning.releaseAtBounds &&
+      isPanBlockedAtBounds(this, dx, dy)
+    );
+  };
+
+  // The browser fires `click` right after `mouseup`, in the same task, so a
+  // capture listener on the window that removes itself on the next tick
+  // swallows exactly that click and nothing later (#452).
+  suppressNextClick = (): void => {
+    const wrapper = this.wrapperComponent;
+    const win = wrapper?.ownerDocument?.defaultView;
+    if (!wrapper || !win) return;
+
+    const swallow = (event: MouseEvent) => {
+      const path =
+        typeof event.composedPath === "function" ? event.composedPath() : [];
+      const isInside =
+        path.includes(wrapper) || wrapper.contains(event.target as Node);
+      if (!isInside) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    win.addEventListener("click", swallow, { capture: true, once: true });
+    win.setTimeout(() => {
+      win.removeEventListener("click", swallow, { capture: true });
+    }, 0);
   };
 
   /// ///////
@@ -616,6 +696,7 @@ export class ZoomPanPinch {
         if (!isAllowed || this.setup.panning.disabled) return;
         handleCancelAnimation(this);
         handlePanningStart(this, event);
+        this.startPanGesture(touches[0].clientX, touches[0].clientY);
         this.lockTextSelection();
         this.focusForKeyboard();
         handleCallback(getContext(this), event, onPanningStart);
@@ -636,12 +717,18 @@ export class ZoomPanPinch {
       const isAllowed = isPanningAllowed(this);
       if (!isAllowed) return;
 
+      const touch = event.touches[0];
+      // Not cancelling the first touchmove is what lets the browser scroll.
+      if (this.trackPanGesture(touch.clientX, touch.clientY)) {
+        this.onPanningStop(event);
+        return;
+      }
+
       if (event.cancelable) {
         event.preventDefault();
       }
       event.stopPropagation();
 
-      const touch = event.touches[0];
       handlePanning(this, touch.clientX, touch.clientY, DeviceType.TOUCH);
       handleCallback(getContext(this), event, onPanning);
     } else if (event.touches.length > 1) {
@@ -686,6 +773,7 @@ export class ZoomPanPinch {
     if (this.isPanning) {
       this.isPanning = false;
       this.startCoords = null;
+      this.panGesture = null;
     }
     this.unlockTextSelection();
     this.flushResizeAlignment();

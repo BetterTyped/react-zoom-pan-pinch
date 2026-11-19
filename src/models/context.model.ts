@@ -129,6 +129,18 @@ export type ReactZoomPanPinchProps = {
     allowLeftClickPan?: boolean;
     allowMiddleClickPan?: boolean;
     allowRightClickPan?: boolean;
+    /**
+     * Swallow the `click` that follows a mouse pan which moved the pointer
+     * more than 5px, so dragging over clickable content does not also click
+     * it. On by default.
+     */
+    suppressClickAfterPan?: boolean;
+    /**
+     * Hand a gesture back to the page when its first move heads into a bound
+     * the content already rests on: no pan, no `preventDefault`, so the page
+     * scrolls or a parent carousel takes the drag. Off by default.
+     */
+    releaseAtBounds?: boolean;
     activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
   };

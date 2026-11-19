@@ -17,6 +17,7 @@ Request to stop calling `preventDefault` on pan events when the content has reac
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Built on master (unreleased).** New opt-in `panning.releaseAtBounds`: when the first move of a mouse/touch pan heads into a bound the content already rests on (dominant axis, `limitToBounds` only), the pan ends without `preventDefault`, so the page scrolls or a parent carousel takes the drag. A gesture that started inside the bounds is never handed over midway. Not device-tested yet. Spec: `__tests__/features/pan/pan.release-at-bounds.spec.tsx`. |
 
 ## Rating (2026-09-01)
 

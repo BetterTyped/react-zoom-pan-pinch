@@ -303,6 +303,18 @@ export const wrapperPropsTable: Record<
       defaultValue: String(initialSetup.panning.allowRightClickPan),
       description: "Allow right click to initiate panning",
     },
+    suppressClickAfterPan: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.suppressClickAfterPan),
+      description:
+        "Swallow the click that follows a mouse pan which moved the pointer more than 5px, so dragging over clickable content does not also click it.",
+    },
+    releaseAtBounds: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.releaseAtBounds),
+      description:
+        "Hand a drag back to the page when its first move heads into a bound the content already rests on: no pan and no preventDefault, so the page scrolls or a parent carousel takes the drag.",
+    },
     activationKeys: {
       type: ["string[]", "((keys: string[]) => boolean)"],
       defaultValue: String(initialSetup.panning.activationKeys),

@@ -50,6 +50,8 @@ export const initialSetup: LibrarySetup = {
     allowLeftClickPan: true,
     allowMiddleClickPan: true,
     allowRightClickPan: true,
+    suppressClickAfterPan: true,
+    releaseAtBounds: false,
     activationKeys: [],
     excluded: [],
   },

@@ -109,7 +109,13 @@ export function handlePanningEnd(
     if (start) {
       const dx = positionX - start.x;
       const dy = positionY - start.y;
-      if (dx * dx + dy * dy <= 25) return;
+      // A click is not a fling, but it can still land on content left past
+      // the bounds — e.g. grabbed mid return animation, which the press
+      // cancelled. Finish the return (a no-op inside the bounds).
+      if (dx * dx + dy * dy <= 25) {
+        handleAlignToBounds(contextInstance);
+        return;
+      }
     }
 
     contextInstance.isAnimating = false;

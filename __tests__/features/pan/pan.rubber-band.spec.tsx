@@ -1,11 +1,11 @@
-import { act, waitFor } from "@testing-library/react";
+import { act, fireEvent, waitFor } from "@testing-library/react";
 
 import {
   getRubberBandPosition,
   getRubberBandSource,
   RUBBER_BAND_CONSTANT,
 } from "../../../src/core/bounds/bounds.utils";
-import { flushAnimationFrames, renderApp } from "../../utils";
+import { flushAnimationFrames, renderApp, sleep } from "../../utils";
 
 /**
  * Wrapper 500×500, content 100% → at scale 1 the bounds are 0..0, so every
@@ -109,6 +109,21 @@ describe("Pan [Rubber band]", () => {
       // the band picks up at -100, so another -100 lands where -200 would.
       pan({ x: -100, y: 0 });
       expect(content.style.transform).toBe("translate(-52.38px, 0px) scale(1)");
+    });
+
+    it("still returns when a click lands on it mid return", async () => {
+      const { pan, content } = renderApp(withAlignment);
+      pan({ x: -100, y: 0 });
+      await sleep(40);
+      expect(content.style.transform).not.toBe(
+        "translate(-35.48px, 0px) scale(1)",
+      );
+      // Press and release without moving: cancels the running return.
+      fireEvent.mouseDown(content, { clientX: 0, clientY: 0, buttons: 1 });
+      fireEvent.mouseUp(content);
+      await waitFor(() => {
+        expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
+      });
     });
 
     it("returns to the bounds on release", async () => {

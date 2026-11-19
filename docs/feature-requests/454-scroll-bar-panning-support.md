@@ -17,6 +17,8 @@ Request for native scrollbar integration: dragging scrollbar thumbs should pan t
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Close: out of scope** (2026-11-19 triage). The library positions content with `transform`, so native scrollbars would need a scroll-container architecture. Point to the MiniMap and to custom scrollbars built on `useTransformEffect` + `setTransform`. |
+| 2026-11-19 | **Closed on GitHub** (not planned) with the comment drafted in the 2026-11-19 triage. |
 
 ## Rating (2026-09-01)
 

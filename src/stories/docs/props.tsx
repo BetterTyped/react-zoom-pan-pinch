@@ -90,6 +90,18 @@ export const componentPropsTable: Record<
     description:
       "Render the infinite dot-grid background behind the content so it pans and scales with the transform.",
   },
+  nonce: {
+    type: ["string"],
+    defaultValue: "undefined",
+    description:
+      "Nonce set on the <style> the component adds to the wrapper's root (document head or shadow root), for a Content Security Policy with style-src 'nonce-…'.",
+  },
+  disableStyleInjection: {
+    type: ["boolean"],
+    defaultValue: "false",
+    description:
+      "Do not add the stylesheet. Load react-zoom-pan-pinch/dist/styles.css yourself instead, e.g. under a CSP that allows no inline <style>.",
+  },
 };
 
 export const wrapperPropsTable: Record<
@@ -118,16 +130,16 @@ export const wrapperPropsTable: Record<
       "Scale used only as initial value. It will be also used when triggering resetTransform() method or double click feature with 'reset' mode.",
   },
   initialPositionX: {
-    type: ["number"],
+    type: ["number", "'left'", "'center'", "'right'"],
     defaultValue: String(initialState.positionX),
     description:
-      "Position X used only as initial value. It will be also used when triggering resetTransform() method or double click feature with 'reset' mode. Value should be provided in px.",
+      "Position X used only as initial value, in px — or 'left' / 'center' / 'right' to put the content at that edge of the wrapper (resolved once the content has a size). It will be also used when triggering resetTransform() method or double click feature with 'reset' mode.",
   },
   initialPositionY: {
-    type: ["number"],
+    type: ["number", "'top'", "'center'", "'bottom'"],
     defaultValue: String(initialState.positionY),
     description:
-      "Position Y used only as initial value. It will be also used when triggering resetTransform() method or double click feature with 'reset' mode. Value should be provided in px.",
+      "Position Y used only as initial value, in px — or 'top' / 'center' / 'bottom' to put the content at that edge of the wrapper (resolved once the content has a size). It will be also used when triggering resetTransform() method or double click feature with 'reset' mode.",
   },
   disabled: {
     type: ["boolean"],
@@ -303,6 +315,18 @@ export const wrapperPropsTable: Record<
       defaultValue: String(initialSetup.panning.allowRightClickPan),
       description: "Allow right click to initiate panning",
     },
+    suppressClickAfterPan: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.suppressClickAfterPan),
+      description:
+        "Swallow the click that follows a mouse pan which moved the pointer more than 5px, so dragging over clickable content does not also click it.",
+    },
+    releaseAtBounds: {
+      type: ["boolean"],
+      defaultValue: String(initialSetup.panning.releaseAtBounds),
+      description:
+        "Hand a drag back to the page when its first move heads into a bound the content already rests on: no pan and no preventDefault, so the page scrolls or a parent carousel takes the drag.",
+    },
     activationKeys: {
       type: ["string[]", "((keys: string[]) => boolean)"],
       defaultValue: String(initialSetup.panning.activationKeys),
@@ -402,6 +426,12 @@ export const wrapperPropsTable: Record<
       description:
         "Disable inertia and velocity-based continuation after trackpad panning ends.",
     },
+    speed: {
+      type: ["number"],
+      defaultValue: String(initialSetup.trackPadPanning.speed),
+      description:
+        "Multiplier applied to the wheel/trackpad delta. Line-based wheel deltas are converted to pixels first, and Shift turns a vertical wheel horizontal.",
+    },
     lockAxisX: {
       type: ["boolean"],
       defaultValue: String(initialSetup.trackPadPanning.lockAxisX),
@@ -448,7 +478,7 @@ export const wrapperPropsTable: Record<
       type: ["zoomIn", "zoomOut", "reset", "toggle"],
       defaultValue: String(initialSetup.doubleClick.mode),
       description:
-        "The mode of the double click feature. Zoom in/Zoom out will change the scale with the given step settings. The reset functionality will take change transform to the initial values. The toggle functionality will toggle between zooming in and out.",
+        "The mode of the double click feature. Zoom in/Zoom out will change the scale with the given step settings. The reset functionality will take change transform to the initial values. Toggle zooms in by step when the scale is the reset scale (initialScale, or the fitted one with fitOnInit) and resets otherwise.",
     },
     animationTime: {
       type: ["number"],

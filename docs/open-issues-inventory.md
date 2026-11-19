@@ -38,6 +38,16 @@ the `## Rating (2026-09-01)` section of each doc; this file is the index.
 **67 of the 95 were closed on GitHub on 2026-09-01** (each with a comment giving the
 reason; see the close list). After the easy-wins pass (v4.1.0) 21 remained open; the 2026-09-02 pass fixed/built #467, #290, #252, #254 (plus dupes #537, #376, #530, #527), leaving 14 Discuss, 2 meta and the partially addressed #371.
 
+**2026-11-19 pass — every Discuss item decided** (the per-issue docs have the
+details and the `docs/adr/` records the default changes):
+
+| Outcome | Issues |
+| --- | --- |
+| Built on master, unreleased | #543 wheel zoom mid-drag (ADR 0001), #452 click after pan swallowed (ADR 0003, + #519), #125 toggle vs reset scale (ADR 0004), #500 `trackPadPanning.speed`, #349 named initial positions, #403 + #371 per-root style injection with `nonce` / `dist/styles.css` (ADR 0002), #509 `panning.releaseAtBounds`, #280 wrapper scroll folded into the pan (+ #477) |
+| Closed on GitHub 2026-11-19 | #385 (fixed in v4.2.0 by #290), #348 (stale roadmap), #421 (won't fix), #454 (out of scope) |
+| Close once shipped | #366 (Basic/Zoom Slider story), #536 (MiniMap `onClick` in the uncommitted rework) |
+| Keep | #415 |
+
 ## Fixed in the 2026-09-01 easy-wins pass (released as v4.1.0)
 
 | # | Change |

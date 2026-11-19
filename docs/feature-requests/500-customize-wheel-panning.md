@@ -17,6 +17,7 @@ Request for customizable trackpad/wheel panning behavior: sensitivity adjustment
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Built on master (unreleased).** `trackPadPanning.speed` (multiplier, default 1). Wheel-pan deltas are also normalised: `deltaMode` lines → 16px, pages → wrapper size, and Shift turns a vertical wheel horizontal when the browser did not already report it as `deltaX`. Spec: `__tests__/features/props/trackpad-panning-props.spec.tsx`. |
 
 ## Rating (2026-09-01)
 

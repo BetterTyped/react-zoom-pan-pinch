@@ -1,0 +1,66 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+
+import { TransformWrapper } from "../../../components/";
+import { argsTypes } from "../../types/args.types";
+import { Example } from "./example";
+
+export const Template = (args) => (
+  <div style={{ width: "100%", maxWidth: 640, margin: "0 auto" }}>
+    <Example {...args} />
+  </div>
+);
+
+<Meta
+  title="Basic/Zoom Slider"
+  component={TransformWrapper}
+  argTypes={argsTypes}
+/>
+
+# Zoom Slider
+
+Sync the zoom with your own UI — a slider, a percentage field, a value in a
+store. The library keeps the transform; your state only mirrors it, in both
+directions:
+
+```tsx
+const ref = useRef<ReactZoomPanPinchRef>(null);
+const [scale, setScale] = useState(1);
+
+<input
+  type="range"
+  min={0.5}
+  max={6}
+  step={0.01}
+  value={scale}
+  onChange={(event) => {
+    const rect = ref.current!.instance.wrapperComponent!.getBoundingClientRect();
+    // Zoom around the middle of the viewport, without animation.
+    ref.current!.zoomToPoint(
+      Number(event.target.value),
+      rect.left + rect.width / 2,
+      rect.top + rect.height / 2,
+      0,
+    );
+  }}
+/>
+
+<TransformWrapper
+  ref={ref}
+  minScale={0.5}
+  maxScale={6}
+  onTransform={(_, state) => setScale(state.scale)}
+>
+  <TransformComponent>…</TransformComponent>
+</TransformWrapper>;
+```
+
+- **Viewer → your state:** `onTransform` fires for every change — wheel,
+  pinch, double click, buttons — so the slider follows gestures.
+- **Your state → viewer:** call a control (`zoomToPoint`, `setTransform`,
+  `centerView`) instead of passing the value back as a prop. Gestures run at
+  60 fps without re-rendering your tree, and nothing fights a controlled prop
+  mid-animation.
+
+<Canvas>
+  <Story name="Zoom Slider">{(args) => <Template {...args} />}</Story>
+</Canvas>

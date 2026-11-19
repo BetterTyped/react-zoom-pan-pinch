@@ -14,15 +14,21 @@ export const createState = (
   const rawScale = props.initialScale ?? initialState.scale;
   const scale = Math.min(Math.max(rawScale, minScale), maxScale);
 
+  // A named initial position ("center", "right", …) needs the sizes, so it
+  // starts at 0 and `applyNamedInitialPosition` places it once laid out.
   const positionX = boundLimiter(
-    props.initialPositionX ?? initialState.positionX,
+    typeof props.initialPositionX === "number"
+      ? props.initialPositionX
+      : initialState.positionX,
     props.minPositionX ?? -Infinity,
     props.maxPositionX ?? Infinity,
     props.minPositionX != null || props.maxPositionX != null,
   );
 
   const positionY = boundLimiter(
-    props.initialPositionY ?? initialState.positionY,
+    typeof props.initialPositionY === "number"
+      ? props.initialPositionY
+      : initialState.positionY,
     props.minPositionY ?? -Infinity,
     props.maxPositionY ?? Infinity,
     props.minPositionY != null || props.maxPositionY != null,

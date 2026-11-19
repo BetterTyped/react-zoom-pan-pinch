@@ -17,6 +17,8 @@ Request for an option to reverse the zoom direction (scroll up = zoom out, scrol
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Close: won't fix** (2026-11-19 triage). Wheel up already zooms in (`getDeltaY`: `deltaY < 0 → +1`); the report most likely comes from OS natural scrolling, which inverts every app. No `wheel.reversed` flag. |
+| 2026-11-19 | **Closed on GitHub** (not planned) with the comment drafted in the 2026-11-19 triage. |
 
 ## Rating (2026-09-01)
 

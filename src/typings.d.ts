@@ -5,6 +5,11 @@
 declare module "*.css" {
   const content: { [className: string]: string };
   export default content;
+  /**
+   * The compiled CSS, exported by rollup-plugin-postcss with `inject: false`.
+   * Undefined under bundlers that load CSS themselves (Storybook).
+   */
+  export const stylesheet: string | undefined;
 }
 declare module "*.svg" {
   import React = require("react");

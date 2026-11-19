@@ -18,6 +18,7 @@ Request for proper Shadow DOM support. The library's styles and event listeners 
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
 | 2026-09-01 | **Partially addressed on master.** `transform-origin: 0 0` is now inline on the content element (the rule whose absence broke the zoom anchor in shadow roots) and `zoomToElement(id)` resolves ids in the wrapper's root node. Clipping/user-select still come from the stylesheet. Spec: `__tests__/regressions/shadow-dom.spec.tsx`. |
+| 2026-11-19 | **Built on master (unreleased).** The remaining part (clipping, `user-select`, `img` pointer events) is fixed by root-aware style injection: the stylesheet goes into the shadow root the wrapper renders in. Same change as #403. Specs: `__tests__/regressions/style-injection.spec.tsx`, `__tests__/regressions/shadow-dom.spec.tsx`. |
 
 ## Rating (2026-09-01)
 

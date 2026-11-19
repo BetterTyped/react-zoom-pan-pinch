@@ -18,10 +18,12 @@ Panning does not work on mobile devices when an iframe is a child of `TransformC
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | **Not testable in Jest.** Reviewed: iframe touch capture on mobile needs a real device; no code change. Dupe #528. |
+| 2026-11-19 | **Fixed in v4.2.0.** The reported cause — `instanceof TouchEvent` failing when the library runs inside an iframe — was replaced by `"touches" in event` for #290 (6d0cea7). Close as fixed. (#528, content *inside* a child iframe, is a different limitation and stays closed.) |
+| 2026-11-19 | **Closed on GitHub** (completed) with the comment drafted in the 2026-11-19 triage. |
 
 ## Regression spec
 
-- N/A — needs device testing.
+- `__tests__/regressions/portal-window.spec.tsx` (cross-realm events, #290).
 
 ## Rating (2026-09-01)
 

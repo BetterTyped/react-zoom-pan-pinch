@@ -17,6 +17,7 @@ Request for double-click to toggle between fully zoomed-in and fully zoomed-out 
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Built on master (unreleased).** `doubleClick.mode: 'toggle'` now compares against the reset scale (`initialScale`, or the fitted scale with `fitOnInit`): there it zooms in by `step`, anywhere else it resets. Before, it compared with 1 and stepped out by `step`. Behaviour change for release notes. Spec: `__tests__/features/props/double-click-props.spec.tsx`. |
 
 ## Rating (2026-09-01)
 

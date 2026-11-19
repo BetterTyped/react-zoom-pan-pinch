@@ -8,6 +8,7 @@ import {
   ReactZoomPanPinchState,
   ReactZoomPanPinchRef,
   DeviceType,
+  StateType,
 } from "../models";
 import {
   getContext,
@@ -27,8 +28,16 @@ import {
   measureSizes,
 } from "./resize/resize.logic";
 import { MeasuredSizesType } from "./resize/resize.types";
-import { calculateFitToView } from "./handlers/handlers.utils";
-import { isWheelAllowed, isWheelPanningAllowed } from "./wheel/wheel.utils";
+import {
+  applyNamedInitialPosition,
+  calculateFitToView,
+  hasNamedInitialPosition,
+} from "./handlers/handlers.utils";
+import {
+  getWheelPanDelta,
+  isWheelAllowed,
+  isWheelPanningAllowed,
+} from "./wheel/wheel.utils";
 import { isPinchAllowed, isPinchStartAllowed } from "./pinch/pinch.utils";
 import { handleCalculateBounds } from "./bounds/bounds.utils";
 import {
@@ -39,9 +48,11 @@ import {
   handleWheelPanningStart,
 } from "./wheel/wheel.logic";
 import {
+  CLICK_DISTANCE,
   getPaddingValue,
   getPanSourcePosition,
   handleNewPosition,
+  isPanBlockedAtBounds,
   isPanningAllowed,
   isPanningStartAllowed,
 } from "./pan/panning.utils";
@@ -98,6 +109,15 @@ export class ZoomPanPinch {
   public isWheelPanning = false;
   public startCoords: StartCoordsType = null;
   public panStartPosition: { x: number; y: number } | null = null;
+  // Pointer travel of the running mouse/touch pan: whether it moved at all
+  // (the first move decides `releaseAtBounds`, #509) and whether it went
+  // past the click distance (the click after it is swallowed, #452).
+  public panGesture: {
+    startX: number;
+    startY: number;
+    hasMoved: boolean;
+    isDrag: boolean;
+  } | null = null;
   public lastTouch: number | null = null;
   // pinch helpers
   public isPinching = false;
@@ -276,6 +296,7 @@ export class ZoomPanPinch {
     );
     wrapper.removeEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.removeEventListener("touchend", this.onTouchPanningStop, passive);
+    wrapper.removeEventListener("scroll", this.onWrapperScroll, passive);
   };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
@@ -288,6 +309,25 @@ export class ZoomPanPinch {
     wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
+    wrapper.addEventListener("scroll", this.onWrapperScroll, passive);
+  };
+
+  // The wrapper clips with `overflow: hidden`, but the browser still scrolls
+  // it to reveal a focused input (the virtual keyboard on mobile) or for
+  // `scrollIntoView`. Nothing in the transform knows about that offset, so
+  // the content stayed shifted and could not be panned back (#280, #477).
+  // Fold the scroll into the position instead: the target stays in view and
+  // the state matches what is on screen.
+  onWrapperScroll = (): void => {
+    const wrapper = this.wrapperComponent;
+    if (!wrapper) return;
+    const { scrollLeft, scrollTop } = wrapper;
+    if (!scrollLeft && !scrollTop) return;
+
+    wrapper.scrollLeft = 0;
+    wrapper.scrollTop = 0;
+    const { scale, positionX, positionY } = this.state;
+    this.setState(scale, positionX - scrollLeft, positionY - scrollTop);
   };
 
   handleInitialize = (): void => {
@@ -295,7 +335,7 @@ export class ZoomPanPinch {
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
 
-    if (centerOnInit || fitOnInit) {
+    if (centerOnInit || fitOnInit || hasNamedInitialPosition(this)) {
       const applied = this.applyInitialLayout();
       // Content without a size yet (an image still loading) gets its layout
       // applied again by `onSizeChange` once it has one. Once a real layout
@@ -399,21 +439,23 @@ export class ZoomPanPinch {
   onWheelPanning = (event: WheelEvent): void => {
     const { onPanning } = this.props;
     const { trackPadPanning } = this.setup;
-    const { lockAxisX, lockAxisY } = trackPadPanning;
+    const { lockAxisX, lockAxisY, speed } = trackPadPanning;
+    const wrapper = this.wrapperComponent;
 
     this.syncModifierKeys(event);
 
     const isAllowed = isWheelPanningAllowed(this, event);
 
-    if (!isAllowed) return;
+    if (!isAllowed || !wrapper) return;
 
     if (event.cancelable) {
       event.preventDefault();
     }
     event.stopPropagation();
 
-    const deltaX = lockAxisX ? 0 : event.deltaX;
-    const deltaY = lockAxisY ? 0 : event.deltaY;
+    const delta = getWheelPanDelta(event, wrapper, speed);
+    const deltaX = lockAxisX ? 0 : delta.x;
+    const deltaY = lockAxisY ? 0 : delta.y;
 
     if (!deltaX && !deltaY) return;
 
@@ -470,6 +512,7 @@ export class ZoomPanPinch {
 
     handleCancelAnimation(this);
     handlePanningStart(this, event);
+    this.startPanGesture(event.clientX, event.clientY);
     this.lockTextSelection();
     this.focusForKeyboard();
     handleCallback(getContext(this), event, onPanningStart);
@@ -496,6 +539,11 @@ export class ZoomPanPinch {
     const keysPressed = this.isPressingKeys(this.setup.panning.activationKeys);
     if (!keysPressed) return;
 
+    if (this.trackPanGesture(event.clientX, event.clientY)) {
+      this.onPanningStop(event);
+      return;
+    }
+
     if (event.cancelable) {
       event.preventDefault();
     }
@@ -506,15 +554,78 @@ export class ZoomPanPinch {
   };
 
   onPanningStop = (event: MouseEvent | TouchEvent): void => {
-    const { velocityDisabled } = this.setup.panning;
+    const { velocityDisabled, suppressClickAfterPan } = this.setup.panning;
     const { onPanningStop } = this.props;
 
     if (this.isPanning) {
+      const isDrag = !!this.panGesture?.isDrag;
+      this.panGesture = null;
       this.unlockTextSelection();
       handlePanningEnd(this, velocityDisabled);
       handleCallback(getContext(this), event, onPanningStop);
       this.flushResizeAlignment();
+      // Only a mouseup is followed by a click on the content; a released or
+      // cancelled gesture (mousemove, mouseleave, touch) is not.
+      if (isDrag && suppressClickAfterPan && event.type === "mouseup") {
+        this.suppressNextClick();
+      }
     }
+  };
+
+  startPanGesture = (clientX: number, clientY: number): void => {
+    this.panGesture = {
+      startX: clientX,
+      startY: clientY,
+      hasMoved: false,
+      isDrag: false,
+    };
+  };
+
+  // Records the pointer travel of the running pan. Returns true when this is
+  // the first move, it heads into a bound the content already rests on and
+  // `releaseAtBounds` is on: the caller then ends the pan without claiming
+  // the event, so the page scrolls or a parent takes the drag (#509).
+  trackPanGesture = (clientX: number, clientY: number): boolean => {
+    const gesture = this.panGesture;
+    if (!gesture) return false;
+
+    const dx = clientX - gesture.startX;
+    const dy = clientY - gesture.startY;
+    if (!dx && !dy) return false;
+
+    const isFirstMove = !gesture.hasMoved;
+    gesture.hasMoved = true;
+    if (dx * dx + dy * dy > CLICK_DISTANCE ** 2) gesture.isDrag = true;
+
+    return (
+      isFirstMove &&
+      this.setup.panning.releaseAtBounds &&
+      isPanBlockedAtBounds(this, dx, dy)
+    );
+  };
+
+  // The browser fires `click` right after `mouseup`, in the same task, so a
+  // capture listener on the window that removes itself on the next tick
+  // swallows exactly that click and nothing later (#452).
+  suppressNextClick = (): void => {
+    const wrapper = this.wrapperComponent;
+    const win = wrapper?.ownerDocument?.defaultView;
+    if (!wrapper || !win) return;
+
+    const swallow = (event: MouseEvent) => {
+      const path =
+        typeof event.composedPath === "function" ? event.composedPath() : [];
+      const isInside =
+        path.includes(wrapper) || wrapper.contains(event.target as Node);
+      if (!isInside) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    win.addEventListener("click", swallow, { capture: true, once: true });
+    win.setTimeout(() => {
+      win.removeEventListener("click", swallow, { capture: true });
+    }, 0);
   };
 
   /// ///////
@@ -596,6 +707,7 @@ export class ZoomPanPinch {
         if (!isAllowed || this.setup.panning.disabled) return;
         handleCancelAnimation(this);
         handlePanningStart(this, event);
+        this.startPanGesture(touches[0].clientX, touches[0].clientY);
         this.lockTextSelection();
         this.focusForKeyboard();
         handleCallback(getContext(this), event, onPanningStart);
@@ -616,12 +728,18 @@ export class ZoomPanPinch {
       const isAllowed = isPanningAllowed(this);
       if (!isAllowed) return;
 
+      const touch = event.touches[0];
+      // Not cancelling the first touchmove is what lets the browser scroll.
+      if (this.trackPanGesture(touch.clientX, touch.clientY)) {
+        this.onPanningStop(event);
+        return;
+      }
+
       if (event.cancelable) {
         event.preventDefault();
       }
       event.stopPropagation();
 
-      const touch = event.touches[0];
       handlePanning(this, touch.clientX, touch.clientY, DeviceType.TOUCH);
       handleCallback(getContext(this), event, onPanning);
     } else if (event.touches.length > 1) {
@@ -666,6 +784,7 @@ export class ZoomPanPinch {
     if (this.isPanning) {
       this.isPanning = false;
       this.startCoords = null;
+      this.panGesture = null;
     }
     this.unlockTextSelection();
     this.flushResizeAlignment();
@@ -775,28 +894,31 @@ export class ZoomPanPinch {
 
   // `fitOnInit` wins over `centerOnInit` (a fit is always centred). Falls
   // back to centring while the content has no size yet; `onSizeChange`
-  // re-runs this once it does. Returns whether both boxes had a size, i.e.
-  // whether this was a real initial layout.
+  // re-runs this once it does. A named `initialPositionX/Y` then places its
+  // own axis (#349). Returns whether both boxes had a size, i.e. whether
+  // this was a real initial layout.
   applyInitialLayout = (): boolean => {
-    const { fitOnInit } = this.setup;
+    const { fitOnInit, centerOnInit } = this.setup;
     const { wrapperComponent, contentComponent } = this;
+    if (!wrapperComponent || !contentComponent) return false;
     const hasSizes =
-      !!wrapperComponent &&
-      !!contentComponent &&
       wrapperComponent.clientWidth > 0 &&
       wrapperComponent.clientHeight > 0 &&
       (contentComponent.offsetWidth > 0 || contentComponent.offsetHeight > 0);
-    if (fitOnInit) {
-      const fitted = calculateFitToView(
-        this,
-        fitOnInit === "cover" ? "cover" : "contain",
-      );
-      if (fitted) {
-        this.setState(fitted.scale, fitted.positionX, fitted.positionY);
-        return hasSizes;
-      }
+
+    const { scale, positionX, positionY } = this.state;
+    let target: StateType = { scale, positionX, positionY };
+    const fitted = fitOnInit
+      ? calculateFitToView(this, fitOnInit === "cover" ? "cover" : "contain")
+      : null;
+    if (fitted) {
+      target = fitted;
+    } else if (fitOnInit || centerOnInit) {
+      target = getCenterPosition(scale, wrapperComponent, contentComponent);
     }
-    this.setCenter();
+
+    const placed = applyNamedInitialPosition(this, target);
+    this.setState(placed.scale, placed.positionX, placed.positionY);
     return hasSizes;
   };
 

@@ -4,6 +4,7 @@ import { ReactZoomPanPinchContext } from "../../models/context.model";
 import { animate, handleCancelAnimation } from "../animations/animations.utils";
 import { handleCalculateBounds } from "../bounds/bounds.utils";
 import {
+  CLICK_DISTANCE,
   getPaddingValue,
   getPanningClientPosition,
   handleNewPosition,
@@ -112,7 +113,7 @@ export function handlePanningEnd(
       // A click is not a fling, but it can still land on content left past
       // the bounds — e.g. grabbed mid return animation, which the press
       // cancelled. Finish the return (a no-op inside the bounds).
-      if (dx * dx + dy * dy <= 25) {
+      if (dx * dx + dy * dy <= CLICK_DISTANCE ** 2) {
         handleAlignToBounds(contextInstance);
         return;
       }

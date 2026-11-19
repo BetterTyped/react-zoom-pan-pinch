@@ -17,6 +17,7 @@ Request to control zoom/pan state from external React state (e.g. a slider or in
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Close with an example** (2026-11-19 triage). No controlled mode: it would push every gesture frame through React state and fight animations. New story Basic/Zoom Slider (`src/stories/examples/zoom-slider/`) shows the supported two-way pattern: `onTransform` → state, state → `zoomToPoint`. |
 
 ## Rating (2026-09-01)
 

@@ -6,6 +6,7 @@ const {
   toDistRelativeSourcePath,
   embedSourcesContent,
 } = require("../../scripts/sourcemap-path.cjs");
+const { readStylesheetExport } = require("../../scripts/stylesheet-asset.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const distDir = path.join(root, "dist");
@@ -109,5 +110,28 @@ describe("build and packaging regressions", () => {
         });
       },
     );
+  });
+
+  describe("stylesheet delivery (Ref #403, #371)", () => {
+    it("reads the CSS that rollup-plugin-postcss exports as `stylesheet`", () => {
+      const code =
+        'var css = ".a{}";\nexport default {"a":"a_x"};\n' +
+        'export var stylesheet=".a {\\n  color: \\"red\\";\\n}";';
+      expect(readStylesheetExport(code)).toBe('.a {\n  color: "red";\n}');
+      expect(readStylesheetExport("export default {};")).toBeNull();
+    });
+
+    withBuild("ships dist/styles.css and no load-time style injection", () => {
+      const css = fs.readFileSync(path.join(distDir, "styles.css"), "utf-8");
+      expect(css).toMatch(/\.transform-component-module_wrapper__\w+ \{/);
+
+      ["index.cjs.js", "index.esm.js"].forEach((name) => {
+        const bundle = fs.readFileSync(path.join(distDir, name), "utf-8");
+        // style-inject appended a <style> to document.head at import.
+        expect(bundle).not.toContain("styleInject");
+        // The same CSS is embedded for the runtime injection.
+        expect(bundle).toContain(JSON.stringify(css));
+      });
+    });
   });
 });

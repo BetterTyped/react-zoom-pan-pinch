@@ -37,6 +37,7 @@ export const initialSetup: LibrarySetup = {
   trackPadPanning: {
     disabled: true,
     velocityDisabled: false,
+    speed: 1,
     lockAxisX: false,
     lockAxisY: false,
     activationKeys: [],
@@ -50,6 +51,8 @@ export const initialSetup: LibrarySetup = {
     allowLeftClickPan: true,
     allowMiddleClickPan: true,
     allowRightClickPan: true,
+    suppressClickAfterPan: true,
+    releaseAtBounds: false,
     activationKeys: [],
     excluded: [],
   },

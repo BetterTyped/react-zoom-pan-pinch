@@ -34,6 +34,9 @@ export type ZoomToElementOptions = {
 
 export type FitToViewMode = "contain" | "cover";
 
+export type InitialPositionX = number | "left" | "center" | "right";
+export type InitialPositionY = number | "top" | "center" | "bottom";
+
 export type FitToViewOptions = {
   /** `contain` (default) shows the whole content, `cover` fills the viewport. */
   mode?: FitToViewMode;
@@ -92,8 +95,14 @@ export type ReactZoomPanPinchProps = {
   ref?: React.Ref<ReactZoomPanPinchRef>;
   detached?: boolean;
   initialScale?: number;
-  initialPositionX?: number;
-  initialPositionY?: number;
+  /**
+   * Initial `positionX` in px, or where to place the content horizontally:
+   * `"left"`, `"center"` or `"right"` edge of the wrapper. A named position
+   * is resolved once the content has a size; `resetTransform` returns to it.
+   */
+  initialPositionX?: InitialPositionX;
+  /** Like `initialPositionX`, with `"top"`, `"center"` or `"bottom"`. */
+  initialPositionY?: InitialPositionY;
   disabled?: boolean;
   minPositionX?: null | number;
   maxPositionX?: null | number;
@@ -129,6 +138,18 @@ export type ReactZoomPanPinchProps = {
     allowLeftClickPan?: boolean;
     allowMiddleClickPan?: boolean;
     allowRightClickPan?: boolean;
+    /**
+     * Swallow the `click` that follows a mouse pan which moved the pointer
+     * more than 5px, so dragging over clickable content does not also click
+     * it. On by default.
+     */
+    suppressClickAfterPan?: boolean;
+    /**
+     * Hand a gesture back to the page when its first move heads into a bound
+     * the content already rests on: no pan, no `preventDefault`, so the page
+     * scrolls or a parent carousel takes the drag. Off by default.
+     */
+    releaseAtBounds?: boolean;
     activationKeys?: string[] | ((keys: string[]) => boolean);
     excluded?: string[];
   };
@@ -141,6 +162,8 @@ export type ReactZoomPanPinchProps = {
   trackPadPanning?: {
     disabled?: boolean;
     velocityDisabled?: boolean;
+    /** Multiplier applied to the wheel/trackpad delta. Defaults to 1. */
+    speed?: number;
     lockAxisX?: boolean;
     lockAxisY?: boolean;
     activationKeys?: string[] | ((keys: string[]) => boolean);

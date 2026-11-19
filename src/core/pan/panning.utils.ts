@@ -69,6 +69,41 @@ export const isPanningAllowed = (
   return true;
 };
 
+/**
+ * Pointer travel in px up to which a press still counts as a click, not a
+ * drag: a pan ending within it aligns instead of flinging, and only a pan
+ * beyond it swallows the click that follows (#452).
+ */
+export const CLICK_DISTANCE = 5;
+
+/**
+ * Whether a pan moving by (`dx`, `dy`) would push the content further into a
+ * bound it already rests on, judged on the dominant axis. With
+ * `panning.releaseAtBounds` such a gesture is handed back to the page or the
+ * parent (a carousel, page scroll) instead of being claimed (#509).
+ */
+export function isPanBlockedAtBounds(
+  contextInstance: ReactZoomPanPinchContext,
+  dx: number,
+  dy: number,
+): boolean {
+  const { bounds, setup, state } = contextInstance;
+  if (!bounds || !setup.limitToBounds || (!dx && !dy)) return false;
+
+  const isHorizontal = Math.abs(dx) >= Math.abs(dy);
+  if (isHorizontal ? setup.panning.lockAxisX : setup.panning.lockAxisY) {
+    return true;
+  }
+
+  const delta = isHorizontal ? dx : dy;
+  const position = isHorizontal ? state.positionX : state.positionY;
+  const min = isHorizontal ? bounds.minPositionX : bounds.minPositionY;
+  const max = isHorizontal ? bounds.maxPositionX : bounds.maxPositionY;
+  // Moving the pointer right/down moves the content towards its max bound.
+  // Half a pixel of slack: alignment animations settle on float values.
+  return delta > 0 ? position >= max - 0.5 : position <= min + 0.5;
+}
+
 export const getPaddingValue = (
   contextInstance: ReactZoomPanPinchContext,
   size: number,

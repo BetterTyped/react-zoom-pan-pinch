@@ -9,6 +9,7 @@ import {
   toDistRelativeSourcePath,
   embedSourcesContentPlugin,
 } from "./scripts/sourcemap-path.cjs";
+import { stylesheetAssetPlugin } from "./scripts/stylesheet-asset.cjs";
 
 export default [
   {
@@ -37,9 +38,14 @@ export default [
       }),
       del({ targets: ["dist/*"] }),
       typescript({ declaration: false }),
+      // No `<style>` at module load (#403 CSP, #371 shadow DOM):
+      // TransformComponent injects the exported `stylesheet` into the
+      // wrapper's root, and `dist/styles.css` ships the same CSS.
       postcss({
         modules: true,
+        inject: false,
       }),
+      stylesheetAssetPlugin(),
       embedSourcesContentPlugin(),
     ],
     onwarn(error, warn) {

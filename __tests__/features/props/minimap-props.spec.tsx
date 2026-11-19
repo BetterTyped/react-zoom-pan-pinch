@@ -64,6 +64,34 @@ describe("MiniMap props", () => {
       const mm = document.querySelector(".rzpp-mini-map");
       expect(mm).toBeTruthy();
     });
+
+    it("shows a grab cursor only when panning is enabled", () => {
+      renderWithMiniMap({ panning: false });
+      const mm = document.querySelector(".rzpp-mini-map") as HTMLElement;
+      expect(mm.style.cursor).toBe("");
+    });
+  });
+
+  describe("maskColor", () => {
+    it("applies maskColor to the mask path", () => {
+      renderWithMiniMap({ maskColor: "hotpink" });
+      const path = document.querySelector(".rzpp-minimap-mask path");
+      expect(path!.getAttribute("fill")).toBe("hotpink");
+    });
+  });
+
+  describe("inversePan / zoomable / zoomStep / offsetScale / onClick", () => {
+    it("accept the React Flow-style options without crashing", () => {
+      renderWithMiniMap({
+        inversePan: true,
+        zoomable: true,
+        zoomStep: 0.5,
+        offsetScale: 10,
+        onClick: jest.fn(),
+      });
+      const mm = document.querySelector(".rzpp-mini-map");
+      expect(mm).toBeTruthy();
+    });
   });
 
   describe("HTML div attributes (...rest)", () => {

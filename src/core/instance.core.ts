@@ -8,6 +8,7 @@ import {
   ReactZoomPanPinchState,
   ReactZoomPanPinchRef,
   DeviceType,
+  StateType,
 } from "../models";
 import {
   getContext,
@@ -27,7 +28,11 @@ import {
   measureSizes,
 } from "./resize/resize.logic";
 import { MeasuredSizesType } from "./resize/resize.types";
-import { calculateFitToView } from "./handlers/handlers.utils";
+import {
+  applyNamedInitialPosition,
+  calculateFitToView,
+  hasNamedInitialPosition,
+} from "./handlers/handlers.utils";
 import {
   getWheelPanDelta,
   isWheelAllowed,
@@ -330,7 +335,7 @@ export class ZoomPanPinch {
     this.applyTransformation();
     this.onInitCallbacks.forEach((callback) => callback(getContext(this)));
 
-    if (centerOnInit || fitOnInit) {
+    if (centerOnInit || fitOnInit || hasNamedInitialPosition(this)) {
       const applied = this.applyInitialLayout();
       // Content without a size yet (an image still loading) gets its layout
       // applied again by `onSizeChange` once it has one. Once a real layout
@@ -889,28 +894,31 @@ export class ZoomPanPinch {
 
   // `fitOnInit` wins over `centerOnInit` (a fit is always centred). Falls
   // back to centring while the content has no size yet; `onSizeChange`
-  // re-runs this once it does. Returns whether both boxes had a size, i.e.
-  // whether this was a real initial layout.
+  // re-runs this once it does. A named `initialPositionX/Y` then places its
+  // own axis (#349). Returns whether both boxes had a size, i.e. whether
+  // this was a real initial layout.
   applyInitialLayout = (): boolean => {
-    const { fitOnInit } = this.setup;
+    const { fitOnInit, centerOnInit } = this.setup;
     const { wrapperComponent, contentComponent } = this;
+    if (!wrapperComponent || !contentComponent) return false;
     const hasSizes =
-      !!wrapperComponent &&
-      !!contentComponent &&
       wrapperComponent.clientWidth > 0 &&
       wrapperComponent.clientHeight > 0 &&
       (contentComponent.offsetWidth > 0 || contentComponent.offsetHeight > 0);
-    if (fitOnInit) {
-      const fitted = calculateFitToView(
-        this,
-        fitOnInit === "cover" ? "cover" : "contain",
-      );
-      if (fitted) {
-        this.setState(fitted.scale, fitted.positionX, fitted.positionY);
-        return hasSizes;
-      }
+
+    const { scale, positionX, positionY } = this.state;
+    let target: StateType = { scale, positionX, positionY };
+    const fitted = fitOnInit
+      ? calculateFitToView(this, fitOnInit === "cover" ? "cover" : "contain")
+      : null;
+    if (fitted) {
+      target = fitted;
+    } else if (fitOnInit || centerOnInit) {
+      target = getCenterPosition(scale, wrapperComponent, contentComponent);
     }
-    this.setCenter();
+
+    const placed = applyNamedInitialPosition(this, target);
+    this.setState(placed.scale, placed.positionX, placed.positionY);
     return hasSizes;
   };
 

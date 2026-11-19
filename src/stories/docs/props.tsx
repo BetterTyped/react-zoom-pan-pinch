@@ -118,16 +118,16 @@ export const wrapperPropsTable: Record<
       "Scale used only as initial value. It will be also used when triggering resetTransform() method or double click feature with 'reset' mode.",
   },
   initialPositionX: {
-    type: ["number"],
+    type: ["number", "'left'", "'center'", "'right'"],
     defaultValue: String(initialState.positionX),
     description:
-      "Position X used only as initial value. It will be also used when triggering resetTransform() method or double click feature with 'reset' mode. Value should be provided in px.",
+      "Position X used only as initial value, in px — or 'left' / 'center' / 'right' to put the content at that edge of the wrapper (resolved once the content has a size). It will be also used when triggering resetTransform() method or double click feature with 'reset' mode.",
   },
   initialPositionY: {
-    type: ["number"],
+    type: ["number", "'top'", "'center'", "'bottom'"],
     defaultValue: String(initialState.positionY),
     description:
-      "Position Y used only as initial value. It will be also used when triggering resetTransform() method or double click feature with 'reset' mode. Value should be provided in px.",
+      "Position Y used only as initial value, in px — or 'top' / 'center' / 'bottom' to put the content at that edge of the wrapper (resolved once the content has a size). It will be also used when triggering resetTransform() method or double click feature with 'reset' mode.",
   },
   disabled: {
     type: ["boolean"],

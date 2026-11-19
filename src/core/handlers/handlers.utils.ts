@@ -210,6 +210,83 @@ export function calculateFitToView(
   return getCenterPosition(scale, wrapperComponent, contentComponent);
 }
 
+// Share of the free space (wrapper minus scaled content) left before the
+// content for each named initial position (#349).
+const NAMED_POSITION_SHARE = {
+  left: 0,
+  top: 0,
+  center: 0.5,
+  right: 1,
+  bottom: 1,
+} as const;
+
+export function hasNamedInitialPosition(
+  contextInstance: ReactZoomPanPinchContext,
+): boolean {
+  const { initialPositionX, initialPositionY } = contextInstance.props;
+  return (
+    typeof initialPositionX === "string" || typeof initialPositionY === "string"
+  );
+}
+
+/**
+ * Replaces each axis of `target` whose `initialPositionX/Y` is named
+ * (`"right"`, `"center"`, `"top"`…) with the position that puts the content
+ * there at `target.scale`. Numeric axes are left as they are.
+ */
+export function applyNamedInitialPosition(
+  contextInstance: ReactZoomPanPinchContext,
+  target: StateType,
+): StateType {
+  const { wrapperComponent, contentComponent, props } = contextInstance;
+  const { initialPositionX, initialPositionY } = props;
+  if (!wrapperComponent || !contentComponent) return target;
+
+  const place = (
+    name: keyof typeof NAMED_POSITION_SHARE,
+    wrapperSize: number,
+    contentSize: number,
+  ) => (wrapperSize - contentSize * target.scale) * NAMED_POSITION_SHARE[name];
+
+  return {
+    scale: target.scale,
+    positionX:
+      typeof initialPositionX === "string"
+        ? place(
+            initialPositionX,
+            wrapperComponent.clientWidth,
+            contentComponent.offsetWidth,
+          )
+        : target.positionX,
+    positionY:
+      typeof initialPositionY === "string"
+        ? place(
+            initialPositionY,
+            wrapperComponent.clientHeight,
+            contentComponent.offsetHeight,
+          )
+        : target.positionY,
+  };
+}
+
+/**
+ * The scale `resetTransform` returns to: the fitted one with `fitOnInit`,
+ * otherwise `initialScale` (clamped to min/max).
+ */
+export function getResetScale(
+  contextInstance: ReactZoomPanPinchContext,
+): number {
+  const { fitOnInit } = contextInstance.setup;
+  if (fitOnInit) {
+    const fitted = calculateFitToView(
+      contextInstance,
+      fitOnInit === "cover" ? "cover" : "contain",
+    );
+    if (fitted) return fitted.scale;
+  }
+  return createState(contextInstance.props).scale;
+}
+
 export function resetTransformations(
   contextInstance: ReactZoomPanPinchContext,
   animationTime: number,
@@ -226,11 +303,12 @@ export function resetTransformations(
   // With `fitOnInit` the initial layout is the fitted one, so that is what a
   // reset returns to (#252).
   if (fitOnInit) {
-    const fitted = calculateFitToView(
+    const fit = calculateFitToView(
       contextInstance,
       fitOnInit === "cover" ? "cover" : "contain",
     );
-    if (fitted) {
+    if (fit) {
+      const fitted = applyNamedInitialPosition(contextInstance, fit);
       if (
         scale === fitted.scale &&
         positionX === fitted.positionX &&
@@ -260,6 +338,15 @@ export function resetTransformations(
     targetPositionX = centered.positionX;
     targetPositionY = centered.positionY;
   }
+
+  // Named initial positions win over the centring on their own axis (#349).
+  const named = applyNamedInitialPosition(contextInstance, {
+    scale: initialTransformation.scale,
+    positionX: targetPositionX,
+    positionY: targetPositionY,
+  });
+  targetPositionX = named.positionX;
+  targetPositionY = named.positionY;
 
   const newBounds = calculateBounds(
     contextInstance,

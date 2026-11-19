@@ -17,6 +17,7 @@ Request to accept semantic position values like `'left' | 'center' | 'right'` an
 | Date | Entry |
 |------|-------|
 | 2026-09-01 | Re-rated against v4.0.7 — see **Rating** below. |
+| 2026-11-19 | **Built on master (unreleased).** `initialPositionX` accepts `'left' | 'center' | 'right'`, `initialPositionY` `'top' | 'center' | 'bottom'`, resolved once both boxes have a size (`applyNamedInitialPosition`); a named axis wins over `centerOnInit`/`fitOnInit` on that axis and `resetTransform` returns to it. `setTransform` is unchanged. Spec: `__tests__/features/positions/positions.named.spec.tsx`. |
 
 ## Rating (2026-09-01)
 

@@ -34,6 +34,9 @@ export type ZoomToElementOptions = {
 
 export type FitToViewMode = "contain" | "cover";
 
+export type InitialPositionX = number | "left" | "center" | "right";
+export type InitialPositionY = number | "top" | "center" | "bottom";
+
 export type FitToViewOptions = {
   /** `contain` (default) shows the whole content, `cover` fills the viewport. */
   mode?: FitToViewMode;
@@ -92,8 +95,14 @@ export type ReactZoomPanPinchProps = {
   ref?: React.Ref<ReactZoomPanPinchRef>;
   detached?: boolean;
   initialScale?: number;
-  initialPositionX?: number;
-  initialPositionY?: number;
+  /**
+   * Initial `positionX` in px, or where to place the content horizontally:
+   * `"left"`, `"center"` or `"right"` edge of the wrapper. A named position
+   * is resolved once the content has a size; `resetTransform` returns to it.
+   */
+  initialPositionX?: InitialPositionX;
+  /** Like `initialPositionX`, with `"top"`, `"center"` or `"bottom"`. */
+  initialPositionY?: InitialPositionY;
   disabled?: boolean;
   minPositionX?: null | number;
   maxPositionX?: null | number;

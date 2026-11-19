@@ -53,6 +53,40 @@ describe("MiniMap [Rendering]", () => {
       expect(preview).toBeTruthy();
     });
 
+    it("should render an svg mask that dims everything outside the viewport", () => {
+      renderMiniMap();
+      const mask = document.querySelector("svg.rzpp-minimap-mask");
+      const path = mask?.querySelector("path");
+      expect(mask).toBeTruthy();
+      expect(mask!.getAttribute("width")).toBe("200");
+      expect(mask!.getAttribute("height")).toBe("200");
+      expect(path!.getAttribute("fill-rule")).toBe("evenodd");
+      expect(path!.getAttribute("fill")).toBe("rgba(0, 0, 0, 0.2)");
+    });
+
+    it("should apply custom maskColor", () => {
+      renderMiniMap({ maskColor: "rgba(10, 20, 30, 0.5)" });
+      const path = document.querySelector(".rzpp-minimap-mask path");
+      expect(path!.getAttribute("fill")).toBe("rgba(10, 20, 30, 0.5)");
+    });
+
+    it("should size the container from width and height and clip overflow", () => {
+      renderMiniMap({ width: 120, height: 80 });
+      const container = document.querySelector(".rzpp-mini-map") as HTMLElement;
+      expect(container.style.width).toBe("120px");
+      expect(container.style.height).toBe("80px");
+      expect(container.style.overflow).toBe("hidden");
+      expect(container.style.touchAction).toBe("none");
+    });
+
+    it("should merge a custom style prop onto the container", () => {
+      renderMiniMap({ style: { background: "black", borderRadius: "6px" } });
+      const container = document.querySelector(".rzpp-mini-map") as HTMLElement;
+      expect(container.style.background).toBe("black");
+      expect(container.style.borderRadius).toBe("6px");
+      expect(container.style.width).toBe("200px");
+    });
+
     it("should render children inside the wrapper", () => {
       renderMiniMap();
       const wrapper = document.querySelector(".rzpp-minimap-wrapper");
@@ -67,7 +101,7 @@ describe("MiniMap [Rendering]", () => {
       const preview = document.querySelector(
         ".rzpp-minimap-preview",
       ) as HTMLElement;
-      expect(preview.style.border).toBe("3px solid red");
+      expect(preview.style.border).toBe("2px solid red");
       expect(preview.style.borderColor).toBe("red");
     });
 
@@ -90,12 +124,14 @@ describe("MiniMap [Rendering]", () => {
       expect(preview.style.border).toBe("1px solid lime");
     });
 
-    it("should have box-shadow for viewport dimming", () => {
+    it("should not dim through a giant box-shadow on the preview anymore", () => {
+      // The dimming is drawn by the svg mask, so the preview no longer needs
+      // the 10000000px box-shadow hack that bled outside the mini map.
       renderMiniMap();
       const preview = document.querySelector(
         ".rzpp-minimap-preview",
       ) as HTMLElement;
-      expect(preview.style.boxShadow).toBeTruthy();
+      expect(preview.style.boxShadow).toBe("");
     });
 
     it("should have pointerEvents none on preview", () => {

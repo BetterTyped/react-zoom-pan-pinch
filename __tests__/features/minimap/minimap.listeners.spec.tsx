@@ -32,7 +32,15 @@ const tree = (miniMapWidth: number) => (
 const countCalls = (spy: jest.SpyInstance, type: string) =>
   spy.mock.calls.filter(([eventType]) => eventType === type).length;
 
-const MINI_MAP_EVENTS = ["mousedown", "mousemove", "mouseup"];
+const MINI_MAP_EVENTS = [
+  "mousedown",
+  "mousemove",
+  "mouseup",
+  "touchstart",
+  "touchmove",
+  "touchend",
+  "touchcancel",
+];
 
 /**
  * The MiniMap used to register its document `mousedown` handler on every
@@ -86,8 +94,8 @@ describe("MiniMap [Listeners]", () => {
     const miniMap = document.querySelector(".rzpp-mini-map") as HTMLElement;
 
     // mousedown arms the drag; the transform is written on mousemove.
-    fireEvent.mouseDown(miniMap, { clientX: 50, clientY: 50 });
-    fireEvent.mouseMove(miniMap, { clientX: 60, clientY: 60 });
+    fireEvent.mouseDown(miniMap, { clientX: 50, clientY: 50, buttons: 1 });
+    fireEvent.mouseMove(miniMap, { clientX: 60, clientY: 60, buttons: 1 });
 
     expect(setState).toHaveBeenCalledTimes(1);
     setState.mockRestore();

@@ -276,6 +276,7 @@ export class ZoomPanPinch {
     );
     wrapper.removeEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.removeEventListener("touchend", this.onTouchPanningStop, passive);
+    wrapper.removeEventListener("scroll", this.onWrapperScroll, passive);
   };
 
   handleInitializeWrapperEvents = (wrapper: HTMLDivElement): void => {
@@ -288,6 +289,25 @@ export class ZoomPanPinch {
     wrapper.addEventListener("touchstart", this.onTouchPanningStart, passive);
     wrapper.addEventListener("touchmove", this.onTouchPanning, passive);
     wrapper.addEventListener("touchend", this.onTouchPanningStop, passive);
+    wrapper.addEventListener("scroll", this.onWrapperScroll, passive);
+  };
+
+  // The wrapper clips with `overflow: hidden`, but the browser still scrolls
+  // it to reveal a focused input (the virtual keyboard on mobile) or for
+  // `scrollIntoView`. Nothing in the transform knows about that offset, so
+  // the content stayed shifted and could not be panned back (#280, #477).
+  // Fold the scroll into the position instead: the target stays in view and
+  // the state matches what is on screen.
+  onWrapperScroll = (): void => {
+    const wrapper = this.wrapperComponent;
+    if (!wrapper) return;
+    const { scrollLeft, scrollTop } = wrapper;
+    if (!scrollLeft && !scrollTop) return;
+
+    wrapper.scrollLeft = 0;
+    wrapper.scrollTop = 0;
+    const { scale, positionX, positionY } = this.state;
+    this.setState(scale, positionX - scrollLeft, positionY - scrollTop);
   };
 
   handleInitialize = (): void => {

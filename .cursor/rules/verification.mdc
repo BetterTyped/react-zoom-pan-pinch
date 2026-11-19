@@ -1,0 +1,22 @@
+---
+description: How to verify changes before reporting them as done
+alwaysApply: true
+---
+
+# Verification after changes
+
+- **Tests**: while iterating, run the specs you touched
+  (`yarn test __tests__/features/pan/pan.rubber-band.spec.tsx`). Before a commit
+  or PR, run the full suite with `yarn test`.
+- **Types**: `yarn typecheck` after changes to `src/` types, exports or
+  signatures, and before a PR.
+- **Lint**: run ESLint on the files you touched (`yarn eslint <files> --fix`).
+  `yarn lint` lints and **auto-fixes the whole repo** — only use it when a
+  repo-wide pass is intended.
+- **Behaviour you can see or feel** (gestures, animations, MiniMap, stories):
+  check it in the running Storybook (`yarn storybook`, port 6006), not only in
+  jsdom — see `debugging.mdc`.
+- **Uncommitted work you did not write**: check `git status` before branching or
+  committing, and commit only the files that belong to the change.
+- Fix any errors you introduced before reporting the work as complete, and say
+  what you could not verify.

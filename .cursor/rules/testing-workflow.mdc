@@ -1,0 +1,43 @@
+---
+description: When and whether to write tests during library work
+alwaysApply: true
+---
+
+# Testing workflow
+
+## When changing the library
+
+When implementing or modifying behaviour in `src/`, **add tests where possible**
+— `__tests__/features/` for behaviour, `__tests__/units/` for pure helpers,
+`__tests__/regressions/` for issue-linked bugs.
+
+- **Assert exact values.** Prefer `"translate(-35.48px, 0px) scale(1)"` or a
+  precise number over `not.toBe(...)` / `toBeLessThan(...)`. Put the formula or
+  the reasoning behind a magic number in a comment, so the next reader can
+  re-derive it.
+- **Check the test can fail.** For a guard or cap, break it for a moment and
+  watch the test go red before trusting it.
+- `renderApp` disables `autoAlignment`, `velocityAnimation` and `doubleClick` by
+  default — enable what the test is about explicitly.
+
+## Avoid trivial tests
+
+Do not write tests that:
+
+- Only assert that a component renders without crashing
+- Mirror the implementation line by line with no added confidence
+- Test React, jsdom or Jest behaviour rather than library logic
+- Cover only types, constants, re-exports or other declarative code
+
+Every test should justify its existence by catching a realistic regression.
+
+## When you chose not to test
+
+If you finish work that **could reasonably be tested** but you decided not to,
+**ask the user** before closing out:
+
+> "I didn't add tests for this change because [reason]. Would you like me to add
+> any?"
+
+**Don't ask** when the change is inherently untestable or trivial — styles,
+story-only tweaks, constants, config, re-exports, type definitions, assets.

@@ -1,0 +1,34 @@
+---
+description:
+  Behaviour and architecture decisions — record them, read them, don't
+  re-litigate them
+alwaysApply: true
+---
+
+# Decisions
+
+Some behaviour is chosen, not obvious, and a future change would "helpfully"
+undo it. Those decisions are written down and respected.
+
+## Where decisions live
+
+- **Issue-level behaviour** — the resolution log of the matching
+  `docs/bugs/*.md` or `docs/feature-requests/*.md` (e.g. "By design
+  (documented)" entries).
+- **Cross-cutting decisions** — a short ADR in `docs/adr/NNNN-<slug>.md`:
+  context, decision, consequences, a few paragraphs. Create `docs/adr/` the
+  first time one is needed.
+
+Record an ADR when a decision is hard to reverse, changes behaviour users see by
+default, or spans several modules — for example: rubber-band overscroll applies
+only while `autoAlignment` is on; trackpad pinch is handled as a ctrl+wheel;
+`zoomIn` steps linearly.
+
+## Rules
+
+- **Read the related decisions before changing behaviour** in that area.
+- **Do not re-litigate a recorded decision.** If it looks wrong, say so and ask
+  — never silently refactor around it.
+- A change that alters default behaviour for every user (a new default, a new
+  effect on default props) is a decision: record it and flag it for the release
+  notes.

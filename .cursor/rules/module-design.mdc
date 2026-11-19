@@ -1,0 +1,51 @@
+---
+description:
+  Module design for library code — deep modules, no speculative generality,
+  every public prop is forever, self-review smells
+globs: src/**/*
+alwaysApply: false
+---
+
+# Module design
+
+## Deep modules
+
+Prefer **deep modules**: a lot of behaviour behind a small interface.
+
+- Fewer functions with real behaviour beat many thin pass-through helpers.
+- A module is shallow when its interface is nearly as complex as its
+  implementation — a wrapper that only renames or forwards arguments adds cost,
+  not value.
+- **Deletion test**: if deleting a helper would just inline one line at each
+  call site, delete it. If it would scatter real complexity across callers, it
+  earns its place.
+- Gesture handlers (`src/core/*/*.logic.ts`) stay thin; the math lives in the
+  `*.utils.ts` helpers, where it can be unit tested.
+
+## No speculative generality
+
+Build for the requirements that exist, not the ones you imagine.
+
+- **Every public prop is forever.** Do not add a prop, option or callback
+  argument for a need nobody has; once published it is semver surface. Prefer a
+  fixed, well-chosen constant (e.g. the rubber band's `0.55`) until a real
+  request asks for a knob.
+- No abstraction until there are at least two real call sites that want it.
+- Don't scaffold empty folders or files "for later".
+
+## Self-review smells
+
+Before declaring work done, scan your own diff for these. Each is a judgement
+call, not a hard violation — but if you leave one in, be able to say why.
+
+- **Mysterious name** — a function, variable or type whose name doesn't say what
+  it does. If no honest name comes, the design is murky.
+- **Duplicated code** — the same logic shape in more than one place in the
+  change (e.g. per-axis code copied for X and Y instead of one helper).
+- **Data clumps** — the same few fields travelling together through signatures
+  (`minX, maxX, minY, maxY, paddingX, paddingY`). Bundle them into one type.
+- **Primitive obsession** — a raw number standing in for a concept (px vs % of
+  the wrapper). Name it, or at least document its unit.
+- **Speculative generality** — see above. Delete it.
+- **Middle man** — a function that mostly delegates onward. Call the real
+  target.

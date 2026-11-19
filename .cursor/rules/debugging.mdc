@@ -1,0 +1,45 @@
+---
+description:
+  Bug-fixing discipline — build a red feedback loop before hypothesizing, ship
+  every fix with a regression test. Apply whenever diagnosing or fixing a bug,
+  failure, or regression.
+alwaysApply: false
+---
+
+# Debugging discipline
+
+## Feedback loop first
+
+Before hypothesizing about a bug's cause, **build a repro that goes red on this
+bug** at the nearest seam:
+
+- **Logic** (bounds, zoom math, rubber band, velocity): a unit test against the
+  helper in `src/core/**` (see `__tests__/units/`).
+- **Gestures and callbacks**: a `renderApp` spec driving `pan`, `touchPan`,
+  `trackPadPan`, `zoom` or `pinch` (`__tests__/utils/render-app.tsx`). Use fake
+  timers + `flushAnimationFrames()` for velocity and alignment animations.
+- **Timing, layout, real pointer feel**: jsdom has no layout and only
+  approximates rAF, so it cannot prove gesture timing or animation smoothness.
+  Drive the running Storybook (`yarn storybook`, port 6006) and log transform
+  values per frame. A background tab throttles rAF to about 1 fps — check that
+  the tab is in front before reading timings.
+
+A fix without a red loop is a guess. If you genuinely cannot build a repro, say
+so, list what you tried, and ask for what is missing (browser, device, props, a
+CodeSandbox) instead of proceeding on hypothesis alone.
+
+## Fix against the loop
+
+- One hypothesis at a time, tested against the loop — no shotgun edits across
+  files hoping one lands.
+- Done when the red loop goes green **and** the surrounding suite still passes.
+- A failing existing test usually means a library regression, not a bad test
+  (see `testing-regressions.mdc`). Change a test only when its expectation was
+  wrong, and say why.
+
+## Every bug fix ships with a regression test
+
+The repro from step one stays as the regression test. If a bug escaped, the
+suite had a hole — the fix is not complete until it is closed. Issue-linked bugs
+go under `__tests__/regressions/` per `testing-regressions.mdc`, and the
+matching `docs/bugs/*.md` records the fix and spec path.

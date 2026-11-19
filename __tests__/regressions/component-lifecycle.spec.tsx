@@ -38,7 +38,10 @@ function DeferredMount() {
 function PanWithParentRerender({ onTick }: { onTick: () => void }) {
   const [, setTick] = useState(0);
   return (
+    // Unbounded so every move lands 1:1: this is about the listeners, and
+    // the content fits the wrapper, so any pan would stretch the rubber band.
     <TransformWrapper
+      limitToBounds={false}
       onPanning={() => {
         onTick();
         setTick((n) => n + 1);

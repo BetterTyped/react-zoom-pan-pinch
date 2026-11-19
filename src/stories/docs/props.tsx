@@ -511,13 +511,13 @@ export const wrapperPropsTable: Record<
       type: ["number"],
       defaultValue: String(initialSetup.autoAlignment.sizeX),
       description:
-        "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
+        "How far (horizontal, in px) the content can be pulled past the calculated limits before it returns to them. While dragging there it stretches like a rubber band (iOS-style, 0.55 resistance) and only approaches this distance; with autoAlignment disabled it follows the pointer 1:1 up to it. Requires 'limitToBounds'.",
     },
     sizeY: {
       type: ["number"],
       defaultValue: String(initialSetup.autoAlignment.sizeY),
       description:
-        "Thanks to size, we can control the movement of our content component beyond the calculated limits. This results in an animation of a fallback to the closest accepted limits, however, this is only possible when the other 'limitToBounds' prop is set to true.",
+        "How far (vertical, in px) the content can be pulled past the calculated limits before it returns to them. While dragging there it stretches like a rubber band (iOS-style, 0.55 resistance) and only approaches this distance; with autoAlignment disabled it follows the pointer 1:1 up to it. Requires 'limitToBounds'.",
     },
     velocityAlignmentTime: {
       type: ["number"],

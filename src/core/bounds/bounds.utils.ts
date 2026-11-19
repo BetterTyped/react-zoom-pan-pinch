@@ -161,6 +161,61 @@ export function rubberbandIfOutOfBounds(
 }
 
 /**
+ * Furthest a grabbed position is traced back along the rubber band curve, as
+ * a fraction of the padding. The curve never reaches the padding itself, so
+ * a position at (or past) it has no pointer distance to map back to.
+ */
+const MAX_RUBBER_BAND_RATIO = 0.9;
+
+/**
+ * Resistance of the rubber band, the constant UIScrollView uses: past a bound
+ * the content moves at 0.55× the pointer and slows down from there.
+ */
+export const RUBBER_BAND_CONSTANT = 0.55;
+
+/**
+ * Where a pan that was dragged past a bound ends up: `(1 - 1 / (x * c / d + 1)) * d`
+ * with `d` = `padding`. It trails the pointer from the first pixel past the
+ * bound and approaches — never reaches — `padding` px past it.
+ */
+export function getRubberBandPosition(
+  position: number,
+  min: number,
+  max: number,
+  padding: number,
+): number {
+  if (padding <= 0) return clamp(position, min, max);
+  if (position < min)
+    return min - rubberband(min - position, padding, RUBBER_BAND_CONSTANT);
+  if (position > max)
+    return max + rubberband(position - max, padding, RUBBER_BAND_CONSTANT);
+  return position;
+}
+
+/**
+ * Inverse of `getRubberBandPosition`: the pointer position that puts the
+ * content at `position`. Lets a pan that starts inside the padding (grabbed
+ * mid return animation, trackpad deltas) continue from where the content is.
+ */
+export function getRubberBandSource(
+  position: number,
+  min: number,
+  max: number,
+  padding: number,
+): number {
+  if (padding <= 0) return position;
+
+  const stretch = (offset: number) => {
+    const limited = Math.min(offset, padding * MAX_RUBBER_BAND_RATIO);
+    return (limited * padding) / (RUBBER_BAND_CONSTANT * (padding - limited));
+  };
+
+  if (position < min) return min - stretch(min - position);
+  if (position > max) return max + stretch(position - max);
+  return position;
+}
+
+/**
  * Keeps value between given bounds, used for limiting view to given boundaries
  * 1# eg. boundLimiter(2, 0, 3, true) => 2
  * 2# eg. boundLimiter(4, 0, 3, true) => 3
@@ -223,4 +278,37 @@ export function getMouseBoundedPosition(
     limitToBounds,
   );
   return { x, y };
+}
+
+/**
+ * Bounded position for a pan gesture: free inside the bounds and, inside the
+ * padding around them, rubber banded (`rubberBand`) or 1:1 up to its edge.
+ */
+export function getPanBoundedPosition(
+  positionX: number,
+  positionY: number,
+  bounds: BoundsType,
+  limitToBounds: boolean,
+  paddingX: number,
+  paddingY: number,
+  rubberBand: boolean,
+): PositionType {
+  const { minPositionX, minPositionY, maxPositionX, maxPositionY } = bounds;
+
+  const limit = (
+    position: number,
+    min: number,
+    max: number,
+    padding: number,
+  ) => {
+    if (limitToBounds && rubberBand && padding > 0) {
+      return roundNumber(getRubberBandPosition(position, min, max, padding), 2);
+    }
+    return boundLimiter(position, min - padding, max + padding, limitToBounds);
+  };
+
+  return {
+    x: limit(positionX, minPositionX, maxPositionX, paddingX),
+    y: limit(positionY, minPositionY, maxPositionY, paddingY),
+  };
 }

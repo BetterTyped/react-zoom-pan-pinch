@@ -21,7 +21,7 @@ describe("Pan Touch [Base]", () => {
       expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");
       touchPan({ x: -100, y: -100 });
       expect(content.style.transform).toBe(
-        "translate(-100px, -100px) scale(1)",
+        "translate(-35.48px, -35.48px) scale(1)",
       );
       await waitFor(() => {
         expect(content.style.transform).toBe("translate(0px, 0px) scale(1)");

@@ -4,7 +4,7 @@ import { ReactZoomPanPinchContext } from "../../models/context.model";
 import { getContext } from "../../utils";
 import { animations } from "../animations/animations.constants";
 import { handleSetupAnimation } from "../animations/animations.utils";
-import { getPaddingValue } from "./panning.utils";
+import { getPaddingValue, isRubberBandEnabled } from "./panning.utils";
 import {
   getVelocityPosition,
   getVelocityMoveTime,
@@ -123,8 +123,15 @@ export function handleVelocityPanning(
 
   const paddingValueX = getPaddingValue(contextInstance, sizeX);
   const paddingValueY = getPaddingValue(contextInstance, sizeY);
-  const paddingX = (paddingValueX * wrapperComponent.clientWidth) / 100;
-  const paddingY = (paddingValueY * wrapperComponent.clientHeight) / 100;
+  // A fling released inside the rubber band stays within the same stretch a
+  // drag could reach (`padding` px), not a share of the wrapper size.
+  const isRubberBand = isRubberBandEnabled(contextInstance);
+  const paddingX = isRubberBand
+    ? paddingValueX
+    : (paddingValueX * wrapperComponent.clientWidth) / 100;
+  const paddingY = isRubberBand
+    ? paddingValueY
+    : (paddingValueY * wrapperComponent.clientHeight) / 100;
   const maxTargetX = maxPositionX + paddingX;
   const minTargetX = minPositionX - paddingX;
 

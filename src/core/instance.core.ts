@@ -41,6 +41,7 @@ import {
 } from "./wheel/wheel.logic";
 import {
   getPaddingValue,
+  getPanSourcePosition,
   handleNewPosition,
   isPanningAllowed,
   isPanningStartAllowed,
@@ -412,19 +413,23 @@ export class ZoomPanPinch {
     }
     event.stopPropagation();
 
-    const { positionX, positionY } = this.state;
-    const mouseX = positionX - event.deltaX;
-    const mouseY = positionY - event.deltaY;
-    const newPositionX = lockAxisX ? positionX : mouseX;
-    const newPositionY = lockAxisY ? positionY : mouseY;
+    const deltaX = lockAxisX ? 0 : event.deltaX;
+    const deltaY = lockAxisY ? 0 : event.deltaY;
+
+    if (!deltaX && !deltaY) return;
 
     const { sizeX, sizeY } = this.setup.autoAlignment;
     const paddingValueX = getPaddingValue(this, sizeX);
     const paddingValueY = getPaddingValue(this, sizeY);
 
-    if (newPositionX === positionX && newPositionY === positionY) return;
-
     handleWheelPanningStart(this, event);
+
+    // Deltas add up on the pointer's side of the rubber band, the same way
+    // a drag does, so the content slows down towards the padding limit.
+    const source = getPanSourcePosition(this);
+    const newPositionX = source.x - deltaX;
+    const newPositionY = source.y - deltaY;
+
     handleNewPosition(
       this,
       newPositionX,

@@ -9,7 +9,10 @@ import {
   isEditableTarget,
   isExcludedNode,
 } from "../../utils";
-import { getMouseBoundedPosition } from "../bounds/bounds.utils";
+import {
+  getPanBoundedPosition,
+  getRubberBandSource,
+} from "../bounds/bounds.utils";
 import { handleCalculateZoomPositions } from "../zoom/zoom.utils";
 
 export const isPanningStartAllowed = (
@@ -66,11 +69,75 @@ export const isPanningAllowed = (
   return true;
 };
 
+export const getPaddingValue = (
+  contextInstance: ReactZoomPanPinchContext,
+  size: number,
+  explicitScale?: number,
+): number => {
+  const { setup, state } = contextInstance;
+  const { minScale, disablePadding, centerZoomedOut } = setup;
+
+  const scale = explicitScale ?? state.scale;
+
+  if (size > 0 && scale >= minScale && !disablePadding && !centerZoomedOut) {
+    return size;
+  }
+
+  return 0;
+};
+
+/**
+ * Dragging past the bounds stretches like a rubber band only when the content
+ * is going to return to them on release (`autoAlignment`). Without that return
+ * the padding is a plain area the content can be left in, so it follows the
+ * pointer 1:1 up to its edge.
+ */
+export function isRubberBandEnabled(
+  contextInstance: ReactZoomPanPinchContext,
+): boolean {
+  const { limitToBounds, autoAlignment } = contextInstance.setup;
+  return limitToBounds && !autoAlignment.disabled;
+}
+
+/**
+ * The position a pan continues from. Inside the bounds that is the content
+ * position; inside the padding the content trails the pointer (rubber band),
+ * so the pointer's own position is traced back from it — otherwise the first
+ * move of a pan started there would make the content jump.
+ */
+export function getPanSourcePosition(
+  contextInstance: ReactZoomPanPinchContext,
+): PositionType {
+  const { bounds, setup, state } = contextInstance;
+  const { positionX, positionY } = state;
+
+  if (!bounds || !isRubberBandEnabled(contextInstance)) {
+    return { x: positionX, y: positionY };
+  }
+
+  const { sizeX, sizeY } = setup.autoAlignment;
+
+  return {
+    x: getRubberBandSource(
+      positionX,
+      bounds.minPositionX,
+      bounds.maxPositionX,
+      getPaddingValue(contextInstance, sizeX),
+    ),
+    y: getRubberBandSource(
+      positionY,
+      bounds.minPositionY,
+      bounds.maxPositionY,
+      getPaddingValue(contextInstance, sizeY),
+    ),
+  };
+}
+
 export const handlePanningSetup = (
   contextInstance: ReactZoomPanPinchContext,
   event: MouseEvent,
 ): void => {
-  const { positionX, positionY } = contextInstance.state;
+  const { x: positionX, y: positionY } = getPanSourcePosition(contextInstance);
 
   contextInstance.isPanning = true;
 
@@ -86,7 +153,7 @@ export const handleTouchPanningSetup = (
   event: TouchEvent,
 ): void => {
   const { touches } = event;
-  const { positionX, positionY } = contextInstance.state;
+  const { x: positionX, y: positionY } = getPanSourcePosition(contextInstance);
 
   contextInstance.isPanning = true;
 
@@ -170,14 +237,14 @@ export function handleNewPosition(
     return;
   }
 
-  const { x, y } = getMouseBoundedPosition(
+  const { x, y } = getPanBoundedPosition(
     newPositionX,
     newPositionY,
     bounds,
     limitToBounds,
     paddingValueX,
     paddingValueY,
-    wrapperComponent,
+    isRubberBandEnabled(contextInstance),
   );
 
   contextInstance.setState(scale, x, y);
@@ -188,10 +255,12 @@ export const getPanningClientPosition = (
   clientX: number,
   clientY: number,
 ): PositionType => {
-  const { startCoords, state } = contextInstance;
+  const { startCoords } = contextInstance;
   const { panning } = contextInstance.setup;
   const { lockAxisX, lockAxisY } = panning;
-  const { positionX, positionY } = state;
+  // A locked axis keeps its place: the source maps back onto the position
+  // it has now, also when it rests inside the padding.
+  const { x: positionX, y: positionY } = getPanSourcePosition(contextInstance);
 
   if (!startCoords) {
     return { x: positionX, y: positionY };
@@ -203,21 +272,4 @@ export const getPanningClientPosition = (
   const newPositionY = lockAxisY ? positionY : mouseY;
 
   return { x: newPositionX, y: newPositionY };
-};
-
-export const getPaddingValue = (
-  contextInstance: ReactZoomPanPinchContext,
-  size: number,
-  explicitScale?: number,
-): number => {
-  const { setup, state } = contextInstance;
-  const { minScale, disablePadding, centerZoomedOut } = setup;
-
-  const scale = explicitScale ?? state.scale;
-
-  if (size > 0 && scale >= minScale && !disablePadding && !centerZoomedOut) {
-    return size;
-  }
-
-  return 0;
 };

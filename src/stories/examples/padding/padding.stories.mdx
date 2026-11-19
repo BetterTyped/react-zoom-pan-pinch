@@ -6,25 +6,25 @@ import { Example } from "./example";
 
 export const Template = (args) => <Example {...args} />;
 
-<Meta
-  title="Basic/Padding"
-  component={TransformWrapper}
-  argTypes={argsTypes}
-/>
+<Meta title="Basic/Padding" component={TransformWrapper} argTypes={argsTypes} />
 
 # Padding
 
-The **padding** effect controls what happens when the user zooms past the
-content boundaries. By default (`disablePadding: false`), the library allows a
-small elastic overscroll — the content stretches slightly beyond the limit, then
-snaps back with a smooth animation. This gives a natural, tactile feel similar
-to iOS scroll bounce.
+The **padding** is the area past the content boundaries that the content can be
+pulled into. By default (`disablePadding: false`) dragging past an edge
+stretches like a rubber band, the curve iOS scroll views use: the content
+follows at about half the pointer's speed, resists more the further it is
+pulled, and springs back on release. `autoAlignment.sizeX` / `sizeY` set how far
+it can go (100 px by default). The band only approaches that distance, so a
+larger value gives a longer stretch that is easier to feel. The rubber band
+needs `autoAlignment` enabled; with it disabled the content follows the pointer
+1:1 up to the padding edge and stays there.
 
-When `disablePadding` is set to `true`, the zoom is strictly clamped: the
-content stops exactly at the boundary with no overscroll or snap-back animation.
+When `disablePadding` is set to `true`, panning and zooming are strictly
+clamped: the content stops exactly at its edges.
 
-Use the **toggle button** in the control bar to switch between the two modes in
-real time and feel the difference. The status badge shows the current mode.
+Use the **Stretch** chips to compare padding sizes and the **toggle button** in
+the control bar to switch padding off. The status badge shows the current mode.
 
 <Canvas>
   <Story name="Padding">{(args) => <Template {...args} />}</Story>

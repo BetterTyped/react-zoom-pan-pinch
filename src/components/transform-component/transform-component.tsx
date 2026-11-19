@@ -3,10 +3,17 @@ import React, { useContext, useEffect, useRef } from "react";
 
 import { Context } from "../transform-wrapper/transform-wrapper";
 import { baseClasses } from "../../constants/state.constants";
-import { getTransformStyles } from "../../utils/styles.utils";
+import { getTransformStyles, injectStylesheet } from "../../utils/styles.utils";
 import { useIsomorphicLayoutEffect } from "../../utils/effect.utils";
 
-import styles from "./transform-component.module.css";
+// Namespace import: only the library build (rollup-plugin-postcss with
+// `inject: false`) exports `stylesheet`. A named import would be a hard
+// error under bundlers that load the CSS module themselves (Vite in
+// Storybook); a missing property is just undefined.
+import * as cssModule from "./transform-component.module.css";
+
+const styles = cssModule.default;
+const { stylesheet } = cssModule;
 
 type Props = {
   children: React.ReactNode;
@@ -22,6 +29,16 @@ type Props = {
    * `limitToBounds={false}` on TransformWrapper for full effect.
    */
   infinite?: boolean;
+  /**
+   * Nonce for the `<style>` the component adds, for a Content Security
+   * Policy with `style-src 'nonce-…'`.
+   */
+  nonce?: string;
+  /**
+   * Do not add the stylesheet; load `react-zoom-pan-pinch/dist/styles.css`
+   * yourself instead (a CSP that allows no inline `<style>`).
+   */
+  disableStyleInjection?: boolean;
 };
 
 export const TransformComponent: React.FC<Props> = ({
@@ -33,6 +50,8 @@ export const TransformComponent: React.FC<Props> = ({
   wrapperProps = {},
   contentProps = {},
   infinite = false,
+  nonce,
+  disableStyleInjection = false,
 }: Props) => {
   const instance = useContext(Context);
   const { init, cleanupWindowEvents } = instance;
@@ -47,6 +66,10 @@ export const TransformComponent: React.FC<Props> = ({
   useIsomorphicLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     const content = contentRef.current;
+    // Before `init` measures anything: the sizes depend on these rules.
+    if (wrapper !== null && !disableStyleInjection) {
+      injectStylesheet(wrapper, stylesheet, nonce);
+    }
     if (wrapper !== null && content !== null && init) {
       init?.(wrapper, content);
     }

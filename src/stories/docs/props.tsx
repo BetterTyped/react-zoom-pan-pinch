@@ -90,6 +90,18 @@ export const componentPropsTable: Record<
     description:
       "Render the infinite dot-grid background behind the content so it pans and scales with the transform.",
   },
+  nonce: {
+    type: ["string"],
+    defaultValue: "undefined",
+    description:
+      "Nonce set on the <style> the component adds to the wrapper's root (document head or shadow root), for a Content Security Policy with style-src 'nonce-…'.",
+  },
+  disableStyleInjection: {
+    type: ["boolean"],
+    defaultValue: "false",
+    description:
+      "Do not add the stylesheet. Load react-zoom-pan-pinch/dist/styles.css yourself instead, e.g. under a CSP that allows no inline <style>.",
+  },
 };
 
 export const wrapperPropsTable: Record<

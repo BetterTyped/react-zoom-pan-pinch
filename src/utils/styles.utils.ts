@@ -4,6 +4,43 @@ import { StateType } from "models";
 export const roundScaleForTransform = (scale: number): number =>
   Number.parseFloat(scale.toFixed(8));
 
+const STYLE_MARKER = "data-react-zoom-pan-pinch";
+
+/**
+ * Adds the library stylesheet once per root the wrapper renders into: the
+ * document `<head>`, or the shadow root itself (#371), where a stylesheet in
+ * the head never applies. `nonce` is set on the `<style>` so a CSP with
+ * `style-src 'nonce-…'` accepts it (#403). A `<style>` already holding the
+ * same CSS is reused, so several viewers (or a re-mount) add one copy.
+ */
+export function injectStylesheet(
+  wrapper: HTMLElement,
+  css: string | undefined,
+  nonce?: string,
+): void {
+  if (!css || typeof wrapper.getRootNode !== "function") return;
+  const doc = wrapper.ownerDocument;
+  const root = wrapper.getRootNode();
+  // Duck-typed: a ShadowRoot from another window fails `instanceof`.
+  const isShadowRoot = root.nodeType === 11 && "host" in root;
+  const container: ParentNode | null = isShadowRoot
+    ? (root as ShadowRoot)
+    : doc.head;
+  if (!container) return;
+
+  const existing = container.querySelectorAll(`style[${STYLE_MARKER}]`);
+  for (let index = 0; index < existing.length; index += 1) {
+    if (existing[index].textContent === css) return;
+  }
+
+  const style = doc.createElement("style");
+  style.setAttribute(STYLE_MARKER, "");
+  if (nonce) style.setAttribute("nonce", nonce);
+  style.textContent = css;
+  // Appended, like style-inject did before (the bundle used to add it at load).
+  container.appendChild(style);
+}
+
 export const getTransformStyles = (
   x: number,
   y: number,

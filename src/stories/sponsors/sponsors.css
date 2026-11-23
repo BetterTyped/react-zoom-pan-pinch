@@ -1,0 +1,401 @@
+/*
+ * Partners and sponsors, in the right column of a docs page and on the landing. Every rule names its class twice with
+ * the page's root in front, because the site's own stylesheet colours and underlines every link in `main`.
+ */
+html,
+[data-bt-sp-theme="dark"] {
+  --bt-sp-surface: #1f1f21;
+  --bt-sp-raised: #2a2a2d;
+  --bt-sp-line: rgb(255 255 255 / 0.08);
+  --bt-sp-line-hover: rgb(255 255 255 / 0.2);
+  --bt-sp-dash: rgb(255 255 255 / 0.14);
+  --bt-sp-ink: #f4f4f5;
+  --bt-sp-muted: #a1a1aa;
+  --bt-sp-dim: #71717a;
+  --bt-sp-page: #1c1c1d;
+  --bt-sp-divider: hsl(240 3.7% 20%);
+  --bt-sp-honey: #f9b233;
+}
+html[data-theme="light"],
+[data-bt-sp-theme="light"] {
+  --bt-sp-surface: #ffffff;
+  --bt-sp-raised: #f4f4f5;
+  --bt-sp-line: rgb(0 0 0 / 0.08);
+  --bt-sp-line-hover: rgb(0 0 0 / 0.2);
+  --bt-sp-dash: rgb(0 0 0 / 0.16);
+  --bt-sp-ink: #18181b;
+  --bt-sp-muted: #52525b;
+  --bt-sp-dim: #a1a1aa;
+  --bt-sp-page: #ffffff;
+  --bt-sp-divider: rgb(0 0 0 / 0.08);
+  --bt-sp-honey: #d97706;
+}
+
+html body .bt-sp-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 18px 4px 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--bt-sp-divider);
+  font-family: inherit;
+}
+
+/* Section label on the left, its call to action on the right */
+html body .bt-sp-rail .bt-sp-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+html body .bt-sp-rail .bt-sp-head > span {
+  color: var(--bt-sp-dim);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+html body .bt-sp-rail .bt-sp-head > a.bt-sp-head-link,
+html body .bt-sp-rail .bt-sp-head > a {
+  color: var(--bt-sp-muted) !important;
+  font-size: 11.5px;
+  font-weight: 550;
+  text-decoration: none !important;
+  -webkit-text-fill-color: currentColor;
+  transition: color 0.2s;
+}
+html body .bt-sp-rail .bt-sp-head > a:hover {
+  color: var(--bt-sp-honey) !important;
+}
+html body .bt-sp-rail .bt-sp-head + .bt-sp-backers,
+html body .bt-sp-rail .bt-sp-stack + .bt-sp-head {
+  margin-top: 2px;
+}
+html body .bt-sp-rail .bt-sp-stack + .bt-sp-head {
+  margin-top: 8px;
+}
+
+html body .bt-sp-rail .bt-sp-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Featured partner: logo, name and tagline, an arrow that lights up in the partner's colour */
+html body .bt-sp-card.bt-sp-card,
+html body .bt-sp-slot.bt-sp-slot {
+  --bt-sp-accent: var(--bt-sp-honey);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 10px 10px 10px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--bt-sp-surface);
+  box-shadow:
+    inset 0 0 0 1px var(--bt-sp-line),
+    inset 0 1px 0 rgb(255 255 255 / 0.05),
+    0 1px 2px rgb(0 0 0 / 0.04);
+  color: var(--bt-sp-ink) !important;
+  text-decoration: none !important;
+  -webkit-text-fill-color: currentColor;
+  transition:
+    box-shadow 0.25s,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* The partner's colour, as a soft light from the top right corner */
+html body .bt-sp-card.bt-sp-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    120% 140% at 100% 0%,
+    color-mix(in oklch, var(--bt-sp-accent) 16%, transparent),
+    transparent 55%
+  );
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+html body .bt-sp-card.bt-sp-card:hover {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklch, var(--bt-sp-accent) 45%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 18px 40px -24px var(--bt-sp-accent);
+  transform: translateY(-1px);
+}
+html body .bt-sp-card.bt-sp-card:hover::before {
+  opacity: 1;
+}
+
+html body .bt-sp-card .bt-sp-logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--bt-sp-raised);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+html body .bt-sp-card .bt-sp-logo img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+html body .bt-sp-card .bt-sp-copy,
+html body .bt-sp-slot .bt-sp-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+html body .bt-sp-card .bt-sp-copy strong,
+html body .bt-sp-slot .bt-sp-copy strong {
+  color: var(--bt-sp-ink);
+  font-size: 13.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+html body .bt-sp-card .bt-sp-copy span,
+html body .bt-sp-slot .bt-sp-copy span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--bt-sp-muted);
+  font-size: 11.5px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+html body .bt-sp-card .bt-sp-go {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  color: var(--bt-sp-dim);
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+html body .bt-sp-card .bt-sp-go svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html body .bt-sp-card.bt-sp-card:hover .bt-sp-go {
+  background: color-mix(in oklch, var(--bt-sp-accent) 18%, transparent);
+  color: var(--bt-sp-accent);
+}
+html body .bt-sp-card.bt-sp-card:hover .bt-sp-go svg {
+  transform: translate(1px, -1px);
+}
+
+/* Gold and silver partners: two logo tiles a row */
+html body .bt-sp-rail .bt-sp-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+html body .bt-sp-tile.bt-sp-tile {
+  --bt-sp-accent: var(--bt-sp-honey);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--bt-sp-surface);
+  box-shadow: inset 0 0 0 1px var(--bt-sp-line);
+  color: var(--bt-sp-ink) !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none !important;
+  -webkit-text-fill-color: currentColor;
+  transition: box-shadow 0.25s;
+}
+html body .bt-sp-tile.bt-sp-tile:hover {
+  box-shadow: inset 0 0 0 1px
+    color-mix(in oklch, var(--bt-sp-accent) 45%, transparent);
+}
+html body .bt-sp-tile img {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  object-fit: contain;
+}
+html body .bt-sp-tile span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The free slot: a quiet invitation that warms up to the brand honey on hover */
+html body .bt-sp-slot.bt-sp-slot {
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 9px 10px;
+  background: transparent;
+  box-shadow: none;
+  outline: 1px dashed var(--bt-sp-dash);
+  outline-offset: -1px;
+}
+html body .bt-sp-slot.bt-sp-slot:hover {
+  background: rgb(249 178 51 / 0.05);
+  outline-color: rgb(249 178 51 / 0.5);
+}
+html body .bt-sp-slot .bt-sp-slot-plus {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--bt-sp-raised);
+  color: var(--bt-sp-muted);
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+html body .bt-sp-slot .bt-sp-slot-plus svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+html body .bt-sp-slot.bt-sp-slot:hover .bt-sp-slot-plus {
+  background: rgb(249 178 51 / 0.16);
+  color: #f9b233;
+}
+html body .bt-sp-slot .bt-sp-copy strong {
+  font-size: 12.5px;
+}
+html body .bt-sp-slot .bt-sp-copy span {
+  font-size: 11px;
+}
+
+/* Sponsors: top-tier organisations by name, everyone else as a row of overlapping faces */
+html body .bt-sp-backers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+html body .bt-sp-named.bt-sp-named {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px 3px 3px;
+  border-radius: 999px;
+  background: var(--bt-sp-surface);
+  box-shadow: inset 0 0 0 1px var(--bt-sp-line);
+  color: var(--bt-sp-ink) !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none !important;
+  -webkit-text-fill-color: currentColor;
+  transition: box-shadow 0.2s;
+}
+html body .bt-sp-named.bt-sp-named:hover {
+  box-shadow: inset 0 0 0 1px var(--bt-sp-line-hover);
+}
+html body .bt-sp-named img {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+html body .bt-sp-faces {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+html body .bt-sp-faces > a,
+html body .bt-sp-faces > .bt-sp-more {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: -6px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px var(--bt-sp-page);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html body .bt-sp-faces > a:hover {
+  z-index: 1;
+  transform: translateY(-2px) scale(1.08);
+}
+html body .bt-sp-faces img {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--bt-sp-raised);
+}
+html body .bt-sp-faces > .bt-sp-more {
+  background: var(--bt-sp-raised);
+  color: var(--bt-sp-muted);
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+/*
+ * The site paints every span directly inside a link in `main` with the link colour and sets every span and div to
+ * 17px; these keep the ink colour and the size of their card.
+ */
+html body .bt-sp-named.bt-sp-named > span,
+html body .bt-sp-tile.bt-sp-tile > span,
+html body .bt-sp-card.bt-sp-card > span,
+html body .bt-sp-slot.bt-sp-slot > span {
+  color: var(--bt-sp-ink);
+  font-size: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+html body .bt-sp-rail div,
+html body .bt-sp-backers div {
+  font-size: inherit;
+}
+html body .bt-sp-card.bt-sp-card > .bt-sp-go {
+  color: var(--bt-sp-dim);
+}
+html body .bt-sp-card.bt-sp-card:hover > .bt-sp-go {
+  color: var(--bt-sp-accent);
+}
+html body .bt-sp-slot.bt-sp-slot > .bt-sp-slot-plus {
+  color: var(--bt-sp-muted);
+}
+html body .bt-sp-slot.bt-sp-slot:hover > .bt-sp-slot-plus {
+  color: var(--bt-sp-honey);
+}
+
+/* A logo that fails to load leaves the partner's initial instead of a broken image */
+html body .bt-sp-initial {
+  color: var(--bt-sp-ink);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Wide: no divider above, partners side by side, for a docs page instead of a column */
+html body .bt-sp-rail[data-variant="wide"] {
+  margin: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+html body .bt-sp-rail[data-variant="wide"] .bt-sp-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}

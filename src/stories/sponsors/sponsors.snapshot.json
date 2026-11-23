@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-23T14:27:02.767Z",
+  "links": {
+    "sponsor": "https://github.com/sponsors/prc5",
+    "partner": "https://github.com/sponsors/prc5"
+  },
+  "tiers": [
+    {
+      "id": "platinum",
+      "name": "Platinum",
+      "monthlyDollars": 1600
+    },
+    {
+      "id": "gold",
+      "name": "Gold",
+      "monthlyDollars": 800
+    },
+    {
+      "id": "silver",
+      "name": "Silver",
+      "monthlyDollars": 400
+    },
+    {
+      "id": "backer",
+      "name": "Backer",
+      "monthlyDollars": 200
+    },
+    {
+      "id": "supporter",
+      "name": "Supporter",
+      "monthlyDollars": 100
+    },
+    {
+      "id": "fan",
+      "name": "Fan",
+      "monthlyDollars": 10
+    },
+    {
+      "id": "donor",
+      "name": "Donor",
+      "monthlyDollars": 0
+    }
+  ],
+  "partners": [
+    {
+      "id": "hype-stack",
+      "name": "Hype Stack",
+      "tagline": "Ship your SaaS on a production-ready stack",
+      "url": "https://www.hype-stack.dev/",
+      "logo": "https://cdn.jsdelivr.net/gh/prc5/sponsors@main/assets/partners/hype-stack.png",
+      "tier": "house",
+      "accent": "#f97316",
+      "projects": "all"
+    }
+  ],
+  "sponsors": [],
+  "pastSponsors": [
+    {
+      "login": "microsoft",
+      "name": "Microsoft",
+      "kind": "organization",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/6154722?v=4&s=160",
+      "url": "https://opensource.microsoft.com/",
+      "github": "https://github.com/microsoft",
+      "tier": "platinum"
+    },
+    {
+      "login": "kerns",
+      "name": "David Kerns",
+      "kind": "user",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/20254?u=bd24334936920dbc553f8ad4e0cc5fc11a17ff13&v=4&s=160",
+      "url": "http://kerns.dk/",
+      "github": "https://github.com/kerns",
+      "tier": null
+    },
+    {
+      "login": "juanmoncada",
+      "name": "Juan",
+      "kind": "user",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/3822114?u=95a4c7dabb81662b7b7fc82e0112daf4087b9b89&v=4&s=160",
+      "url": "https://github.com/juanmoncada",
+      "github": "https://github.com/juanmoncada",
+      "tier": null
+    },
+    {
+      "login": "okanji",
+      "name": "Oamar Kanji",
+      "kind": "user",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/30703259?u=6e299112c49e532e32a9f1031fde3ae3820b6053&v=4&s=160",
+      "url": "https://github.com/okanji",
+      "github": "https://github.com/okanji",
+      "tier": null
+    },
+    {
+      "login": "piotrfonte",
+      "name": "Pio",
+      "kind": "user",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/377206?u=570a615b736dce682f2961a940e5bf4e06503782&v=4&s=160",
+      "url": "https://piotrfonte.com/",
+      "github": "https://github.com/piotrfonte",
+      "tier": null
+    },
+    {
+      "login": "simjinseok",
+      "name": "심진석",
+      "kind": "user",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/42757954?u=d9478303eefe4f1c44eabc9220e613e73fc9c6c9&v=4&s=160",
+      "url": "https://simjinseok.com/",
+      "github": "https://github.com/simjinseok",
+      "tier": null
+    }
+  ],
+  "privateSponsors": {
+    "active": 0,
+    "past": 1
+  }
+}

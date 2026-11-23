@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { addons, types } from "@storybook/manager-api";
 import { useTheme } from "@storybook/theming";
 
+import type { FeedPartner } from "../src/stories/sponsors/feed";
+import { SPONSORS_PROJECT, withReferral } from "../src/stories/sponsors/feed";
+import { useSponsorsFeed } from "../src/stories/sponsors/use-sponsors";
+
 /*
- * The card at the bottom of the sidebar that sends a reader on to Hype Stack, the full stack template made by the
- * same people. Its picture is three apps built on Hype Stack. Under it: a small lit label, a headline that ends
- * on the name in its colour, the price, and a button the full width of the card.
+ * The card at the bottom of the sidebar. A platinum partner from the shared sponsors feed takes it; while there is
+ * none, it sends a reader on to Hype Stack, the full stack template made by the same people. Its picture is three
+ * apps built on Hype Stack (a partner's is their logo). Under it: a small lit label, a headline that ends on the name
+ * in its colour, one line, and a button the full width of the card.
  */
 
 const LINK =
@@ -66,6 +71,12 @@ const CSS = `
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .hs-ad:hover .hs-ad-art img { transform: scale(1.07); }
+.hs-ad-art[data-logo] {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(120% 120% at 100% 0%, color-mix(in oklch, var(--hs) 35%, #0a0c13), #0a0c13 70%);
+}
+.hs-ad-art[data-logo] img { width: 34%; height: auto; aspect-ratio: 1; border-radius: 18%; object-fit: contain; }
 .hs-ad-label {
   display: flex;
   align-items: center;
@@ -178,8 +189,7 @@ function wasShrunk() {
   }
 }
 
-function HypeStackCard() {
-  const theme = useTheme();
+function useShrunk() {
   const [small, setSmall] = useState(wasShrunk);
   useEffect(() => {
     if (!small) return;
@@ -189,6 +199,35 @@ function HypeStackCard() {
       // Blocked storage: small for this page only.
     }
   }, [small]);
+  return [small, () => setSmall(true)] as const;
+}
+
+const SparkIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden>
+    <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+  </svg>
+);
+
+const GoIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden>
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+/** The card's frame: the theme, the shrink cross and the shrunk state are the same whoever is on it. */
+function Card({
+  href,
+  name,
+  accent,
+  children,
+}: {
+  href: string;
+  name: string;
+  accent?: string | null;
+  children: React.ReactNode;
+}) {
+  const theme = useTheme();
+  const [small, shrink] = useShrunk();
   return (
     <div className="hs-ad-box">
       <style>{CSS}</style>
@@ -196,39 +235,20 @@ function HypeStackCard() {
         className="hs-ad"
         data-base={theme.base}
         data-small={small ? "" : undefined}
-        href={LINK}
+        href={href}
         target="_blank"
         rel="noopener"
-        aria-label="Build your SaaS on Hype Stack"
+        aria-label={name}
+        style={accent ? ({ "--hs": accent } as React.CSSProperties) : undefined}
       >
-        <span className="hs-ad-art" aria-hidden>
-          <img src="./hype-stack-apps.jpg" alt="" width={720} height={400} />
-        </span>
-        <span className="hs-ad-label">
-          <svg viewBox="0 0 24 24" aria-hidden>
-            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
-          </svg>
-          From Hype Stack
-        </span>
-        <strong>
-          Build your SaaS on <b>Hype Stack</b>
-        </strong>
-        <span className="hs-ad-price">
-          <b>Free</b> MIT template
-        </span>
-        <span className="hs-ad-go">
-          <span>Explore the stack</span>
-          <svg viewBox="0 0 24 24" aria-hidden>
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
-        </span>
+        {children}
       </a>
       {small ? null : (
         <button
           type="button"
           className="hs-ad-close"
-          onClick={() => setSmall(true)}
-          aria-label="Shrink the Hype Stack card"
+          onClick={shrink}
+          aria-label={`Shrink the ${name} card`}
         >
           <svg viewBox="0 0 24 24" aria-hidden>
             <path d="M6 6l12 12M18 6 6 18" />
@@ -239,9 +259,69 @@ function HypeStackCard() {
   );
 }
 
+function HypeStackCard() {
+  return (
+    <Card href={LINK} name="Build your SaaS on Hype Stack">
+      <span className="hs-ad-art" aria-hidden>
+        <img src="./hype-stack-apps.jpg" alt="" width={720} height={400} />
+      </span>
+      <span className="hs-ad-label">
+        <SparkIcon />
+        From Hype Stack
+      </span>
+      <strong>
+        Build your SaaS on <b>Hype Stack</b>
+      </strong>
+      <span className="hs-ad-price">
+        <b>Free</b> MIT template
+      </span>
+      <span className="hs-ad-go">
+        <span>Explore the stack</span>
+        <GoIcon />
+      </span>
+    </Card>
+  );
+}
+
+function PartnerCard({ partner }: { partner: FeedPartner }) {
+  return (
+    <Card
+      href={withReferral(partner.url, "storybook-sidebar")}
+      name={partner.name}
+      accent={partner.accent}
+    >
+      <span className="hs-ad-art" data-logo aria-hidden>
+        <img src={partner.logo} alt="" width={96} height={96} />
+      </span>
+      <span className="hs-ad-label">
+        <SparkIcon />
+        Partner
+      </span>
+      <strong>
+        <b>{partner.name}</b>
+      </strong>
+      <span className="hs-ad-price">{partner.tagline}</span>
+      <span className="hs-ad-go">
+        <span>Visit {partner.name}</span>
+        <GoIcon />
+      </span>
+    </Card>
+  );
+}
+
+function SidebarCard() {
+  const feed = useSponsorsFeed();
+  const partner = feed.partners.find(
+    (item) =>
+      item.tier === "platinum" &&
+      (item.projects === "all" || item.projects.includes(SPONSORS_PROJECT)),
+  );
+  return partner ? <PartnerCard partner={partner} /> : <HypeStackCard />;
+}
+
 addons.register("hype-stack/card", () => {
   addons.add("hype-stack/card/sidebar", {
     type: types.experimental_SIDEBAR_BOTTOM,
-    render: () => <HypeStackCard />,
+    render: () => <SidebarCard />,
   });
 });

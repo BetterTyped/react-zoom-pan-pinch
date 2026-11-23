@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-23T14:27:02.767Z",
+  "generatedAt": "2026-11-23T15:47:04.425Z",
   "links": {
     "sponsor": "https://github.com/sponsors/prc5",
     "partner": "https://github.com/sponsors/prc5"
@@ -44,6 +44,16 @@
   ],
   "partners": [
     {
+      "id": "microsoft",
+      "name": "Microsoft",
+      "tagline": "Open source at Microsoft",
+      "url": "https://opensource.microsoft.com/",
+      "logo": "https://cdn.jsdelivr.net/gh/prc5/sponsors@main/assets/partners/microsoft.svg",
+      "tier": "platinum",
+      "accent": "#00a4ef",
+      "projects": "all"
+    },
+    {
       "id": "hype-stack",
       "name": "Hype Stack",
       "tagline": "Ship your SaaS on a production-ready stack",
@@ -56,15 +66,6 @@
   ],
   "sponsors": [],
   "pastSponsors": [
-    {
-      "login": "microsoft",
-      "name": "Microsoft",
-      "kind": "organization",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/6154722?v=4&s=160",
-      "url": "https://opensource.microsoft.com/",
-      "github": "https://github.com/microsoft",
-      "tier": "platinum"
-    },
     {
       "login": "kerns",
       "name": "David Kerns",

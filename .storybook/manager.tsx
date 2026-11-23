@@ -76,7 +76,7 @@ const CSS = `
   place-items: center;
   background: radial-gradient(120% 120% at 100% 0%, color-mix(in oklch, var(--hs) 35%, #0a0c13), #0a0c13 70%);
 }
-.hs-ad-art[data-logo] img { width: 34%; height: auto; aspect-ratio: 1; border-radius: 18%; object-fit: contain; }
+.hs-ad-art[data-logo] img { width: 34%; height: auto; aspect-ratio: 1; object-fit: contain; }
 .hs-ad-label {
   display: flex;
   align-items: center;

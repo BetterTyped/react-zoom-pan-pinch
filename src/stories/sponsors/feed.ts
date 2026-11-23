@@ -92,7 +92,7 @@ export const withReferral = (href: string, placement: Placement) => {
 };
 
 export type SponsorsView = {
-  /** Platinum partners, or the house partner while no one holds a platinum slot. */
+  /** Platinum partners, then the house partner in a slot nobody holds. */
   featured: FeedPartner[];
   /** Gold and silver partners, shown as logo tiles. */
   tiles: FeedPartner[];
@@ -117,9 +117,7 @@ export const selectSponsors = (feed: SponsorsFeed): SponsorsView => {
   const backersArePast = feed.sponsors.length === 0;
 
   return {
-    featured: platinum.length
-      ? platinum.slice(0, PLATINUM_SLOTS)
-      : house.slice(0, 1),
+    featured: [...platinum, ...house].slice(0, PLATINUM_SLOTS),
     tiles: partners.filter(
       (partner) => partner.tier === "gold" || partner.tier === "silver",
     ),

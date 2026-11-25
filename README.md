@@ -58,9 +58,19 @@ help you resolve issues quickly and avoid blocking releases.
 - [Docs](https://bettertyped.github.io/react-zoom-pan-pinch/?path=/docs/docs-props--docs)
 
 <p align="center">
-  <a href="https://www.hype-stack.dev/?utm_medium=referral&utm_source=react-zoom-pan-pinch&utm_campaign=readme">
-    <img src="./.github/assets/banner-hype-stack.png" alt="Build your SaaS on Hype Stack" />
-  </a>
+	<a href="https://github.com/sponsors/prc5?tier=platinum">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/assets/Platinum.png" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
+</p>
+
+<p align="center">
+	<a href="https://github.com/sponsors/prc5?tier=Platinum">
+		<picture>
+			<img width="830" src="https://raw.githubusercontent.com/prc5/sponsors/main/packages/platinum/sponsorkit/sponsors.svg" alt="Premium sponsor banner"/>
+		</picture>
+	</a>
 </p>
 
 ## Key Features
@@ -76,6 +86,12 @@ help you resolve issues quickly and avoid blocking releases.
 ## Try other BetterTyped projects
 
 Do you like this library? Here is what else I build and maintain.
+
+<p align="center">
+  <a href="https://www.hype-stack.dev/?utm_medium=referral&utm_source=react-zoom-pan-pinch&utm_campaign=readme">
+    <img src="./.github/assets/banner-hype-stack.png" alt="Build your SaaS on Hype Stack" />
+  </a>
+</p>
 
 <p align="center">
   <a href="https://github.com/BetterTyped/hyper-fetch">

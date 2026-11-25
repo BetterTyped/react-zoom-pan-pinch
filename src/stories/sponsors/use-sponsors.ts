@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 import type { SponsorsFeed } from "./feed";
-import { isSponsorsFeed, selectSponsors, SPONSORS_FEED_URL } from "./feed";
+import {
+  forThisSite,
+  isSponsorsFeed,
+  selectSponsors,
+  SPONSORS_FEED_URL,
+} from "./feed";
 import snapshot from "./sponsors.snapshot.json";
 
 /*
@@ -10,7 +15,7 @@ import snapshot from "./sponsors.snapshot.json";
  */
 if (!isSponsorsFeed(snapshot))
   throw new Error("sponsors.snapshot.json is not a v1 sponsors feed");
-const initial: SponsorsFeed = snapshot;
+const initial: SponsorsFeed = forThisSite(snapshot);
 
 /* One request per visit, shared by every component that shows sponsors. */
 let latest: Promise<SponsorsFeed | null> | null = null;
@@ -32,7 +37,7 @@ export const useSponsorsFeed = () => {
     let alive = true;
     loadLatest().then((fresh) => {
       if (alive && fresh && fresh.generatedAt > initial.generatedAt)
-        setFeed(fresh);
+        setFeed(forThisSite(fresh));
     });
     return () => {
       alive = false;

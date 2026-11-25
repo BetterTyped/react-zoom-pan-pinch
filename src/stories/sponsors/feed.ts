@@ -56,6 +56,20 @@ export type SponsorsFeed = {
   privateSponsors: { active: number; past: number };
 };
 
+/** Partners and sponsors (by id or GitHub login) this site never shows, whatever the shared feed lists. */
+export const HIDDEN_ON_THIS_SITE = ["microsoft"];
+
+const isShown = (key: string) =>
+  !HIDDEN_ON_THIS_SITE.includes(key.toLowerCase());
+
+/** The feed without the entries this site hides, so every card and rail reads the same list. */
+export const forThisSite = (feed: SponsorsFeed): SponsorsFeed => ({
+  ...feed,
+  partners: feed.partners.filter((partner) => isShown(partner.id)),
+  sponsors: feed.sponsors.filter((sponsor) => isShown(sponsor.login)),
+  pastSponsors: feed.pastSponsors.filter((sponsor) => isShown(sponsor.login)),
+});
+
 /** Where a link sits, so referral traffic can be told apart per placement. */
 export type Placement = "docs-rail" | "landing" | "storybook-sidebar";
 
